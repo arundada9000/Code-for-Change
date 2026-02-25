@@ -174,12 +174,12 @@ const ProvinceDetails = () => {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-4 mt-8">
         <Breadcrumbs crumbs={[
           { name: "Provinces", path: "/provinces" },
           { name: displayName, path: `/provinces/${provinceName}` }
         ]} />
-      </div>
+      </div> */}
 
       {/* 2. Floating Stats Glass-morphism */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 -mt-16 md:-mt-24 relative z-30">
@@ -263,7 +263,7 @@ const ProvinceDetails = () => {
       </section>
 
       {/* 4. Strategic Roadmap - Clean & Managed */}
-      <section className="py-12 bg-slate-50 border-y border-slate-100">
+      {/* <section className="py-12 bg-slate-50 border-y border-slate-100">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
             <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
@@ -313,7 +313,7 @@ const ProvinceDetails = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* 5. Team - Dynamic */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">

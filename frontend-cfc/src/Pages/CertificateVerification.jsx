@@ -111,11 +111,11 @@ function CertificateVerification() {
       {/* Conditionally show banner */}
       {!token && <Banner title="Registry Audit Portal Certificate Verification" />}
       
-      {!token && (
+      {/* {!token && (
         <div className="max-w-7xl mx-auto px-6 mt-8">
           <Breadcrumbs crumbs={[{ name: "Verify Certificate", path: "/certificate-verification" }]} />
         </div>
-      )}
+      )} */}
       
       <div className={`max-w-7xl mx-auto px-6 ${token ? 'py-12' : 'py-20'}`}>
         {/* Verification Card - Simplistic & Clean */}

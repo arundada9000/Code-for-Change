@@ -47,8 +47,8 @@ function Header({ setShowSidebar }) {
             location.pathname === val.path
               ? "text-white bg-primary border-2 border-primary"
               : scrolled
-              ? "text-white"
-              : "text-primary"
+                ? "text-white"
+                : "text-primary"
           }`}
               >
                 {val.title}
@@ -60,7 +60,7 @@ function Header({ setShowSidebar }) {
                 <div className="absolute left-0 top-full pt-4 group-hover:block invisible group-hover:visible">
                   <div
                     className="relative w-60 overflow-hidden bg-primary text-white shadow-xl rounded-2xl border border-white
-                    h-0 group-hover:h-62 transition-all duration-300 ease-in-out"
+                    h-0 group-hover:h-69 transition-all duration-300 ease-in-out"
                   >
                     <div className="flex flex-col p-2">
                       {val.subMenu.map((subItem, idx) => (

@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { FaMapMarkerAlt, FaCalendarAlt, FaUserTie, FaLightbulb, FaGift, FaClock, FaMapPin, FaExternalLinkAlt } from "react-icons/fa";
+import {
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaUserTie,
+  FaLightbulb,
+  FaGift,
+  FaClock,
+  FaMapPin,
+  FaExternalLinkAlt,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useFetch from "../../../Hooks/useFetch";
 
@@ -10,21 +19,28 @@ export default function CurrentEvent() {
   const displayEvents = apiEvents || [];
 
   // Categorize events
-  const upcomingEvents = displayEvents.filter(e => 
-    e.status === "Upcoming" || e.status === "Published" || e.status === "Live"
-  ).sort((a, b) => new Date(a.date) - new Date(b.date));
+  const upcomingEvents = displayEvents
+    .filter(
+      (e) =>
+        e.status === "Upcoming" ||
+        e.status === "Published" ||
+        e.status === "Live",
+    )
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  const completedEvents = displayEvents.filter(e => 
-    e.status === "Completed"
-  ).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const completedEvents = displayEvents
+    .filter((e) => e.status === "Completed")
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  const eventsToShow = activeTab === "upcoming" ? upcomingEvents : completedEvents;
+  const eventsToShow =
+    activeTab === "upcoming" ? upcomingEvents : completedEvents;
 
-  if (loading && !apiEvents) return <div className="py-10 text-center">Loading events...</div>;
+  if (loading && !apiEvents)
+    return <div className="py-10 text-center">Loading events...</div>;
   if (displayEvents.length === 0) return null;
 
   return (
-    <section className="py-16 px-5 bg-gradient-to-br from-slate-50 to-white">
+    <section className="pt-8 px-5 bg-gradient-to-br from-slate-50 to-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="max-w-2xl mb-14">
@@ -35,10 +51,12 @@ export default function CurrentEvent() {
             </h4>
           </div>
           <h2 className="md:text-4xl text-3xl font-bold text-primary py-4">
-            Join us in shaping the future through exciting projects and initiatives
+            Join us in shaping the future through exciting projects and
+            initiatives
           </h2>
           <p className="text-slate-600 max-w-3xl">
-            Collaborate with passionate individuals, gain real-world experience, and make a meaningful impact through technology-driven initiatives.
+            Collaborate with passionate individuals, gain real-world experience,
+            and make a meaningful impact through technology-driven initiatives.
           </p>
         </div>
 
@@ -47,8 +65,8 @@ export default function CurrentEvent() {
           <button
             onClick={() => setActiveTab("upcoming")}
             className={`px-6 py-3 font-bold text-sm uppercase tracking-widest transition-all relative ${
-              activeTab === "upcoming" 
-                ? "text-secondary border-b-2 border-secondary" 
+              activeTab === "upcoming"
+                ? "text-secondary border-b-2 border-secondary"
                 : "text-slate-400 hover:text-slate-600"
             }`}
           >
@@ -62,8 +80,8 @@ export default function CurrentEvent() {
           <button
             onClick={() => setActiveTab("completed")}
             className={`px-6 py-3 font-bold text-sm uppercase tracking-widest transition-all relative ${
-              activeTab === "completed" 
-                ? "text-secondary border-b-2 border-secondary" 
+              activeTab === "completed"
+                ? "text-secondary border-b-2 border-secondary"
                 : "text-slate-400 hover:text-slate-600"
             }`}
           >
@@ -96,11 +114,16 @@ export default function CurrentEvent() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute top-4 left-4 flex gap-2">
-                    <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md ${
-                      event.status === 'Live' ? 'bg-rose-500/90 text-white' :
-                      event.status === 'Upcoming' || event.status === 'Published' ? 'bg-secondary/90 text-white' :
-                      'bg-slate-800/90 text-white'
-                    }`}>
+                    <span
+                      className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md ${
+                        event.status === "Live"
+                          ? "bg-rose-500/90 text-white"
+                          : event.status === "Upcoming" ||
+                              event.status === "Published"
+                            ? "bg-secondary/90 text-white"
+                            : "bg-slate-800/90 text-white"
+                      }`}
+                    >
                       {event.status}
                     </span>
                     <span className="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white/90 text-slate-800 backdrop-blur-md">
@@ -146,7 +169,8 @@ export default function CurrentEvent() {
                     <div className="flex items-center gap-2 pt-2">
                       <FaUserTie className="text-amber-500" />
                       <span className="text-xs font-bold text-slate-500">
-                        {event.speakers.length} Speaker{event.speakers.length > 1 ? 's' : ''}
+                        {event.speakers.length} Speaker
+                        {event.speakers.length > 1 ? "s" : ""}
                       </span>
                     </div>
                   )}
@@ -174,6 +198,15 @@ export default function CurrentEvent() {
               </div>
             ))
           )}
+        </div>
+        {/* View All Button */}
+        <div className="flex justify-center pt-6">
+          <Link
+            to="/events"
+            className="px-8 py-4 bg-secondary rounded-full text-white hover:bg-secondary/90 hover:scale-105 transition-all font-bold shadow-lg shadow-secondary/20"
+          >
+            View All Events
+          </Link>
         </div>
       </div>
     </section>

@@ -3,8 +3,21 @@ import { Link } from "react-router-dom"; // Import Link for navigation
 import Banner from "../Components/UI/Banner";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaGithub, FaYoutube, FaTwitter } from "react-icons/fa";
-import { FiArrowRight, FiUsers, FiStar, FiAward, FiExternalLink } from "react-icons/fi"; // Example icons
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaGithub,
+  FaYoutube,
+  FaTwitter,
+} from "react-icons/fa";
+import {
+  FiArrowRight,
+  FiUsers,
+  FiStar,
+  FiAward,
+  FiExternalLink,
+} from "react-icons/fi"; // Example icons
 
 // Updated Information
 const provinces = [
@@ -18,7 +31,6 @@ const provinces = [
   { name: "Chitwan", colorCode: "#964A01" },
   { name: "LB Karnali", colorCode: "#bbd704" },
 ];
-
 
 import useFetch from "../Hooks/useFetch";
 import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
@@ -34,31 +46,47 @@ const Provinces = () => {
   const advisorsData = ADVISORS;
   const coreData = CORE_TEAM;
   const alumniData = ALUMNI;
-  
+
   // Refined filtering to check both 'province' (new) and 'region' (old)
-  const provincialMembersFromTeam = apiTeam?.filter(m => 
-    (m.province?.toLowerCase() === activeTab?.toLowerCase()) || 
-    (!m.province && m.region?.toLowerCase() === activeTab?.toLowerCase())
-  ) || [];
+  const provincialMembersFromTeam =
+    apiTeam?.filter(
+      (m) =>
+        m.province?.toLowerCase() === activeTab?.toLowerCase() ||
+        (!m.province && m.region?.toLowerCase() === activeTab?.toLowerCase()),
+    ) || [];
 
   // Map public users to match team member structure for consistent rendering
-  const provincialMembersFromUsers = publicUsers?.filter(u => u.province?.toLowerCase() === activeTab?.toLowerCase())
-    .map(u => ({
-      _id: u._id,
-      name: u.name,
-      role: u.role,
-      position: u.ebBody || u.role,
-      image: u.profileImage, // Map profileImage to image
-      college: u.education?.collegeName,
-      bio: u.bio,
-      type: u.role === "member" ? "volunteer" : "executive", // Categorize for filtering below
-      isPublicUser: true
-    })) || [];
+  const provincialMembersFromUsers =
+    publicUsers
+      ?.filter((u) => u.province?.toLowerCase() === activeTab?.toLowerCase())
+      .map((u) => ({
+        _id: u._id,
+        name: u.name,
+        role: u.role,
+        position: u.ebBody || u.role,
+        image: u.profileImage, // Map profileImage to image
+        college: u.education?.collegeName,
+        bio: u.bio,
+        type: u.role === "member" ? "volunteer" : "executive", // Categorize for filtering below
+        isPublicUser: true,
+      })) || [];
 
-  const allProvincialMembers = [...provincialMembersFromTeam, ...provincialMembersFromUsers];
-  
-  const provincialVolunteers = allProvincialMembers?.filter(m => m.type === "volunteer" || m.role === "member") || [];
-  const provincialExecutives = allProvincialMembers?.filter(m => m.type === "executive" || m.tier === "representative" || m.role !== "member") || [];
+  const allProvincialMembers = [
+    ...provincialMembersFromTeam,
+    ...provincialMembersFromUsers,
+  ];
+
+  const provincialVolunteers =
+    allProvincialMembers?.filter(
+      (m) => m.type === "volunteer" || m.role === "member",
+    ) || [];
+  const provincialExecutives =
+    allProvincialMembers?.filter(
+      (m) =>
+        m.type === "executive" ||
+        m.tier === "representative" ||
+        m.role !== "member",
+    ) || [];
 
   const currentTeam = {
     advisors: advisorsData,
@@ -66,10 +94,12 @@ const Provinces = () => {
     alumni: alumniData,
     provincial: allProvincialMembers, // Consolidated list (volunteers + executives)
     stats: {
-      total: (provincialStats && provincialStats[activeTab]) || allProvincialMembers.length,
+      total:
+        (provincialStats && provincialStats[activeTab]) ||
+        allProvincialMembers.length,
       executives: provincialExecutives.length,
-      volunteers: provincialVolunteers.length
-    }
+      volunteers: provincialVolunteers.length,
+    },
   };
 
   const activeProvince = provinces.find(
@@ -78,15 +108,18 @@ const Provinces = () => {
 
   return (
     <main>
-      <SEO 
+      <SEO
         title="Provincial Chapters"
         description="Explore Code for Change Nepal's impact across various provinces. Connecting IT students nationwide."
-        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Provinces", path: "/provinces" }]}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Provinces", path: "/provinces" },
+        ]}
       />
       <Banner />
-      <div className="max-w-7xl mx-auto px-6 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[{ name: "Provinces", path: "/provinces" }]} />
-      </div>
+      </div> */}
       <div className="min-h-screen bg-gray-50 pt-20 pb-12">
         {/* Hero Section */}
         <section className="relative max-w-7xl mx-auto px-6 pt-24 pb-32 overflow-hidden">
@@ -204,7 +237,8 @@ const Provinces = () => {
           {currentTeam.advisors.length > 0 && (
             <section>
               <h2 className="text-3xl font-bold text-primary mb-10 flex items-center gap-4 text-right">
-                <div className="h-1 flex-1 bg-slate-200 rounded-full" /> Our Advisors
+                <div className="h-1 flex-1 bg-slate-200 rounded-full" /> Our
+                Advisors
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {currentTeam.advisors.map((member, i) => (
@@ -292,14 +326,16 @@ const Provinces = () => {
                       {/* Stats Row */}
                       <div className="flex gap-10 mb-10">
                         <div className="flex flex-col">
-                          <span className="text-3xl font-black italic">{currentTeam.stats.executives}</span>
+                          <span className="text-3xl font-black ">
+                            {currentTeam.stats.executives}
+                          </span>
                           <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
                             Executives
                           </span>
                         </div>
                         <div className="w-[1px] bg-white/20 h-10 self-center"></div>
                         <div className="flex flex-col">
-                          <span className="text-3xl font-black italic">
+                          <span className="text-3xl font-black">
                             {currentTeam.stats.total}+
                           </span>
                           <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
@@ -340,7 +376,8 @@ const Provinces = () => {
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    <FiUsers size={16} /> {currentTeam.stats.volunteers} Active Leads
+                    <FiUsers size={16} /> {currentTeam.stats.volunteers} Active
+                    Leads
                   </div>
                 </div>
 
@@ -353,11 +390,11 @@ const Provinces = () => {
                       >
                         {/* Neumorphic background */}
                         <div
-                          className="relative rounded-3xl p-6 shadow-xl transition-all duration-500 overflow-hidden border-b-4 hover:shadow-2xl"
+                          className="relative rounded-3xl md:p-6 p-4 shadow-xl transition-all duration-500 overflow-hidden border-b-4 hover:shadow-2xl"
                           style={{
                             backgroundColor: `${activeProvince?.colorCode}10`,
                             borderColor: activeProvince?.colorCode,
-                            boxShadow: `0 20px 40px -20px ${activeProvince?.colorCode}40`
+                            boxShadow: `0 20px 40px -20px ${activeProvince?.colorCode}40`,
                           }}
                         >
                           {/* Image container */}
@@ -372,11 +409,9 @@ const Provinces = () => {
                             <div
                               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl flex flex-col justify-end p-4"
                               style={{
-                                background: `linear-gradient(to top, ${activeProvince?.colorCode}CC, transparent)`,
+                                background: `linear-gradient(to top, ${activeProvince?.colorCode}55, transparent)`,
                               }}
-                            >
-                               <p className="text-white font-black text-xs tracking-tight">{member.name}</p>
-                            </div>
+                            ></div>
                           </div>
 
                           {/* Text */}
@@ -399,7 +434,9 @@ const Provinces = () => {
                     ))
                   ) : (
                     <div className="col-span-full py-20 text-center">
-                      <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No impact team members in {activeTab} yet.</p>
+                      <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
+                        No impact team members in {activeTab} yet.
+                      </p>
                     </div>
                   )}
                 </div>
@@ -423,24 +460,27 @@ const TeamCard = ({ member, variant }) => {
     instagram: <FaInstagram />,
     github: <FaGithub />,
     youtube: <FaYoutube />,
-    twitter: <FaTwitter />
+    twitter: <FaTwitter />,
   };
 
-  const availableSocials = Object.entries(member.socialLinks || {}).filter(([_, url]) => url);
+  const availableSocials = Object.entries(member.socialLinks || {}).filter(
+    ([_, url]) => url,
+  );
+  console.log(availableSocials);
 
   return (
     <div
-      className={`group relative rounded-[2rem] p-5 transition-all duration-700 
-      ${isGlass ? "bg-white/60 backdrop-blur-2xl border border-white/50 shadow-2xl" : "bg-white border border-slate-100 shadow-xl"}
-      hover:-translate-y-3 hover:shadow-[0_30px_60px_-15px_rgba(1,21,46,0.15)]`}
+      className={`group relative rounded-[2.5rem] p-4 transition-all duration-700 
+      ${isGlass ? "bg-white/40 backdrop-blur-2xl border border-white/50 shadow-xl" : "bg-white border border-slate-100 shadow-md"}
+      hover:-translate-y-4 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)]`}
     >
-      <div className="aspect-[4/5] rounded-[1.5rem] relative overflow-hidden bg-slate-100 mb-6">
+      <div className="aspect-[4/5] rounded-[2rem] relative overflow-hidden bg-slate-100">
         {/* Social Overlay */}
         <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
           {availableSocials.map(([platform, url], idx) => (
             <a
               key={platform}
-              href={url.startsWith('http') ? url : `https://${url}`}
+              href={url.startsWith("http") ? url : `https://${url}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-11 h-11 rounded-2xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
@@ -457,16 +497,16 @@ const TeamCard = ({ member, variant }) => {
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
           alt={member.name}
         />
-        <div className="absolute inset-0 bg-linear-to-t from-primary/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
       </div>
 
-      <div className="flex flex-col items-center text-center">
-        <h4 className="font-black text-primary tracking-tighter text-xl mb-1.5 transition-colors group-hover:text-primary/80">
+      <div className="absolute bottom-14 left-10 right-10 px-6 py-2 bg-white/90 backdrop-blur-md rounded-3xl border border-white shadow-lg translate-y-6 group-hover:translate-y-0 transition-all duration-500">
+        <h4 className="font-black text-slate-900 tracking-tight text-lg">
           {member.name}
         </h4>
-        <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 group-hover:border-secondary/20 transition-all">
-          <FiAward className="text-secondary text-sm" />
-          <p className="text-[11px] font-black uppercase text-slate-500 tracking-[0.2em]">
+        <div className="flex items-center gap-2 mt-1">
+          <FiAward className="text-blue-600" />
+          <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.1em]">
             {member.role}
           </p>
         </div>

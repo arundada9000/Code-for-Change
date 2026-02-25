@@ -50,9 +50,9 @@ const TeamMemberCard = ({ member, type }) => {
 
 const TeamSection = () => {
   return (
-    <div className="space-y-32 py-24">
+    <div className="space-y-15 md:space-y-32 py-10 md:pb-24">
       {/* Alumni Section */}
-      <section className="space-y-16">
+      {/* <section className="space-y-5 md:space-y-16">
         <div className="flex flex-col md:flex-row justify-between items-end gap-6">
           <div className="max-w-2xl">
             <h2 className="text-5xl md:text-6xl font-black text-primary tracking-tighter mb-6">
@@ -62,7 +62,7 @@ const TeamSection = () => {
               Celebrating the journey of our past members who continue to inspire and support the community.
             </p>
           </div>
-          <div className="hidden md:block h-[1px] flex-1 bg-slate-100 mx-12 mb-8" />
+          <div className="hidden md:block h-0.5 flex-1 bg-slate-100 mx-12 mb-8" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -70,11 +70,11 @@ const TeamSection = () => {
             <TeamMemberCard key={index} member={alumni} type="alumni" />
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Advisors Section */}
-      <section className="space-y-16">
-        <div className="flex flex-col md:flex-row-reverse justify-between items-end gap-6 text-right">
+      {/* <section className="space-y-16">
+        <div className="">
           <div className="max-w-2xl">
             <h2 className="text-5xl md:text-6xl font-black text-primary tracking-tighter mb-6">
               Our <span className="text-emerald-600">Advisors</span>
@@ -91,7 +91,7 @@ const TeamSection = () => {
             <TeamMemberCard key={index} member={advisor} type="advisor" />
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Core Team Section */}
       <section className="space-y-16">

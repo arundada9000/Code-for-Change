@@ -160,9 +160,9 @@ const Internships = () => {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Internships", path: "/internships" }]}
       />
       <Banner />
-      <div className="max-w-7xl mx-auto px-6 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[{ name: "Internships", path: "/internships" }]} />
-      </div>
+      </div> */}
       
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Compact Brand Header */}

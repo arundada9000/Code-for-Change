@@ -125,12 +125,12 @@ function ImpactDetail() {
           <div className="text-xs font-black tracking-widest text-slate-900 uppercase">Impact of Code For Change</div>
         </div>
       </header>
-      <div className="max-w-7xl mx-auto px-6 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[
           { name: "Our Impact", path: "/our-impact" },
           { name: item.title, path: `/our-impact/${id}` }
         ]} />
-      </div>
+      </div> */}
 
       {/* Hero Section */}
       <section className="py-12 lg:py-16 px-6">

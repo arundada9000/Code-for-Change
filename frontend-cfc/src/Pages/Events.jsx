@@ -34,9 +34,9 @@ function Events() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Events", path: "/events" }]}
       />
       <Banner/>
-      <div className="max-w-7xl mx-auto px-5 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-5 mt-8">
         <Breadcrumbs crumbs={[{ name: "Events", path: "/events" }]} />
-      </div>
+      </div> */}
       <CurrentEvent/>
       <Event events={events} loading={loading} />
     </div>

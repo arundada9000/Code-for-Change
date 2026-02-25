@@ -42,7 +42,7 @@ function OurValues() {
   ];
 
   return (
-    <section className="py-20 bg-linear-to-b from-gray-50 to-white">
+    <section className=" py-10 md:py-20 bg-linear-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl mb-16">

@@ -145,12 +145,12 @@ function EventDetails() {
           </div>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-5 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-5 mt-8">
         <Breadcrumbs crumbs={[
           { name: "Events", path: "/events" },
           { name: event.title, path: `/events/${eventSlug}` }
         ]} />
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-5 py-16">

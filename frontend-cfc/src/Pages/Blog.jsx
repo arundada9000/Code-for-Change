@@ -13,9 +13,9 @@ function Blog() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Articles", path: "/blog" }]}
       />
       <Banner />
-      <div className="max-w-7xl mx-auto px-5 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-5 mt-8">
         <Breadcrumbs crumbs={[{ name: "Articles", path: "/blog" }]} />
-      </div>
+      </div> */}
       <div className="py-16">
         <BlogCard />
       </div>

@@ -13,9 +13,9 @@ function DonateUs() {
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Donate", path: "/donate-us" }]}
     />
     <Banner/>
-    <div className="max-w-7xl mx-auto px-5 mt-8">
+    {/* <div className="max-w-7xl mx-auto px-5 mt-8">
       <Breadcrumbs crumbs={[{ name: "Donate", path: "/donate-us" }]} />
-    </div>
+    </div> */}
     <DonateSection/>
     </>
   )

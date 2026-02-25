@@ -27,9 +27,9 @@ export function OurImpact() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Our Impact", path: "/our-impact" }]}
       />
       <Banner title="Harnessing the Power of Youth" />
-      <div className="max-w-7xl mx-auto px-6 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[{ name: "Our Impact", path: "/our-impact" }]} />
-      </div>
+      </div> */}
       
       {/* Featured Impact Section */}
       <section className="max-w-7xl mx-auto px-6 py-16 lg:py-24">

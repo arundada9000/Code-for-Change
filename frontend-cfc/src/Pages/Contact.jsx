@@ -69,9 +69,9 @@ function ContactUs() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Contact", path: "/contact-us" }]}
       />
       <Banner />
-      <div className="max-w-7xl mx-auto px-6 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[{ name: "Contact", path: "/contact-us" }]} />
-      </div>
+      </div> */}
 
       <main className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">

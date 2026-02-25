@@ -11,7 +11,7 @@ function OurObjectives() {
   ];
 
   return (
-    <section className="py-16 bg-secondary/2">
+    <section className="pb-16 md:py-16 bg-secondary/2">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         {/* Section Header */}
         <div className="mb-14 max-w-2xl">

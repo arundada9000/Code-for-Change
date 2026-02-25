@@ -155,12 +155,12 @@ function InternshipApplication() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Internships", path: "/internships" }, { name: "Application", path: "/internship-application" }]}
       />
       <Banner />
-      <div className="max-w-6xl mx-auto px-6 mt-8">
+      {/* <div className="max-w-6xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[
           { name: "Internships", path: "/internships" },
           { name: "Application", path: "/internship-application" }
         ]} />
-      </div>
+      </div> */}
 
       <div className="max-w-6xl mx-auto px-6 pt-16">
         <div className="grid lg:grid-cols-3 gap-12">

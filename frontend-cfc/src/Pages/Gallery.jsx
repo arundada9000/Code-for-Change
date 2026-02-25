@@ -84,9 +84,9 @@ function Gallery() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Gallery", path: "/gallery" }]}
       />
       <Banner />
-      <div className="max-w-7xl mx-auto px-4 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-4 mt-8">
         <Breadcrumbs crumbs={[{ name: "Gallery", path: "/gallery" }]} />
-      </div>
+      </div> */}
 
       <main className="max-w-7xl mx-auto px-4 py-12">
         {/* Category Filter */}

@@ -51,9 +51,9 @@ function FAQ() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "FAQ", path: "/faq" }]}
       />
       <Banner />
-      <div className="max-w-4xl mx-auto px-6 mt-8">
+      {/* <div className="max-w-4xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[{ name: "FAQ", path: "/faq" }]} />
-      </div>
+      </div> */}
 
       <main className="max-w-4xl mx-auto px-6 py-16">
         <div className="text-center mb-16">

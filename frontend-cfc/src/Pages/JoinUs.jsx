@@ -362,9 +362,9 @@ export default function RegistrationForm() {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Join Us", path: "/join-us" }]}
       />
       <Banner />
-      <div className="max-w-7xl mx-auto px-4 mt-8">
+      {/* <div className="max-w-7xl mx-auto px-4 mt-8">
         <Breadcrumbs crumbs={[{ name: "Join Us", path: "/join-us" }]} />
-      </div>
+      </div> */}
       <div>
         <div className="max-w-7xl mx-auto px-4 py-16 lg:px-8 flex flex-col lg:flex-row gap-12 items-center">
           <div className="lg:w-1/2 w-full">

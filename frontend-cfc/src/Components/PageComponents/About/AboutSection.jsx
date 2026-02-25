@@ -2,20 +2,20 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 function AboutSection() {
-  const location = useLocation()
+  const location = useLocation();
   return (
-    <section className="py-16 flex flex-col lg:flex-row justify-between items-center gap-24">
+    <section className="py-16 flex flex-col lg:flex-row justify-between items-center gap-24 max-md:gap-6">
       <div>
-        <div className="flex gap-2 items-center group cursor-pointer">
+        <div className="flex gap- items-center group cursor-pointer">
           <div className="w-10 h-0.5 bg-primary transition-all duration-300 ease-in "></div>
           <h4 className="uppercase text-base font-medium">Know about us</h4>
         </div>
-        <div className=" py-4">
+        <div className="py-4">
           <h2 className="md:text-4xl text-3xl font-bold text-primary leading-tight">
             We are a movement of changemakers
           </h2>
 
-          <p className="py-4 mb-12">
+          <p className="py-4 mb-2">
             “Code for Change” is a not-for-profit organization formed in
             collaboration with students from various colleges around the country
             with the aim of bringing IT students and industry professionals
@@ -26,12 +26,14 @@ function AboutSection() {
             nationwide hackathons, workshops, and training programs targeting IT
             students.
           </p>
-          <Link
-            to="/about"
-            className={`px-8 py-3 border-4 border-secondary rounded-full text-white bg-secondary hover:bg-secondary/70 hover:text-white transition ${location.pathname==="/about"?"hidden":"inline-block"}`}
-          >
-            Learn more
-          </Link>
+          <div className="mx-auto w-full max-md:flex items-center justify-center">
+            <Link
+              to="/about"
+              className={`px-8 py-3 border-4 border-secondary rounded-full text-white bg-secondary hover:bg-secondary/70 hover:text-white transition ${location.pathname === "/about" ? "hidden" : "inline-block"}`}
+            >
+              Learn more
+            </Link>
+          </div>
         </div>
       </div>
 

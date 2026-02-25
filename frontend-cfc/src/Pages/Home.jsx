@@ -2,14 +2,16 @@ import React from "react";
 import HeroSection from "../Components/PageComponents/Home/HeroSection";
 import AboutSection from "../Components/PageComponents/About/AboutSection";
 import Supporters from "../Components/PageComponents/Supporters";
-import Event from "../Components/PageComponents/Events/Event";
+// import Event from "../Components/PageComponents/Events/Event";
+// works
+import CurrentEvent from "../Components/PageComponents/Events/CurrentEvent";
 import Testimonials from "../Components/PageComponents/Testimonials";
+import SEO from "../Components/Common/SEO";
+
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { FaCode } from "react-icons/fa";
 import { FaUserGraduate } from "react-icons/fa";
 import { FaRegHandshake } from "react-icons/fa";
-import CurrentEvent from "../Components/PageComponents/Events/CurrentEvent";
-import SEO from "../Components/Common/SEO";
 
 function Home() {
   const Works = [
@@ -40,7 +42,7 @@ function Home() {
   ];
   return (
     <>
-      <SEO 
+      <SEO
         title="Home - Empowering IT Professionals"
         description="Official home of Code for Change Nepal. We bridge the gap between education and industry through innovation, workshops, and hackathons."
         breadcrumbs={[{ name: "Home", path: "/" }]}
@@ -53,22 +55,22 @@ function Home() {
       <div className="bg-secondary/10 py-16 px-5">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-2xl">
-          <div className="flex gap-2 items-center group cursor-pointer">
-            <div className="w-10 h-0.5 bg-primary transition-all duration-300 ease-in "></div>
-            <h4 className="uppercase text-base font-medium">What we do</h4>
-          </div>
-          {/* Main Heading */}
-          <div className=" py-4">
-            <h2 className="md:text-4xl text-3xl font-bold text-primary">
-              Empowering learners and professionals through innovation
-            </h2>
-          </div>
-          <p className="max-w-3xl text-gray-600">
-            We bridge the gap between education and industry by providing
-            hands-on learning experiences, skill-based training, and
-            collaborative platforms that prepare individuals for real-world
-            challenges.
-          </p>
+            <div className="flex gap-2 items-center group cursor-pointer">
+              <div className="w-10 h-0.5 bg-primary transition-all duration-300 ease-in "></div>
+              <h4 className="uppercase text-base font-medium">What we do</h4>
+            </div>
+            {/* Main Heading */}
+            <div className=" py-4">
+              <h2 className="md:text-4xl text-3xl font-bold text-primary">
+                Empowering learners and professionals through innovation
+              </h2>
+            </div>
+            <p className="max-w-3xl text-gray-600">
+              We bridge the gap between education and industry by providing
+              hands-on learning experiences, skill-based training, and
+              collaborative platforms that prepare individuals for real-world
+              challenges.
+            </p>
           </div>
         </div>
         <div className="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 py-10 px-4">
@@ -87,9 +89,9 @@ function Home() {
         </div>
       </div>
       <CurrentEvent />
-      <div className="bg-secondary/10">
+      {/* <div className="bg-secondary/10">
         <Event />
-      </div>
+      </div> */}
       <Testimonials />
     </>
   );

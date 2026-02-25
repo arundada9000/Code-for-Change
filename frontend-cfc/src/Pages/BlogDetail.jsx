@@ -134,12 +134,12 @@ function BlogDetail() {
           </div>
         </div>
       </header>
-      <div className="max-w-5xl mx-auto px-4 mt-8">
+      {/* <div className="max-w-5xl mx-auto px-4 mt-8">
         <Breadcrumbs crumbs={[
           { name: "Articles", path: "/blog" },
           { name: blog.title, path: `/blog/${blog.slug}` }
         ]} />
-      </div>
+      </div> */}
 
       {/* 3. Main Content Layout */}
       <main className="max-w-7xl mx-auto px-5 py-20 grid grid-cols-1 lg:grid-cols-12 gap-20">

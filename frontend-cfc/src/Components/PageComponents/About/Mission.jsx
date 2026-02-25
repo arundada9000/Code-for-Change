@@ -4,7 +4,7 @@ import { FaEye } from "react-icons/fa";
 
 function Mission() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-10 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         {/* Section Header */}
         <div className="mb-14 max-w-2xl">
