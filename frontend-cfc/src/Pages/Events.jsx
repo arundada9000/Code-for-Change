@@ -38,7 +38,7 @@ function Events() {
         <Breadcrumbs crumbs={[{ name: "Events", path: "/events" }]} />
       </div> */}
       <CurrentEvent/>
-      <Event events={events} loading={loading} />
+      {/* <Event events={events} loading={loading} /> */}
     </div>
   )
 }

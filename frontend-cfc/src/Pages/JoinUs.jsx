@@ -6,7 +6,7 @@ import RegisterImg from "../assets/RegisterIllustration.jpg";
 import API from "../Services/api";
 
 const roleFields = {
-  "general-member": [
+  member: [
     { name: "fullName", label: "Full Name", type: "text", required: true },
     { name: "code", label: "Code", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
@@ -37,13 +37,6 @@ const roleFields = {
       type: "file",
       required: false,
     },
-    {
-      name: "province",
-      label: "Province",
-      type: "select",
-      required: true,
-      options: ['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali']
-    },
     { name: "password", label: "Password", type: "password", required: true },
     {
       name: "confirmPassword",
@@ -52,65 +45,7 @@ const roleFields = {
       required: true,
     },
   ],
-  "cr-eb": [
-    { name: "fullName", label: "Full Name", type: "text", required: true },
-    { name: "code", label: "Code", type: "text", required: true },
-    { name: "email", label: "Email", type: "email", required: true },
-    {
-      name: "contact",
-      label: "Contact",
-      type: "text",
-      required: true,
-      validation: "phone",
-    },
-    {
-      name: "executiveDesignation",
-      label: "Executive Designation",
-      type: "text",
-      required: true,
-    },
-    {
-      name: "collegeName",
-      label: "College Name",
-      type: "text",
-      required: false,
-    },
-    { name: "ebBody", label: "EB Body", type: "text", required: false },
-    { name: "faculty", label: "Faculty", type: "text", required: false },
-    {
-      name: "collegeSemester",
-      label: "College Semester",
-      type: "text",
-      required: false,
-    },
-    {
-      name: "profilePicture",
-      label: "Profile Picture",
-      type: "file",
-      required: false,
-    },
-    {
-      name: "about",
-      label: "Say Something About You",
-      type: "textarea",
-      required: false,
-    },
-    {
-      name: "province",
-      label: "Province",
-      type: "select",
-      required: true,
-      options: ['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali']
-    },
-    { name: "password", label: "Password", type: "password", required: true },
-    {
-      name: "confirmPassword",
-      label: "Confirm Password",
-      type: "password",
-      required: true,
-    },
-  ],
-  "tech-lead": [
+  executive: [
     { name: "fullName", label: "Full Name", type: "text", required: true },
     { name: "code", label: "Code", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
@@ -153,12 +88,56 @@ const roleFields = {
       type: "textarea",
       required: false,
     },
+    { name: "password", label: "Password", type: "password", required: true },
     {
-      name: "province",
-      label: "Province",
-      type: "select",
+      name: "confirmPassword",
+      label: "Confirm Password",
+      type: "password",
       required: true,
-      options: ['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali']
+    },
+  ],
+ "tech lead": [
+    { name: "fullName", label: "Full Name", type: "text", required: true },
+    { name: "code", label: "Code", type: "text", required: true },
+    { name: "email", label: "Email", type: "email", required: true },
+    {
+      name: "contact",
+      label: "Contact",
+      type: "text",
+      required: true,
+      validation: "phone",
+    },
+    {
+      name: "executiveDesignation",
+      label: "Executive Designation",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "collegeName",
+      label: "College Name",
+      type: "text",
+      required: false,
+    },
+    { name: "ebBody", label: "EB Body", type: "text", required: false },
+    { name: "faculty", label: "Faculty", type: "text", required: false },
+    {
+      name: "collegeSemester",
+      label: "College Semester",
+      type: "text",
+      required: false,
+    },
+    {
+      name: "profilePicture",
+      label: "Profile Picture",
+      type: "file",
+      required: false,
+    },
+    {
+      name: "about",
+      label: "Say Something About You",
+      type: "textarea",
+      required: false,
     },
     { name: "password", label: "Password", type: "password", required: true },
     {
@@ -168,7 +147,7 @@ const roleFields = {
       required: true,
     },
   ],
-  "cr": [
+  "College Representative": [
     { name: "fullName", label: "Full Name", type: "text", required: true },
     { name: "code", label: "Code", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
@@ -199,13 +178,6 @@ const roleFields = {
       type: "file",
       required: false,
     },
-    {
-      name: "province",
-      label: "Province",
-      type: "select",
-      required: true,
-      options: ['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali']
-    },
     { name: "password", label: "Password", type: "password", required: true },
     {
       name: "confirmPassword",
@@ -214,7 +186,7 @@ const roleFields = {
       required: true,
     },
   ],
-  "guest": [
+  supporter: [
     { name: "fullName", label: "Full Name", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
     {
@@ -224,14 +196,50 @@ const roleFields = {
       required: false,
     },
     { name: "sponsor", label: "Sponsor", type: "text", required: false },
-    { name: "ebBody", label: "Executive Body Role", type: "text", required: false },
+    { name: "logo", label: "Logo", type: "file", required: false },
+    { name: "password", label: "Password", type: "password", required: true },
     {
-      name: "province",
-      label: "Province",
-      type: "select",
+      name: "confirmPassword",
+      label: "Confirm Password",
+      type: "password",
       required: true,
-      options: ['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali']
     },
+  ],
+  mentor: [
+    { name: "fullName", label: "Full Name", type: "text", required: true },
+    { name: "email", label: "Email", type: "email", required: true },
+    {
+      name: "contact",
+      label: "Contact Number",
+      type: "text",
+      required: true,
+      validation: "phone",
+    },
+    {
+      name: "affiliatedOrganization",
+      label: "Affiliated Organization",
+      type: "text",
+      required: false,
+    },
+    {
+      name: "specialization",
+      label: "Area of Specialization",
+      type: "text",
+      required: false,
+    },
+    {
+      name: "description",
+      label: "Description",
+      type: "textarea",
+      required: false,
+    },
+    {
+      name: "profilePicture",
+      label: "Profile Picture",
+      type: "file",
+      required: false,
+    },
+    { name: "cv", label: "CV", type: "file", required: false },
     { name: "password", label: "Password", type: "password", required: true },
     {
       name: "confirmPassword",
@@ -243,7 +251,7 @@ const roleFields = {
 };
 
 export default function RegistrationForm() {
-  const [role, setRole] = useState("general-member");
+  const [role, setRole] = useState("member");
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -447,8 +455,8 @@ export default function RegistrationForm() {
                         {/* Header Section */}
                         <div className="relative">
                           <div className="absolute -left-12 top-0 w-1 h-full bg-secondary rounded-full hidden md:block" />
-                          <h2 className="text-3xl font-black text-slate-900 tracking-tight">
-                            {role.replace('-', ' ').toUpperCase()}{" "}
+                          <h2 className="text-3xl font-black capitalize text-slate-900 tracking-tight">
+                            {role.replace('-', ' ')}{" "}
                             Registration
                           </h2>
                           <p className="text-slate-500 mt-2 font-medium">

@@ -10,37 +10,54 @@ import {
 } from "react-icons/fi";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
-import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import { provinces } from "./Provinces";
 import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
 import EventCard from "../Components/UI/EventCard";
 
 const TeamMemberCard = ({ member, themeColor }) => (
-  <div className="group relative">
-    <div 
-      className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5] mb-4 transition-all duration-500 group-hover:-translate-y-2"
-      style={{ 
+  <div
+    className="group relative p-4 backdrop-blur rounded-3xl"
+    style={{ backgroundColor: `${themeColor}30` }}
+  >
+    <div
+      className="relative overflow-hidden rounded-2xl aspect-4/5 mb-4 transition-all duration-500"
+      style={{
         border: `1px solid ${themeColor}20`,
-        boxShadow: `0 10px 30px -15px ${themeColor}30`
+        boxShadow: `0 10px 30px -15px ${themeColor}30`,
       }}
     >
-      <img 
-        src={member.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random&color=fff`} 
-        alt={member.name} 
+      <img
+        src={
+          member.image ||
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random&color=fff`
+        }
+        alt={member.name}
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
       />
       {/* Dynamic Themed Overlay */}
-      <div 
+      <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6"
-        style={{ background: `linear-gradient(to top, ${themeColor}CC, transparent)` }}
+        style={{
+          background: `linear-gradient(to top, ${themeColor}55, transparent)`,
+        }}
       >
-        <p className="text-white font-black text-base tracking-tight mb-1">{member.name}</p>
-        <p className="text-white/80 text-[10px] font-black uppercase tracking-widest">{member.role}</p>
+        {/* <p className="text-white font-black text-base tracking-tight mb-1">{member.name}</p> */}
+        {/* <p className="text-white/80 text-[10px] font-black uppercase tracking-widest">{member.role}</p> */}
       </div>
     </div>
     <div className="text-center">
-      <h4 className="font-black text-primary text-base tracking-tight group-hover:text-primary transition-colors">{member.name}</h4>
-      <p className="text-[11px] font-black uppercase tracking-[0.15em] mt-1.5 opacity-80" style={{ color: themeColor }}>{member.role}</p>
+      <h4
+        className="font-bold tracking-tight text-primary text-base group-hover:text-primary transition-colors"
+        style={{ color: themeColor }}
+      >
+        {member.name}
+      </h4>
+      <p
+        className="text-[11px] font-black uppercase tracking-[0.15em] mt-1.5 opacity-80"
+        style={{ color: themeColor }}
+      >
+        {member.role}
+      </p>
     </div>
   </div>
 );
@@ -63,18 +80,28 @@ const ProvinceDetails = () => {
 
   // Dynamic Hero Image Map
   const provinceHeroImages = {
-    "Kathmandu": "https://images.unsplash.com/photo-1544216717-3bbf52512659?q=80&w=2000",
-    "Pokhara": "https://images.unsplash.com/photo-1583002622765-b77271971778?q=80&w=2000",
-    "Rupandehi": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2000",
-    "Dang": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2000",
-    "Birgunj": "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2000",
-    "Farwest": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000",
-    "Koshi": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2000",
-    "Chitwan": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000",
-    "LB Karnali": "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2000"
+    Kathmandu:
+      "https://images.unsplash.com/photo-1544216717-3bbf52512659?q=80&w=2000",
+    Pokhara:
+      "https://images.unsplash.com/photo-1583002622765-b77271971778?q=80&w=2000",
+    Rupandehi:
+      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2000",
+    Dang: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2000",
+    Birgunj:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2000",
+    Farwest:
+      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000",
+    Koshi:
+      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2000",
+    Chitwan:
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000",
+    "LB Karnali":
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2000",
   };
 
-  const heroImage = provinceHeroImages[displayName] || "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000";
+  const heroImage =
+    provinceHeroImages[displayName] ||
+    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,35 +109,46 @@ const ProvinceDetails = () => {
         const [eventsRes, teamRes, usersRes] = await Promise.allSettled([
           API.get("/events"),
           API.get("/team"),
-          API.get("/users/public-users")
+          API.get("/users/public-users"),
         ]);
 
-        const allEvents = eventsRes.status === 'fulfilled' ? eventsRes.value.data.data : [];
-        const allTeam = teamRes.status === 'fulfilled' ? teamRes.value.data.data : [];
-        const allPublicUsers = usersRes.status === 'fulfilled' ? usersRes.value.data.data : [];
+        const allEvents =
+          eventsRes.status === "fulfilled" ? eventsRes.value.data.data : [];
+        const allTeam =
+          teamRes.status === "fulfilled" ? teamRes.value.data.data : [];
+        const allPublicUsers =
+          usersRes.status === "fulfilled" ? usersRes.value.data.data : [];
 
         // Filter events by province (Assuming backend doesn't filter by province yet, or we need to add 'location' or 'province' field to Event model)
         // The Event model has 'location' string. We might need to fuzzy match or just show all for now if location isn't structured.
         // For now, let's filter if location includes province name.
-        const filteredEvents = allEvents.filter(e => e.location?.toLowerCase().includes(displayName.toLowerCase()));
+        const filteredEvents = allEvents.filter((e) =>
+          e.location?.toLowerCase().includes(displayName.toLowerCase()),
+        );
 
         // Filter team by province (check new field 'province' first, then 'region')
-        const filteredTeamMembers = allTeam.filter(m =>
-          (m.province?.toLowerCase() === displayName.toLowerCase()) ||
-          (!m.province && m.region?.toLowerCase() === displayName.toLowerCase()) ||
-          (m.region === 'All')
+        const filteredTeamMembers = allTeam.filter(
+          (m) =>
+            m.province?.toLowerCase() === displayName.toLowerCase() ||
+            (!m.province &&
+              m.region?.toLowerCase() === displayName.toLowerCase()) ||
+            m.region === "All",
         );
 
         // Filter and map public users
-        const provincialPublicUsers = allPublicUsers?.filter(u => u.province?.toLowerCase() === displayName.toLowerCase())
-          .map(u => ({
-            _id: u._id,
-            name: u.name,
-            role: u.role,
-            position: u.ebBody || u.role,
-            image: u.profileImage,
-            isPublicUser: true
-          })) || [];
+        const provincialPublicUsers =
+          allPublicUsers
+            ?.filter(
+              (u) => u.province?.toLowerCase() === displayName.toLowerCase(),
+            )
+            .map((u) => ({
+              _id: u._id,
+              name: u.name,
+              role: u.role,
+              position: u.ebBody || u.role,
+              image: u.profileImage,
+              isPublicUser: true,
+            })) || [];
 
         // Combine both sources
         const combinedTeam = [...filteredTeamMembers, ...provincialPublicUsers];
@@ -129,13 +167,13 @@ const ProvinceDetails = () => {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-900 font-sans selection:bg-blue-100">
-      <SEO 
+      <SEO
         title={`${displayName} Chapter`}
         description={`Empowering technology students in ${displayName} through youth initiative and digital projects by Code for Change Nepal.`}
         breadcrumbs={[
           { name: "Home", path: "/" },
           { name: "Provinces", path: "/provinces" },
-          { name: displayName, path: `/provinces/${provinceName}` }
+          { name: displayName, path: `/provinces/${provinceName}` },
         ]}
       />
       {/* 1. Cinematic Hero Section */}
@@ -319,26 +357,108 @@ const ProvinceDetails = () => {
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
           <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
-            The Leadership
+            Executive <span style={{ color: themeColor }}>Panel</span>
           </h2>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-            Board Members
+            Executive Board of Members
           </p>
         </div>
-        
+
         {loading ? (
-             <div className="text-center text-gray-500">Loading team...</div>
+          <div className="text-center text-gray-500">Loading team...</div>
         ) : team.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.map((member, i) => (
-                <TeamMemberCard key={member._id || i} member={member} themeColor={themeColor} />
+              <TeamMemberCard
+                key={member._id || i}
+                member={member}
+                themeColor={themeColor}
+              />
             ))}
-            </div>
+          </div>
         ) : (
-            <div className="text-center text-gray-400 italic">No team members found for this region.</div>
+          <div className="text-center text-gray-400 italic">
+            No team members found for this region.
+          </div>
         )}
       </section>
+      {/* College representative */}
+      <section className="max-w-7xl mx-auto px-6 py-5">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-4">
+          <h2 className="text-5xl font-black text-slate-900 tracking-tight">
+            College <span style={{ color: themeColor }}>Representatives</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            Board of CR
+          </p>
+        </div>
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-12">
+          {[...Array(25)].map((_, i) => (
+            <div
+              key={i}
+              className="text-center group"
+              style={{ "--hover-color": themeColor }} // Set CSS variable dynamically
+            >
+              <div className="relative mb-6">
+                <div className="absolute inset-0 rounded-full scale-110 border-2 border-dashed border-slate-200 transition-all duration-700 group-hover:border-[var(--hover-color)] group-hover:rotate-45" />
+                <img
+                  src={`https://i.pravatar.cc/300?u=${i + activeProvince?.name}`}
+                  className="relative w-full aspect-square rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 shadow-xl"
+                  alt="Team"
+                />
+              </div>
+              <h4 className="font-black text-slate-900 tracking-tight">
+                Alex Jhonson
+              </h4>
+              <p
+                className="text-[10px] font-black uppercase tracking-widest mt-1"
+                style={{ color: themeColor }}
+              >
+                Chapter Lead
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
+      {/* General member */}
+      <section className="max-w-7xl mx-auto px-6 py-5">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-4">
+          <h2 className="text-5xl font-black text-slate-900 tracking-tight">
+            General <span style={{ color: themeColor }}>Member</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            Board of GM
+          </p>
+        </div>
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-12">
+          {[...Array(100)].map((_, i) => (
+            <div
+              key={i}
+              className="text-center group"
+              style={{ "--hover-color": themeColor }} // Set CSS variable dynamically
+            >
+              <div className="relative mb-6">
+                <div className="absolute inset-0 rounded-full scale-110 border-2 border-dashed border-slate-200 transition-all duration-700 group-hover:border-[var(--hover-color)] group-hover:rotate-45" />
+                <img
+                  src={`https://i.pravatar.cc/300?u=${i + activeProvince?.name}`}
+                  className="relative w-full aspect-square rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 shadow-xl"
+                  alt="Team"
+                />
+              </div>
+              <h4 className="font-black text-slate-900 tracking-tight">
+                Alex Jhonson
+              </h4>
+              <p
+                className="text-[10px] font-black uppercase tracking-widest mt-1"
+                style={{ color: themeColor }}
+              >
+                Chapter Lead
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
       {/* 5.1 Central Advice & Leadership - Static */}
       <section className="bg-slate-50 py-12">
         <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
@@ -349,12 +469,16 @@ const ProvinceDetails = () => {
                 National <span style={{ color: themeColor }}>Alumni</span>
               </h2>
               <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-              National Alumni Members
+                National Alumni Members
               </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
               {ALUMNI.map((member, i) => (
-                <TeamMemberCard key={i} member={member} themeColor={themeColor} />
+                <TeamMemberCard
+                  key={i}
+                  member={member}
+                  themeColor={themeColor}
+                />
               ))}
             </div>
           </div>
@@ -371,30 +495,39 @@ const ProvinceDetails = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               {ADVISORS.map((advisor, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className="bg-white p-8 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
                 >
-                  <div 
+                  <div
                     className="absolute top-0 left-0 w-full h-1"
                     style={{ backgroundColor: themeColor }}
                   />
                   <div className="flex items-center gap-6 mb-6">
-                    <img 
-                      src={advisor.image} 
-                      className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110" 
-                      alt={advisor.name} 
+                    <img
+                      src={advisor.image}
+                      className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110"
+                      alt={advisor.name}
                     />
                     <div>
-                      <h4 className="font-black text-primary text-xl leading-tight">{advisor.name}</h4>
-                      <p className="text-[11px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{advisor.role}</p>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{advisor.organization}</p>
+                      <h4 className="font-black text-primary text-xl leading-tight">
+                        {advisor.name}
+                      </h4>
+                      <p
+                        className="text-[11px] font-black uppercase tracking-widest mt-1.5"
+                        style={{ color: themeColor }}
+                      >
+                        {advisor.role}
+                      </p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                        {advisor.organization}
+                      </p>
                     </div>
                   </div>
                   <p className="text-sm text-slate-600 italic font-medium leading-relaxed relative z-10">
                     "{advisor.quote}"
                   </p>
-                  <div 
+                  <div
                     className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-5 transition-transform duration-700 group-hover:scale-150"
                     style={{ backgroundColor: themeColor }}
                   />
@@ -415,7 +548,11 @@ const ProvinceDetails = () => {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
               {CORE_TEAM.map((member, i) => (
-                <TeamMemberCard key={i} member={member} themeColor={themeColor} />
+                <TeamMemberCard
+                  key={i}
+                  member={member}
+                  themeColor={themeColor}
+                />
               ))}
             </div>
           </div>
@@ -430,25 +567,26 @@ const ProvinceDetails = () => {
               Events in <span style={{ color: themeColor }}>{displayName}</span>
             </h2>
             <span className="bg-slate-100 px-4 py-2 rounded-full uppercase tracking-widest text-[10px] md:text-xs font-black text-slate-500 whitespace-nowrap">
-              {events.length}{" "}
-              {events.length > 1 ? "Events" : "Event"}
+              {events.length} {events.length > 1 ? "Events" : "Event"}
             </span>
           </div>
           <p className="text-slate-500 mt-2 text-sm font-medium">
             Impactful sessions conducted by this chapter.
           </p>
         </div>
-        
+
         {loading ? (
-             <div className="text-center text-gray-500">Loading events...</div>
+          <div className="text-center text-gray-500">Loading events...</div>
         ) : events.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event, i) => (
-                <EventCard key={event._id || i} event={event} />
+              <EventCard key={event._id || i} event={event} />
             ))}
-            </div>
+          </div>
         ) : (
-            <div className="text-center text-gray-400 italic">No events found in this region.</div>
+          <div className="text-center text-gray-400 italic">
+            No events found in this region.
+          </div>
         )}
       </section>
     </div>
@@ -457,11 +595,11 @@ const ProvinceDetails = () => {
 
 // Premium Stat Card
 const StatCard = ({ icon, label, value, accent }) => (
-  <div 
+  <div
     className="bg-white/90 backdrop-blur-xl p-4 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl flex flex-col items-center text-center border-t-4 group hover:-translate-y-2 active:scale-95 transition-all duration-500"
-    style={{ 
+    style={{
       borderColor: accent,
-      boxShadow: `0 15px 30px -15px ${accent}40`
+      boxShadow: `0 15px 30px -15px ${accent}40`,
     }}
   >
     <div

@@ -9,12 +9,13 @@ import {
   FaMapPin,
   FaExternalLinkAlt,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useFetch from "../../../Hooks/useFetch";
 
 export default function CurrentEvent() {
   const { data: apiEvents, loading } = useFetch("/events");
   const [activeTab, setActiveTab] = useState("upcoming");
+  const location = useLocation()
 
   const displayEvents = apiEvents || [];
 
@@ -40,7 +41,7 @@ export default function CurrentEvent() {
   if (displayEvents.length === 0) return null;
 
   return (
-    <section className="pt-8 px-5 bg-gradient-to-br from-slate-50 to-white">
+    <section className={` px-5 bg-gradient-to-br from-slate-50 to-white ${location.pathname=="/events"?"py-8":"pt-8"}`}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="max-w-2xl mb-14">

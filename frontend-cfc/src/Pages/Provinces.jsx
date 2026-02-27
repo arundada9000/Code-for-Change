@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"; // Import Link for navigation
 import Banner from "../Components/UI/Banner";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
+// import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
 import {
   FaFacebookF,
   FaInstagram,
@@ -34,13 +35,20 @@ const provinces = [
 
 import useFetch from "../Hooks/useFetch";
 import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
+import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
 
 const Provinces = () => {
   const { data: apiTeam, loading } = useFetch("/team", []);
   const { data: provincialStats } = useFetch("/province-stats", {});
   const { data: publicUsers } = useFetch("/users/public-users", []);
 
+  console.log(publicUsers);
+  // console.log(provincialStats);
+  // console.log(apiTeam);
+  // console.log("hello")
+
   const [activeTab, setActiveTab] = useState("Kathmandu");
+  const [selectedMember, setSelectedMember] = useState(null);
 
   // Map static data instead of filtering from API for advisors and core team as requested
   const advisorsData = ADVISORS;
@@ -71,15 +79,22 @@ const Provinces = () => {
         isPublicUser: true,
       })) || [];
 
+  //  console.log(provincialMembersFromUsers)
+
   const allProvincialMembers = [
     ...provincialMembersFromTeam,
     ...provincialMembersFromUsers,
   ];
 
+  // console.log(allProvincialMembers);
+
   const provincialVolunteers =
     allProvincialMembers?.filter(
       (m) => m.type === "volunteer" || m.role === "member",
     ) || [];
+
+  // console.log(provincialVolunteers);
+
   const provincialExecutives =
     allProvincialMembers?.filter(
       (m) =>
@@ -87,6 +102,8 @@ const Provinces = () => {
         m.tier === "representative" ||
         m.role !== "member",
     ) || [];
+
+  // console.log(provincialExecutives);
 
   const currentTeam = {
     advisors: advisorsData,
@@ -102,10 +119,14 @@ const Provinces = () => {
     },
   };
 
+  // console.log(currentTeam.provincial)
+  // console.log(currentTeam);
+
   const activeProvince = provinces.find(
     (province) => province.name === activeTab,
   );
 
+  // console.log(member)
   return (
     <main>
       <SEO
@@ -120,9 +141,9 @@ const Provinces = () => {
       {/* <div className="max-w-7xl mx-auto px-6 mt-8">
         <Breadcrumbs crumbs={[{ name: "Provinces", path: "/provinces" }]} />
       </div> */}
-      <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+      <div className="min-h-screen bg-gray-50 pb-12">
         {/* Hero Section */}
-        <section className="relative max-w-7xl mx-auto px-6 pt-24 pb-32 overflow-hidden">
+        <section className="relative max-w-7xl mx-auto px-6 py-16 overflow-hidden">
           {/* Ambient Background Glows - Subtlety is key for premium feel */}
           <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
           <div className="absolute bottom-0 left-0 -z-10 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px]" />
@@ -155,12 +176,12 @@ const Provinces = () => {
               {/* Social Proof & CTA */}
               <div className="flex flex-wrap gap-8 items-center">
                 <Link
-                  to="/register"
+                  to="/join-us"
                   className="px-10 py-5 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest uppercase hover:bg-primary transition-all shadow-xl shadow-slate-900/20 active:scale-95"
                 >
                   Join the Movement
                 </Link>
-
+                {/* 
                 <div className="flex items-center gap-4">
                   <div className="flex -space-x-3">
                     {[1, 2, 3].map((i) => (
@@ -175,7 +196,7 @@ const Provinces = () => {
                   <p className="text-sm font-bold text-slate-400">
                     <span className="text-slate-900">750+</span> Volunteers
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -218,38 +239,8 @@ const Provinces = () => {
         </section>
 
         <div className="max-w-7xl mx-auto px-6 space-y-20">
-          {/* Section: Alumni */}
-          {currentTeam.alumni.length > 0 && (
-            <section>
-              <h2 className="text-3xl font-bold text-primary mb-10 flex items-center gap-4">
-                Our Alumni{" "}
-                <div className="h-1 flex-1 bg-slate-200 rounded-full" />
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {currentTeam.alumni.map((member, i) => (
-                  <TeamCard key={i} member={member} variant="glass" />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Section: Advisors */}
-          {currentTeam.advisors.length > 0 && (
-            <section>
-              <h2 className="text-3xl font-bold text-primary mb-10 flex items-center gap-4 text-right">
-                <div className="h-1 flex-1 bg-slate-200 rounded-full" /> Our
-                Advisors
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {currentTeam.advisors.map((member, i) => (
-                  <TeamCard key={i} member={member} variant="glass" />
-                ))}
-              </div>
-            </section>
-          )}
-
           {/* Section: Core Team */}
-          {currentTeam.core.length > 0 && (
+          {/* {currentTeam.core.length > 0 && (
             <section>
               <h2 className="text-3xl font-bold text-primary mb-10 flex items-center gap-4">
                 Core Team Members{" "}
@@ -261,37 +252,45 @@ const Provinces = () => {
                 ))}
               </div>
             </section>
-          )}
+          )} */}
 
           {/* Province Navigation */}
-          <section className="pt-20 pb-32 px-4 max-w-7xl mx-auto">
-            {/* 1. Premium Tab Navigation */}
-            <div className="flex flex-wrap justify-center gap-3 mb-16">
-              {provinces.map((p) => (
-                <button
-                  style={{
-                    backgroundColor:
-                      activeTab === p.name ? undefined : p.colorCode,
-                    color: activeTab === p.name ? p.colorCode : "",
-                    border: `2px solid ${p.colorCode}`,
-                    boxShadow:
-                      activeTab === p.name
-                        ? `0px 0px 30px 1px ${p.colorCode}55`
-                        : "",
-                  }}
-                  key={p.name}
-                  onClick={() => setActiveTab(p.name)}
-                  className={`px-6 py-3 rounded-full tracking-wider cursor-pointer text-sm font-medium uppercase transition-all duration-500 border-2
+          <section className="pb-16 px-4 max-w-7xl mx-auto">
+            <section className="pb-16 px-4 max-w-7xl mx-auto">
+              <ProvinceDropdown
+                provinces={provinces}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                activeProvince={activeProvince}
+              />
+
+              <div className="hidden sm:flex flex-wrap justify-center gap-3 mb-16">
+                {provinces.map((p) => (
+                  <button
+                    style={{
+                      backgroundColor:
+                        activeTab === p.name ? undefined : p.colorCode,
+                      color: activeTab === p.name ? p.colorCode : "",
+                      border: `2px solid ${p.colorCode}`,
+                      boxShadow:
+                        activeTab === p.name
+                          ? `0px 0px 30px 1px ${p.colorCode}55`
+                          : "",
+                    }}
+                    key={p.name}
+                    onClick={() => setActiveTab(p.name)}
+                    className={`px-6 py-3 rounded-full tracking-wider cursor-pointer text-sm font-medium uppercase transition-all duration-500 border-2
               ${
                 activeTab === p.name
                   ? "bg-white -translate-y-1"
                   : "bg-white-50 text-white hover:bg-gray-100"
               }`}
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
+                  >
+                    {p.name}
+                  </button>
+                ))}
+              </div>
+            </section>
 
             <div className="grid lg:grid-cols-[380px_1fr] gap-12 items-start">
               {/* 2. Province Feature Card (Sticky Side) */}
@@ -381,15 +380,20 @@ const Provinces = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 md:gap-7">
+                {/* Current team member */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 pb-10 gap-5 md:gap-7">
                   {currentTeam.provincial.length > 0 ? (
                     currentTeam.provincial.map((member, i) => (
                       <div
                         key={member._id || i}
                         className="relative group rounded-3xl cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl"
                       >
+                        {/* {console.log(currentTeam)} */}
                         {/* Neumorphic background */}
                         <div
+                          onClick={() => {
+                            setSelectedMember(member);
+                          }}
                           className="relative rounded-3xl md:p-6 p-4 shadow-xl transition-all duration-500 overflow-hidden border-b-4 hover:shadow-2xl"
                           style={{
                             backgroundColor: `${activeProvince?.colorCode}10`,
@@ -440,6 +444,46 @@ const Provinces = () => {
                     </div>
                   )}
                 </div>
+
+                {/* Team member details modal */}
+                <TeamMemberModal
+                  isOpen={!!selectedMember}
+                  member={selectedMember}
+                  onClose={() => setSelectedMember(null)}
+                />
+                {/* Section: Advisors */}
+                {currentTeam.advisors.length > 0 && (
+                  <section className="pb-7">
+                    <h2 className="text-4xl font-black text-primary mb-10 flex items-center gap-4 text-right">
+                      Our{" "}
+                      <span style={{ color: activeProvince?.colorCode }}>
+                        Advisors
+                      </span>
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {currentTeam.advisors.map((member, i) => (
+                        <TeamCard key={i} member={member} variant="glass" />
+                      ))}
+                    </div>
+                  </section>
+                )}
+                {/* Section: Alumni */}
+
+                {currentTeam.alumni.length > 0 && (
+                  <section className="pt-10">
+                    <h2 className="text-4xl font-black text-primary mb-7 flex items-center gap-4">
+                      Our{" "}
+                      <span style={{ color: activeProvince?.colorCode }}>
+                        Alumni
+                      </span>
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {currentTeam.alumni.map((member, i) => (
+                        <TeamCard key={i} member={member} variant="glass" />
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
             </div>
           </section>
@@ -450,7 +494,6 @@ const Provinces = () => {
 };
 
 // TeamCard remains the same
-
 const TeamCard = ({ member, variant }) => {
   const isGlass = variant === "glass";
 
@@ -466,31 +509,41 @@ const TeamCard = ({ member, variant }) => {
   const availableSocials = Object.entries(member.socialLinks || {}).filter(
     ([_, url]) => url,
   );
-  console.log(availableSocials);
 
+  // console.log(member.socialLinks);
   return (
     <div
-      className={`group relative rounded-[2.5rem] p-4 transition-all duration-700 
+      className={`group relative rounded-3xl p-3 transition-all duration-700 
       ${isGlass ? "bg-white/40 backdrop-blur-2xl border border-white/50 shadow-xl" : "bg-white border border-slate-100 shadow-md"}
       hover:-translate-y-4 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)]`}
     >
-      <div className="aspect-[4/5] rounded-[2rem] relative overflow-hidden bg-slate-100">
+      <div className="aspect-4/5 rounded-2xl relative overflow-hidden bg-slate-100">
         {/* Social Overlay */}
-        <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
-          {availableSocials.map(([platform, url], idx) => (
+
+        {availableSocials.map(([platform, url], idx) => (
+          <div
+            key={platform}
+            className={`absolute z-20 ${idx < 3 ? "left-6" : "right-6"}
+            [--icon-gap:3.5rem] lg:[--icon-gap:2.5rem]`}
+            style={{
+              top: `calc(1.5rem + ${idx % 3} * var(--icon-gap))`,
+            }}
+          >
             <a
-              key={platform}
               href={url.startsWith("http") ? url : `https://${url}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-11 h-11 rounded-2xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
-              opacity-0 -translate-x-12 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg"
+              className={`lg:w-9 w-11 h-11 lg:h-9  rounded-xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
+      opacity-100 md:opacity-0 ${
+        idx < 3 ? "md:-translate-x-12" : "md:translate-x-12"
+      }
+      group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
               style={{ transitionDelay: `${idx * 100}ms` }}
             >
               {socialIcons[platform] || <FiExternalLink />}
             </a>
-          ))}
-        </div>
+          </div>
+        ))}
 
         <img
           src={member.image}
@@ -500,8 +553,8 @@ const TeamCard = ({ member, variant }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
       </div>
 
-      <div className="absolute bottom-14 left-10 right-10 px-6 py-2 bg-white/90 backdrop-blur-md rounded-3xl border border-white shadow-lg translate-y-6 group-hover:translate-y-0 transition-all duration-500">
-        <h4 className="font-black text-slate-900 tracking-tight text-lg">
+      <div className="absolute lg:bottom-10 bottom-14 lg:left-4 left-8 right-8 lg:right-4 lg:p-2 px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl border border-white shadow-lg translate-y-6 group-hover:translate-y-2 transition-all duration-500">
+        <h4 className="font-black text-slate-900 tracking-tight text-lg lg:text-sm">
           {member.name}
         </h4>
         <div className="flex items-center gap-2 mt-1">
@@ -516,3 +569,81 @@ const TeamCard = ({ member, variant }) => {
 };
 
 export { Provinces, provinces };
+
+import { FiChevronDown, FiMapPin, FiCheck } from "react-icons/fi";
+
+const ProvinceDropdown = ({
+  provinces,
+  activeTab,
+  setActiveTab,
+  activeProvince,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="sm:hidden relative z-50">
+      {/* Trigger Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-5 py-4 bg-white rounded-2xl border-2 transition-all duration-300 shadow-lg active:scale-95"
+        style={{
+          borderColor: activeProvince?.colorCode || "#e2e8f0",
+          boxShadow: `0 10px 25px -10px ${activeProvince?.colorCode}40`,
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ backgroundColor: activeProvince?.colorCode }}
+          />
+          <span
+            style={{ color: activeProvince?.colorCode }}
+            className="font-black text-slate-800 tracking-tight uppercase text-sm"
+          >
+            {activeTab}
+          </span>
+        </div>
+        <FiChevronDown
+          className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+          style={{ color: activeProvince?.colorCode }}
+        />
+      </button>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <>
+          {/* Backdrop to close when clicking outside */}
+          <div
+            className="fixed inset-0 z-[-1]"
+            onClick={() => setIsOpen(false)}
+          />
+
+          <div className="absolute top-full left-0 right-0 mt-3 overflow-hidden bg-white/80 backdrop-blur-xl border border-white/50 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="max-h-64 overflow-y-auto py-2">
+              {provinces.map((p) => (
+                <button
+                  key={p.name}
+                  onClick={() => {
+                    setActiveTab(p.name);
+                    setIsOpen(false);
+                  }}
+                  className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+                >
+                  <span
+                    style={{ color: p?.colorCode }}
+                    className={`text-sm font-bold`}
+                  >
+                    {p.name}
+                  </span>
+                  {activeTab === p.name && (
+                    <FiCheck style={{ color: activeProvince?.colorCode }} />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
