@@ -51,26 +51,26 @@ export const updateBlogSchema = z.object({
     isPublished: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
     highlights: z.union([z.string(), z.array(z.string())]).optional(),
     authorDetails: z.preprocess(
-        (val) => {
-          if (typeof val === "string") {
-            try {
-              return JSON.parse(val);
-            } catch (e) {
-              return val;
-            }
+      (val) => {
+        if (typeof val === "string") {
+          try {
+            return JSON.parse(val);
+          } catch (e) {
+            return val;
           }
-          return val;
-        },
-        z.object({
-          name: z.string().trim().min(1).optional(),
-          role: z.string().trim().min(1).optional(),
-          linkedin: z.string().trim().optional().or(z.literal("")),
-          facebook: z.string().trim().optional().or(z.literal("")),
-          tiktok: z.string().trim().optional().or(z.literal("")),
-          instagram: z.string().trim().optional().or(z.literal("")),
-          youtube: z.string().trim().optional().or(z.literal("")),
-        })
-      ).optional(),
+        }
+        return val;
+      },
+      z.object({
+        name: z.string().trim().min(1).optional(),
+        role: z.string().trim().min(1).optional(),
+        linkedin: z.string().trim().optional().or(z.literal("")),
+        facebook: z.string().trim().optional().or(z.literal("")),
+        tiktok: z.string().trim().optional().or(z.literal("")),
+        instagram: z.string().trim().optional().or(z.literal("")),
+        youtube: z.string().trim().optional().or(z.literal("")),
+      })
+    ).optional(),
     isFeatured: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
     metaTitle: z.string().max(100).optional(),
     metaDescription: z.string().max(200).optional(),

@@ -90,13 +90,13 @@ function AdminSidebar() {
             `}
           >
             <div
-              className={`shrink-0 w-8 h-8 bg-emerald-600/20 text-emerald-500 rounded-lg flex items-center justify-center border border-emerald-500/20 transition-all duration-500 group-hover/sajilo:bg-emerald-600 group-hover/sajilo:text-white group-hover/sajilo:scale-110`}
+              className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden bg-white/10`}
             >
-              <FaRocket size={14} />
+              <img src="/sajilodigital.png" alt="SD" className="w-5 h-5 object-contain brightness-0 invert opacity-80 group-hover/sajilo:opacity-100 group-hover/sajilo:scale-110 transition-all" />
             </div>
             {isOpen && (
               <div className="flex flex-col">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] leading-tight">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] leading-tight text-white group-hover/sajilo:text-emerald-400 transition-colors">
                   Sajilo Digital
                 </span>
                 <span className="text-[8px] font-bold text-emerald-500/60 uppercase tracking-widest mt-0.5 group-hover/sajilo:text-emerald-400">
@@ -146,8 +146,8 @@ function AdminSidebar() {
               ${isActive ? "text-emerald-500 bg-emerald-50" : "text-slate-400"}
             `}
           >
-            <div className="w-8 h-8 mb-1 flex items-center justify-center bg-slate-900 rounded-lg text-emerald-500">
-              <FaRocket size={14} />
+            <div className="w-8 h-8 mb-1 flex items-center justify-center bg-slate-900 rounded-lg overflow-hidden">
+              <img src="/sajilodigital.png" alt="SD" className="w-5 h-5 object-contain brightness-0 invert" />
             </div>
             <span className="text-[8px] font-black uppercase tracking-tighter leading-none text-center">
               Sajilo

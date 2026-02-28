@@ -30,8 +30,8 @@ export class ImpactController {
     if (req.body['metrics[projects]']) metrics.projects = Number(req.body['metrics[projects]']);
     if (req.body['metrics[impact]']) metrics.impact = req.body['metrics[impact]'];
 
-    const impact = await impactService.createImpact({ 
-      ...req.body, 
+    const impact = await impactService.createImpact({
+      ...req.body,
       image: imageUrl,
       metrics,
       isLarge: req.body.isLarge === 'true' || req.body.isLarge === true

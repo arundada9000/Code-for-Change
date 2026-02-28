@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaSearch, FaRegTrashAlt, FaUserEdit, FaUserPlus, FaTimes, 
+  FaSearch, FaRegTrashAlt, FaUserEdit, FaUserPlus, FaTimes,
   FaUniversity, FaGraduationCap, FaIdCard, FaFilter, FaPhoneAlt, FaClock,
   FaFileCsv, FaFilePdf, FaFileWord, FaDownload, FaCheckCircle
 } from "react-icons/fa";
@@ -16,49 +16,47 @@ import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 
 const FilterSelect = React.memo(({ label, options, value, onChange }) => (
-  <div className="bg-slate-50 p-1.5 rounded-2xl border border-slate-100 shadow-sm w-full md:w-auto">
+  <div className="bg-gray-50/50 p-1.5 rounded-2xl border border-gray-100 shadow-sm w-full md:w-auto">
     {/* Desktop View */}
     <div className="hidden md:flex items-center">
-        <div className="px-3 py-2 text-xs font-black text-slate-400 border-r border-slate-200 mr-1 uppercase tracking-widest">{label}</div>
-        <div className="flex gap-1">
-          {options.map(opt => (
-            <button
-              key={opt}
-              onClick={() => onChange(opt === value ? 'all' : opt)}
-              className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                value === opt 
-                ? 'bg-white text-slate-900 shadow-md border border-slate-100' 
-                : 'text-slate-400 hover:text-slate-600'
-              }`}
-            >
-              {opt}
-            </button>
-          ))}
+      <div className="px-3 py-2 text-xs font-bold text-gray-400 border-r border-gray-200 mr-1 uppercase tracking-widest">{label}</div>
+      <div className="flex gap-1">
+        {options.map(opt => (
           <button
-            onClick={() => onChange('all')}
-            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-              value === 'all' 
-              ? 'bg-white text-slate-900 shadow-md border border-slate-100' 
-              : 'text-slate-400 hover:text-slate-600'
-            }`}
+            key={opt}
+            onClick={() => onChange(opt === value ? 'all' : opt)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${value === opt
+              ? 'bg-white text-emerald-600 shadow-sm border border-gray-200'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+              }`}
           >
-            All
+            {opt}
           </button>
-        </div>
+        ))}
+        <button
+          onClick={() => onChange('all')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${value === 'all'
+            ? 'bg-white text-emerald-600 shadow-sm border border-gray-200'
+            : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+            }`}
+        >
+          All
+        </button>
+      </div>
     </div>
 
     {/* Mobile View */}
     <div className="md:hidden px-2">
-        <select 
-            value={value} 
-            onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-transparent text-[10px] font-black text-slate-600 outline-none py-2 uppercase tracking-widest"
-        >
-            <option value="all">All {label}</option>
-            {options.map(opt => (
-                <option key={opt} value={opt}>{opt}</option>
-            ))}
-        </select>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full bg-transparent text-[10px] font-bold text-gray-600 outline-none py-2 uppercase tracking-widest"
+      >
+        <option value="all">All {label}</option>
+        {options.map(opt => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
     </div>
   </div>
 ));
@@ -99,7 +97,7 @@ function AdminUsers() {
     dateOfBirth: "",
     region: "",
     bio: "",
-    role: "member",
+    role: "gm",
     status: "Active",
     gender: "",
     code: "",
@@ -174,7 +172,7 @@ function AdminUsers() {
         dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : "",
         region: user.region || "",
         bio: user.bio || "",
-        role: user.role === "student" ? "member" : (user.role || "member"),
+        role: user.role || "gm",
         status: user.isActive ? "Active" : "Inactive",
         gender: user.gender || "",
         code: user.membership?.membershipId || "",
@@ -197,9 +195,9 @@ function AdminUsers() {
       });
     } else {
       setEditingUser(null);
-      setFormData({ 
-      name: "", email: "", password: "", phone: "", address: "", province: "", dateOfBirth: "", region: "", bio: "",
-      role: "member", status: "Active", gender: "",
+      setFormData({
+        name: "", email: "", password: "", phone: "", address: "", province: "", dateOfBirth: "", region: "", bio: "",
+        role: "gm", status: "Active", gender: "",
         code: "", membershipStatus: "active",
         collegeName: "", university: "", faculty: "", semester: "", graduationYear: "",
         ebBody: "", department: "", termStart: "", termEnd: "",
@@ -267,7 +265,7 @@ function AdminUsers() {
           graduationYear: formData.graduationYear,
         },
         executiveDetails: {
-          position: formData.role.toUpperCase(),
+          position: formData.ebBody || "",
           department: formData.department,
           termStart: formData.termStart,
           termEnd: formData.termEnd,
@@ -304,7 +302,7 @@ function AdminUsers() {
         await API.post("/admin/users/create-user", data, config);
         toast.success("User created successfully");
       }
-      
+
       fetchUsers();
       setIsModalOpen(false);
     } catch (error) {
@@ -342,29 +340,29 @@ function AdminUsers() {
       unit: "mm",
       format: "a4",
     });
-    
+
     doc.setFontSize(22);
     doc.setTextColor(16, 185, 129);
     doc.text("Code For Change", 14, 20);
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.text("Membership Registry Ledger", 14, 30);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 38);
-    
+
     const tableColumn = [
-      "ID", 
-      "Name", 
-      "Email", 
-      "Phone", 
-      "Role", 
-      "College", 
-      "Faculty", 
+      "ID",
+      "Name",
+      "Email",
+      "Phone",
+      "Role",
+      "College",
+      "Faculty",
       "Status"
     ];
-    
+
     const tableRows = filteredUsers.map(u => [
       u.membership?.membershipId || "N/A",
       u.name,
@@ -403,7 +401,7 @@ function AdminUsers() {
     let content = "CODE FOR CHANGE\nMEMBERSHIP REGISTRY REPORT\n\n";
     content += `Report Date: ${new Date().toLocaleString()}\n`;
     content += "==========================================\n\n";
-    
+
     filteredUsers.forEach((u, index) => {
       content += `${index + 1}. MEMBER PROFILE\n`;
       content += `   Name: ${u.name}\n`;
@@ -415,7 +413,7 @@ function AdminUsers() {
       content += `   Verified: ${u.isVerified ? "Yes" : "No"}\n`;
       content += "------------------------------------------\n";
     });
-    
+
     const blob = new Blob([content], { type: "application/msword" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -460,7 +458,7 @@ function AdminUsers() {
 
   const filteredUsers = users.filter((user) => {
     const s = searchTerm.toLowerCase();
-    const matchesSearch = 
+    const matchesSearch =
       user.name?.toLowerCase().includes(s) ||
       user.email?.toLowerCase().includes(s) ||
       user.phone?.toLowerCase().includes(s) ||
@@ -485,42 +483,41 @@ function AdminUsers() {
   // Unique values for filters
   const uniqueColleges = [...new Set(users.map(u => u.education?.collegeName).filter(Boolean))].sort();
   const uniqueFaculties = [...new Set(users.map(u => u.education?.faculty).filter(Boolean))].sort();
-  const uniqueYears = [...new Set(users.map(u => u.createdAt ? new Date(u.createdAt).getFullYear() : null).filter(Boolean))].sort((a,b) => b-a);
+  const uniqueYears = [...new Set(users.map(u => u.createdAt ? new Date(u.createdAt).getFullYear() : null).filter(Boolean))].sort((a, b) => b - a);
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      {/* Header - Reponsive */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">CFC Members</h2>
-          <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Association Directory</p>
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">CFC Members</h2>
+          <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Association Directory</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {hasPermission('user_create') && (
-            <label className="flex items-center justify-center gap-3 bg-white text-slate-600 border border-slate-200 px-4 py-3 rounded-2xl hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm font-black text-[10px] uppercase tracking-widest cursor-pointer group flex-1 md:flex-none">
+            <label className="flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-5 py-3 rounded-xl hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all shadow-sm font-bold text-[11px] uppercase tracking-widest cursor-pointer group flex-1 md:flex-none">
               <FaDownload className="text-emerald-500 group-hover:bounce" /> <span className="hidden sm:inline">Import CSV</span><span className="sm:hidden">Import</span>
               <input type="file" accept=".csv" className="hidden" onChange={handleImport} />
             </label>
           )}
-          
+
           <div className="relative group/export flex-1 md:flex-none">
-            <button className="w-full flex items-center justify-center gap-3 bg-white text-slate-600 border border-slate-200 px-4 py-3 rounded-2xl hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm font-black text-[10px] uppercase tracking-widest">
+            <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-5 py-3 rounded-xl hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all shadow-sm font-bold text-[11px] uppercase tracking-widest">
               <FaFileCsv className="text-lg text-emerald-500" /> <span className="hidden sm:inline">Export</span>
             </button>
-            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate-100 opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-50 py-3 overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-50 py-2 overflow-hidden">
               {hasPermission('user_export_csv') && (
-                <button onClick={exportToCSV} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all border-b border-gray-50">
+                <button onClick={exportToCSV} className="w-full px-6 py-3 text-left flex items-center gap-3 text-xs font-bold text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all border-b border-gray-50">
                   <FaFileCsv className="text-emerald-500" /> CSV Schema
                 </button>
               )}
               {hasPermission('user_export_pdf') && (
-                <button onClick={exportToPDF} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all border-b border-gray-50">
+                <button onClick={exportToPDF} className="w-full px-6 py-3 text-left flex items-center gap-3 text-xs font-bold text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all border-b border-gray-50">
                   <FaFilePdf className="text-rose-500" /> PDF Document
                 </button>
               )}
               {hasPermission('user_export_word') && (
-                <button onClick={exportToWord} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all">
+                <button onClick={exportToWord} className="w-full px-6 py-3 text-left flex items-center gap-3 text-xs font-bold text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all">
                   <FaFileWord className="text-blue-500" /> MS Word Doc
                 </button>
               )}
@@ -530,7 +527,7 @@ function AdminUsers() {
           {hasPermission('user_create') && (
             <button
               onClick={() => handleOpenModal()}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-600 text-white px-4 py-3 rounded-2xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition-all shadow-md shadow-emerald-200 font-bold text-[11px] uppercase tracking-widest whitespace-nowrap"
             >
               <FaUserPlus className="text-lg" /> <span className="hidden sm:inline">New Member</span><span className="sm:hidden">Add</span>
             </button>
@@ -539,42 +536,42 @@ function AdminUsers() {
       </div>
 
       {/* Search & Advanced Filters */}
-      <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-8">
+      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 space-y-8">
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="relative flex-1">
-            <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
+            <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search by name, email, phone, ID, or college..."
-              className="w-full pl-16 pr-8 py-4.5 bg-slate-50 border border-slate-100 rounded-[1.5rem] focus:ring-4 focus:ring-emerald-500/5 focus:bg-white outline-none font-bold text-sm tracking-tight transition-all"
+              className="w-full pl-12 pr-6 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 focus:bg-white outline-none font-medium text-sm transition-all text-gray-900"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <div className="grid grid-cols-2 md:flex items-center gap-3 w-full lg:w-auto">
-            <FilterSelect 
-              label="Verification" 
-              options={['verified', 'unverified']} 
-              value={activeStatus} 
-              onChange={setActiveStatus} 
+            <FilterSelect
+              label="Verification"
+              options={['verified', 'unverified']}
+              value={activeStatus}
+              onChange={setActiveStatus}
             />
-            <FilterSelect 
-              label="Membership" 
-              options={['active', 'expired', 'revoked']} 
-              value={activeMembershipStatus} 
-              onChange={setActiveMembershipStatus} 
+            <FilterSelect
+              label="Membership"
+              options={['active', 'expired', 'revoked']}
+              value={activeMembershipStatus}
+              onChange={setActiveMembershipStatus}
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-slate-50 pt-8">
-          <div className="space-y-2">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">Filter by Province</p>
-            <select 
-              value={activeProvince} 
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-gray-100 pt-6">
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">Location</p>
+            <select
+              value={activeProvince}
               onChange={(e) => setActiveProvince(e.target.value)}
-              className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold appearance-none cursor-pointer hover:bg-white transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
               <option value="all">All Provinces</option>
               {['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali'].map(p => (
@@ -582,56 +579,55 @@ function AdminUsers() {
               ))}
             </select>
           </div>
-          <div className="space-y-2">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">Filter by College</p>
-            <select 
-              value={activeCollege} 
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">College</p>
+            <select
+              value={activeCollege}
               onChange={(e) => setActiveCollege(e.target.value)}
-              className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold appearance-none cursor-pointer hover:bg-white transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
               <option value="all">All Colleges</option>
               {uniqueColleges.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
-          <div className="space-y-2">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">Filter by Faculty</p>
-            <select 
-              value={activeFaculty} 
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">Faculty</p>
+            <select
+              value={activeFaculty}
               onChange={(e) => setActiveFaculty(e.target.value)}
-              className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold appearance-none cursor-pointer hover:bg-white transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
               <option value="all">All Faculties</option>
               {uniqueFaculties.map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
-          <div className="space-y-2">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">Joined Year</p>
-            <select 
-              value={activeJoinedYear} 
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">Joined Year</p>
+            <select
+              value={activeJoinedYear}
               onChange={(e) => setActiveJoinedYear(e.target.value)}
-              className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold appearance-none cursor-pointer hover:bg-white transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
-              <option value="all">All Joined Years</option>
+              <option value="all">All Years</option>
               {uniqueYears.map(y => <option key={y} value={y.toString()}>{y}</option>)}
             </select>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 border-t border-slate-50 pt-8">
-          <div className="flex items-center gap-2 text-slate-400 mr-2">
-            <FaFilter size={10} />
-            <span className="text-xs font-black uppercase tracking-widest">Role</span>
+        <div className="flex items-center gap-3 border-t border-gray-100 pt-6">
+          <div className="flex items-center gap-2 text-gray-500 mr-2 shrink-0">
+            <FaFilter size={12} />
+            <span className="text-xs font-bold uppercase tracking-widest">Role</span>
           </div>
           <div className="flex gap-2 w-full overflow-x-auto scrollbar-hide py-1">
-            {['all', 'superadmin', 'admin', 'tech-lead', 'cr', 'project-lead', 'general-member', 'cr-eb', 'guest'].map(role => (
-              <button 
-                key={role} 
+            {['all', 'admin', 'eb', 'cr', 'gm', 'guest'].map(role => (
+              <button
+                key={role}
                 onClick={() => setActiveRole(role)}
-                className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border ${
-                  activeRole === role 
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-200' 
-                  : 'bg-slate-50 text-slate-400 border-transparent hover:text-emerald-600 hover:bg-white hover:border-slate-100'
-                }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${activeRole === role
+                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                  : 'bg-white text-gray-500 border-gray-200 hover:text-emerald-600 hover:border-emerald-200'
+                  }`}
               >
                 {role}
               </button>
@@ -641,153 +637,151 @@ function AdminUsers() {
       </div>
 
       {/* Content Area - Responsive Table/Cards */}
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[600px] flex flex-col">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[600px] flex flex-col">
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full w-full text-left">
-            <thead className="bg-slate-50/50 border-b border-slate-100">
-              <tr className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
+          <table className="min-w-full w-full text-left text-sm">
+            <thead className="bg-gray-50/50 border-b border-gray-100">
+              <tr className="text-xs font-bold uppercase tracking-wider text-gray-500">
                 <th className="px-8 py-5">User Profile</th>
                 <th className="px-8 py-5">Role & Membership</th>
                 <th className="px-8 py-5">Academic Detail</th>
-                <th className="px-8 py-5">Role</th>
+                <th className="px-8 py-5">Position</th>
                 <th className="px-8 py-5">Status</th>
                 <th className="px-8 py-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-gray-50">
               {filteredUsers.map((user, index) => (
-                <tr key={user._id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} hover:bg-slate-100/50 transition-all group`}>
-                  <td className="px-8 py-6">
+                <tr key={user._id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'} hover:bg-gray-50 transition-all group`}>
+                  <td className="px-8 py-5">
                     <div className="flex items-center gap-4">
                       <div className="relative shrink-0">
-                        <img 
-                          src={user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&color=fff`} 
+                        <img
+                          src={user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&color=fff`}
                           alt={user.name}
-                          className="w-12 h-12 rounded-2xl object-cover border-2 border-slate-100 shadow-sm transition-transform group-hover:scale-110"
+                          className="w-12 h-12 rounded-xl object-cover border border-gray-200 shadow-sm transition-transform group-hover:scale-105"
                         />
                         {user.isVerified && (
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
+                          <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
                             <FaCheckCircle className="text-white text-[8px]" />
                           </div>
                         )}
                       </div>
                       <div>
-                        <div className="font-black text-slate-900 leading-tight text-base mb-1">{user.name}</div>
-                        <div className="text-xs text-slate-400 font-bold mt-1 tracking-wider">{user.email?.toLowerCase()}</div>
-                        <div className="flex items-center gap-4 mt-2">
-                           <div className="text-xs text-emerald-600/70 font-bold uppercase tracking-tighter flex items-center gap-1">
-                              <FaClock size={12} /> {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
-                           </div>
+                        <div className="font-extrabold text-gray-900 leading-tight mb-1">{user.name}</div>
+                        <div className="text-xs text-gray-500 font-medium">{user.email?.toLowerCase()}</div>
+                        <div className="flex items-center gap-4 mt-1.5">
+                          <div className="text-[11px] text-gray-400 font-semibold flex items-center gap-1">
+                            <FaClock size={10} className="text-emerald-500" /> {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
-                    <div className="flex flex-col gap-3">
-                      <div className="space-y-1">
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Member ID</p>
-                        <span className="flex items-center gap-1.5 text-xs font-black text-slate-700">
+                  <td className="px-8 py-5">
+                    <div className="flex flex-col gap-2">
+                      <div className="space-y-0.5">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Member ID</p>
+                        <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700">
                           <FaIdCard className="text-emerald-500" /> {user.membership?.membershipId || 'N/A'}
                         </span>
                       </div>
-                      <div className="space-y-1">
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Primary Role</p>
-                        <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg uppercase tracking-widest">{user.role?.replace('-', ' ')}</span>
+                      <div className="space-y-0.5">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Primary Role</p>
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded inline-block uppercase tracking-wider">{user.role?.replace('-', ' ')}</span>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
-                    <div className="flex flex-col gap-3">
-                      <div className="space-y-1">
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">College</p>
-                        <span className="flex items-center gap-1.5 text-xs font-black text-slate-700">
-                          <FaUniversity className="text-slate-300" /> {user.education?.collegeName || 'N/A'}
+                  <td className="px-8 py-5">
+                    <div className="flex flex-col gap-2">
+                      <div className="space-y-0.5">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">College</p>
+                        <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700">
+                          <FaUniversity className="text-gray-400" /> {user.education?.collegeName || 'N/A'}
                         </span>
                       </div>
-                      <div className="space-y-1">
-                         <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Faculty</p>
-                         <span className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">
-                           {user.education?.faculty || 'N/A'}
-                         </span>
+                      <div className="space-y-0.5">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Faculty</p>
+                        <span className="text-xs font-semibold text-gray-500 ml-4 inline-block">
+                          {user.education?.faculty || 'N/A'}
+                        </span>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
-                    <div className="space-y-1">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Position</p>
-                      <span className="text-xs font-black text-slate-700 uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-lg inline-block">
+                  <td className="px-8 py-5">
+                    <div className="space-y-0.5">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Position</p>
+                      <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest bg-gray-100 px-2.5 py-1 rounded inline-block">
                         {user.executiveDetails?.position || 'REGULAR'}
                       </span>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
-                    <div className="flex flex-col gap-4">
-                      <div className="space-y-1">
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Account</p>
-                        <span className={`inline-flex w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${user.isActive ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"}`}>
+                  <td className="px-8 py-5">
+                    <div className="flex flex-col gap-2">
+                      <div>
+                        <span className={`inline-flex px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${user.isActive ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/50" : "bg-gray-100 text-gray-600 ring-1 ring-gray-200/50"}`}>
                           {user.isActive ? "Active" : "Inactive"}
                         </span>
                       </div>
-                      <div className="space-y-1">
-                         <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Verify</p>
-                         <span className={`inline-flex w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${user.isVerified ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"}`}>
-                           {user.isVerified ? "Verified" : "Not"}
-                         </span>
+                      <div>
+                        <span className={`inline-flex px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${user.isVerified ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200/50" : "bg-rose-50 text-rose-700 ring-1 ring-rose-200/50"}`}>
+                          {user.isVerified ? "Verified" : "Unverified"}
+                        </span>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right relative">
+                  <td className="px-8 py-5 text-right relative">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === user._id ? null : user._id);
                       }}
-                      className="w-10 h-10 inline-flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-all duration-300"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 bg-white hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-all duration-300"
                     >
-                      <BsThreeDotsVertical />
+                      <BsThreeDotsVertical size={14} />
                     </button>
                     {openMenuId === user._id && (
-                      <div 
+                      <div
                         ref={menuRef}
-                        className="absolute right-20 top-6 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
+                        className="absolute right-16 top-5 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
                       >
-                         <button 
-                           onClick={() => { navigate(`/admin/user/${user._id}`); setOpenMenuId(null); }}
-                           className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-slate-700 hover:bg-slate-50 transition-all uppercase tracking-widest"
-                         >
-                           <BsEye className="text-emerald-500" /> View Detail
-                         </button>
-                         <div className="h-[1px] bg-slate-50 my-1 mx-4"></div>
-                         {hasPermission('user_update') && (
-                           <>
-                            <button 
+                        <button
+                          onClick={() => { navigate(`/admin/user/${user._id}`); setOpenMenuId(null); }}
+                          className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-wider"
+                        >
+                          <BsEye className="text-emerald-500" /> View Detail
+                        </button>
+                        <div className="h-[1px] bg-gray-50 my-1 mx-4"></div>
+                        {hasPermission('user_update') && (
+                          <>
+                            <button
                               onClick={() => { handleOpenModal(user); setOpenMenuId(null); }}
-                              className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-slate-700 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                              className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-wider"
                             >
-                              <BsPencil className="text-amber-500" /> Edit Member
+                              <BsPencil className="text-blue-500" /> Edit Member
                             </button>
-                            <button 
+                            <button
                               onClick={() => { handleToggleVerification(user); setOpenMenuId(null); }}
-                              className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-slate-700 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                              className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-wider"
                             >
                               <FaCheckCircle className={user.isVerified ? "text-rose-500" : "text-emerald-500"} /> {user.isVerified ? "Unverify Member" : "Verify Member"}
                             </button>
-                            <div className="h-[1px] bg-slate-50 my-1 mx-4"></div>
-                           </>
-                         )}
-                         {hasPermission('user_delete') && (
-                           <button 
-                             onClick={() => { 
-                                 setUserToDelete(user);
-                                 setDeleteModalOpen(true);
-                                 setOpenMenuId(null); 
-                             }}
-                             className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-rose-500 hover:bg-rose-50 transition-all uppercase tracking-widest"
-                           >
-                             <BsTrash /> Delete
-                           </button>
-                         )}
+                            <div className="h-[1px] bg-gray-50 my-1 mx-4"></div>
+                          </>
+                        )}
+                        {hasPermission('user_delete') && (
+                          <button
+                            onClick={() => {
+                              setUserToDelete(user);
+                              setDeleteModalOpen(true);
+                              setOpenMenuId(null);
+                            }}
+                            className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-all uppercase tracking-wider"
+                          >
+                            <BsTrash /> Delete
+                          </button>
+                        )}
                       </div>
                     )}
                   </td>
@@ -797,178 +791,177 @@ function AdminUsers() {
           </table>
         </div>
 
-        {/* Mobile Card View */}
-        <div className="md:hidden p-4 space-y-4">
+        {/* Mobile List View */}
+        <div className="md:hidden divide-y divide-gray-50">
           {filteredUsers.map((user) => (
-              <div key={user._id} className="bg-slate-50 rounded-2xl p-5 space-y-4 border border-slate-100 shadow-sm relative overflow-hidden">
-                <div className="flex justify-between items-start">
-                  <div className="flex gap-4">
-                    <img 
-                      src={user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&color=fff`} 
-                      className="w-12 h-12 rounded-xl object-cover border border-white shadow-sm"
-                      alt=""
-                    />
-                    <div>
-                      <h3 className="font-black text-slate-900 text-lg">{user.name}</h3>
-                      <p className="text-xs text-slate-400 font-bold">{user.email}</p>
-                    </div>
+            <div key={user._id} className="p-5 space-y-4 hover:bg-gray-50/50 transition-all relative">
+              <div className="flex justify-between items-start">
+                <div className="flex gap-4">
+                  <img
+                    src={user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&color=fff`}
+                    className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm"
+                    alt=""
+                  />
+                  <div>
+                    <h3 className="font-extrabold text-gray-900 text-lg leading-tight">{user.name}</h3>
+                    <p className="text-xs text-gray-500 font-medium">{user.email}</p>
                   </div>
-                 <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenMenuId(openMenuId === user._id ? null : user._id);
-                      }}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100"
-                  >
-                      <BsThreeDotsVertical size={14} className="text-slate-400" />
-                  </button>
-               </div>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenMenuId(openMenuId === user._id ? null : user._id);
+                  }}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm border border-gray-200"
+                >
+                  <BsThreeDotsVertical size={14} className="text-gray-400" />
+                </button>
+              </div>
 
-               {/* Mobile Dropdown */}
-               {openMenuId === user._id && (
-                  <div className="absolute top-14 right-4 w-48 bg-white rounded-xl shadow-2xl border border-slate-100 z-50 py-2 animate-in fade-in zoom-in">
-                    <button onClick={() => navigate(`/admin/user/${user._id}`)} className="w-full px-4 py-2 text-left text-xs font-bold text-slate-600 hover:bg-slate-50">View Detail</button>
-                    <button onClick={() => handleOpenModal(user)} className="w-full px-4 py-2 text-left text-xs font-bold text-slate-600 hover:bg-slate-50">Edit</button>
-                    <button onClick={() => { handleToggleVerification(user); setOpenMenuId(null); }} className="w-full px-4 py-2 text-left text-xs font-bold text-slate-600 hover:bg-slate-50">{user.isVerified ? "Unverify" : "Verify"}</button>
-                    <button onClick={() => { setUserToDelete(user); setDeleteModalOpen(true); }} className="w-full px-4 py-2 text-left text-xs font-bold text-rose-500 hover:bg-rose-50">Delete</button>
-                  </div>
-               )}
-               
-               <div className="grid grid-cols-2 gap-3">
-                 <div className="bg-white p-3 rounded-xl border border-slate-100">
-                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Role</p>
-                    <p className="text-xs font-bold text-slate-700 uppercase mt-0.5">{user.role}</p>
-                 </div>
-                 <div className="bg-white p-3 rounded-xl border border-slate-100">
-                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Batch</p>
-                    <p className="text-xs font-bold text-slate-700 uppercase mt-0.5">{user.education?.semester || 'N/A'}</p>
-                 </div>
-               </div>
-               
-               <div className="flex items-center justify-between pt-2">
-                  <div className="flex gap-2">
-                     <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider ${user.isActive ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>
-                        {user.isActive ? "Active" : "Inactive"}
-                     </span>
-                     <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider border ${user.isVerified ? "border-emerald-200 text-emerald-600" : "border-slate-200 text-slate-400"}`}>
-                        {user.isVerified ? "Verified" : "Unverified"}
-                     </span>
-                  </div>
-                  <div className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                    <FaUniversity /> {user.education?.collegeName?.substring(0, 15) || 'N/A'}...
-                  </div>
-               </div>
-             </div>
+              {/* Mobile Dropdown */}
+              {openMenuId === user._id && (
+                <div className="absolute top-14 right-4 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 py-2 animate-in fade-in zoom-in">
+                  <button onClick={() => navigate(`/admin/user/${user._id}`)} className="w-full px-5 py-2.5 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50">View Detail</button>
+                  <button onClick={() => handleOpenModal(user)} className="w-full px-5 py-2.5 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50">Edit</button>
+                  <button onClick={() => { handleToggleVerification(user); setOpenMenuId(null); }} className="w-full px-5 py-2.5 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50">{user.isVerified ? "Unverify" : "Verify"}</button>
+                  <button onClick={() => { setUserToDelete(user); setDeleteModalOpen(true); }} className="w-full px-5 py-2.5 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50">Delete</button>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Role</p>
+                  <p className="text-xs font-semibold text-gray-700 uppercase mt-0.5">{user.role}</p>
+                </div>
+                <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Batch</p>
+                  <p className="text-xs font-semibold text-gray-700 uppercase mt-0.5">{user.education?.semester || 'N/A'}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex gap-2">
+                  <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${user.isActive ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/50" : "bg-gray-100 text-gray-600 ring-1 ring-gray-200/50"}`}>
+                    {user.isActive ? "Active" : "Inactive"}
+                  </span>
+                  <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${user.isVerified ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200/50" : "bg-rose-50 text-rose-700 ring-1 ring-rose-200/50"}`}>
+                    {user.isVerified ? "Verified" : "Unverified"}
+                  </span>
+                </div>
+                <div className="text-[10px] font-semibold text-gray-400 flex items-center gap-1">
+                  <FaUniversity /> {user.education?.collegeName?.substring(0, 15) || 'N/A'}...
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
-        {loading && <div className="p-10 text-center font-bold text-slate-400 italic">Processing directory...</div>}
+        {loading && <div className="p-10 text-center font-bold text-gray-400 italic">Processing directory...</div>}
         {!loading && filteredUsers.length === 0 && (
-          <div className="p-10 text-center font-bold text-slate-400 italic">No members found matching criteria.</div>
+          <div className="p-10 text-center font-bold text-gray-400 italic">No members found matching criteria.</div>
         )}
       </div>
 
       {/* --- CRUD MODAL --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 sm:p-6">
-          <div className="bg-white rounded-[3rem] w-full max-w-5xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden max-h-[95vh] flex flex-col border border-slate-100">
+        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6">
+          <div className="bg-white rounded-3xl w-full max-w-5xl shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden max-h-[95vh] flex flex-col border border-gray-100">
             {/* Modal Header */}
-            <div className="flex justify-between items-center px-10 py-8 border-b border-slate-50 flex-shrink-0 bg-slate-50/50">
+            <div className="flex justify-between items-center px-8 py-6 border-b border-gray-100 flex-shrink-0 bg-white">
               <div>
-                <h3 className="text-2xl font-black text-slate-950 tracking-tight">
+                <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">
                   {editingUser ? "Update Member" : "Enroll New Member"}
                 </h3>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                   System Directory Update
                 </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white shadow-sm text-slate-400 hover:text-rose-500 hover:rotate-90 transition-all duration-300 border border-slate-100"
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all border border-transparent"
               >
                 <FaTimes />
               </button>
             </div>
 
             {/* Tab Navigation - REMOVED for single form */}
-            
+
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-              <div className="p-10 space-y-12 flex-1">
-                
+              <div className="p-8 space-y-12 flex-1">
+
                 {/* 1. Account & Profile Section */}
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className="h-px bg-slate-100 flex-1"></div>
-                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">Account & Profile</h4>
-                     <div className="h-px bg-slate-100 flex-1"></div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest shrink-0">Account & Profile</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-10 items-start mb-10">
+                  <div className="flex flex-col md:flex-row gap-8 items-start mb-8">
                     <div className="space-y-3 shrink-0">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Member Avatar</label>
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Member Avatar</label>
                       <div className="relative group/avatar cursor-pointer">
-                         <div className="w-32 h-32 rounded-[2.5rem] bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden transition-all group-hover/avatar:border-emerald-500 shadow-inner">
-                            {formData.profileImagePreview ? (
-                              <img src={formData.profileImagePreview} className="w-full h-full object-cover" alt="Profile" />
-                            ) : (
-                              <FaUserPlus className="text-slate-300 text-3xl" />
-                            )}
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
-                               <BsPencil className="text-white text-xl" />
-                            </div>
-                         </div>
-                         <input 
-                            type="file" 
-                            className="absolute inset-0 opacity-0 cursor-pointer" 
-                            accept="image/*"
-                            onChange={(e) => {
-                              if (e.target.files[0]) {
-                                setFormData({...formData, profileImage: e.target.files[0], profileImagePreview: URL.createObjectURL(e.target.files[0])});
-                              }
-                            }}
-                         />
+                        <div className="w-32 h-32 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden transition-all group-hover/avatar:border-emerald-500 group-hover/avatar:bg-emerald-50 shadow-inner">
+                          {formData.profileImagePreview ? (
+                            <img src={formData.profileImagePreview} className="w-full h-full object-cover" alt="Profile" />
+                          ) : (
+                            <FaUserPlus className="text-gray-300 text-3xl group-hover/avatar:text-emerald-400" />
+                          )}
+                          <div className="absolute inset-0 bg-gray-900/40 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
+                            <BsPencil className="text-white text-xl" />
+                          </div>
+                        </div>
+                        <input
+                          type="file"
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files[0]) {
+                              setFormData({ ...formData, profileImage: e.target.files[0], profileImagePreview: URL.createObjectURL(e.target.files[0]) });
+                            }
+                          }}
+                        />
                       </div>
                     </div>
 
                     <div className="flex-1 space-y-4">
-                       <ModalInput label="Full Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                           <ModalInput 
-                             label="Email Address" 
-                             type="email" 
-                             value={formData.email} 
-                             onChange={(e) => setFormData({ ...formData, email: e.target.value.toLowerCase() })} 
-                             required 
-                             disabled={!!editingUser}
-                           />
-                           <ModalInput 
-                             label="Secondary Email (Optional)" 
-                             type="email" 
-                             value={formData.secondaryEmail} 
-                             onChange={(e) => setFormData({ ...formData, secondaryEmail: e.target.value.toLowerCase() })} 
-                           />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                           <ModalInput label="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required />
-                        </div>
+                      <ModalInput label="Full Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ModalInput
+                          label="Email Address"
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value.toLowerCase() })}
+                          required
+                          disabled={!!editingUser}
+                        />
+                        <ModalInput
+                          label="Secondary Email (Optional)"
+                          type="email"
+                          value={formData.secondaryEmail}
+                          onChange={(e) => setFormData({ ...formData, secondaryEmail: e.target.value.toLowerCase() })}
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                        <ModalInput label="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required />
+                      </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {!editingUser && (
-                      <ModalInput 
-                        label="System Password" 
-                        type="password" 
-                        value={formData.password} 
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
-                        required 
+                      <ModalInput
+                        label="System Password"
+                        type="password"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        required
                       />
                     )}
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Gender</label>
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Gender</label>
                       <select
-                        className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold focus:bg-white focus:ring-4 focus:ring-emerald-500/5 transition-all appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
                         value={formData.gender}
                         onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                         required
@@ -981,11 +974,11 @@ function AdminUsers() {
                     </div>
                     <ModalInput label="Date of Birth" type="date" value={formData.dateOfBirth} onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })} />
                     <ModalInput label="Home Address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} required />
-                    
+
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Province</label>
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Province</label>
                       <select
-                        className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold focus:bg-white focus:ring-4 focus:ring-emerald-500/5 transition-all appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
                         value={formData.province}
                         onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                         required
@@ -1004,11 +997,11 @@ function AdminUsers() {
                     </div>
                     <ModalInput label="District/Region" value={formData.region} onChange={(e) => setFormData({ ...formData, region: e.target.value })} />
                   </div>
-                  
+
                   <div className="mt-6">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2 block">Professional Bio</label>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">Professional Bio</label>
                     <textarea
-                      className="w-full px-8 py-6 bg-slate-50 border border-slate-100 rounded-[2.5rem] outline-none focus:bg-white focus:ring-8 focus:ring-emerald-500/5 transition-all resize-none h-40 text-sm font-medium leading-relaxed"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all resize-none h-32 text-sm font-medium leading-relaxed text-gray-900"
                       placeholder="Brief summary of expertise and background..."
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -1018,137 +1011,158 @@ function AdminUsers() {
 
                 {/* 2. Academic Roadmap */}
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className="h-px bg-slate-100 flex-1"></div>
-                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">Academic Roadmap</h4>
-                     <div className="h-px bg-slate-100 flex-1"></div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest shrink-0">Academic Roadmap</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <ModalInput label="University" value={formData.university} onChange={(e) => setFormData({ ...formData, university: e.target.value })} required />
-                     <ModalInput label="College / Institution" value={formData.collegeName} onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })} required />
-                     <ModalInput label="Academic Faculty" value={formData.faculty} onChange={(e) => setFormData({ ...formData, faculty: e.target.value })} required />
-                     <div className="grid grid-cols-2 gap-4">
-                        <ModalInput label="Semester / Year" value={formData.semester} onChange={(e) => setFormData({ ...formData, semester: e.target.value })} />
-                        <ModalInput label="Graduation Year" type="number" value={formData.graduationYear} onChange={(e) => setFormData({ ...formData, graduationYear: e.target.value })} />
-                     </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ModalInput label="University" value={formData.university} onChange={(e) => setFormData({ ...formData, university: e.target.value })} required />
+                    <ModalInput label="College / Institution" value={formData.collegeName} onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })} required />
+                    <ModalInput label="Academic Faculty" value={formData.faculty} onChange={(e) => setFormData({ ...formData, faculty: e.target.value })} required />
+                    <div className="grid grid-cols-2 gap-4">
+                      <ModalInput label="Semester / Year" value={formData.semester} onChange={(e) => setFormData({ ...formData, semester: e.target.value })} />
+                      <ModalInput label="Graduation Year" type="number" value={formData.graduationYear} onChange={(e) => setFormData({ ...formData, graduationYear: e.target.value })} />
+                    </div>
                   </div>
                 </div>
 
                 {/* 3. Organizational Role */}
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className="h-px bg-slate-100 flex-1"></div>
-                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">Organizational Role</h4>
-                     <div className="h-px bg-slate-100 flex-1"></div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest shrink-0">Organizational Role</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">System Access Role</label>
-                        <select
-                          className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold focus:bg-white transition-all appearance-none cursor-pointer"
-                          value={formData.role}
-                          onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                        >
-                           <option value="">Select Role</option>
-                           {(useAuth().user?.role === 'superadmin' || useAuth().user?.role === 'admin') && (
-                             <>
-                               <option value="superadmin">Super Admin</option>
-                               <option value="admin">Admin</option>
-                             </>
-                           )}
-                           <option value="tech-lead">Tech Lead</option>
-                           <option value="cr">CR</option>
-                           <option value="project-lead">Project Lead</option>
-                           <option value="general-member">General Member</option>
-                           <option value="cr-eb">CR EB</option>
-                           <option value="guest">Guest</option>
-                        </select>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">System Access Role</label>
+                      <select
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
+                        value={formData.role}
+                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      >
+                        <option value="">Select Role</option>
+                        {(useAuth().user?.role === 'superadmin' || useAuth().user?.role === 'admin') && (
+                          <>
+                            <option value="superadmin">Super Admin</option>
+                            <option value="admin">Admin</option>
+                          </>
+                        )}
+                        <option value="eb">Executive Board (EB)</option>
+                        <option value="cr">CR</option>
+                        <option value="gm">General Member</option>
+                        <option value="guest">Guest</option>
+                      </select>
+                    </div>
+                    {formData.role === 'eb' && (
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Directory Status</label>
+                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">EB Position</label>
                         <select
-                          className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold focus:bg-white transition-all"
-                          value={formData.status}
-                          onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
+                          value={formData.ebBody}
+                          onChange={(e) => setFormData({ ...formData, ebBody: e.target.value })}
+                          required
                         >
-                          <option value="Active">Active</option>
-                          <option value="Inactive">Inactive</option>
+                          <option value="">Select Position</option>
+                          <option value="tech-lead">Tech Lead</option>
+                          <option value="project-lead">Project Lead</option>
+                          <option value="vice-project-lead">Vice Project Lead</option>
+                          <option value="operation-lead">Operation Lead</option>
+                          <option value="admin-lead">Admin Lead</option>
+                          <option value="hr-lead">HR Lead</option>
+                          <option value="pr-lead">PR Lead</option>
+                          <option value="treasurer">Treasurer</option>
+                          <option value="vice-treasurer">Vice Treasurer</option>
+                          <option value="executive-member">Executive Member</option>
+                          <option value="secretary">Secretary</option>
+                          <option value="vice-secretary">Vice Secretary</option>
                         </select>
                       </div>
-                      <ModalInput label="Department" value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })} />
-                      <div className="grid grid-cols-2 gap-4">
-                         <ModalInput label="Term Start" type="date" value={formData.termStart} onChange={(e) => setFormData({ ...formData, termStart: e.target.value })} />
-                         <ModalInput label="Term End" type="date" value={formData.termEnd} onChange={(e) => setFormData({ ...formData, termEnd: e.target.value })} />
+                    )}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Directory Status</label>
+                      <select
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all cursor-pointer"
+                        value={formData.status}
+                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      >
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                      </select>
+                    </div>
+                    <ModalInput label="Department" value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })} />
+                    <div className="grid grid-cols-2 gap-4">
+                      <ModalInput label="Term Start" type="date" value={formData.termStart} onChange={(e) => setFormData({ ...formData, termStart: e.target.value })} />
+                      <ModalInput label="Term End" type="date" value={formData.termEnd} onChange={(e) => setFormData({ ...formData, termEnd: e.target.value })} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <ModalInput label="Membership ID" value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value })} />
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">ID Status</label>
+                        <select
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all cursor-pointer"
+                          value={formData.membershipStatus}
+                          onChange={(e) => setFormData({ ...formData, membershipStatus: e.target.value })}
+                        >
+                          <option value="active">Active</option>
+                          <option value="expired">Expired</option>
+                          <option value="revoked">Revoked</option>
+                        </select>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                         <ModalInput label="Membership ID" value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value })} />
-                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">ID Status</label>
-                            <select
-                              className="w-full px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-xs font-bold focus:bg-white transition-all"
-                              value={formData.membershipStatus}
-                              onChange={(e) => setFormData({ ...formData, membershipStatus: e.target.value })}
-                            >
-                              <option value="active">Active</option>
-                              <option value="expired">Expired</option>
-                              <option value="revoked">Revoked</option>
-                            </select>
-                          </div>
-                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* 4. Digital Connections */}
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className="h-px bg-slate-100 flex-1"></div>
-                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">Digital Connections</h4>
-                     <div className="h-px bg-slate-100 flex-1"></div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest shrink-0">Digital Connections</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <ModalInput label="LinkedIn Profile" value={formData.linkedin} onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })} />
-                     <ModalInput label="GitHub Handle" value={formData.github} onChange={(e) => setFormData({ ...formData, github: e.target.value })} />
-                     <ModalInput label="Facebook URL" value={formData.facebook} onChange={(e) => setFormData({ ...formData, facebook: e.target.value })} />
-                     <ModalInput label="Portfolio Website" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ModalInput label="LinkedIn Profile" value={formData.linkedin} onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })} />
+                    <ModalInput label="GitHub Handle" value={formData.github} onChange={(e) => setFormData({ ...formData, github: e.target.value })} />
+                    <ModalInput label="Facebook URL" value={formData.facebook} onChange={(e) => setFormData({ ...formData, facebook: e.target.value })} />
+                    <ModalInput label="Portfolio Website" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} />
                   </div>
                 </div>
 
               </div>
 
               {/* Modal Footer */}
-              <div className="p-10 border-t border-slate-100 flex gap-6 mt-auto bg-slate-50/50 shrink-0">
+              <div className="p-6 border-t border-gray-100 flex gap-4 mt-auto bg-gray-50/50 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-5 border border-slate-200 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] text-slate-400 hover:bg-white hover:text-slate-600 transition-all duration-300 active:scale-95"
+                  className="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-xs uppercase tracking-widest text-gray-500 hover:bg-white hover:text-gray-700 transition-all shadow-sm focus:ring-2 focus:ring-gray-200"
                 >
                   Discard Changes
                 </button>
                 <button
                   type="submit"
-                  className="flex-2 py-5 bg-slate-950 text-white rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] hover:bg-emerald-600 shadow-2xl shadow-slate-200 hover:shadow-emerald-200 transition-all duration-300 active:scale-95 flex items-center justify-center gap-3 px-12"
+                  className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 shadow-md shadow-emerald-200 transition-all focus:ring-4 focus:ring-emerald-500/20 flex items-center justify-center gap-2"
                 >
-                  <FaCheckCircle className="text-lg" />
-                  {editingUser ? "Push Record Updates" : "Commit Member to Registry"}
+                  <FaCheckCircle className="text-sm" />
+                  {editingUser ? "Save Updates" : "Enroll Member"}
                 </button>
               </div>
             </form>
           </div>
-        </div>
-      )}
+        </div >
+      )
+      }
       {/* Delete Confirmation Modal */}
-      <DeleteModal 
+      <DeleteModal
         isOpen={deleteModalOpen}
         onClose={() => {
-            setDeleteModalOpen(false);
-            setUserToDelete(null);
+          setDeleteModalOpen(false);
+          setUserToDelete(null);
         }}
         onConfirm={handleDelete}
         title="Delete Member"
         itemName="member"
         message={`Are you sure you want to delete "${userToDelete?.name}"? All membership data and association records for this member will be permanently removed.`}
       />
-    </div>
+    </div >
   );
 }
 

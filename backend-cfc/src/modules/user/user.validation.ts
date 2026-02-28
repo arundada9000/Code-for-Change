@@ -28,7 +28,7 @@ export const createUserByAdminSchema = z.object({
       "Password must contain at least one special character"
     ),
 
-  role: z.enum(Object.values(ROLES) as [RoleValue, ...RoleValue[]]).optional().default(ROLES.GENERAL_MEMBER),
+  role: z.enum(Object.values(ROLES) as [RoleValue, ...RoleValue[]]).optional().default(ROLES.GM),
 
   phone: z
     .string()

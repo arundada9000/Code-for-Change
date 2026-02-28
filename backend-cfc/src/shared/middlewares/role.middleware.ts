@@ -31,7 +31,26 @@ export const requireAnyPermission = (
       }
 
       /* ---------------- ADMIN OVERRIDE ---------------- */
-      if (userRole === "admin" || userRole === "superadmin" || userRole === "tech-lead") {
+      if (userRole === "admin" || userRole === "superadmin") {
+        return next();
+      }
+
+      // EB tech-lead gets admin-level access
+      if (userRole === "eb") {
+        const user = await UserTable.findById(req.user.id)
+          .select("executiveDetails permissions")
+          .lean();
+        if (user?.executiveDetails?.position === "tech-lead") {
+          return next();
+        }
+        // Continue to permission check for other EB positions
+        const rolePermissions = ROLE_PERMISSIONS[userRole] ?? [];
+        const dbPermissions = (user?.permissions ?? []) as PermissionValue[];
+        const finalPermissions = new Set<PermissionValue>([...rolePermissions, ...dbPermissions]);
+        const hasAny = requiredPermissions.some((perm) => finalPermissions.has(perm));
+        if (!hasAny) {
+          return res.status(403).json({ success: false, message: "Unauthorized - insufficient permissions" });
+        }
         return next();
       }
 

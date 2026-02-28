@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { 
-  FaSearch, 
-  FaWallet, 
-  FaHandHoldingHeart, 
-  FaCheckCircle, 
-  FaClock, 
-  FaFileCsv, 
-  FaTimes, 
-  FaEye, 
-  FaUser, 
-  FaEnvelope, 
-  FaPhone, 
+import {
+  FaSearch,
+  FaWallet,
+  FaHandHoldingHeart,
+  FaCheckCircle,
+  FaClock,
+  FaFileCsv,
+  FaTimes,
+  FaEye,
+  FaUser,
+  FaEnvelope,
+  FaPhone,
   FaInfoCircle,
   FaArrowRight,
   FaUniversity,
@@ -46,10 +46,10 @@ function AdminDonations() {
   const [receiptFile, setReceiptFile] = useState(null);
   const [receiptPreview, setReceiptPreview] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  
+
   const [filterProvince, setFilterProvince] = useState("All");
   const PROVINCES = ["Koshi", "Madhesh", "Bagmati", "Gandaki", "Lumbini", "Karnali", "Sudurpashchim"];
-  
+
   const [formData, setFormData] = useState({
     donorName: "",
     amount: "",
@@ -75,7 +75,7 @@ function AdminDonations() {
       const params = new URLSearchParams();
       if (filterMethod !== "All") params.append("paymentMethod", filterMethod);
       if (filterProvince !== "All") params.append("province", filterProvince);
-      
+
       const res = await API.get(`/admin/donations?${params.toString()}`);
       setDonations(res.data.data);
     } catch (error) {
@@ -227,11 +227,11 @@ function AdminDonations() {
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.text("Donation Financial Ledger", 14, 30);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 38);
-    
+
     const tableColumn = ["Date", "Donor", "Province", "Amount", "Method", "Category", "Trx ID", "Status"];
     const tableRows = filteredDonations.map(d => [
       new Date(d.createdAt).toLocaleDateString(),
@@ -261,7 +261,7 @@ function AdminDonations() {
     let content = "CODE FOR CHANGE\nDONATION FINANCIAL REPORT\n\n";
     content += `Report Date: ${new Date().toLocaleString()}\n`;
     content += "==========================================\n\n";
-    
+
     filteredDonations.forEach((d, index) => {
       content += `${index + 1}. CONTRIBUTOR PROFILE\n`;
       content += `   Name: ${d.donorName}\n`;
@@ -274,7 +274,7 @@ function AdminDonations() {
       content += `   Timestamp: ${new Date(d.createdAt).toLocaleString()}\n`;
       content += "------------------------------------------\n";
     });
-    
+
     const blob = new Blob([content], { type: "application/msword" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -322,106 +322,107 @@ function AdminDonations() {
 
   const filteredDonations = donations.filter(d => {
     const searchLow = searchTerm.toLowerCase();
-    const matchesSearch = d.donorName.toLowerCase().includes(searchLow) || 
-                          d.transactionId.toLowerCase().includes(searchLow) ||
-                          (d.category && d.category.toLowerCase().includes(searchLow));
+    const matchesSearch = d.donorName.toLowerCase().includes(searchLow) ||
+      d.transactionId.toLowerCase().includes(searchLow) ||
+      (d.category && d.category.toLowerCase().includes(searchLow));
     const matchesMethod = filterMethod === "All" || d.paymentMethod === filterMethod;
     return matchesSearch && matchesMethod;
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+    <div className="space-y-6 animate-in fade-in duration-500 pb-20">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-100 pb-6">
         <div>
-          <h2 className="text-4xl font-black text-gray-900 tracking-tight italic">Financial Ledger</h2>
-          <p className="text-gray-500 font-medium mt-1">Audit contributions and manage verification workflows with precision.</p>
+          <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Financial Ledger</h2>
+          <p className="text-slate-500 text-sm font-medium mt-1">Audit contributions and manage verification workflows.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          {/* Ghost UI Style for Import */}
-          <label className="flex items-center justify-center gap-3 bg-white text-slate-600 border border-slate-200 px-6 py-4 rounded-2xl hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm font-black text-[10px] uppercase tracking-widest cursor-pointer group">
-            <FaDownload className="text-emerald-500 group-hover:bounce" /> Import Record
+          <label className="flex items-center justify-center gap-2 bg-white text-slate-600 border border-slate-200 px-5 py-3 rounded-xl hover:bg-slate-50 hover:text-emerald-600 transition-all shadow-sm font-bold text-[10px] uppercase tracking-widest cursor-pointer">
+            <FaDownload className="text-emerald-500" /> Import
             <input type="file" accept=".csv" className="hidden" onChange={handleImport} />
           </label>
-          
+
           <div className="relative group/export">
-            <button className="flex items-center justify-center gap-3 bg-white text-slate-600 border border-slate-200 px-8 py-4 rounded-2xl hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm font-black text-[10px] uppercase tracking-widest">
-              <FaFileCsv className="text-lg text-emerald-500" /> Export Data
+            <button className="flex items-center justify-center gap-2 bg-white text-slate-600 border border-slate-200 px-5 py-3 rounded-xl hover:bg-slate-50 hover:text-emerald-600 transition-all shadow-sm font-bold text-[10px] uppercase tracking-widest">
+              <FaFileCsv className="text-emerald-500" /> Export
             </button>
-            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate-100 opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-50 py-3 overflow-hidden">
-              <button onClick={exportToCSV} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all border-b border-gray-50">
-                <FaFileCsv className="text-emerald-500" /> CSV Schema
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-100 opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-50 py-2 overflow-hidden">
+              <button onClick={exportToCSV} className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-all">
+                <FaFileCsv className="text-emerald-500 text-sm" /> CSV Format
               </button>
-              <button onClick={exportToPDF} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all border-b border-gray-50">
-                <FaFilePdf className="text-rose-500" /> PDF Document
+              <div className="h-[1px] bg-slate-100 my-1 mx-4"></div>
+              <button onClick={exportToPDF} className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-all">
+                <FaFilePdf className="text-rose-500 text-sm" /> PDF Document
               </button>
-              <button onClick={exportToWord} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all">
-                <FaFileWord className="text-blue-500" /> MS Word Doc
+              <div className="h-[1px] bg-slate-100 my-1 mx-4"></div>
+              <button onClick={exportToWord} className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-all">
+                <FaFileWord className="text-blue-500 text-sm" /> Word Doc
               </button>
             </div>
           </div>
 
           {hasPermission('donation_create') && (
-            <button 
+            <button
               onClick={() => { resetForm(); setShowAddModal(true); }}
-              className="flex items-center justify-center gap-3 bg-emerald-500 text-white px-8 py-4 rounded-2xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-200 font-black text-[10px] uppercase tracking-widest"
+              className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition-all shadow-md shadow-emerald-600/20 font-bold text-[10px] uppercase tracking-widest"
             >
-              <FaPlus className="text-lg" /> Create Manual Entry
+              <FaPlus /> Create Entry
             </button>
           )}
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex items-center gap-6 group hover:shadow-xl hover:-translate-y-1 transition-all">
-          <div className="bg-emerald-50 p-5 rounded-3xl text-emerald-600 text-3xl group-hover:scale-110 transition-transform">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4 hover:shadow-md transition-all">
+          <div className="bg-emerald-50 p-4 rounded-xl text-emerald-600 text-2xl border border-emerald-100">
             <FaHandHoldingHeart />
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Total Verified</p>
-            <h3 className="text-3xl font-black text-gray-900 leading-none">Rs. {stats.totalAmount.toLocaleString()}</h3>
+            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Total Verified</p>
+            <h3 className="text-2xl font-bold text-slate-800 leading-none">Rs. {stats.totalAmount.toLocaleString()}</h3>
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex items-center gap-6 group hover:shadow-xl hover:-translate-y-1 transition-all">
-          <div className="bg-amber-50 p-5 rounded-3xl text-amber-600 text-3xl group-hover:scale-110 transition-transform">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4 hover:shadow-md transition-all">
+          <div className="bg-amber-50 p-4 rounded-xl text-amber-600 text-2xl border border-amber-100">
             <FaClock />
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Awaiting Audit</p>
-            <h3 className="text-3xl font-black text-gray-900 leading-none">{stats.pendingCount} <span className="text-sm text-gray-400 font-bold uppercase ml-1">Entries</span></h3>
+            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Awaiting Audit</p>
+            <h3 className="text-2xl font-bold text-slate-800 leading-none">{stats.pendingCount} <span className="text-xs text-slate-400 font-bold ml-1">Entries</span></h3>
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex items-center gap-6 group hover:shadow-xl hover:-translate-y-1 transition-all">
-          <div className="bg-blue-50 p-5 rounded-3xl text-blue-600 text-3xl group-hover:scale-110 transition-transform">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4 hover:shadow-md transition-all">
+          <div className="bg-blue-50 p-4 rounded-xl text-blue-600 text-2xl border border-blue-100">
             <FaShieldAlt />
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Verified records</p>
-            <h3 className="text-3xl font-black text-gray-900 leading-none">{stats.verifiedCount} <span className="text-sm text-gray-400 font-bold uppercase ml-1">Records</span></h3>
+            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Verified Records</p>
+            <h3 className="text-2xl font-bold text-slate-800 leading-none">{stats.verifiedCount} <span className="text-xs text-slate-400 font-bold ml-1">Records</span></h3>
           </div>
         </div>
       </div>
 
-      {/* Controls Overlay */}
-      <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 items-center justify-between">
+      {/* Controls */}
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full max-w-xl group">
-          <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors" />
+          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500 transition-colors" />
           <input
             type="text"
             placeholder="Search by donor, transaction ID, or category..."
-            className="w-full pl-14 pr-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight"
+            className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 outline-none font-semibold text-sm text-slate-700 shadow-sm transition-all"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className="flex items-center gap-3 bg-gray-50 px-5 py-4 rounded-2xl w-full">
-            <FaWallet className="text-gray-400" />
-            <select 
-              className="bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer w-full"
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-2 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 w-full shadow-sm">
+            <FaWallet className="text-slate-400 text-sm" />
+            <select
+              className="bg-transparent border-none outline-none font-bold text-[10px] uppercase tracking-widest cursor-pointer w-full text-slate-600"
               value={filterMethod}
               onChange={(e) => setFilterMethod(e.target.value)}
             >
@@ -430,14 +431,14 @@ function AdminDonations() {
               <option value="Khalti">Khalti</option>
               <option value="Bank Transfer">Bank Transfer</option>
               <option value="ConnectIPS">ConnectIPS</option>
-              <option value="Cash">Cash Ledger</option>
-              <option value="Card">Direct Card Payment</option>
-              <option value="Other">External Gateway</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
+              <option value="Other">Other</option>
             </select>
           </div>
-          <div className="flex items-center gap-3 bg-gray-50 px-5 py-4 rounded-2xl w-full">
-            <select 
-              className="bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer w-full"
+          <div className="flex items-center gap-2 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 w-full shadow-sm">
+            <select
+              className="bg-transparent border-none outline-none font-bold text-[10px] uppercase tracking-widest cursor-pointer w-full text-slate-600"
               value={filterProvince}
               onChange={(e) => setFilterProvince(e.target.value)}
             >
@@ -451,103 +452,113 @@ function AdminDonations() {
       </div>
 
       {/* Ledger Table */}
-      <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full w-full text-left">
-            <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Contributor</th>
-                <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Transaction</th>
-                <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Category</th>
-                <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Status</th>
-                <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Action</th>
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Contributor</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Transaction</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="px-10 py-20 text-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-                      <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Retrieving Records...</p>
+                  <td colSpan="5" className="px-6 py-16 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-10 h-10 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                      <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Loading records...</p>
                     </div>
                   </td>
                 </tr>
               ) : filteredDonations.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-10 py-20 text-center text-gray-400 italic">No records found matching your criteria.</td>
+                  <td colSpan="5" className="px-6 py-16 text-center text-slate-400 font-semibold">No records found matching your criteria.</td>
                 </tr>
               ) : filteredDonations.map((d) => (
-                <tr key={d._id} className="hover:bg-emerald-50/30 transition-all group">
-                  <td className="px-10 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center font-black text-white text-xs shadow-lg group-hover:scale-110 transition-transform italic">
+                <tr key={d._id} className="bg-white hover:bg-slate-50/50 transition-all">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center font-bold text-emerald-600 text-xs">
                         {d.donorName[0]}
                       </div>
                       <div>
-                        <span className="font-black text-gray-900 block tracking-tight uppercase">{d.donorName}</span>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{new Date(d.createdAt).toLocaleDateString()} • {d.province || "All Provinces"}</span>
+                        <span className="font-bold text-slate-800 block text-sm">{d.donorName}</span>
+                        <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1.5">
+                          {new Date(d.createdAt).toLocaleDateString()}
+                          <span className="text-slate-300">•</span>
+                          {d.province || "All Provinces"}
+                        </span>
                       </div>
                     </div>
                   </td>
-                  <td className="px-10 py-6">
-                    <div className="font-black text-gray-900 text-lg">Rs. {d.amount.toLocaleString()}</div>
-                    <div className="text-[10px] font-bold text-blue-500 uppercase tracking-widest font-mono">#{d.transactionId}</div>
+                  <td className="px-6 py-4">
+                    <div className="font-bold text-slate-800 text-sm">Rs. {d.amount.toLocaleString()}</div>
+                    <div className="text-[10px] font-bold text-blue-500 tracking-wide font-mono">#{d.transactionId}</div>
                   </td>
-                  <td className="px-10 py-6">
-                    <span className="flex items-center gap-2 text-[10px] font-black text-gray-500 bg-gray-100 px-4 py-2 rounded-xl w-fit uppercase tracking-tighter shadow-sm">
+                  <td className="px-6 py-4">
+                    <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg w-fit border border-slate-200 shadow-sm">
                       <FaTags className="text-emerald-500" /> {d.category || "General"}
                     </span>
                   </td>
-                  <td className="px-10 py-6">
-                    <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                      d.status === 'Verified' 
-                      ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest border ${d.status === 'Verified'
+                      ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
                       : d.status === 'Rejected'
-                      ? 'bg-rose-50 text-rose-500 border-rose-100'
-                      : 'bg-amber-50 text-amber-600 border-amber-100 animate-pulse'
-                    }`}>
+                        ? 'bg-rose-50 text-rose-500 border-rose-100'
+                        : 'bg-amber-50 text-amber-600 border-amber-100'
+                      }`}>
                       {d.status === 'Verified' ? <FaCheckCircle /> : d.status === 'Rejected' ? <FaTimes /> : <FaClock />}
                       {d.status}
                     </span>
                   </td>
-                  <td className="px-10 py-6 text-right relative">
-                    <button 
+                  <td className="px-6 py-4 text-right relative">
+                    <button
                       onClick={() => setOpenMenuId(openMenuId === d._id ? null : d._id)}
-                      className="w-10 h-10 inline-flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-all shadow-sm"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-white text-slate-400 hover:bg-slate-50 hover:text-emerald-600 border border-slate-200 shadow-sm transition-all"
                     >
-                      <BsThreeDotsVertical />
+                      <BsThreeDotsVertical className="text-sm" />
                     </button>
 
                     {openMenuId === d._id && (
-                      <div className="absolute right-10 top-16 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 py-3 animate-in fade-in zoom-in-95 duration-200">
+                      <div className="absolute right-16 top-1/2 -translate-y-1/2 w-48 bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-100 z-50 py-2 animate-in fade-in zoom-in duration-200">
                         <button
                           onClick={() => { setSelectedDonation(d); setOpenMenuId(null); }}
-                          className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-all"
+                          className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-all"
                         >
-                          <FaEye className="text-blue-500" /> Quick View
+                          <FaEye className="text-blue-500 text-sm" /> Quick View
                         </button>
+                        <div className="h-[1px] bg-slate-100 my-1 mx-4"></div>
                         <button
                           onClick={() => handleEdit(d)}
-                          className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-amber-600 hover:bg-amber-50 transition-all"
+                          className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 hover:text-amber-600 transition-all"
                         >
-                          <FaEdit /> Modify Record
+                          <FaEdit className="text-amber-500 text-sm" /> Modify
                         </button>
                         {hasPermission('donation_verify') && d.status !== 'Verified' && (
-                          <button
-                            onClick={() => handleUpdateStatus(d._id, 'Verified')}
-                            className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-50 transition-all"
-                          >
-                            <FaCheckCircle /> Authorize Payment
-                          </button>
+                          <>
+                            <div className="h-[1px] bg-slate-100 my-1 mx-4"></div>
+                            <button
+                              onClick={() => handleUpdateStatus(d._id, 'Verified')}
+                              className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all"
+                            >
+                              <FaCheckCircle className="text-emerald-500 text-sm" /> Authorize
+                            </button>
+                          </>
                         )}
                         {hasPermission('donation_verify') && d.status !== 'Rejected' && (
-                          <button
-                            onClick={() => handleUpdateStatus(d._id, 'Rejected')}
-                            className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-50 transition-all"
-                          >
-                            <FaTimes /> Reject Entry
-                          </button>
+                          <>
+                            <div className="h-[1px] bg-slate-100 my-1 mx-4"></div>
+                            <button
+                              onClick={() => handleUpdateStatus(d._id, 'Rejected')}
+                              className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-all"
+                            >
+                              <FaTimes className="text-rose-500 text-sm" /> Reject
+                            </button>
+                          </>
                         )}
                       </div>
                     )}
@@ -559,69 +570,70 @@ function AdminDonations() {
         </div>
 
         {/* Mobile Card View */}
-        <div className="md:hidden p-4 space-y-4">
+        <div className="md:hidden p-4 grid grid-cols-1 gap-4">
           {loading ? (
-             <div className="p-10 text-center text-slate-400">Loading records...</div>
+            <div className="p-10 text-center text-slate-400">Loading records...</div>
           ) : filteredDonations.length === 0 ? (
-             <div className="p-10 text-center text-slate-400">No records found.</div>
+            <div className="p-10 text-center text-slate-400">No records found.</div>
           ) : (
             filteredDonations.map((d) => (
-              <div key={d._id} className="bg-slate-50 rounded-2xl p-5 space-y-4 border border-slate-100 shadow-sm relative overflow-visible">
-                 <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                       <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center font-black text-white text-xs shadow-md">
-                          {d.donorName[0]}
-                       </div>
-                       <div>
-                          <h3 className="font-black text-slate-900 text-sm leading-tight">{d.donorName}</h3>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">#{d.transactionId}</p>
-                       </div>
+              <div key={d._id} className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm relative space-y-4">
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex items-center gap-3 flex-1 overflow-hidden">
+                    <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center font-bold text-emerald-600 text-xs flex-shrink-0">
+                      {d.donorName[0]}
                     </div>
-                    <button 
-                       onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenMenuId(openMenuId === d._id ? null : d._id);
-                       }}
-                       className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 shadow-sm"
-                    >
-                       <BsThreeDotsVertical />
-                    </button>
-                 </div>
-
-                 {/* Mobile Dropdown */}
-                 {openMenuId === d._id && (
-                    <div className="absolute top-14 right-4 w-48 bg-white rounded-xl shadow-2xl border border-slate-100 z-50 py-2 animate-in fade-in zoom-in">
-                       <button onClick={() => { setSelectedDonation(d); setOpenMenuId(null); }} className="w-full px-4 py-2 text-left text-xs font-bold text-slate-600 hover:bg-slate-50">Quick View</button>
-                       <button onClick={() => { handleEdit(d); }} className="w-full px-4 py-2 text-left text-xs font-bold text-amber-600 hover:bg-amber-50">Modify</button>
-                       {hasPermission('donation_verify') && d.status !== 'Verified' && (
-                          <button onClick={() => handleUpdateStatus(d._id, 'Verified')} className="w-full px-4 py-2 text-left text-xs font-bold text-emerald-600 hover:bg-emerald-50">Authorize</button>
-                       )}
-                       {hasPermission('donation_verify') && d.status !== 'Rejected' && (
-                          <button onClick={() => handleUpdateStatus(d._id, 'Rejected')} className="w-full px-4 py-2 text-left text-xs font-bold text-rose-500 hover:bg-rose-50">Reject</button>
-                       )}
-                     </div>
-                 )}
-
-                 <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white p-3 rounded-xl border border-slate-100">
-                       <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Amount</p>
-                       <p className="text-sm font-black text-emerald-600">Rs. {d.amount.toLocaleString()}</p>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-slate-800 text-sm leading-tight truncate">{d.donorName}</h3>
+                      <p className="text-[10px] text-slate-400 font-bold tracking-wide mt-0.5">#{d.transactionId}</p>
                     </div>
-                    <div className="bg-white p-3 rounded-xl border border-slate-100">
-                       <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Protocol</p>
-                       <p className="text-xs font-bold text-slate-700 uppercase mt-0.5">{d.paymentMethod}</p>
-                    </div>
-                 </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(openMenuId === d._id ? null : d._id);
+                    }}
+                    className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-400 hover:text-emerald-600 transition-colors"
+                  >
+                    <BsThreeDotsVertical />
+                  </button>
+                </div>
 
-                 <div className="flex justify-between items-center pt-1">
-                    <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-widest ${
-                      d.status === 'Verified' ? 'bg-emerald-100 text-emerald-700' : 
-                      d.status === 'Rejected' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'
+                {/* Mobile Dropdown */}
+                {openMenuId === d._id && (
+                  <div className="absolute top-14 right-4 w-48 bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-100 z-50 py-2 animate-in fade-in zoom-in">
+                    <button onClick={() => { setSelectedDonation(d); setOpenMenuId(null); }} className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold text-slate-600 hover:bg-slate-50 uppercase tracking-widest"><FaEye className="text-blue-500 text-sm" /> View</button>
+                    <div className="h-[1px] bg-slate-50 my-1 mx-4"></div>
+                    <button onClick={() => { handleEdit(d); }} className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold text-slate-600 hover:bg-slate-50 uppercase tracking-widest"><FaEdit className="text-amber-500 text-sm" /> Modify</button>
+                    {hasPermission('donation_verify') && d.status !== 'Verified' && (
+                      <><div className="h-[1px] bg-slate-50 my-1 mx-4"></div><button onClick={() => handleUpdateStatus(d._id, 'Verified')} className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold text-slate-600 hover:bg-emerald-50 uppercase tracking-widest"><FaCheckCircle className="text-emerald-500 text-sm" /> Authorize</button></>
+                    )}
+                    {hasPermission('donation_verify') && d.status !== 'Rejected' && (
+                      <><div className="h-[1px] bg-slate-50 my-1 mx-4"></div><button onClick={() => handleUpdateStatus(d._id, 'Rejected')} className="w-full px-4 py-2 text-left flex items-center gap-3 text-[10px] font-bold text-slate-600 hover:bg-rose-50 uppercase tracking-widest"><FaTimes className="text-rose-500 text-sm" /> Reject</button></>
+                    )}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Amount</p>
+                    <p className="text-sm font-bold text-emerald-600 mt-1">Rs. {d.amount.toLocaleString()}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Method</p>
+                    <p className="text-xs font-bold text-slate-700 mt-1">{d.paymentMethod}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center pt-2 border-t border-slate-50">
+                  <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border ${d.status === 'Verified' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                    d.status === 'Rejected' ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-amber-50 text-amber-600 border-amber-100'
                     }`}>
-                      {d.status === 'Verified' ? <FaCheckCircle /> : <FaClock />} {d.status}
-                    </span>
-                    <span className="text-[9px] font-bold text-slate-400">{new Date(d.createdAt).toLocaleDateString()}</span>
-                 </div>
+                    <span className={`w-1.5 h-1.5 rounded-full ${d.status === 'Verified' ? 'bg-emerald-500' : d.status === 'Rejected' ? 'bg-rose-500' : 'bg-amber-500'
+                      }`}></span> {d.status}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400">{new Date(d.createdAt).toLocaleDateString()}</span>
+                </div>
               </div>
             ))
           )}
@@ -630,46 +642,47 @@ function AdminDonations() {
 
       {/* Manual Record / Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[60] flex items-center justify-center p-6 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-500 border border-white/20">
-            <div className="px-10 py-8 bg-slate-900 text-white flex justify-between items-center relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
-              <div className="relative z-10">
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400 mb-2 block">{isEditing ? "Modify Entry" : "New Entry"}</span>
-                <h3 className="text-3xl font-black italic tracking-tighter uppercase leading-none">{isEditing ? "Update donation" : "Create Donation Record"}</h3>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
+            <div className="flex justify-between items-center px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
+              <div>
+                <h3 className="text-xl font-bold text-slate-800 tracking-tight">
+                  {isEditing ? "Update Record" : "Create Donation Record"}
+                </h3>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Financial Entry</p>
               </div>
-              <button onClick={resetForm} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all relative z-10 group">
-                <FaTimes className="group-hover:rotate-90 transition-transform duration-300" />
+              <button onClick={resetForm} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-slate-200 shadow-sm transition-all">
+                <FaTimes />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-10 custom-scrollbar overflow-y-auto max-h-[75vh]">
+            <form onSubmit={handleSubmit} className="p-8 custom-scrollbar overflow-y-auto">
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Donor Full Name</label>
-                  <input 
-                    required 
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight"
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Donor Full Name</label>
+                  <input
+                    required
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm"
                     value={formData.donorName}
-                    onChange={(e) => setFormData({...formData, donorName: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, donorName: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Amount (NPR)</label>
-                  <input 
-                    required 
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Amount (NPR)</label>
+                  <input
+                    required
                     type="number"
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm"
                     value={formData.amount}
-                    onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Payment Method (Nepal)</label>
-                  <select 
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-black text-[10px] tracking-widest uppercase cursor-pointer"
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Payment Method</label>
+                  <select
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm cursor-pointer"
                     value={formData.paymentMethod}
-                    onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
                   >
                     <option value="eSewa">eSewa Mobile Wallet</option>
                     <option value="Khalti">Khalti Digital Wallet</option>
@@ -681,11 +694,11 @@ function AdminDonations() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Category / Purpose</label>
-                  <select 
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-black text-[10px] tracking-widest uppercase cursor-pointer"
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Category / Purpose</label>
+                  <select
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm cursor-pointer"
                     value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   >
                     <option value="General">General Contribution</option>
                     <option value="Project">Specific Project Aid</option>
@@ -695,11 +708,11 @@ function AdminDonations() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Province</label>
-                  <select 
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-black text-[10px] tracking-widest uppercase cursor-pointer"
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Province</label>
+                  <select
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm cursor-pointer"
                     value={formData.province}
-                    onChange={(e) => setFormData({...formData, province: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                   >
                     <option value="">Select Province</option>
                     {PROVINCES.map(p => (
@@ -708,91 +721,91 @@ function AdminDonations() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Transaction Dossier ID</label>
-                  <input 
-                    required 
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight"
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Transaction ID</label>
+                  <input
+                    required
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm"
                     value={formData.transactionId}
-                    onChange={(e) => setFormData({...formData, transactionId: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Receiver Account</label>
-                  <input 
-                    required 
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Receiver Account</label>
+                  <input
+                    required
                     placeholder="e.g. CFC Central Bank AC"
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm"
                     value={formData.receiverAccount}
-                    onChange={(e) => setFormData({...formData, receiverAccount: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, receiverAccount: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email (Optional)</label>
-                  <input 
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email (Optional)</label>
+                  <input
                     type="email"
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone (Optional)</label>
-                  <input 
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight"
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone (Optional)</label>
+                  <input
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm"
                     value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Audit Remarks / History</label>
-                  <textarea 
-                    className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none focus:ring-4 focus:ring-emerald-500/5 outline-none font-bold text-sm tracking-tight h-32"
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Remarks</label>
+                  <textarea
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-semibold focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-slate-700 shadow-sm h-28"
                     value={formData.remarks}
-                    onChange={(e) => setFormData({...formData, remarks: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col justify-center space-y-4">
                   <label className="flex items-center gap-4 cursor-pointer group">
-                    <input 
+                    <input
                       type="checkbox"
                       hidden
                       checked={formData.isAnonymous}
-                      onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}
+                      onChange={(e) => setFormData({ ...formData, isAnonymous: e.target.checked })}
                     />
-                    <div className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${formData.isAnonymous ? 'bg-emerald-500 border-emerald-500' : 'bg-white border-slate-200 group-hover:border-emerald-500'}`}>
+                    <div className={`w-5 h-5 rounded-lg flex items-center justify-center border-2 transition-all ${formData.isAnonymous ? 'bg-emerald-500 border-emerald-500' : 'bg-white border-slate-300 group-hover:border-emerald-400'}`}>
                       {formData.isAnonymous && <FaCheckCircle className="text-white text-xs" />}
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Confidential / Anonymous Entry</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Anonymous / Confidential</span>
                   </label>
                 </div>
-                
+
                 {/* Receipt Upload */}
                 <div className="md:col-span-2 space-y-3">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Payment Receipt (Optional Image)</label>
-                  <div 
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Payment Receipt (Optional)</label>
+                  <div
                     onClick={() => document.getElementById('receipt-upload').click()}
-                    className={`border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all ${receiptPreview ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 bg-gray-50 hover:border-emerald-500'}`}
+                    className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all ${receiptPreview ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-emerald-300'}`}
                   >
-                    <input 
+                    <input
                       id="receipt-upload"
-                      type="file" 
-                      hidden 
+                      type="file"
+                      hidden
                       accept="image/*"
-                      onChange={handleFileChange} 
+                      onChange={handleFileChange}
                     />
                     {receiptPreview ? (
                       <div className="relative group">
                         <img src={receiptPreview} alt="Receipt Preview" className="h-40 w-auto rounded-2xl shadow-lg object-cover" />
-                        <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="absolute inset-0 bg-slate-900/50 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                           <FaCloudUploadAlt className="text-white text-2xl" />
                         </div>
                       </div>
                     ) : (
                       <>
-                        <FaCloudUploadAlt className="text-gray-300 text-4xl" />
+                        <FaCloudUploadAlt className="text-slate-400 text-4xl" />
                         <div className="text-center">
-                          <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Click to upload receipt photo</p>
-                          <p className="text-[9px] text-gray-400 mt-1 uppercase">Supports JPEG, PNG, WEBP (Max 5MB)</p>
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Click to upload receipt</p>
+                          <p className="text-[9px] text-slate-400 mt-1">JPEG, PNG, WEBP (Max 5MB)</p>
                         </div>
                       </>
                     )}
@@ -800,12 +813,15 @@ function AdminDonations() {
                 </div>
               </div>
 
-              <div className="mt-12 flex gap-4">
-                 <button type="submit" disabled={submitting} className="flex-1 py-5 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-1 transition-all disabled:opacity-50">
-                  {submitting ? "Processing..." : (isEditing ? "Synchronize Updates" : "Confirm Physical Record")}
+              <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col md:flex-row gap-4 justify-end">
+                <button type="button" onClick={resetForm} className="px-8 py-3.5 border border-slate-200 rounded-xl font-bold text-[10px] uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all shadow-sm">
+                  Cancel
                 </button>
-                <button type="button" onClick={resetForm} className="px-8 py-5 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-200 transition-all">
-                  Discard
+                <button type="submit" disabled={submitting} className={`px-10 py-3.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${submitting
+                  ? 'bg-slate-100 cursor-not-allowed text-slate-400 border border-slate-200'
+                  : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md shadow-emerald-600/20'
+                  }`}>
+                  {submitting ? "Processing..." : (isEditing ? "Update Record" : "Save Record")}
                 </button>
               </div>
             </form>
@@ -814,186 +830,182 @@ function AdminDonations() {
       )}
 
       {/* View Detail Modal */}
-      {selectedDonation && !showAddModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-6 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-500 border border-white/20">
-            {/* Modal Header */}
-            <div className="px-10 py-8 bg-slate-900 text-white flex justify-between items-center relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
-              <div className="relative z-10">
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400 mb-2 block">Dossier ID: {selectedDonation.transactionId}</span>
-                <h3 className="text-3xl font-black italic tracking-tighter uppercase leading-none">Dossier Profile</h3>
+      {
+        selectedDonation && !showAddModal && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-6 animate-in fade-in duration-300">
+            <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-500 border border-white/20">
+              <div className="flex justify-between items-center px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-800 tracking-tight">Dossier Profile</h3>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">ID: {selectedDonation.transactionId}</p>
+                </div>
+                <button onClick={() => setSelectedDonation(null)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-slate-200 shadow-sm transition-all">
+                  <FaTimes />
+                </button>
               </div>
-              <button 
-                onClick={() => setSelectedDonation(null)}
-                className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all relative z-10 group"
-              >
-                <FaTimes className="group-hover:rotate-90 transition-transform duration-300" />
-              </button>
-            </div>
 
-            {/* Modal Content */}
-            <div className="p-10 space-y-10 custom-scrollbar overflow-y-auto max-h-[70vh]">
-              {/* Contributor Section */}
-              <section>
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="h-[2px] w-8 bg-emerald-500"></div>
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Contributor Info</h4>
-                </div>
-                <div className="grid md:grid-cols-2 gap-8 bg-gray-50 p-8 rounded-[2rem] border border-gray-100">
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Full Name</p>
-                    <p className="text-lg font-black text-gray-900 flex items-center gap-2 uppercase tracking-tight">
-                      <FaUser className="text-emerald-500 text-xs" /> {selectedDonation.donorName}
-                    </p>
+              {/* Modal Content */}
+              <div className="p-10 space-y-10 custom-scrollbar overflow-y-auto max-h-[70vh]">
+                {/* Contributor Section */}
+                <section>
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="h-[2px] w-8 bg-emerald-500"></div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Contributor Info</h4>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Contact Identity</p>
-                    <p className="text-lg font-black text-gray-900 flex items-center gap-2 lowercase tracking-tight">
-                      <FaPhone className="text-emerald-500 text-xs" /> {selectedDonation.phone || "No Contact Provided"}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Email Record</p>
-                    <p className="text-lg font-black text-gray-900 flex items-center gap-2 lowercase tracking-tight">
-                      <FaEnvelope className="text-emerald-500 text-xs" /> {selectedDonation.email || "Private Ledger"}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Privacy level</p>
-                    <p className="text-lg font-black text-gray-900 flex items-center gap-2 uppercase tracking-tight">
-                      <FaShieldAlt className="text-emerald-500 text-xs" /> {selectedDonation.isAnonymous ? "ANONYMOUS" : "PUBLIC RECORD"}
-                    </p>
-                  </div>
-                </div>
-              </section>
-
-              {/* Financial Section */}
-              <section>
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="h-[2px] w-8 bg-emerald-500"></div>
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Transaction Dossier</h4>
-                </div>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="bg-slate-900 p-8 rounded-[2rem] text-white">
-                    <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2">Contribution Sum</p>
-                    <p className="text-4xl font-black italic tracking-tighter">Rs. {selectedDonation.amount.toLocaleString()}</p>
-                  </div>
-                  <div className="bg-emerald-50 p-8 rounded-[2rem] border border-emerald-100">
-                    <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-2">Gateway Protocol</p>
-                    <p className="text-2xl font-black text-emerald-800 flex items-center gap-3">
-                      <FaWallet /> {selectedDonation.paymentMethod}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="mt-6 grid md:grid-cols-2 gap-6">
-                  <div className="p-8 bg-gray-50 rounded-[2rem] border border-gray-100">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Receiver Registry</p>
-                    <p className="text-sm font-black text-gray-900 flex items-center gap-3 uppercase tracking-tighter italic">
-                      <FaUniversity className="text-slate-400" /> {selectedDonation.receiverAccount}
-                    </p>
-                  </div>
-                  <div className="p-8 bg-gray-50 rounded-[2rem] border border-gray-100">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Transaction ID</p>
-                    <p className="text-sm font-black text-blue-600 font-mono tracking-widest">
-                      #{selectedDonation.transactionId}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Verification Audit Log */}
-                <div className="mt-6 flex flex-col gap-6">
-                  {selectedDonation.receipt && (
-                    <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 flex flex-col gap-4">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <FaFileImage className="text-emerald-500" /> Digital Receipt Record
+                  <div className="grid md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Full Name</p>
+                      <p className="text-lg font-black text-gray-900 flex items-center gap-2 uppercase tracking-tight">
+                        <FaUser className="text-emerald-500 text-xs" /> {selectedDonation.donorName}
                       </p>
-                      <a 
-                        href={selectedDonation.receipt} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="relative group overflow-hidden rounded-2xl"
-                      >
-                        <img 
-                          src={selectedDonation.receipt} 
-                          alt="Donation Receipt" 
-                          className="w-full h-auto max-h-60 object-cover group-hover:scale-105 transition-transform duration-500" 
-                        />
-                        <div className="absolute inset-0 bg-emerald-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <span className="text-white font-black text-xs uppercase tracking-widest">Open Full Resolution</span>
-                        </div>
-                      </a>
                     </div>
-                  )}
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Contact Identity</p>
+                      <p className="text-lg font-black text-gray-900 flex items-center gap-2 lowercase tracking-tight">
+                        <FaPhone className="text-emerald-500 text-xs" /> {selectedDonation.phone || "No Contact Provided"}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Email Record</p>
+                      <p className="text-lg font-black text-gray-900 flex items-center gap-2 lowercase tracking-tight">
+                        <FaEnvelope className="text-emerald-500 text-xs" /> {selectedDonation.email || "Private Ledger"}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Privacy level</p>
+                      <p className="text-lg font-black text-gray-900 flex items-center gap-2 uppercase tracking-tight">
+                        <FaShieldAlt className="text-emerald-500 text-xs" /> {selectedDonation.isAnonymous ? "ANONYMOUS" : "PUBLIC RECORD"}
+                      </p>
+                    </div>
+                  </div>
+                </section>
 
-                  {selectedDonation.status === 'Verified' && (
-                    <div className="p-8 bg-emerald-50 rounded-[2rem] border border-emerald-100 flex flex-col md:flex-row justify-between items-center gap-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                          <FaCheckCircle className="text-xl" />
+                {/* Financial Section */}
+                <section>
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="h-[2px] w-8 bg-emerald-500"></div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Transaction Dossier</h4>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="bg-slate-800 p-6 rounded-2xl text-white shadow-lg shadow-slate-200">
+                      <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">Contribution Sum</p>
+                      <p className="text-3xl font-bold tracking-tight">Rs. {selectedDonation.amount.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
+                      <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Gateway Protocol</p>
+                      <p className="text-xl font-bold text-emerald-800 flex items-center gap-2">
+                        <FaWallet className="text-emerald-500" /> {selectedDonation.paymentMethod}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid md:grid-cols-2 gap-6">
+                    <div className="p-8 bg-gray-50 rounded-[2rem] border border-gray-100">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Receiver Registry</p>
+                      <p className="text-sm font-black text-gray-900 flex items-center gap-3 uppercase tracking-tighter italic">
+                        <FaUniversity className="text-slate-400" /> {selectedDonation.receiverAccount}
+                      </p>
+                    </div>
+                    <div className="p-8 bg-gray-50 rounded-[2rem] border border-gray-100">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Transaction ID</p>
+                      <p className="text-sm font-black text-blue-600 font-mono tracking-widest">
+                        #{selectedDonation.transactionId}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Verification Audit Log */}
+                  <div className="mt-6 flex flex-col gap-6">
+                    {selectedDonation.receipt && (
+                      <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 flex flex-col gap-4">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                          <FaFileImage className="text-emerald-500" /> Digital Receipt Record
+                        </p>
+                        <a
+                          href={selectedDonation.receipt}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="relative group overflow-hidden rounded-2xl"
+                        >
+                          <img
+                            src={selectedDonation.receipt}
+                            alt="Donation Receipt"
+                            className="w-full h-auto max-h-60 object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-emerald-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="text-white font-black text-xs uppercase tracking-widest">Open Full Resolution</span>
+                          </div>
+                        </a>
+                      </div>
+                    )}
+
+                    {selectedDonation.status === 'Verified' && (
+                      <div className="p-8 bg-emerald-50 rounded-[2rem] border border-emerald-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                            <FaCheckCircle className="text-xl" />
+                          </div>
+                          <div>
+                            <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Authorized By</p>
+                            <p className="text-sm font-black text-slate-900 uppercase">{selectedDonation.verifiedBy || 'System Administrator'}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Authorized By</p>
-                          <p className="text-sm font-black text-slate-900 uppercase">{selectedDonation.verifiedBy || 'System Administrator'}</p>
+                        <div className="text-right">
+                          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Verification Time</p>
+                          <p className="text-sm font-black text-gray-600">{new Date(selectedDonation.verifiedAt || selectedDonation.updatedAt).toLocaleString()}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Verification Time</p>
-                        <p className="text-sm font-black text-gray-600">{new Date(selectedDonation.verifiedAt || selectedDonation.updatedAt).toLocaleString()}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
+                    )}
+                  </div>
+                </section>
 
-              {/* Remarks Section */}
-              <section className="bg-emerald-500/5 p-8 rounded-[2rem] border border-emerald-500/10">
-                <div className="flex items-center gap-3 mb-4">
-                  <FaInfoCircle className="text-emerald-600" />
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Audit Remarks</h4>
-                </div>
-                <p className="text-sm font-medium text-gray-600 leading-relaxed italic">
-                  "{selectedDonation.remarks || "No additional audit remarks provided for this transaction."}"
-                </p>
-              </section>
-            </div>
+                {/* Remarks Section */}
+                <section className="bg-emerald-500/5 p-8 rounded-[2rem] border border-emerald-500/10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <FaInfoCircle className="text-emerald-600" />
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Audit Remarks</h4>
+                  </div>
+                  <p className="text-sm font-medium text-gray-600 leading-relaxed italic">
+                    "{selectedDonation.remarks || "No additional audit remarks provided for this transaction."}"
+                  </p>
+                </section>
+              </div>
 
-            {/* Modal Footer */}
-            <div className="p-8 bg-gray-50 border-t flex flex-col md:flex-row gap-4">
-              <button 
-                onClick={() => handleEdit(selectedDonation)}
-                className="px-8 py-5 bg-white text-amber-600 border border-amber-100 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-amber-50 transition-all flex items-center justify-center gap-3"
-              >
-                <FaEdit /> Modify Profile
-              </button>
-              {selectedDonation.status === 'Pending' ? (
-                <>
-                  <button 
-                    onClick={() => handleUpdateStatus(selectedDonation._id, 'Verified')}
-                    className="flex-1 py-5 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
-                  >
-                    <FaCheckCircle /> Authorize Payment
-                  </button>
-                  <button 
-                    onClick={() => handleUpdateStatus(selectedDonation._id, 'Rejected')}
-                    className="flex-1 py-5 bg-white text-rose-500 border border-rose-100 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-50 transition-all flex items-center justify-center gap-3"
-                  >
-                    <FaTimes /> Reject Entry
-                  </button>
-                </>
-              ) : (
-                <div className={`flex-1 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 border ${
-                  selectedDonation.status === 'Verified' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-500 border-rose-100'
-                }`}>
-                  {selectedDonation.status === 'Verified' ? <><FaCheckCircle /> Verified Record</> : <><FaTimes /> Entry Rejected</>}
-                </div>
-              )}
+              {/* Modal Footer */}
+              <div className="p-8 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row gap-4 justify-end">
+                <button
+                  onClick={() => handleEdit(selectedDonation)}
+                  className="px-8 py-3.5 bg-white text-amber-600 border border-amber-200 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-amber-50 transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <FaEdit /> Modify
+                </button>
+                {selectedDonation.status === 'Pending' ? (
+                  <>
+                    <button
+                      onClick={() => handleUpdateStatus(selectedDonation._id, 'Verified')}
+                      className="px-8 py-3.5 bg-emerald-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-md shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2"
+                    >
+                      <FaCheckCircle /> Authorize
+                    </button>
+                    <button
+                      onClick={() => handleUpdateStatus(selectedDonation._id, 'Rejected')}
+                      className="px-8 py-3.5 bg-white text-rose-500 border border-rose-200 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-rose-50 transition-all flex items-center justify-center gap-2 shadow-sm"
+                    >
+                      <FaTimes /> Reject
+                    </button>
+                  </>
+                ) : (
+                  <div className={`px-8 py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 border ${selectedDonation.status === 'Verified' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-500 border-rose-100'
+                    }`}>
+                    {selectedDonation.status === 'Verified' ? <><FaCheckCircle /> Verified</> : <><FaTimes /> Rejected</>}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
 

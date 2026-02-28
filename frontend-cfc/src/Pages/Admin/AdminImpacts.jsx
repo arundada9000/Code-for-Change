@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { 
-  FaPlus, FaSearch, FaCalendarAlt, FaMapMarkerAlt, FaEdit, FaTrash, FaTimes, 
+import {
+  FaPlus, FaSearch, FaCalendarAlt, FaMapMarkerAlt, FaEdit, FaTrash, FaTimes,
   FaImage, FaCloudUploadAlt, FaHistory, FaBullseye, FaChartBar, FaEye
 } from "react-icons/fa";
 import API from "../../Services/api";
@@ -8,11 +8,12 @@ import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 
-const InputField = React.memo(({ label, value, onChange, type = "text", required = false, placeholder }) => (
+const InputField = React.memo(({ label, name, value, onChange, type = "text", required = false, placeholder }) => (
   <div className="space-y-1.5">
     <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">{label}</label>
     <input
       type={type}
+      name={name}
       required={required}
       placeholder={placeholder}
       className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/5 focus:border-blue-200 font-medium text-sm transition-all"
@@ -40,10 +41,11 @@ const SelectField = React.memo(({ label, value, onChange, options, required = fa
   </div>
 ));
 
-const TextAreaField = React.memo(({ label, value, onChange, rows = 3, required = false, placeholder }) => (
+const TextAreaField = React.memo(({ label, name, value, onChange, rows = 3, required = false, placeholder }) => (
   <div className="space-y-1.5">
     <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">{label}</label>
     <textarea
+      name={name}
       rows={rows}
       required={required}
       placeholder={placeholder}
@@ -96,7 +98,7 @@ function AdminImpacts() {
       const params = new URLSearchParams();
       if (searchTerm) params.append("search", searchTerm);
       if (filterProvince) params.append("province", filterProvince);
-      
+
       const response = await API.get(`/impacts?${params.toString()}`);
       // The backend uses sendSuccess which wraps data in { success, data, message }
       const data = response.data?.data || response.data;
@@ -217,7 +219,7 @@ function AdminImpacts() {
     }
   };
 
-  const filteredImpacts = impacts.filter(impact => 
+  const filteredImpacts = impacts.filter(impact =>
     impact.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -230,7 +232,7 @@ function AdminImpacts() {
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Manage impact stories & history</p>
         </div>
         {hasPermission('impact_create') && (
-          <button 
+          <button
             onClick={() => { resetForm(); setIsModalOpen(true); }}
             className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm flex items-center gap-3 hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95 group"
           >
@@ -320,12 +322,12 @@ function AdminImpacts() {
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex gap-2">
-                       <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black">
-                         {impact.metrics?.participants || 0} PART.
-                       </span>
-                       <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[9px] font-black">
-                         {impact.metrics?.projects || 0} PROJ.
-                       </span>
+                      <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black">
+                        {impact.metrics?.participants || 0} PART.
+                      </span>
+                      <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[9px] font-black">
+                        {impact.metrics?.projects || 0} PROJ.
+                      </span>
                     </div>
                   </td>
                   <td className="px-8 py-6">
@@ -335,8 +337,8 @@ function AdminImpacts() {
                   </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex justify-end gap-2">
-                      <button 
-                        onClick={() => setViewingImpact(impact)} 
+                      <button
+                        onClick={() => setViewingImpact(impact)}
                         className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-all active:scale-90"
                         title="View Details"
                       >
@@ -407,18 +409,18 @@ function AdminImpacts() {
               {/* Basic Fields */}
               <div className="grid md:grid-cols-2 gap-8">
                 <InputField label="Impact Title" name="title" value={formData.title} onChange={handleInputChange} required placeholder="e.g., Codefest 2022" />
-                <SelectField 
-                  label="Category" 
-                  value={formData.category} 
+                <SelectField
+                  label="Category"
+                  value={formData.category}
                   onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
                   options={[
                     { value: "Current", label: "Current Impact" },
                     { value: "History", label: "Our History" }
                   ]}
                 />
-                <SelectField 
-                  label="Province" 
-                  value={formData.province} 
+                <SelectField
+                  label="Province"
+                  value={formData.province}
                   onChange={(e) => setFormData(prev => ({ ...prev, province: e.target.value }))}
                   options={[
                     { value: "", label: "Select Province" },
@@ -466,15 +468,15 @@ function AdminImpacts() {
               </div>
 
               <div className="flex justify-end gap-4 pb-4">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsModalOpen(false)}
                   className="px-8 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs tracking-widest hover:bg-slate-200 transition-all"
                 >
                   CANCEL
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={submitting}
                   className="px-10 py-4 bg-blue-600 text-white rounded-2xl font-black text-xs tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95 disabled:bg-blue-300"
                 >
@@ -503,7 +505,7 @@ function AdminImpacts() {
             <div className="relative h-64 flex-shrink-0">
               <img src={viewingImpact.image} className="w-full h-full object-cover" alt={viewingImpact.title} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <button 
+              <button
                 onClick={() => setViewingImpact(null)}
                 className="absolute top-6 right-6 w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-white/40 transition-all"
               >
@@ -516,7 +518,7 @@ function AdminImpacts() {
                 <h2 className="text-3xl font-black tracking-tight leading-none">{viewingImpact.title}</h2>
               </div>
             </div>
-            
+
             <div className="p-10 overflow-y-auto custom-scrollbar space-y-8">
               <div className="grid grid-cols-2 gap-6 pb-8 border-b border-slate-100">
                 <div className="space-y-1">
@@ -559,14 +561,14 @@ function AdminImpacts() {
 
               <div className="pt-6 flex justify-end gap-4">
                 {hasPermission('impact_update') && (
-                  <button 
+                  <button
                     onClick={() => { setViewingImpact(null); handleEdit(viewingImpact); }}
                     className="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-black text-[10px] tracking-widest hover:bg-slate-200 transition-all uppercase"
                   >
-                  EDIT STORY
-                </button>
-              )}
-                <button 
+                    EDIT STORY
+                  </button>
+                )}
+                <button
                   onClick={() => setViewingImpact(null)}
                   className="px-6 py-3 bg-blue-600 text-white rounded-xl font-black text-[10px] tracking-widest hover:bg-blue-700 transition-all uppercase shadow-lg shadow-blue-500/20"
                 >

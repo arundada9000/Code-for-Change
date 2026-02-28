@@ -6,17 +6,14 @@ export const createImpactSchema = z.object({
     description: z.string().min(1, "Description is required"),
     category: z.string().min(1, "Category is required"),
     dates: z.string().min(1, "Dates are required"),
-    tenure: z.string().optional(),
-    location: z.string().optional(),
-    platform: z.string().optional(),
-    details: z.string().optional(),
-    isLarge: z.boolean().optional(),
-    metrics: z.object({
-      participants: z.number().optional(),
-      projects: z.number().optional(),
-      impact: z.string().optional(),
-    }).optional(),
-  }),
+    tenure: z.string().optional().or(z.literal("")),
+    location: z.string().optional().or(z.literal("")),
+    province: z.string().optional().or(z.literal("")),
+    platform: z.string().optional().or(z.literal("")),
+    details: z.string().optional().or(z.literal("")),
+    isLarge: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
+    imagePreview: z.string().optional().or(z.literal("")),
+  }).passthrough(),
 });
 
 export const updateImpactSchema = z.object({
@@ -25,18 +22,16 @@ export const updateImpactSchema = z.object({
     description: z.string().min(1).optional(),
     category: z.string().min(1).optional(),
     dates: z.string().min(1).optional(),
-    tenure: z.string().optional(),
-    location: z.string().optional(),
-    platform: z.string().optional(),
-    details: z.string().optional(),
-    isLarge: z.boolean().optional(),
-    metrics: z.object({
-      participants: z.number().optional(),
-      projects: z.number().optional(),
-      impact: z.string().optional(),
-    }).optional(),
-  }),
+    tenure: z.string().optional().or(z.literal("")),
+    location: z.string().optional().or(z.literal("")),
+    province: z.string().optional().or(z.literal("")),
+    platform: z.string().optional().or(z.literal("")),
+    details: z.string().optional().or(z.literal("")),
+    isLarge: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
+    imagePreview: z.string().optional().or(z.literal("")),
+  }).passthrough(),
   params: z.object({
     id: z.string().min(1, "ID is required"),
   }),
 });
+

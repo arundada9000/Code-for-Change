@@ -111,7 +111,7 @@ function App() {
           </Route>
 
           {/* Admin Dashboard routes - Protected */}
-          <Route element={<PrivateRoute adminOnly={false} />}>
+          <Route element={<PrivateRoute adminOnly={true} />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />

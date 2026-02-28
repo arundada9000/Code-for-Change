@@ -37,14 +37,14 @@ export const uploadToCloudinary = async (
   return new Promise((resolve, reject) => {
     // Set a timeout for the upload
     const uploadTimeout = setTimeout(() => {
-        reject(new Error("Cloudinary upload timed out after 60 seconds"));
-    }, 60000); // 60 seconds
+      reject(new Error("Cloudinary upload timed out after 120 seconds"));
+    }, 120000); // 120 seconds
 
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder,
         resource_type: "auto",
-        timeout: 60000, 
+        timeout: 120000,
       },
       (error, result) => {
         clearTimeout(uploadTimeout);
@@ -57,12 +57,12 @@ export const uploadToCloudinary = async (
         }
       }
     );
-    
+
     // enhance stream error handling
     uploadStream.on('error', (err) => {
-        clearTimeout(uploadTimeout);
-        console.error("Stream Error:", err);
-        reject(new Error(`Stream upload failed: ${err.message}`));
+      clearTimeout(uploadTimeout);
+      console.error("Stream Error:", err);
+      reject(new Error(`Stream upload failed: ${err.message}`));
     });
 
     streamifier.createReadStream(buffer).pipe(uploadStream);

@@ -54,14 +54,26 @@ export class EventController {
     if (imageUrl) {
       req.body.image = imageUrl;
     }
-    
+
     console.log("Creating Access Event with Data:", {
-        ...req.body,
-        image: req.body.image ? "PRESENT" : "MISSING"
+      ...req.body,
+      image: req.body.image ? "PRESENT" : "MISSING"
     });
+
+    // Parse JSON string arrays from FormData
+    const parseJsonField = (val: any) => {
+      if (typeof val === 'string') {
+        try { return JSON.parse(val); } catch { return val; }
+      }
+      return val;
+    };
 
     const eventData = {
       ...req.body,
+      speakers: parseJsonField(req.body.speakers),
+      highlights: parseJsonField(req.body.highlights),
+      benefits: parseJsonField(req.body.benefits),
+      isCompleted: req.body.isCompleted === 'true' || req.body.isCompleted === true,
     };
 
     const event = await eventService.createEvent(eventData);
@@ -103,6 +115,21 @@ export class EventController {
       }
     }
 
+    // Parse JSON string arrays from FormData
+    const parseJsonField = (val: any) => {
+      if (typeof val === 'string') {
+        try { return JSON.parse(val); } catch { return val; }
+      }
+      return val;
+    };
+
+    if (updateData.speakers) updateData.speakers = parseJsonField(updateData.speakers);
+    if (updateData.highlights) updateData.highlights = parseJsonField(updateData.highlights);
+    if (updateData.benefits) updateData.benefits = parseJsonField(updateData.benefits);
+    if (updateData.isCompleted !== undefined) {
+      updateData.isCompleted = updateData.isCompleted === 'true' || updateData.isCompleted === true;
+    }
+
     const event = await eventService.updateEvent(req.params.id, updateData);
 
     // Log Activity
@@ -127,7 +154,7 @@ export class EventController {
   deleteEvent = asyncHandler(async (req: Request, res: Response) => {
     // Get event to delete associated image
     const event = await eventService.getEventById(req.params.id);
-    
+
     // Delete image from Cloudinary
     if (event.image) {
       const publicId = event.image.split("/").pop()?.split(".")[0];

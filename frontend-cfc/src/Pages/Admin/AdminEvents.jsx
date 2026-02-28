@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { 
-  FaPlus, FaSearch, FaCalendarAlt, FaMapMarkerAlt, FaEdit, FaTrash, FaTimes, 
+import {
+  FaPlus, FaSearch, FaCalendarAlt, FaMapMarkerAlt, FaEdit, FaTrash, FaTimes,
   FaImage, FaCloudUploadAlt, FaExternalLinkAlt, FaUserTie, FaLightbulb, FaGift,
   FaClock, FaMapPin, FaLink, FaFileCsv, FaFilePdf, FaFileWord, FaDownload, FaDownload as FaImport
 } from "react-icons/fa";
-import { BsThreeDotsVertical, BsPencil, BsTrash, BsEye } from "react-icons/bs";
+import { BsThreeDotsVertical, BsPencil, BsTrash, BsEye, BsArrowRepeat } from "react-icons/bs";
 import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import { jsPDF } from "jspdf";
@@ -15,12 +15,12 @@ import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 
 const InputField = React.memo(({ label, value, onChange, type = "text", required = false, placeholder }) => (
   <div className="space-y-1.5">
-    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">{label}</label>
+    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">{label}</label>
     <input
       type={type}
       required={required}
       placeholder={placeholder}
-      className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-medium text-sm transition-all"
+      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all shadow-sm"
       value={value}
       onChange={onChange}
     />
@@ -29,12 +29,12 @@ const InputField = React.memo(({ label, value, onChange, type = "text", required
 
 const TextAreaField = React.memo(({ label, value, onChange, rows = 3, required = false, placeholder }) => (
   <div className="space-y-1.5">
-    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">{label}</label>
+    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">{label}</label>
     <textarea
       rows={rows}
       required={required}
       placeholder={placeholder}
-      className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-medium text-sm transition-all resize-none"
+      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all resize-none shadow-sm"
       value={value}
       onChange={onChange}
     />
@@ -57,9 +57,11 @@ function AdminEvents() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setOpenMenuId(null);
+      // Check if click is inside any dropdown menu or trigger button
+      if (event.target.closest('[data-menu-dropdown]') || event.target.closest('[data-menu-trigger]')) {
+        return;
       }
+      setOpenMenuId(null);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -103,7 +105,7 @@ function AdminEvents() {
   useEffect(() => {
     // Debounce search
     const timer = setTimeout(() => {
-        fetchEvents();
+      fetchEvents();
     }, 500);
     return () => clearTimeout(timer);
   }, [searchTerm, filterType, filterStatus, filterProvince, filterStartDate, filterEndDate]);
@@ -118,7 +120,7 @@ function AdminEvents() {
       if (filterProvince) params.append("province", filterProvince);
       if (filterStartDate) params.append("startDate", filterStartDate);
       if (filterEndDate) params.append("endDate", filterEndDate);
-      
+
       const { data } = await API.get(`/events?${params.toString()}`);
       setEvents(data.data || []);
     } catch (error) {
@@ -156,21 +158,21 @@ function AdminEvents() {
   const safeParseArr = (arr) => {
     if (!arr) return [];
     if (typeof arr === 'string') {
-        try {
-            const parsed = JSON.parse(arr);
-            return Array.isArray(parsed) ? parsed : [arr];
-        } catch (e) {
-            return arr.split(',').map(s => s.trim()).filter(Boolean);
-        }
+      try {
+        const parsed = JSON.parse(arr);
+        return Array.isArray(parsed) ? parsed : [arr];
+      } catch (e) {
+        return arr.split(',').map(s => s.trim()).filter(Boolean);
+      }
     }
     if (Array.isArray(arr)) {
-        if (arr.length === 1 && typeof arr[0] === 'string' && arr[0].startsWith('[')) {
-            try {
-                const parsed = JSON.parse(arr[0]);
-                if (Array.isArray(parsed)) return parsed;
-            } catch (e) {}
-        }
-        return arr;
+      if (arr.length === 1 && typeof arr[0] === 'string' && arr[0].startsWith('[')) {
+        try {
+          const parsed = JSON.parse(arr[0]);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) { }
+      }
+      return arr;
     }
     return [];
   };
@@ -201,11 +203,11 @@ function AdminEvents() {
       });
     } else {
       setEditingEvent(null);
-      setFormData({ 
-        title: "", date: "", startDate: "", endDate: "", location: "", venue: "", status: "Draft", 
+      setFormData({
+        title: "", date: "", startDate: "", endDate: "", location: "", venue: "", status: "Draft",
         description: "", fullDescription: "", organizer: "Code for Change", type: "workshop",
         registrationLink: "", registrationDeadline: "", speakers: [], highlights: [], benefits: [],
-        province: "", imageFile: null, imagePreview: "" 
+        province: "", imageFile: null, imagePreview: ""
       });
     }
     setIsModalOpen(true);
@@ -305,7 +307,7 @@ function AdminEvents() {
     }));
   };
 
-  const filteredEvents = events.filter(e => 
+  const filteredEvents = events.filter(e =>
     e.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -339,11 +341,11 @@ function AdminEvents() {
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.text("Event Management Ledger", 14, 30);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 38);
-    
+
     const tableColumn = ["Date", "Event Title", "Province", "Location", "Status", "Type"];
     const tableRows = filteredEvents.map(e => [
       new Date(e.date).toLocaleDateString(),
@@ -371,7 +373,7 @@ function AdminEvents() {
     let content = "CODE FOR CHANGE\nEVENT MANAGEMENT REPORT\n\n";
     content += `Report Date: ${new Date().toLocaleString()}\n`;
     content += "==========================================\n\n";
-    
+
     filteredEvents.forEach((e, index) => {
       content += `${index + 1}. EVENT PROFILE\n`;
       content += `   Title: ${e.title}\n`;
@@ -382,7 +384,7 @@ function AdminEvents() {
       content += `   Type: ${e.type}\n`;
       content += "------------------------------------------\n";
     });
-    
+
     const blob = new Blob([content], { type: "application/msword" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -429,63 +431,62 @@ function AdminEvents() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       {/* Header - Responsive */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Event Management</h2>
-          <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Organize Community Events</p>
+          <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">Event Management</h2>
+          <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Organize Community Events</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <label className="flex items-center justify-center gap-3 bg-white text-slate-600 border border-slate-200 px-4 py-3 rounded-2xl hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm font-black text-[10px] uppercase tracking-widest cursor-pointer group flex-1 md:flex-none">
-            <FaDownload className="text-emerald-500 group-hover:bounce" /> <span className="hidden sm:inline">Import CSV</span><span className="sm:hidden">Import</span>
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <label className="flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-200 px-5 py-2.5 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm font-bold text-xs cursor-pointer group flex-1 md:flex-none">
+            <FaImport className="text-emerald-600" /> <span className="hidden sm:inline">Import CSV</span><span className="sm:hidden">Import</span>
             <input type="file" accept=".csv" className="hidden" onChange={handleImport} />
           </label>
-          
+
           <div className="relative group/export flex-1 md:flex-none">
-            <button className="w-full flex items-center justify-center gap-3 bg-white text-slate-600 border border-slate-200 px-4 py-3 rounded-2xl hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm font-black text-[10px] uppercase tracking-widest">
-              <FaFileCsv className="text-lg text-emerald-500" /> <span className="hidden sm:inline">Export</span>
+            <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-200 px-5 py-2.5 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm font-bold text-xs">
+              <FaDownload className="text-emerald-600" /> <span className="hidden sm:inline">Export</span>
             </button>
-            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate-100 opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-50 py-3 overflow-hidden">
-              <button onClick={exportToCSV} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all border-b border-gray-50">
-                <FaFileCsv className="text-emerald-500" /> CSV Schema
+            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-50 py-2 overflow-hidden">
+              <button onClick={exportToCSV} className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all">
+                <FaFileCsv className="text-emerald-600" /> CSV Schema
               </button>
-              <button onClick={exportToPDF} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all border-b border-gray-50">
-                <FaFilePdf className="text-rose-500" /> PDF Document
+              <button onClick={exportToPDF} className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all">
+                <FaFilePdf className="text-rose-600" /> PDF Document
               </button>
-              <button onClick={exportToWord} className="w-full px-6 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all">
-                <FaFileWord className="text-blue-500" /> MS Word Doc
+              <button onClick={exportToWord} className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all">
+                <FaFileWord className="text-blue-600" /> MS Word Doc
               </button>
             </div>
           </div>
 
           {hasPermission('event_create') && (
-            <button 
+            <button
               onClick={() => handleOpenModal()}
-              className="bg-emerald-600 text-white px-4 py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200 font-black text-[10px] uppercase tracking-widest flex-1 md:flex-none whitespace-nowrap"
+              className="bg-emerald-600 text-white px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all shadow-md shadow-emerald-200 font-bold text-xs flex-1 md:flex-none whitespace-nowrap"
             >
-              <FaPlus className="text-lg" /> <span className="hidden sm:inline">Create Event</span><span className="sm:hidden">New</span>
+              <FaPlus /> <span className="hidden sm:inline">Create Event</span><span className="sm:hidden">New</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+      <div className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 space-y-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search events by title..."
-              className="w-full pl-16 pr-8 py-4 bg-slate-50 rounded-xl outline-none text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-transparent rounded-xl outline-none text-gray-700 font-medium focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-emerald-500/10 transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div className="grid grid-cols-2 md:flex gap-3 md:gap-4 w-full md:w-auto">
             <select
-              className="w-full px-4 md:px-6 py-4 bg-slate-50 rounded-xl outline-none text-slate-600 font-bold text-xs uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-all border-r-[16px] border-r-transparent"
+              className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl outline-none text-gray-700 font-semibold text-xs transition-all appearance-none cursor-pointer"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
             >
@@ -495,7 +496,7 @@ function AdminEvents() {
               ))}
             </select>
             <select
-              className="w-full px-4 md:px-6 py-4 bg-slate-50 rounded-xl outline-none text-slate-600 font-bold text-xs uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-all border-r-[16px] border-r-transparent"
+              className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl outline-none text-gray-700 font-semibold text-xs transition-all appearance-none cursor-pointer"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
@@ -505,7 +506,7 @@ function AdminEvents() {
               ))}
             </select>
             <select
-              className="w-full px-4 md:px-6 py-4 bg-slate-50 rounded-xl outline-none text-slate-600 font-bold text-xs uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-all border-r-[16px] border-r-transparent"
+              className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl outline-none text-gray-700 font-semibold text-xs transition-all appearance-none cursor-pointer"
               value={filterProvince}
               onChange={(e) => setFilterProvince(e.target.value)}
             >
@@ -516,80 +517,82 @@ function AdminEvents() {
             </select>
           </div>
         </div>
-        
-        <div className="flex flex-col md:flex-row gap-4 items-center">
+
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="flex items-center gap-4 w-full md:w-auto">
             <div className="flex items-center gap-2 w-full md:w-auto">
-                 <label className="text-xs font-bold text-slate-400 uppercase tracking-wider min-w-[40px]">From:</label>
-                 <input 
-                    type="date" 
-                    className="flex-1 px-4 py-3 md:py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-600 outline-none hover:bg-slate-100 transition-all"
-                    value={filterStartDate} 
-                    onChange={(e) => setFilterStartDate(e.target.value)} 
-                 />
+              <label className="text-xs font-bold text-gray-500">From:</label>
+              <input
+                type="date"
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-100 focus:border-gray-300 rounded-lg text-xs font-semibold text-gray-700 outline-none transition-all"
+                value={filterStartDate}
+                onChange={(e) => setFilterStartDate(e.target.value)}
+              />
             </div>
             <div className="flex items-center gap-2 w-full md:w-auto">
-                 <label className="text-xs font-bold text-slate-400 uppercase tracking-wider min-w-[40px]">To:</label>
-                 <input 
-                    type="date" 
-                    className="flex-1 px-4 py-3 md:py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-600 outline-none hover:bg-slate-100 transition-all"
-                    value={filterEndDate} 
-                    onChange={(e) => setFilterEndDate(e.target.value)} 
-                 />
+              <label className="text-xs font-bold text-gray-500">To:</label>
+              <input
+                type="date"
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-100 focus:border-gray-300 rounded-lg text-xs font-semibold text-gray-700 outline-none transition-all"
+                value={filterEndDate}
+                onChange={(e) => setFilterEndDate(e.target.value)}
+              />
             </div>
-            <div className="flex-1 text-right w-full md:w-auto">
-                <button 
-                    onClick={() => { setSearchTerm(""); setFilterType(""); setFilterStatus(""); setFilterProvince(""); setFilterStartDate(""); setFilterEndDate(""); }}
-                    className="text-xs font-bold text-slate-400 hover:text-rose-500 uppercase tracking-widest transition-colors"
-                >
-                    Clear Filters
-                </button>
-            </div>
+          </div>
+          <div className="text-right w-full md:w-auto">
+            <button
+              onClick={() => { setSearchTerm(""); setFilterType(""); setFilterStatus(""); setFilterProvince(""); setFilterStartDate(""); setFilterEndDate(""); }}
+              className="text-xs font-bold text-gray-400 hover:text-rose-600 transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Events Content - Responsive Table/Cards */}
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[600px]">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[600px]">
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full w-full text-left">
-            <thead className="bg-slate-50/50 border-b border-slate-100">
-              <tr className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
+            <thead className="bg-gray-50/50 border-b border-gray-100">
+              <tr className="text-xs font-bold uppercase tracking-wider text-gray-500">
                 <th className="px-8 py-5">Event</th>
                 <th className="px-8 py-5">Date & Location</th>
                 <th className="px-8 py-5">Status & Type</th>
                 <th className="px-8 py-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-gray-50">
               {loading ? (
-                <tr><td colSpan="4" className="p-10 text-center text-slate-400">Loading events...</td></tr>
+                <tr><td colSpan="4" className="p-10 text-center text-gray-400">Loading events...</td></tr>
               ) : filteredEvents.length === 0 ? (
-                <tr><td colSpan="4" className="p-10 text-center text-slate-400">No events found.</td></tr>
+                <tr><td colSpan="4" className="p-10 text-center text-gray-400">No events found.</td></tr>
               ) : (
                 filteredEvents.map((event, index) => (
-                  <tr key={event._id || event.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} hover:bg-slate-100/50 transition-all`}>
+                  <tr key={event._id || event.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'} hover:bg-gray-50 transition-all`}>
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
                         {event.image && (
-                          <img src={event.image} alt={event.title} className="w-16 h-16 rounded-xl object-cover border border-slate-100" />
+                          <img src={event.image} alt={event.title} className="w-16 h-16 rounded-xl object-cover border border-gray-100" />
                         )}
                         <div>
-                          <div className="font-black text-slate-900 leading-tight text-base mb-1">{event.title}</div>
-                          <div className="text-xs text-slate-500 font-bold line-clamp-1">{event.description}</div>
+                          <div className="font-extrabold text-gray-900 leading-tight text-base mb-1">{event.title}</div>
+                          <div className="text-xs text-gray-500 font-medium line-clamp-1">{event.description}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-6">
                       <div className="space-y-2 text-sm">
-                        <div className="flex items-center gap-2 text-slate-700 font-medium">
+                        <div className="flex items-center gap-2 text-gray-700 font-medium">
                           <FaCalendarAlt className="text-emerald-500" />
                           {new Date(event.date).toLocaleDateString()}
                         </div>
-                        <div className="flex items-center gap-1.5 text-slate-700 font-medium">
+                        <div className="flex items-center gap-1.5 text-gray-700 font-medium">
                           <FaMapPin className="text-amber-500" />
                           {event.province || "N/A"}
                         </div>
-                        <div className="flex items-center gap-2 text-slate-700 font-medium">
+                        <div className="flex items-center gap-2 text-gray-700 font-medium">
                           <FaMapMarkerAlt className="text-blue-500" />
                           {event.location}
                         </div>
@@ -597,55 +600,53 @@ function AdminEvents() {
                     </td>
                     <td className="px-8 py-6">
                       <div className="space-y-2">
-                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${
-                          event.status === 'Published' || event.status === 'Live' ? 'bg-emerald-50 text-emerald-600' : 
-                          event.status === 'Completed' ? 'bg-slate-100 text-slate-600' : 'bg-amber-50 text-amber-600'
-                        }`}>
+                        <span className={`inline-flex px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${event.status === 'Published' || event.status === 'Live' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200/50' :
+                          event.status === 'Completed' ? 'bg-gray-100 text-gray-600 ring-1 ring-gray-200/50' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/50'
+                          }`}>
                           {event.status || 'Draft'}
                         </span>
-                        <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">{event.type}</div>
+                        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{event.type}</div>
                       </div>
                     </td>
                     <td className="px-8 py-6 text-right relative">
                       <button
+                        data-menu-trigger
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenMenuId(openMenuId === event._id ? null : event._id);
                         }}
-                        className="w-10 h-10 inline-flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-all"
+                        className="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-700 transition-all shadow-sm"
                       >
-                        <BsThreeDotsVertical />
+                        <BsThreeDotsVertical size={14} />
                       </button>
                       {openMenuId === event._id && (
-                        <div 
-                          ref={menuRef}
-                          className="absolute right-20 top-6 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
+                        <div
+                          data-menu-dropdown
+                          className="absolute right-20 top-6 w-40 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
                         >
-                          <Link 
+                          <Link
                             to={`/events/${event.slug || event._id || event.id}`}
                             target="_blank"
-                            className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-slate-700 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                            className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all"
                           >
-                            <BsEye className="text-emerald-500" /> View Detail
+                            <BsEye className="text-blue-500" /> View
                           </Link>
-                          <div className="h-[1px] bg-slate-50 my-1 mx-4"></div>
                           {hasPermission('event_update') && (
-                            <button 
+                            <button
                               onClick={() => { handleOpenModal(event); setOpenMenuId(null); }}
-                              className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-slate-700 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                              className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all"
                             >
-                              <BsPencil className="text-amber-500" /> Edit Event
+                              <BsPencil className="text-amber-500" /> Edit
                             </button>
                           )}
-                          <div className="h-[1px] bg-slate-50 my-1 mx-4"></div>
                           {hasPermission('event_delete') && (
-                            <button 
-                              onClick={() => { 
-                                  setEventToDelete(event);
-                                  setDeleteModalOpen(true);
-                                  setOpenMenuId(null); 
+                            <button
+                              onClick={() => {
+                                setEventToDelete(event);
+                                setDeleteModalOpen(true);
+                                setOpenMenuId(null);
                               }}
-                              className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-rose-500 hover:bg-rose-50 transition-all uppercase tracking-widest"
+                              className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-all"
                             >
                               <BsTrash /> Delete
                             </button>
@@ -663,62 +664,62 @@ function AdminEvents() {
         {/* Mobile Card View */}
         <div className="md:hidden p-4 space-y-4">
           {loading ? (
-             <div className="p-10 text-center text-slate-400">Loading events...</div>
+            <div className="p-10 text-center text-gray-400 font-medium">Loading events...</div>
           ) : filteredEvents.length === 0 ? (
-             <div className="p-10 text-center text-slate-400">No events found.</div>
+            <div className="p-10 text-center text-gray-400 font-medium">No events found.</div>
           ) : (
             filteredEvents.map((event) => (
-              <div key={event._id || event.id} className="bg-slate-50 rounded-2xl p-5 space-y-4 border border-slate-100 shadow-sm relative overflow-hidden">
-                 {/* Header with Menu */}
-                 <div className="flex justify-between items-start gap-4">
-                    <div className="flex gap-3">
-                       {event.image && <img src={event.image} alt="" className="w-12 h-12 rounded-xl object-cover" />}
-                       <div>
-                          <h3 className="font-black text-slate-900 text-sm leading-tight">{event.title}</h3>
-                          <span className={`inline-flex mt-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${
-                            event.status === 'Published' || event.status === 'Live' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
-                          }`}>
-                            {event.status || 'Draft'}
-                          </span>
-                       </div>
+              <div key={event._id || event.id} className="bg-white rounded-2xl p-5 space-y-4 border border-gray-100 shadow-sm relative overflow-hidden group">
+                {/* Header with Menu */}
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex gap-3">
+                    {event.image && <img src={event.image} alt="" className="w-12 h-12 rounded-xl object-cover shadow-sm" />}
+                    <div>
+                      <h3 className="font-extrabold text-gray-900 text-sm leading-tight">{event.title}</h3>
+                      <span className={`inline-flex mt-2 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${event.status === 'Published' || event.status === 'Live' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200/50' :
+                        event.status === 'Completed' ? 'bg-gray-100 text-gray-600 ring-1 ring-gray-200/50' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/50'
+                        }`}>
+                        {event.status || 'Draft'}
+                      </span>
                     </div>
-                    <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenMenuId(openMenuId === event._id ? null : event._id);
-                        }}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100 shrink-0"
-                    >
-                        <BsThreeDotsVertical size={14} className="text-slate-400" />
-                    </button>
-                 </div>
+                  </div>
+                  <button
+                    data-menu-trigger
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(openMenuId === event._id ? null : event._id);
+                    }}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm border border-gray-100 shrink-0 text-gray-400 hover:text-gray-700 transition-colors"
+                  >
+                    <BsThreeDotsVertical size={14} />
+                  </button>
+                </div>
 
-                 {/* Mobile Dropdown */}
-                  {/* Mobile Dropdown */}
-                  {openMenuId === event._id && (
-                    <div 
-                      ref={menuRef}
-                      className="absolute top-14 right-4 w-48 bg-white rounded-xl shadow-2xl border border-slate-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
-                    >
-                      <Link to={`/events/${event.slug || event._id}`} className="w-full px-4 py-2 text-left block text-xs font-bold text-slate-600 hover:bg-slate-50">View Detail</Link>
-                      {hasPermission('event_update') && (
-                        <button onClick={() => handleOpenModal(event)} className="w-full px-4 py-2 text-left text-xs font-bold text-slate-600 hover:bg-slate-50">Edit</button>
-                      )}
-                      {hasPermission('event_delete') && (
-                        <button onClick={() => { setEventToDelete(event); setDeleteModalOpen(true); }} className="w-full px-4 py-2 text-left text-xs font-bold text-rose-500 hover:bg-rose-50">Delete</button>
-                      )}
-                    </div>
-                 )}
-                 
-                 {/* Details Grid */}
-                 <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="bg-white p-3 rounded-xl border border-slate-100 flex items-center gap-2 text-slate-600 font-bold">
-                       <FaCalendarAlt className="text-emerald-500 shrink-0" /> {new Date(event.date).toLocaleDateString()}
-                    </div>
-                    <div className="bg-white p-3 rounded-xl border border-slate-100 flex items-center gap-2 text-slate-600 font-bold truncate">
-                       <FaMapMarkerAlt className="text-blue-500 shrink-0" /> <span className="truncate">{event.location}</span>
-                    </div>
-                 </div>
+                {/* Mobile Dropdown */}
+                {openMenuId === event._id && (
+                  <div
+                    data-menu-dropdown
+                    className="absolute top-14 right-4 w-40 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
+                  >
+                    <Link to={`/events/${event.slug || event._id}`} className="w-full px-5 py-2.5 text-left block text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-3"><BsEye className="text-blue-500" /> View</Link>
+                    {hasPermission('event_update') && (
+                      <button onClick={() => handleOpenModal(event)} className="w-full px-5 py-2.5 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-3"><BsPencil className="text-amber-500" /> Edit</button>
+                    )}
+                    {hasPermission('event_delete') && (
+                      <button onClick={() => { setEventToDelete(event); setDeleteModalOpen(true); }} className="w-full px-5 py-2.5 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-3"><BsTrash className="text-rose-500" /> Delete</button>
+                    )}
+                  </div>
+                )}
+
+                {/* Details Grid */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100 flex items-center gap-2 text-gray-600 font-semibold">
+                    <FaCalendarAlt className="text-emerald-500 shrink-0" /> {new Date(event.date).toLocaleDateString()}
+                  </div>
+                  <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-100 flex items-center gap-2 text-gray-600 font-semibold truncate">
+                    <FaMapMarkerAlt className="text-blue-500 shrink-0" /> <span className="truncate">{event.location}</span>
+                  </div>
+                </div>
               </div>
             ))
           )}
@@ -727,193 +728,225 @@ function AdminEvents() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-[3rem] w-full max-w-6xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="flex justify-between items-center px-10 py-8 border-b border-slate-50 flex-shrink-0">
+        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6">
+          <div className="bg-white rounded-3xl w-full max-w-5xl shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden max-h-[95vh] flex flex-col border border-gray-100">
+            <div className="flex justify-between items-center px-8 py-6 border-b border-gray-100 flex-shrink-0 bg-white">
               <div>
-                <h3 className="text-xl font-black text-slate-950 tracking-tight">
+                <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">
                   {editingEvent ? "Update Event" : "Create New Event"}
                 </h3>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Event Management</p>
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Event Details Configuration
+                </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-emerald-600 transition-all"
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all border border-transparent"
               >
                 <FaTimes />
               </button>
             </div>
-            
-            <form onSubmit={handleSubmit} className="p-10 space-y-8 overflow-y-auto scrollbar-hide">
-              {/* Basic Info */}
-              <div className="space-y-6">
-                <h4 className="text-xs font-black text-emerald-500 uppercase tracking-widest">Basic Information</h4>
-                <InputField label="Event Title" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} required placeholder="e.g., Tech Innovation Summit 2026" />
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <TextAreaField label="Short Description" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} required placeholder="Brief overview for listings" />
-                  <TextAreaField label="Full Description" value={formData.fullDescription} onChange={(e) => setFormData({...formData, fullDescription: e.target.value})} placeholder="Detailed event information" />
-                </div>
-              </div>
 
-              {/* Date & Location */}
-              <div className="space-y-6">
-                <h4 className="text-xs font-black text-emerald-500 uppercase tracking-widest">Date & Location</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  <InputField label="Main Date" type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} required />
-                  <InputField label="Start Date" type="date" value={formData.startDate} onChange={(e) => setFormData({...formData, startDate: e.target.value})} />
-                  <InputField label="End Date" type="date" value={formData.endDate} onChange={(e) => setFormData({...formData, endDate: e.target.value})} />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <InputField label="Location" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} required placeholder="e.g., Kathmandu, Nepal" />
-                  <InputField label="Venue" value={formData.venue} onChange={(e) => setFormData({...formData, venue: e.target.value})} placeholder="e.g., Hotel Yak & Yeti" />
-                </div>
-              </div>
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+              <div className="p-8 space-y-12 flex-1">
+                {/* Basic Info */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest shrink-0">Basic Information</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                  </div>
+                  <InputField label="Event Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required placeholder="e.g., Tech Innovation Summit 2026" />
 
-              {/* Event Details */}
-              <div className="space-y-6">
-                <h4 className="text-xs font-black text-emerald-500 uppercase tracking-widest">Event Configuration</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">Type</label>
-                    <select className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-sm font-medium" value={formData.type} onChange={(e) => setFormData({...formData, type: e.target.value})}>
-                      <option value="workshop">Workshop</option>
-                      <option value="hackathon">Hackathon</option>
-                      <option value="webinar">Webinar</option>
-                      <option value="conference">Conference</option>
-                      <option value="social_impact">Social Impact</option>
-                    </select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">Status</label>
-                    <select className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-sm font-medium" value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})}>
-                      <option value="Draft">Draft</option>
-                      <option value="Published">Published</option>
-                      <option value="Upcoming">Upcoming</option>
-                      <option value="Live">Live</option>
-                      <option value="Completed">Completed</option>
-                    </select>
-                  </div>
-                  <InputField label="Organizer" value={formData.organizer} onChange={(e) => setFormData({...formData, organizer: e.target.value})} required />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <InputField label="Registration Link" type="url" value={formData.registrationLink} onChange={(e) => setFormData({...formData, registrationLink: e.target.value})} placeholder="https://..." />
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4">Province</label>
-                    <select 
-                      className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-sm font-medium" 
-                      value={formData.province} 
-                      onChange={(e) => setFormData({...formData, province: e.target.value})}
-                    >
-                      <option value="">Select Province</option>
-                      {PROVINCES.map(p => (
-                        <option key={p} value={p}>{p}</option>
-                      ))}
-                    </select>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <TextAreaField label="Short Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required placeholder="Brief overview for listings" />
+                    <TextAreaField label="Full Description" value={formData.fullDescription} onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })} placeholder="Detailed event information" />
                   </div>
                 </div>
-                <div className="grid grid-cols-1">
-                  <InputField label="Registration Deadline" type="date" value={formData.registrationDeadline} onChange={(e) => setFormData({...formData, registrationDeadline: e.target.value})} />
-                </div>
-              </div>
 
-              {/* Speakers */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
-                  <FaUserTie /> Speakers & Facilitators
-                </h4>
-                <div className="grid grid-cols-4 gap-3">
-                  <input type="text" placeholder="Name" className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm" value={currentSpeaker.name} onChange={(e) => setCurrentSpeaker({...currentSpeaker, name: e.target.value})} />
-                  <input type="text" placeholder="Role" className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm" value={currentSpeaker.role} onChange={(e) => setCurrentSpeaker({...currentSpeaker, role: e.target.value})} />
-                  <input type="text" placeholder="Organization" className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm" value={currentSpeaker.organization} onChange={(e) => setCurrentSpeaker({...currentSpeaker, organization: e.target.value})} />
-                  <button type="button" onClick={addSpeaker} className="px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-bold hover:bg-emerald-600">Add</button>
+                {/* Date & Location */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 delay-75">
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest shrink-0">Date & Location</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <InputField label="Main Date" type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} required />
+                    <InputField label="Start Date" type="date" value={formData.startDate} onChange={(e) => setFormData({ ...formData, startDate: e.target.value })} />
+                    <InputField label="End Date" type="date" value={formData.endDate} onChange={(e) => setFormData({ ...formData, endDate: e.target.value })} />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <InputField label="Location (City)" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} required placeholder="e.g., Kathmandu, Nepal" />
+                    <InputField label="Venue Name" value={formData.venue} onChange={(e) => setFormData({ ...formData, venue: e.target.value })} placeholder="e.g., Hotel Yak & Yeti" />
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {formData.speakers.map((speaker, i) => (
-                    <div key={i} className="px-4 py-2 bg-slate-100 rounded-xl text-xs font-medium flex items-center gap-2">
-                      <span>{speaker.name} - {speaker.role}</span>
-                      <button type="button" onClick={() => removeSpeaker(i)} className="text-rose-500 hover:text-rose-700"><FaTimes size={10} /></button>
+
+                {/* Event Details */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 delay-150">
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest shrink-0">Event Configuration</h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Type</label>
+                      <select className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl outline-none text-sm font-medium focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer shadow-sm" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
+                        <option value="workshop">Workshop</option>
+                        <option value="hackathon">Hackathon</option>
+                        <option value="webinar">Webinar</option>
+                        <option value="conference">Conference</option>
+                        <option value="social_impact">Social Impact</option>
+                      </select>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Highlights & Benefits */}
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <h4 className="text-xs font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
-                    <FaLightbulb /> Event Highlights
-                  </h4>
-                  <div className="flex gap-2">
-                    <input type="text" id="highlight-input" placeholder="Add highlight..." className="flex-1 px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm" onKeyPress={(e) => { if (e.key === 'Enter') { e.preventDefault(); addToList('highlights', e.target.value); e.target.value = ''; }}} />
-                    <button type="button" onClick={() => { const input = document.getElementById('highlight-input'); addToList('highlights', input.value); input.value = ''; }} className="px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-bold">Add</button>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Status</label>
+                      <select className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl outline-none text-sm font-medium focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer shadow-sm" value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
+                        <option value="Draft">Draft</option>
+                        <option value="Published">Published</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Live">Live</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                    </div>
+                    <InputField label="Organizer" value={formData.organizer} onChange={(e) => setFormData({ ...formData, organizer: e.target.value })} required />
                   </div>
-                  <div className="space-y-1">
-                    {formData.highlights.map((h, i) => (
-                      <div key={i} className="px-3 py-2 bg-slate-50 rounded-lg text-xs flex justify-between items-center">
-                        <span>{h}</span>
-                        <button type="button" onClick={() => removeFromList('highlights', i)} className="text-rose-500"><FaTimes size={10} /></button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <InputField label="Registration Link" type="url" value={formData.registrationLink} onChange={(e) => setFormData({ ...formData, registrationLink: e.target.value })} placeholder="https://..." />
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Province</label>
+                      <select
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl outline-none text-sm font-medium focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer shadow-sm"
+                        value={formData.province}
+                        onChange={(e) => setFormData({ ...formData, province: e.target.value })}
+                      >
+                        <option value="">Select Province</option>
+                        {PROVINCES.map(p => (
+                          <option key={p} value={p}>{p}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1">
+                    <InputField label="Registration Deadline" type="date" value={formData.registrationDeadline} onChange={(e) => setFormData({ ...formData, registrationDeadline: e.target.value })} />
+                  </div>
+                </div>
+
+                {/* Speakers */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 delay-200">
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2 shrink-0">
+                      <FaUserTie className="text-emerald-500" /> Speakers & Facilitators
+                    </h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <input type="text" placeholder="Name" className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all shadow-sm" value={currentSpeaker.name} onChange={(e) => setCurrentSpeaker({ ...currentSpeaker, name: e.target.value })} />
+                    <input type="text" placeholder="Role" className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all shadow-sm" value={currentSpeaker.role} onChange={(e) => setCurrentSpeaker({ ...currentSpeaker, role: e.target.value })} />
+                    <input type="text" placeholder="Organization" className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all shadow-sm" value={currentSpeaker.organization} onChange={(e) => setCurrentSpeaker({ ...currentSpeaker, organization: e.target.value })} />
+                    <button type="button" onClick={addSpeaker} className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">Add Speaker</button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.speakers.map((speaker, i) => (
+                      <div key={i} className="px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-lg text-xs font-medium flex items-center gap-2 text-emerald-800 shadow-sm">
+                        <span><span className="font-bold">{speaker.name}</span> - {speaker.role}</span>
+                        <button type="button" onClick={() => removeSpeaker(i)} className="text-emerald-500 hover:text-rose-600 transition-colors ml-1"><FaTimes size={12} /></button>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
-                    <FaGift /> Attendee Benefits
-                  </h4>
-                  <div className="flex gap-2">
-                    <input type="text" id="benefit-input" placeholder="Add benefit..." className="flex-1 px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm" onKeyPress={(e) => { if (e.key === 'Enter') { e.preventDefault(); addToList('benefits', e.target.value); e.target.value = ''; }}} />
-                    <button type="button" onClick={() => { const input = document.getElementById('benefit-input'); addToList('benefits', input.value); input.value = ''; }} className="px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-bold">Add</button>
-                  </div>
-                  <div className="space-y-1">
-                    {formData.benefits.map((b, i) => (
-                      <div key={i} className="px-3 py-2 bg-slate-50 rounded-lg text-xs flex justify-between items-center">
-                        <span>{b}</span>
-                        <button type="button" onClick={() => removeFromList('benefits', i)} className="text-rose-500"><FaTimes size={10} /></button>
+
+                {/* Highlights & Benefits */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 delay-300">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 mb-2">
+                        <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2 shrink-0">
+                          <FaLightbulb className="text-emerald-500" /> Highlights
+                        </h4>
+                        <div className="h-px bg-gray-200 flex-1"></div>
                       </div>
-                    ))}
+                      <div className="flex gap-2">
+                        <input type="text" id="highlight-input" placeholder="Add highlight..." className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all shadow-sm" onKeyPress={(e) => { if (e.key === 'Enter') { e.preventDefault(); addToList('highlights', e.target.value); e.target.value = ''; } }} />
+                        <button type="button" onClick={() => { const input = document.getElementById('highlight-input'); addToList('highlights', input.value); input.value = ''; }} className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-sm hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-500/20">Add</button>
+                      </div>
+                      <div className="space-y-2">
+                        {formData.highlights.map((h, i) => (
+                          <div key={i} className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs flex justify-between items-center text-gray-700 shadow-sm">
+                            <span>{h}</span>
+                            <button type="button" onClick={() => removeFromList('highlights', i)} className="text-gray-400 hover:text-rose-500 transition-colors"><FaTimes /></button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 mb-2">
+                        <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2 shrink-0">
+                          <FaGift className="text-emerald-500" /> Benefits
+                        </h4>
+                        <div className="h-px bg-gray-200 flex-1"></div>
+                      </div>
+                      <div className="flex gap-2">
+                        <input type="text" id="benefit-input" placeholder="Add benefit..." className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all shadow-sm" onKeyPress={(e) => { if (e.key === 'Enter') { e.preventDefault(); addToList('benefits', e.target.value); e.target.value = ''; } }} />
+                        <button type="button" onClick={() => { const input = document.getElementById('benefit-input'); addToList('benefits', input.value); input.value = ''; }} className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-sm hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-500/20">Add</button>
+                      </div>
+                      <div className="space-y-2">
+                        {formData.benefits.map((b, i) => (
+                          <div key={i} className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs flex justify-between items-center text-gray-700 shadow-sm">
+                            <span>{b}</span>
+                            <button type="button" onClick={() => removeFromList('benefits', i)} className="text-gray-400 hover:text-rose-500 transition-colors"><FaTimes /></button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Image Upload */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-black text-emerald-500 uppercase tracking-widest">Event Poster</h4>
-                <div
-                  onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
-                  onClick={() => fileInputRef.current.click()}
-                  className={`relative border-2 border-dashed rounded-3xl flex flex-col items-center justify-center transition-all cursor-pointer overflow-hidden min-h-[250px] ${isDragging ? "border-emerald-500 bg-emerald-50" : "border-slate-200 bg-slate-50 hover:border-emerald-500"}`}
-                >
-                  <input type="file" className="hidden" ref={fileInputRef} accept="image/*" onChange={(e) => handleFile(e.target.files[0])} />
-                  {formData.imagePreview ? (
-                    <>
-                      <img src={formData.imagePreview} className="w-full h-full object-cover" alt="Preview" />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity text-white font-bold gap-2">
-                        <FaCloudUploadAlt /> Replace Image
+                {/* Image Upload */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 delay-500">
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2 shrink-0">
+                      <FaImage className="text-emerald-500" /> Event Poster
+                    </h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                  </div>
+                  <div
+                    onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
+                    onClick={() => fileInputRef.current.click()}
+                    className={`relative border-2 border-dashed rounded-3xl flex flex-col items-center justify-center transition-all cursor-pointer overflow-hidden min-h-[250px] ${isDragging ? "border-emerald-500 bg-emerald-50" : "border-gray-200 bg-gray-50 hover:border-emerald-400 hover:bg-emerald-50/50"}`}
+                  >
+                    <input type="file" className="hidden" ref={fileInputRef} accept="image/*" onChange={(e) => handleFile(e.target.files[0])} />
+                    {formData.imagePreview ? (
+                      <>
+                        <img src={formData.imagePreview} className="w-full h-full object-cover" alt="Preview" />
+                        <div className="absolute inset-0 bg-gray-900/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity text-white font-bold gap-2">
+                          <FaCloudUploadAlt className="text-2xl" /> Replace Poster Image
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center p-8 text-gray-400">
+                        <FaCloudUploadAlt className={`text-5xl mx-auto mb-4 ${isDragging ? "text-emerald-500 animate-bounce" : "text-gray-300"}`} />
+                        <p className="text-sm font-bold text-gray-600">Drop your event poster image here</p>
+                        <p className="text-xs mt-1">or click to browse from files</p>
                       </div>
-                    </>
-                  ) : (
-                    <div className="text-center p-6 text-slate-400">
-                      <FaCloudUploadAlt className={`text-4xl mx-auto mb-2 ${isDragging ? "text-emerald-500 animate-bounce" : ""}`} />
-                      <p className="text-sm font-bold text-slate-600">Drop your image here</p>
-                      <p className="text-xs">or click to browse</p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-4 pt-6 border-t border-slate-50">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:bg-slate-50 transition-all">Cancel</button>
-                <button 
-                  type="submit" 
-                  disabled={submitting} 
-                  className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl transition-all ${
-                    submitting 
-                      ? 'bg-slate-400 cursor-not-allowed text-white' 
-                      : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-100'
-                  }`}
+              <div className="p-6 border-t border-gray-100 flex gap-4 mt-auto bg-gray-50/50 shrink-0">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-xs uppercase tracking-widest text-gray-500 hover:bg-white hover:text-gray-700 transition-all shadow-sm focus:ring-2 focus:ring-gray-200">
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest shadow-md transition-all flex items-center justify-center gap-2 ${submitting
+                    ? 'bg-gray-400 cursor-not-allowed text-white shadow-none'
+                    : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200 focus:ring-4 focus:ring-emerald-500/20'
+                    }`}
                 >
+                  {submitting && <BsArrowRepeat className="animate-spin text-lg" />}
                   {submitting ? "Processing..." : (editingEvent ? "Update Event" : "Create Event")}
                 </button>
               </div>
@@ -922,11 +955,11 @@ function AdminEvents() {
         </div>
       )}
       {/* Delete Confirmation Modal */}
-      <DeleteModal 
+      <DeleteModal
         isOpen={deleteModalOpen}
         onClose={() => {
-            setDeleteModalOpen(false);
-            setEventToDelete(null);
+          setDeleteModalOpen(false);
+          setEventToDelete(null);
         }}
         onConfirm={handleDelete}
         title="Delete Event"

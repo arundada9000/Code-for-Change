@@ -38,14 +38,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await API.post("/auth/login", { email, password });
       const { user: userData } = response.data.data;
-      
+
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
       return { success: true };
     } catch (error) {
       console.error("Login failed:", error);
-      return { 
-        success: false, 
+      return {
+        success: false,
         message: error.response?.data?.message || "Login failed. Please check your credentials."
       };
     } finally {
@@ -72,21 +72,26 @@ export const AuthProvider = ({ children }) => {
   const hasPermission = (permission) => {
     if (!user) return false;
     const userRole = user.role?.toLowerCase();
-    
-    // Admin, Super Admin, and Tech Lead have all permissions
-    if (userRole === "admin" || userRole === "superadmin" || userRole === "tech-lead") {
+
+    // Admin, Super Admin have all permissions
+    if (userRole === "admin" || userRole === "superadmin") {
       return true;
     }
-    
+
+    // EB tech-lead gets admin-level access
+    if (userRole === "eb" && user.executiveDetails?.position === "tech-lead") {
+      return true;
+    }
+
     // Check for specific permission override in user object
     if (user.permissions?.includes(permission)) {
       return true;
     }
-    
+
     // Basic role-based permission check (if available in frontend)
     // For now, we mainly rely on the backend for enforcement, 
     // but this helper allows UI-level hiding of buttons.
-    return false; 
+    return false;
   };
 
   const value = {
@@ -97,7 +102,8 @@ export const AuthProvider = ({ children }) => {
     updateUserData,
     hasPermission,
     isAuthenticated: !!user,
-    isAdmin: ["admin", "superadmin", "tech-lead"].includes(user?.role?.toLowerCase()),
+    isAdmin: ["admin", "superadmin"].includes(user?.role?.toLowerCase()) ||
+      (user?.role?.toLowerCase() === "eb" && user?.executiveDetails?.position === "tech-lead"),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

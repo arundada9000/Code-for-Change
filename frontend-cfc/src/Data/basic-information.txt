@@ -1,6 +1,7 @@
 code for change website
 created by Sajilo Digital (sajilodigital.com.np)
 
+Code for change operates on national level , it has branches on different regions.
 Region wise color codes
   { name: "Kathmandu", colorCode: "#CA163A" },
   { name: "Pokhara", colorCode: "#F2CA50" },

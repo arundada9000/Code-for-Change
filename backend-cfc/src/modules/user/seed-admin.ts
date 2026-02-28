@@ -11,7 +11,7 @@ async function seedAdmin() {
     console.log("✓ Database connection established");
 
     const adminEmail = "sajhilodigital@gmail.com";
-    const plainPassword = "Admin@2025Secure!"; 
+    const plainPassword = "Admin@2025Secure!";
 
     // Check if admin already exists
     const existingAdmin = await UserTable.findOne({ email: adminEmail });
@@ -30,7 +30,7 @@ async function seedAdmin() {
       name: "System Administrator",
       email: adminEmail,
       password: hashedPassword,
-      role: "ADMIN",
+      role: "admin",
       isVerified: true,
       isActive: true,
       // Optional fields (uncomment if your schema has them)

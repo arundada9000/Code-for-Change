@@ -4,11 +4,9 @@
 export const ROLES = {
   SUPER_ADMIN: "superadmin",
   ADMIN: "admin",
-  TECH_LEAD: "tech-lead",
+  EB: "eb",
   CR: "cr",
-  PROJECT_LEAD: "project-lead",
-  GENERAL_MEMBER: "general-member",
-  CR_EB: "cr-eb",
+  GM: "gm",
   GUEST: "guest",
 } as const;
 
@@ -16,7 +14,27 @@ export type RoleKey = keyof typeof ROLES;
 export type RoleValue = (typeof ROLES)[RoleKey];
 
 // ────────────────────────────────────────────────
-// 2. Association Permissions
+// 2. EB Positions (sub-field for EB role)
+// ────────────────────────────────────────────────
+export const EB_POSITIONS = [
+  "tech-lead",
+  "project-lead",
+  "vice-project-lead",
+  "operation-lead",
+  "admin-lead",
+  "hr-lead",
+  "pr-lead",
+  "treasurer",
+  "vice-treasurer",
+  "executive-member",
+  "secretary",
+  "vice-secretary",
+] as const;
+
+export type EBPosition = (typeof EB_POSITIONS)[number];
+
+// ────────────────────────────────────────────────
+// 3. Association Permissions
 // ────────────────────────────────────────────────
 export const PERMISSIONS = {
   // Member Management
@@ -91,9 +109,9 @@ export type Permission = keyof typeof PERMISSIONS;
 export type PermissionValue = (typeof PERMISSIONS)[Permission];
 
 // ────────────────────────────────────────────────
-// 3. Role → Permissions mapping
+// 4. Role → Permissions mapping
 // ────────────────────────────────────────────────
-const BASE_EB_PERMISSIONS: PermissionValue[] = [
+const EB_PERMISSIONS: PermissionValue[] = [
   PERMISSIONS.MEMBER_VIEW,
   PERMISSIONS.MEMBER_VERIFY,
   PERMISSIONS.EVENT_CREATE,
@@ -115,7 +133,7 @@ const BASE_EB_PERMISSIONS: PermissionValue[] = [
 export const ROLE_PERMISSIONS: Record<RoleValue, PermissionValue[]> = {
   [ROLES.SUPER_ADMIN]: Object.values(PERMISSIONS),
   [ROLES.ADMIN]: Object.values(PERMISSIONS),
-  [ROLES.TECH_LEAD]: Object.values(PERMISSIONS), // Tech Lead now has full access
+  [ROLES.EB]: EB_PERMISSIONS,
   [ROLES.CR]: [
     PERMISSIONS.MEMBER_VIEW,
     PERMISSIONS.EVENT_VIEW,
@@ -126,9 +144,8 @@ export const ROLE_PERMISSIONS: Record<RoleValue, PermissionValue[]> = {
     PERMISSIONS.CERTIFICATE_VIEW,
     PERMISSIONS.PROFILE_UPDATE,
   ],
-  [ROLES.PROJECT_LEAD]: BASE_EB_PERMISSIONS,
-  [ROLES.GENERAL_MEMBER]: [
-    PERMISSIONS.MEMBER_VIEW, // Allow viewing dashboard/lists
+  [ROLES.GM]: [
+    PERMISSIONS.MEMBER_VIEW,
     PERMISSIONS.EVENT_VIEW,
     PERMISSIONS.BLOG_VIEW,
     PERMISSIONS.IMPACT_VIEW,
@@ -137,7 +154,6 @@ export const ROLE_PERMISSIONS: Record<RoleValue, PermissionValue[]> = {
     PERMISSIONS.CERTIFICATE_VIEW,
     PERMISSIONS.PROFILE_UPDATE,
   ],
-  [ROLES.CR_EB]: BASE_EB_PERMISSIONS,
   [ROLES.GUEST]: [
     PERMISSIONS.PROFILE_UPDATE,
   ],
@@ -146,3 +162,4 @@ export const ROLE_PERMISSIONS: Record<RoleValue, PermissionValue[]> = {
 export function getPermissionsForRole(role: RoleValue): PermissionValue[] {
   return ROLE_PERMISSIONS[role] ?? [];
 }
+

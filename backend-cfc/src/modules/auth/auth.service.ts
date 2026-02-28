@@ -14,8 +14,8 @@ export const register = async (data: any) => {
   const user = new UserTable({
     ...data,
     password: await hashPassword(data.password),
-    role: data.role || "guest",
-    isVerified: false, 
+    role: data.role || "gm",
+    isVerified: false,
     isActive: true,
     accountStatus: "pending",
     education: {
@@ -32,7 +32,7 @@ export const register = async (data: any) => {
       position: data.ebBody,
     },
   });
-  
+
   await user.save();
 
   return {
@@ -116,7 +116,7 @@ export const loginUser = async (
 
   // 7. Update lastLogin and loginHistory
   user.lastLogin = new Date();
-  
+
   // We can't easily get IP/Device here without passing them from controller, 
   // but we can add a placeholder or update the type later. 
   // For now, let's just push the date.
@@ -126,7 +126,7 @@ export const loginUser = async (
     device: "unknown",
     date: new Date(),
   });
-  
+
   // Limit history to last 10 entries
   if (user.loginHistory.length > 10) {
     user.loginHistory.shift();
@@ -151,6 +151,7 @@ export const loginUser = async (
     isActive: user.isActive,
     education: user.education,
     membership: user.membership,
+    executiveDetails: user.executiveDetails,
   };
 
   return {
@@ -178,13 +179,13 @@ export const forgetPassword = async (email: string) => {
   const otp = generateOTP();
   // 2. Secure Hashing
   const hashedOtp = await bcrypt.hash(otp, 10);
-  
+
   user.otp = hashedOtp;
   user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
   user.otpLastSentAt = now;
   user.otpAttempts = 0;
   user.otpVerified = false;
-  
+
   await user.save();
   await sendOTP(email, otp);
 };
@@ -218,12 +219,12 @@ export const verifyOTP = async (email: string, otp: string) => {
   user.otp = undefined;
   user.otpExpiry = undefined;
   user.otpAttempts = 0;
-  
+
   // Return short-lived transition token
   const resetToken = generateResetToken(email);
   user.resetPasswordToken = resetToken;
   user.resetPasswordExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins matching JWT
-  
+
   await user.save();
   return resetToken;
 };
@@ -265,7 +266,7 @@ export const resetPassword = async (email: string, resetToken: string, newPasswo
   user.resetPasswordToken = undefined;
   user.resetPasswordExpiry = undefined;
   user.otpVerified = false;
-  
+
   await user.save();
 };
 

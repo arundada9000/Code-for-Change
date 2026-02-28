@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  FaArrowLeft, FaCalendarAlt, FaMapMarkerAlt, FaUserTie, 
+import {
+  FaArrowLeft, FaCalendarAlt, FaMapMarkerAlt, FaUserTie,
   FaClock, FaMapPin, FaLink, FaEdit, FaTrash, FaExternalLinkAlt
 } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
@@ -21,7 +21,7 @@ function AdminEventDetail() {
   const fetchEventDetails = async () => {
     try {
       setLoading(true);
-      const res = await API.get(`/admin/events/${id}`);
+      const res = await API.get(`/events/${id}`);
       if (res.data.success) {
         setEvent(res.data.data);
       }
@@ -53,14 +53,14 @@ function AdminEventDetail() {
     <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <button 
-          onClick={() => navigate(-1)} 
+        <button
+          onClick={() => navigate(-1)}
           className="group flex items-center gap-3 bg-white px-6 py-3 rounded-2xl border border-slate-100 hover:bg-slate-900 transition-all shadow-sm"
         >
           <FaArrowLeft className="text-emerald-600 group-hover:text-white transition-colors" />
           <span className="text-xs font-black uppercase tracking-widest text-slate-900 group-hover:text-white transition-colors">Events List</span>
         </button>
-        
+
         <div className="flex items-center gap-3">
           <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600`}>
             {event.status}
@@ -75,9 +75,9 @@ function AdminEventDetail() {
       <div className="bg-white rounded-[3rem] overflow-hidden border border-slate-100 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="h-96 md:h-auto overflow-hidden">
-            <img 
-              src={event.bannerImage || event.image} 
-              alt={event.title} 
+            <img
+              src={event.bannerImage || event.image}
+              alt={event.title}
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
             />
           </div>
@@ -99,9 +99,9 @@ function AdminEventDetail() {
             </div>
 
             <div className="flex flex-wrap gap-4 pt-4">
-              <a 
-                href={`/events/${event.slug}`} 
-                target="_blank" 
+              <a
+                href={`/events/${event.slug}`}
+                target="_blank"
                 className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg"
               >
                 View Public <FaExternalLinkAlt />

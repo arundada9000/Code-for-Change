@@ -1,0 +1,252 @@
+
+> cfc@0.0.0 lint
+> eslint .
+
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\Common\PrivateRoute.jsx
+  6:11  error  'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\PageComponents\About\TeamSection.jsx
+  25:7  error  '_' is defined but never used  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\PageComponents\Donate\DonateSection.jsx
+  18:9  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\PageComponents\Events\BlogCard.jsx
+  3:8   error  'blog1' is defined but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+  7:27  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\PageComponents\Events\EventDetails.jsx
+   9:20  error  'slugParts' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+  18:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  16 |   useEffect(() => {
+  17 |     if (apiEvent) {
+> 18 |       setEvent(apiEvent);
+     |       ^^^^^^^^ Avoid calling setState() directly within an effect
+  19 |     }
+  20 |   }, [apiEvent]);
+  21 |  react-hooks/set-state-in-effect
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\PageComponents\Home\HeroSection.jsx
+  35:6  warning  React Hook useEffect has a missing dependency: 'data'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\PageComponents\Supporters.jsx
+  49:5   error    Error: Cannot reassign variable after render completes
+
+Reassigning `animationId` after render has completed can cause inconsistent behavior on subsequent renders. Consider using state instead.
+
+  47 |     };
+  48 |
+> 49 |     animationId = requestAnimationFrame(animate);
+     |     ^^^^^^^^^^^ Cannot reassign `animationId` after render completes
+  50 |
+  51 |     return () => cancelAnimationFrame(animationId);
+  52 |   }, []);  react-hooks/immutability
+  49:19  warning  Assignments to the 'animationId' variable from inside React Hook useEffect will be lost after each render. To preserve the value over time, store it in a useRef Hook and keep the mutable value in the '.current' property. Otherwise, you can move this variable directly inside useEffect                                                                                                                                                     react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\PageComponents\Testimonials.jsx
+  77:34  error    Error: Cannot access variable before it is declared
+
+`next` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  75 |   /* Auto slide */
+  76 |   useEffect(() => {
+> 77 |     const interval = setInterval(next, AUTO_DELAY);
+     |                                  ^^^^ `next` accessed before it is declared
+  78 |     return () => clearInterval(interval);
+  79 |   }, [visible]);
+  80 |
+
+   96 |   }, [index, animating, visible]);
+   97 |
+>  98 |   const next = () => {
+      |   ^^^^^^^^^^^^^^^^^^^^
+>  99 |     if (animating) return;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |     setAnimating(true);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |     trackRef.current.style.transition = "transform 0.6s ease";
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 102 |     setIndex((i) => i + 1);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 103 |   };
+      | ^^^^^ `next` is declared here
+  104 |
+  105 |   const prev = () => {
+  106 |     if (animating) return;  react-hooks/immutability
+  79:6   warning  React Hook useEffect has a missing dependency: 'next'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\UI\CertificatePreview.jsx
+  16:5  error  'tokenHash' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\UI\Modal\DeleteModal.jsx
+  11:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+   9 |       setTimeout(() => setIsAnimate(true), 10);
+  10 |     } else {
+> 11 |       setIsAnimate(false);
+     |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  12 |     }
+  13 |   }, [isOpen]);
+  14 |  react-hooks/set-state-in-effect
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Components\UI\Modal\Sidebar.jsx
+  1:17  error  'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Context\AuthContext.jsx
+   27:16  error  'error' is defined but never used                                                                                               no-unused-vars
+  106:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Hooks\useFetch.jsx
+  24:6  warning  React Hook useEffect has a missing dependency: 'initialData'. Either include it or remove the dependency array. If 'setData' needs the current value of 'initialData', you can also switch to useReducer instead of useState and read 'initialData' in the reducer  react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminBlogDetail.jsx
+  19:6  warning  React Hook useEffect has a missing dependency: 'fetchBlogDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminBlogs.jsx
+  108:6   warning  React Hook useEffect has a missing dependency: 'fetchBlogs'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  405:18  error    'error' is defined but never used                                                                              no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminDonations.jsx
+   70:6   warning  React Hook useEffect has a missing dependency: 'fetchDonations'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   81:14  error    'error' is defined but never used                                                                                  no-unused-vars
+   92:14  error    'error' is defined but never used                                                                                  no-unused-vars
+  107:14  error    'error' is defined but never used                                                                                  no-unused-vars
+  316:18  error    'error' is defined but never used                                                                                  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminEventDetail.jsx
+  19:6  warning  React Hook useEffect has a missing dependency: 'fetchEventDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminEvents.jsx
+  109:6   warning  React Hook useEffect has a missing dependency: 'fetchEvents'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  162:16  error    'e' is defined but never used                                                                                   no-unused-vars
+  171:18  error    'e' is defined but never used                                                                                   no-unused-vars
+  171:21  error    Empty block statement                                                                                           no-empty
+  423:18  error    'error' is defined but never used                                                                               no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminGallery.jsx
+  63:6  warning  React Hook useEffect has a missing dependency: 'fetchGallery'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminImpacts.jsx
+    1:27  error    'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                    no-unused-vars
+   91:6   warning  React Hook useEffect has a missing dependency: 'fetchImpacts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  104:14  error    'error' is defined but never used                                                                                no-unused-vars
+  215:14  error    'error' is defined but never used                                                                                no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminInternships.jsx
+   92:6   warning  React Hook useEffect has a missing dependency: 'fetchInternships'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  359:18  error    'error' is defined but never used                                                                                    no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminResources.jsx
+    1:27  error  'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   93:14  error  'error' is defined but never used                                              no-unused-vars
+  179:14  error  'error' is defined but never used                                              no-unused-vars
+  189:14  error  'error' is defined but never used                                              no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\AdminUsers.jsx
+   452:18  error  'error' is defined but never used                                                                                                                                                          no-unused-vars
+  1044:27  error  React Hook "useAuth" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  1044:68  error  React Hook "useAuth" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\Certificate.jsx
+  61:6  warning  React Hook useEffect has a missing dependency: 'fetchCertificates'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\Dashboard.jsx
+   1:38  error  'useMemo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+  18:10  error  'activeTab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  18:21  error  'setActiveTab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  85:50  error  'Icon' is defined but never used                                                              no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\Internship.jsx
+  61:6  warning  React Hook useEffect has a missing dependency: 'fetchApplications'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\Member.jsx
+   32:10  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                    no-unused-vars
+  371:18  error  'error' is defined but never used                                                                                                                                                          no-unused-vars
+  721:25  error  React Hook "useAuth" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  721:66  error  React Hook "useAuth" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  855:53  error  React Hook "useAuth" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\Profile.jsx
+  74:29  error  'Icon' is defined but never used  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Admin\UserDetail.jsx
+  19:6   warning  React Hook useEffect has a missing dependency: 'fetchUserDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  51:36  error    'Icon' is defined but never used                                                                                     no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Auth\Register.jsx
+  233:57  error  'Icon' is defined but never used  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\BlogDetail.jsx
+  10:20  error  'slugParts' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+  19:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  17 |     if (apiBlog) {
+  18 |       // Map backend to frontend
+> 19 |       setBlog({
+     |       ^^^^^^^ Avoid calling setState() directly within an effect
+  20 |         ...apiBlog,
+  21 |         coverImage: apiBlog.image,
+  22 |         date: apiBlog.publishedAt || apiBlog.createdAt,  react-hooks/set-state-in-effect
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\CertificateVerification.jsx
+  67:11  error  'err' is defined but never used  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\EventDetails.jsx
+  54:18  error  'e' is defined but never used  no-unused-vars
+  63:22  error  'e' is defined but never used  no-unused-vars
+  63:25  error  Empty block statement          no-empty
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Events.jsx
+  10:10  error  'events' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  11:10  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\ImpactDetail.jsx
+  80:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  78 |       ].filter(m => m.value !== undefined) : [];
+  79 |
+> 80 |       setItem({
+     |       ^^^^^^^ Avoid calling setState() directly within an effect
+  81 |         ...apiImpact,
+  82 |         location: apiImpact.location || "National",
+  83 |         dates: apiImpact.dates,  react-hooks/set-state-in-effect
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Internships.jsx
+  32:18  error  'e' is defined but never used  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\JoinUs.jsx
+  345:15  error  'data' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\Programming\React\cfc\CFC-Official-Website\frontend-cfc\src\Pages\Provinces.jsx
+   41:26  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                         no-unused-vars
+  510:7   error  '_' is defined but never used                                                                                                   no-unused-vars
+  571:21  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+Γ£û 75 problems (60 errors, 15 warnings)
+

@@ -39,13 +39,13 @@ export class GalleryService {
 
     try {
       const items = await Gallery.find(query).sort({ createdAt: -1 });
-      
+
       if (isCacheable) {
         redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(items)).catch(err => {
           console.warn("Redis gallery cache set failed:", err);
         });
       }
-      
+
       return items;
     } catch (error) {
       throw new AppError("Failed to fetch gallery items", 500);

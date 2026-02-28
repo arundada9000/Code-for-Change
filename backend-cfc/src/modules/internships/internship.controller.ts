@@ -102,7 +102,7 @@ export class InternshipController {
    */
   deleteInternship = asyncHandler(async (req: Request, res: Response) => {
     const internship = await internshipService.getInternshipById(req.params.id);
-    
+
     if (internship.companyLogo) {
       const publicId = extractPublicId(internship.companyLogo);
       if (publicId) {

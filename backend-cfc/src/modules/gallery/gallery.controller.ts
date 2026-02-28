@@ -55,7 +55,7 @@ export class GalleryController {
   });
 
   updateGalleryItem = asyncHandler(async (req: Request, res: Response) => {
-    let updateData = { 
+    let updateData = {
       ...req.body,
       ...(req.body.isFeatured !== undefined && {
         isFeatured: req.body.isFeatured === 'true' || req.body.isFeatured === true
@@ -93,7 +93,7 @@ export class GalleryController {
 
   deleteGalleryItem = asyncHandler(async (req: Request, res: Response) => {
     const item = await galleryService.getGalleryItemById(req.params.id);
-    
+
     if (item.imageUrl) {
       const publicId = extractPublicId(item.imageUrl);
       await deleteFromCloudinary(publicId);

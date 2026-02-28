@@ -16,6 +16,7 @@ function Register() {
     code: "",
     phone: "",
     collegeName: "",
+    role: "gm",
     ebBody: "",
     faculty: "",
     semester: "",
@@ -51,13 +52,13 @@ function Register() {
     setLoading(true);
     try {
       const formData = new FormData();
-      
+
       // Append basic form fields
       Object.entries(form).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      
-      formData.append("role", "guest");
+
+      // Role is already in form fields via Object.entries above
 
       // Append profile image if exists
       if (profilePicture) {
@@ -99,7 +100,7 @@ function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#FDFDFD] font-sans selection:bg-secondary/10 selection:text-secondary">
-      <SEO 
+      <SEO
         title="Create Account"
         description="Register for the Code for Change Nepal portal to access exclusive events, certificates, and community resources."
       />
@@ -111,7 +112,7 @@ function Register() {
           </h1>
           <p className="text-gray-500 font-medium mt-2">Join our student-led IT community and create change.</p>
         </Link>
-        
+
         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-secondary/5 border border-secondary/10 p-8 md:p-12">
           {error && (
             <div className="mb-8 bg-red-50 border border-red-100 text-red-600 px-6 py-4 rounded-2xl text-xs font-bold text-center animate-in fade-in zoom-in duration-300">
@@ -121,13 +122,13 @@ function Register() {
 
           <form onSubmit={handleRegister} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
-              
+
               {/* Personal Info Section */}
               <div className="space-y-6">
                 <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                   <FaUser className="text-secondary" /> Basic Information
                 </h3>
-                
+
                 <InputField label="Full Name" name="name" icon={FaUser} placeholder="Enter full name" value={form.name} onChange={handleChange} required />
                 <InputField label="Email Address" name="email" type="email" icon={FaEnvelope} placeholder="name@example.com" value={form.email} onChange={handleChange} required />
                 <InputField label="Contact Number" name="phone" type="tel" icon={FaPhone} placeholder="Enter contact" value={form.phone} onChange={handleChange} required />
@@ -139,14 +140,63 @@ function Register() {
                 <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                   <FaUniversity className="text-secondary" /> Association Details
                 </h3>
-                
+
                 <InputField label="College Name" name="collegeName" icon={FaUniversity} placeholder="Enter college name" value={form.collegeName} onChange={handleChange} required />
                 <InputField label="Faculty" name="faculty" icon={FaGraduationCap} placeholder="Enter faculty" value={form.faculty} onChange={handleChange} required />
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <InputField label="Semester" name="semester" icon={FaLayerGroup} placeholder="Semester" value={form.semester} onChange={handleChange} required />
-                  <InputField label="EB Body Role" name="ebBody" icon={FaUser} placeholder="e.g. Secretary" value={form.ebBody} onChange={handleChange} />
+                <InputField label="Semester" name="semester" icon={FaLayerGroup} placeholder="e.g. 5th" value={form.semester} onChange={handleChange} required />
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">I am joining as</label>
+                  <div className="relative group">
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                      <FaUser />
+                    </div>
+                    <select
+                      name="role"
+                      value={form.role}
+                      onChange={handleChange}
+                      required
+                      className="w-full pl-14 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                    >
+                      <option value="gm">General Member</option>
+                      <option value="eb">Executive Board (EB)</option>
+                      <option value="cr">Campus Representative (CR)</option>
+                      <option value="guest">Guest</option>
+                    </select>
+                  </div>
                 </div>
+
+                {form.role === 'eb' && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">EB Position</label>
+                    <div className="relative group">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                        <FaIdCard />
+                      </div>
+                      <select
+                        name="ebBody"
+                        value={form.ebBody}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-14 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                      >
+                        <option value="">Select Position</option>
+                        <option value="tech-lead">Tech Lead</option>
+                        <option value="project-lead">Project Lead</option>
+                        <option value="vice-project-lead">Vice Project Lead</option>
+                        <option value="operation-lead">Operation Lead</option>
+                        <option value="admin-lead">Admin Lead</option>
+                        <option value="hr-lead">HR Lead</option>
+                        <option value="pr-lead">PR Lead</option>
+                        <option value="treasurer">Treasurer</option>
+                        <option value="vice-treasurer">Vice Treasurer</option>
+                        <option value="executive-member">Executive Member</option>
+                        <option value="secretary">Secretary</option>
+                        <option value="vice-secretary">Vice Secretary</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">Province</label>
@@ -179,7 +229,7 @@ function Register() {
                       onChange={handleFileChange}
                       accept="image/*"
                     />
-                    <label 
+                    <label
                       htmlFor="profilePic"
                       className="w-full flex items-center gap-4 pl-6 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full cursor-pointer hover:bg-white hover:border-secondary/20 transition-all font-medium text-gray-400"
                     >
@@ -218,7 +268,7 @@ function Register() {
           </div>
         </div>
 
-        <button 
+        <button
           onClick={() => navigate("/")}
           className="mx-auto flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-secondary transition-colors"
         >

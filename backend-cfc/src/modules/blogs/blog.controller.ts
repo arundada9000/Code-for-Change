@@ -32,15 +32,15 @@ export class BlogController {
       const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.BLOGS);
       imageUrl = result.secure_url;
     } else {
-        // Validation for enterprise requirement: image is required
-        throw new AppError("Blog featured image is required", 400);
+      // Validation for enterprise requirement: image is required
+      throw new AppError("Blog featured image is required", 400);
     }
 
     const blogData = {
       ...req.body,
       image: imageUrl,
       // Ensure tags are handled as array even if sent as comma string
-      tags: typeof req.body.tags === 'string' 
+      tags: typeof req.body.tags === 'string'
         ? req.body.tags.split(',').map((t: string) => t.trim()).filter(Boolean)
         : req.body.tags,
       // Handle highlights
@@ -73,11 +73,11 @@ export class BlogController {
   });
 
   updateBlog = asyncHandler(async (req: Request, res: Response) => {
-    let updateData = { 
+    let updateData = {
       ...req.body,
       // Handle tags if present
       ...(req.body.tags && {
-        tags: typeof req.body.tags === 'string' 
+        tags: typeof req.body.tags === 'string'
           ? req.body.tags.split(',').map((t: string) => t.trim()).filter(Boolean)
           : req.body.tags
       }),
@@ -131,7 +131,7 @@ export class BlogController {
 
   deleteBlog = asyncHandler(async (req: Request, res: Response) => {
     const blog = await blogService.getBlogById(req.params.id);
-    
+
     if (blog.image) {
       const publicId = blog.image.split("/").pop()?.split(".")[0];
       if (publicId) {

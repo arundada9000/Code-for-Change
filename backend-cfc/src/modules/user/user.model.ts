@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IUser } from "./user.interface.js";
-import { ROLES, PERMISSIONS, PermissionValue } from "../../shared/configs/permissions.js";
+import { ROLES, PERMISSIONS, PermissionValue, EB_POSITIONS } from "../../shared/configs/permissions.js";
 
 export const PROVINCES = [
   "Kathmandu",
@@ -90,7 +90,7 @@ const userSchema = new Schema(
       enum: Object.values(ROLES),
       required: [true, "User role is required"],
       lowercase: true,
-      default: "guest",
+      default: "gm",
       index: true,
     },
 
@@ -194,7 +194,10 @@ const userSchema = new Schema(
     },
 
     executiveDetails: {
-      position: String,
+      position: {
+        type: String,
+        enum: [...EB_POSITIONS],
+      },
       department: String,
       termStart: Date,
       termEnd: Date,
