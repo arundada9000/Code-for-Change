@@ -16,7 +16,7 @@ import {
 import { hashPassword } from "../../shared/utils/hash.js";
 import { ROLES } from "../../shared/configs/permissions.js";
 import { UserTable } from "./user.model.js";
-import { AppError } from "../../shared/utils/appError.js";
+import { AppError } from "../../shared/utils/errorHandler.js";
 import { Types } from "mongoose";
 
 // Create user function with proper Promise return type
@@ -182,8 +182,7 @@ export const updateUser = async (
       updatePayload.facebook = data.facebook;
     if (typeof data.website === "string")
       updatePayload.website = data.website;
-    if (typeof data.profileImage === "string")
-      updatePayload.profileImage = data.profileImage;
+
 
     // Helper to parse potential JSON string
     const parseNested = (val: any) => {
@@ -299,56 +298,42 @@ export const addUserPermissionService = async (
   }
 
   try {
-    // Atomic update - best practice (prevents race conditions)
-    const updatedUser = await UserTable.findOneAndUpdate(
-      {
-        _id: userId,
-        permissions: { $ne: permission }, // only update if not already present
-      },
-      {
-        $addToSet: { permissions: permission },
-      },
-      {
-        new: true, // return updated document
-        select: "permissions role email name", // only needed fields
-        lean: true, // plain JS object, better performance
-      }
-    );
+    // 1. Check if target user exists and get their role BEFORE any modification
+    const targetUser = await UserTable.findById(userId)
+      .select("permissions role email name")
+      .lean();
 
-    if (!updatedUser) {
-      // Two possible cases: user not found OR permission already existed
-      const userExists = await UserTable.exists({ _id: userId });
+    if (!targetUser) {
+      throw new AppError("User not found", 404);
+    }
 
-      if (!userExists) {
-        throw new AppError("User not found", 404);
-      }
+    // 2. Admin protection check BEFORE the update
+    if (targetUser.role === ROLES.ADMIN && currentUser.role !== ROLES.ADMIN) {
+      throw new AppError("Cannot modify permissions of admin accounts", 403);
+    }
 
-      // Permission already existed → fetch current state
-      const existingUser = await UserTable.findById(userId)
-        .select("permissions role email name")
-        .lean();
-
+    // 3. Check if permission already exists (idempotent)
+    if (targetUser.permissions.includes(permission)) {
       return {
-        user: existingUser!,
+        user: targetUser,
         message: `Permission "${permission}" already exists`,
         action: "no-op",
       };
     }
-    // Idempotent operation
-    if (!updatedUser.permissions.includes(permission)) {
-      return {
-        user: updatedUser,
-        message: `Permission '${permission}' not found`,
-        action: "no-op",
-      };
-    }
 
-    if (updatedUser.role === ROLES.ADMIN && currentUser.role !== ROLES.ADMIN) {
-      throw new AppError("Cannot modify permissions of admin accounts", 403);
-    }
+    // 4. Atomic update - safe to proceed now
+    const updatedUser = await UserTable.findByIdAndUpdate(
+      userId,
+      { $addToSet: { permissions: permission } },
+      {
+        new: true,
+        select: "permissions role email name",
+        lean: true,
+      }
+    );
 
     return {
-      user: updatedUser,
+      user: updatedUser!,
       message: `Permission "${permission}" successfully added`,
       action: "added",
     };
@@ -357,12 +342,10 @@ export const addUserPermissionService = async (
       throw error;
     }
 
-    // In real project → log the original error here (winston/sentry/...)
     console.error("addUserPermissionService unexpected error:", error);
 
     throw new AppError(
-      `Failed to add permission: ${
-        error instanceof Error ? error.message : "Unknown error"
+      `Failed to add permission: ${error instanceof Error ? error.message : "Unknown error"
       }`,
       500
     );
@@ -413,8 +396,7 @@ export const removeUserPermissionService = async (
     }
 
     throw new AppError(
-      `Failed to remove permission: ${
-        error instanceof Error ? error.message : "Unknown error"
+      `Failed to remove permission: ${error instanceof Error ? error.message : "Unknown error"
       }`,
       500
     );
@@ -425,7 +407,7 @@ export const removeUserPermissionService = async (
  * Get public list of users (verified members/executives)
  */
 export const getPublicUsers = async (filters: { province?: string } = {}) => {
-  const query: any = { 
+  const query: any = {
     isDeleted: false,
     isActive: true // Only show active/verified users
   };
@@ -436,6 +418,6 @@ export const getPublicUsers = async (filters: { province?: string } = {}) => {
 
   // Only return safe, non-sensitive fields
   return await UserTable.find(query)
-    .select("name role province profileImage education.collegeName ebBody bio")
+    .select("name role province profileImage education.collegeName executiveDetails bio")
     .sort({ createdAt: -1 });
 };

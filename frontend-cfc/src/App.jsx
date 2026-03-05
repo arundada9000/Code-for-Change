@@ -21,29 +21,30 @@ import ImpactDetail from "./Pages/ImpactDetail";
 import Gallery from "./Pages/Gallery";
 import Contact from "./Pages/Contact";
 import FAQ from "./Pages/FAQ";
+import NotFound from "./Pages/NotFound";
 import MainLayout from "./Layout/MainLayout";
 import useScrollToTop from "./Hooks/useScrollToTop";
 import { lazy, Suspense } from "react";
 
-// Admin
+// Admin (all lazy-loaded for performance)
 import AdminLayout from "./Layout/AdminLayout";
 const Dashboard = lazy(() => import("./Pages/Admin/Dashboard"));
-import AdminEvents from "./Pages/Admin/AdminEvents";
-import AdminBlogs from "./Pages/Admin/AdminBlogs";
-import AdminDonations from "./Pages/Admin/AdminDonations";
-import AdminUsers from "./Pages/Admin/AdminUsers";
-import AdminInternships from "./Pages/Admin/AdminInternships";
+const AdminEvents = lazy(() => import("./Pages/Admin/AdminEvents"));
+const AdminBlogs = lazy(() => import("./Pages/Admin/AdminBlogs"));
+const AdminDonations = lazy(() => import("./Pages/Admin/AdminDonations"));
+const AdminUsers = lazy(() => import("./Pages/Admin/AdminUsers"));
+const AdminInternships = lazy(() => import("./Pages/Admin/AdminInternships"));
 const Member = lazy(() => import("./Pages/Admin/Member"));
-import Certificate from "./Pages/Admin/Certificate";
-import Internship from "./Pages/Admin/Internship";
-import Profile from "./Pages/Admin/Profile";
-import UserDetail from "./Pages/Admin/UserDetail";
-import AdminEventDetail from "./Pages/Admin/AdminEventDetail";
-import AdminBlogDetail from "./Pages/Admin/AdminBlogDetail";
-import AdminGallery from "./Pages/Admin/AdminGallery";
-import AdminImpacts from "./Pages/Admin/AdminImpacts";
-import AdminResources from "./Pages/Admin/AdminResources";
-import SajiloDigital from "./Pages/Admin/SajiloDigital";
+const Certificate = lazy(() => import("./Pages/Admin/Certificate"));
+const Internship = lazy(() => import("./Pages/Admin/Internship"));
+const Profile = lazy(() => import("./Pages/Admin/Profile"));
+const UserDetail = lazy(() => import("./Pages/Admin/UserDetail"));
+const AdminEventDetail = lazy(() => import("./Pages/Admin/AdminEventDetail"));
+const AdminBlogDetail = lazy(() => import("./Pages/Admin/AdminBlogDetail"));
+const AdminGallery = lazy(() => import("./Pages/Admin/AdminGallery"));
+const AdminImpacts = lazy(() => import("./Pages/Admin/AdminImpacts"));
+const AdminResources = lazy(() => import("./Pages/Admin/AdminResources"));
+const SajiloDigital = lazy(() => import("./Pages/Admin/SajiloDigital"));
 import AuthLayout from "./Layout/AuthLayout";
 import Login from "./Pages/Auth/Login";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
@@ -84,10 +85,10 @@ function App() {
               element={<InternshipApplication />}
             ></Route>
             <Route path="/internships" element={<Internships />}></Route>
-            <Route path="donate-us" element={<DonateUs />}></Route>
-            <Route path="gallery" element={<Gallery />}></Route>
-            <Route path="contact-us" element={<Contact />}></Route>
-            <Route path="faq" element={<FAQ />}></Route>
+            <Route path="/donate-us" element={<DonateUs />}></Route>
+            <Route path="/gallery" element={<Gallery />}></Route>
+            <Route path="/contact-us" element={<Contact />}></Route>
+            <Route path="/faq" element={<FAQ />}></Route>
             <Route path="/donation-success" element={<DonationSuccess />} />
             <Route path="/donation-failure" element={<DonationFailure />} />
             <Route path="/register" element={<Register />} />
@@ -99,7 +100,7 @@ function App() {
               element={<ProvinceDetails />}
             />
             <Route path="/our-impact/:id" element={<ImpactDetail />} />
-            <Route path="*" element={<Home />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
 
           {/* Auth routes */}

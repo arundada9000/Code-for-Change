@@ -80,6 +80,7 @@ const userSchema = new Schema(
       type: String,
       lowercase: true,
     },
+    province: { type: String, trim: true },
     address: { type: String, trim: true },
 
     // ────────────────────────────────────────────────

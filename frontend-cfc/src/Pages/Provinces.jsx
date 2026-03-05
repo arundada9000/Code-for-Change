@@ -71,11 +71,11 @@ const Provinces = () => {
         _id: u._id,
         name: u.name,
         role: u.role,
-        position: u.ebBody || u.role,
+        position: u.executiveDetails?.position || u.role,
         image: u.profileImage, // Map profileImage to image
         college: u.education?.collegeName,
         bio: u.bio,
-        type: u.role === "member" ? "volunteer" : "executive", // Categorize for filtering below
+        type: u.role === "gm" ? "volunteer" : "executive", // Categorize for filtering below
         isPublicUser: true,
       })) || [];
 
@@ -90,7 +90,7 @@ const Provinces = () => {
 
   const provincialVolunteers =
     allProvincialMembers?.filter(
-      (m) => m.type === "volunteer" || m.role === "member",
+      (m) => m.type === "volunteer" || m.role === "gm",
     ) || [];
 
   // console.log(provincialVolunteers);
@@ -100,7 +100,8 @@ const Provinces = () => {
       (m) =>
         m.type === "executive" ||
         m.tier === "representative" ||
-        m.role !== "member",
+        m.role === "eb" ||
+        m.role === "cr",
     ) || [];
 
   // console.log(provincialExecutives);
@@ -280,11 +281,10 @@ const Provinces = () => {
                     key={p.name}
                     onClick={() => setActiveTab(p.name)}
                     className={`px-6 py-3 rounded-full tracking-wider cursor-pointer text-sm font-medium uppercase transition-all duration-500 border-2
-              ${
-                activeTab === p.name
-                  ? "bg-white -translate-y-1"
-                  : "bg-white-50 text-white hover:bg-gray-100"
-              }`}
+              ${activeTab === p.name
+                        ? "bg-white -translate-y-1"
+                        : "bg-white-50 text-white hover:bg-gray-100"
+                      }`}
                   >
                     {p.name}
                   </button>
@@ -534,9 +534,8 @@ const TeamCard = ({ member, variant }) => {
               target="_blank"
               rel="noopener noreferrer"
               className={`lg:w-9 w-11 h-11 lg:h-9  rounded-xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
-      opacity-100 md:opacity-0 ${
-        idx < 3 ? "md:-translate-x-12" : "md:translate-x-12"
-      }
+      opacity-100 md:opacity-0 ${idx < 3 ? "md:-translate-x-12" : "md:translate-x-12"
+                }
       group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
               style={{ transitionDelay: `${idx * 100}ms` }}
             >

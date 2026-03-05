@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
-import { AppError } from "../../shared/utils/appError.js";
-import { asyncHandler } from "../../shared/utils/asyncHandler.js";
+import { AppError, asyncHandler } from "../../shared/utils/errorHandler.js";
 import { successResponse } from "../../shared/utils/response.js";
 import { uploadToCloudinary, deleteFromCloudinary, CLOUDINARY_FOLDERS, extractPublicId } from "../../shared/utils/cloudinary.js";
 import {
@@ -16,7 +15,7 @@ export const createUserController = asyncHandler(
   async (req: Request, res: Response) => {
     try {
       const user = await createUser(req.body);
-      console.log(user);
+
       successResponse(res, user, "User created", 201);
     } catch (error: any) {
       res.status(400).json({
@@ -117,7 +116,7 @@ export const addUserPermission = async (req: AuthRequest, res: Response) => {
     const result = await addUserPermissionService(
       userId,
       permission,
-     currentUser
+      currentUser
     );
 
     return res.status(200).json({
@@ -160,7 +159,7 @@ export const removeUserPermission = async (req: AuthRequest, res: Response) => {
     const { userId } = req.params;
     const { permission } = req.body;
 
-    console.log({ userId, permission });
+
 
     const updatedUser = await removeUserPermissionService(
       userId,

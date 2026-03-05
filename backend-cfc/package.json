@@ -15,7 +15,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.8.0",
     "compression": "^1.8.1",
@@ -29,7 +28,6 @@
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
     "ioredis": "^5.9.2",
-    "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.2",
     "morgan": "^1.10.1",
@@ -42,11 +40,9 @@
     "socket.io": "^4.8.3",
     "streamifier": "^0.1.1",
     "xss-clean": "^0.1.4",
-    "yup": "^1.7.1",
     "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.10",
@@ -54,7 +50,6 @@
     "@types/express": "^5.0.6",
     "@types/express-mongo-sanitize": "^2.1.2",
     "@types/hpp": "^0.2.7",
-    "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/multer": "^2.0.0",
@@ -64,7 +59,6 @@
     "@types/qrcode": "^1.5.6",
     "@types/socket.io": "^3.0.2",
     "@types/streamifier": "^0.1.2",
-    "@types/yup": "^0.32.0",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",

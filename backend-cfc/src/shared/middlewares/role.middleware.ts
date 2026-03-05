@@ -7,7 +7,7 @@ import {
   RoleValue,
 } from "../configs/permissions.js";
 import { AuthRequest } from "./auth.middleware.js";
-import { UserTable } from "modules/user/user.model.js";
+import { UserTable } from "../../modules/user/user.model.js";
 
 export const requireAnyPermission = (
   ...requiredPermissions: PermissionValue[]

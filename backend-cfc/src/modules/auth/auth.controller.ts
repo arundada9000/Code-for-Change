@@ -26,15 +26,15 @@ import { uploadToCloudinary, CLOUDINARY_FOLDERS } from "../../shared/utils/cloud
 // ... (rest of imports)
 
 export const registerController = asyncHandler(async (req: Request, res: Response) => {
-    let registrationData = { ...req.body };
-    
-    if (req.file) {
-      const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.PROFILES);
-      registrationData.profileImage = result.secure_url;
-    }
+  let registrationData = { ...req.body };
 
-    const user = await service.register(registrationData);
-    successResponse(res, user, "Registered successfully. You can now login.");
+  if (req.file) {
+    const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.PROFILES);
+    registrationData.profileImage = result.secure_url;
+  }
+
+  const user = await service.register(registrationData);
+  successResponse(res, user, "Registered successfully. You can now login.");
 });
 
 export const verifyOTPController = asyncHandler(
@@ -49,7 +49,10 @@ export const loginController = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    const { token, user } = await service.loginUser({ email, password });
+    const { token, user } = await service.loginUser({ email, password }, {
+      ip: req.ip || "unknown",
+      device: req.headers["user-agent"] || "unknown",
+    });
 
     // Set secure cookie
     res.cookie("jwt", token, {
@@ -78,7 +81,7 @@ export const logoutController = asyncHandler(
     res.clearCookie("jwt", {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       path: "/",
     });
 

@@ -145,7 +145,7 @@ const ProvinceDetails = () => {
               _id: u._id,
               name: u.name,
               role: u.role,
-              position: u.ebBody || u.role,
+              position: u.executiveDetails?.position || u.role,
               image: u.profileImage,
               isPublicUser: true,
             })) || [];
@@ -366,9 +366,9 @@ const ProvinceDetails = () => {
 
         {loading ? (
           <div className="text-center text-gray-500">Loading team...</div>
-        ) : team.length > 0 ? (
+        ) : team.filter(m => m.role === 'eb').length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-            {team.map((member, i) => (
+            {team.filter(m => m.role === 'eb').map((member, i) => (
               <TeamMemberCard
                 key={member._id || i}
                 member={member}
@@ -378,7 +378,7 @@ const ProvinceDetails = () => {
           </div>
         ) : (
           <div className="text-center text-gray-400 italic">
-            No team members found for this region.
+            No executive board members found for this region.
           </div>
         )}
       </section>
@@ -392,33 +392,23 @@ const ProvinceDetails = () => {
             Board of CR
           </p>
         </div>
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-12">
-          {[...Array(25)].map((_, i) => (
-            <div
-              key={i}
-              className="text-center group"
-              style={{ "--hover-color": themeColor }} // Set CSS variable dynamically
-            >
-              <div className="relative mb-6">
-                <div className="absolute inset-0 rounded-full scale-110 border-2 border-dashed border-slate-200 transition-all duration-700 group-hover:border-[var(--hover-color)] group-hover:rotate-45" />
-                <img
-                  src={`https://i.pravatar.cc/300?u=${i + activeProvince?.name}`}
-                  className="relative w-full aspect-square rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 shadow-xl"
-                  alt="Team"
-                />
-              </div>
-              <h4 className="font-black text-slate-900 tracking-tight">
-                Alex Jhonson
-              </h4>
-              <p
-                className="text-[10px] font-black uppercase tracking-widest mt-1"
-                style={{ color: themeColor }}
-              >
-                Chapter Lead
-              </p>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center text-gray-500">Loading representatives...</div>
+        ) : team.filter(m => m.role === 'cr').length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {team.filter(m => m.role === 'cr').map((member, i) => (
+              <TeamMemberCard
+                key={member._id || i}
+                member={member}
+                themeColor={themeColor}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 italic">
+            No college representatives found for this region.
+          </div>
+        )}
       </section>
 
       {/* General member */}
@@ -431,33 +421,23 @@ const ProvinceDetails = () => {
             Board of GM
           </p>
         </div>
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-12">
-          {[...Array(100)].map((_, i) => (
-            <div
-              key={i}
-              className="text-center group"
-              style={{ "--hover-color": themeColor }} // Set CSS variable dynamically
-            >
-              <div className="relative mb-6">
-                <div className="absolute inset-0 rounded-full scale-110 border-2 border-dashed border-slate-200 transition-all duration-700 group-hover:border-[var(--hover-color)] group-hover:rotate-45" />
-                <img
-                  src={`https://i.pravatar.cc/300?u=${i + activeProvince?.name}`}
-                  className="relative w-full aspect-square rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 shadow-xl"
-                  alt="Team"
-                />
-              </div>
-              <h4 className="font-black text-slate-900 tracking-tight">
-                Alex Jhonson
-              </h4>
-              <p
-                className="text-[10px] font-black uppercase tracking-widest mt-1"
-                style={{ color: themeColor }}
-              >
-                Chapter Lead
-              </p>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center text-gray-500">Loading members...</div>
+        ) : team.filter(m => m.role === 'gm').length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {team.filter(m => m.role === 'gm').map((member, i) => (
+              <TeamMemberCard
+                key={member._id || i}
+                member={member}
+                themeColor={themeColor}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 italic">
+            No general members found for this region.
+          </div>
+        )}
       </section>
       {/* 5.1 Central Advice & Leadership - Static */}
       <section className="bg-slate-50 py-12">

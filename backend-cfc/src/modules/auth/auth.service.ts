@@ -14,7 +14,7 @@ export const register = async (data: any) => {
   const user = new UserTable({
     ...data,
     password: await hashPassword(data.password),
-    role: data.role || "gm",
+    role: "gm",
     isVerified: false,
     isActive: true,
     accountStatus: "pending",
@@ -23,6 +23,7 @@ export const register = async (data: any) => {
       faculty: data.faculty,
       semester: data.semester,
     },
+    province: data.province,
     membership: {
       membershipId: data.code,
       joinedAt: new Date(),
@@ -59,6 +60,7 @@ export const getMe = async (userId: string) => {
     lastLogin: user.lastLogin,
     createdAt: (user as any).createdAt,
     updatedAt: (user as any).updatedAt,
+    province: user.province,
     education: user.education,
     membership: user.membership,
     executiveDetails: user.executiveDetails,
@@ -67,7 +69,8 @@ export const getMe = async (userId: string) => {
 
 // Login service function
 export const loginUser = async (
-  loginData: ILoginUserInput
+  loginData: ILoginUserInput,
+  requestMeta?: { ip?: string; device?: string }
 ): Promise<LoginResponse> => {
   // 1. Validate input
   const { email, password } = loginData;
@@ -122,8 +125,8 @@ export const loginUser = async (
   // For now, let's just push the date.
   user.loginHistory = user.loginHistory || [];
   user.loginHistory.push({
-    ip: "unknown", // To be updated via controller if needed
-    device: "unknown",
+    ip: requestMeta?.ip || "unknown",
+    device: requestMeta?.device || "unknown",
     date: new Date(),
   });
 
@@ -165,7 +168,10 @@ import bcrypt from "bcryptjs";
 
 export const forgetPassword = async (email: string) => {
   const user = await UserTable.findOne({ email });
-  if (!user) throw new Error("If an account exists with this email, an OTP has been sent.");
+  if (!user) {
+    // Return silently to avoid leaking user existence
+    return;
+  }
 
   // 1. Rate Limiting (60s cooldown)
   const now = new Date();
@@ -300,14 +306,8 @@ export const updateProfile = async (userId: string, data: any) => {
     };
   }
 
-  // Role-specific extensions
-  if (data.position || data.department) {
-    user.executiveDetails = {
-      ...user.executiveDetails,
-      position: data.position || user.executiveDetails?.position,
-      department: data.department || user.executiveDetails?.department,
-    };
-  }
+  // Note: executiveDetails, role, and permissions are NOT updatable by users
+  // Those can only be changed by admin via the admin user management endpoints
 
   await user.save();
   return user;
