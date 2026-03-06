@@ -7,6 +7,7 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../Context/AuthContext";
+import SEO from "../../Components/Common/SEO";
 
 function Login() {
   const navigate = useNavigate();
@@ -22,9 +23,9 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    
+
     const result = await login(form.email, form.password);
-    
+
     if (result.success) {
       navigate("/admin");
     } else {
@@ -34,11 +35,12 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#FDFDFD] font-sans selection:bg-secondary/10 selection:text-secondary">
+      <SEO title="Login" />
       <div className="w-full max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <Link to="/" className="block group">
-          <img src={logo} alt="CFC Logo" className="w-32 mx-auto group-hover:scale-105 transition-transform duration-300"/>         
-          
-          <div className="text-center space-y-4 mt-8">          
+          <img src={logo} alt="CFC Logo" className="w-32 mx-auto group-hover:scale-105 transition-transform duration-300" />
+
+          <div className="text-center space-y-4 mt-8">
             <h1 className="text-4xl font-bold tracking-tight text-primary">
               Code <span className="text-secondary">For Change</span>
             </h1>
@@ -102,7 +104,7 @@ function Login() {
                 <input type="checkbox" id="remember" className="w-4 h-4 border-secondary/20 rounded text-secondary focus:ring-secondary" />
                 <label htmlFor="remember" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer">Remember me</label>
               </div>
-              <button 
+              <button
                 type="button"
                 onClick={() => navigate("/forget-password")}
                 className="text-[10px] font-bold text-secondary uppercase tracking-widest hover:underline"
@@ -122,7 +124,7 @@ function Login() {
             <div className="text-center pt-4">
               <p className="text-xs text-gray-400 font-medium">
                 New here?{" "}
-                <button 
+                <button
                   type="button"
                   onClick={() => navigate("/register")}
                   className="text-secondary font-bold hover:underline"
@@ -135,7 +137,7 @@ function Login() {
         </div>
 
         <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-         Code for change Nepal
+          Code for change Nepal
         </p>
       </div>
     </div>

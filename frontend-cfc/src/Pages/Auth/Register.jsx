@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import {
   FaUser, FaEnvelope, FaLock, FaPhone, FaArrowRight, FaChevronLeft,
-  FaUniversity, FaGraduationCap, FaIdCard, FaCamera, FaLayerGroup, FaMapPin
+  FaUniversity, FaGraduationCap, FaIdCard, FaCamera, FaLayerGroup, FaMapPin,
+  FaLinkedin, FaGithub, FaGlobe, FaFacebook, FaVenusMars, FaHome, FaInfoCircle, FaCheckCircle, FaCalendar
 } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
@@ -23,6 +24,14 @@ function Register() {
     province: "",
     password: "",
     confirmPassword: "",
+    linkedin: "",
+    github: "",
+    website: "",
+    facebook: "",
+    gender: "",
+    dateOfBirth: "",
+    address: "",
+    bio: "",
   });
   const [profilePicture, setProfilePicture] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -45,17 +54,42 @@ function Register() {
     e.preventDefault();
     setError("");
 
+    if (form.password.length < 8) {
+      return setError("Password must be at least 8 characters long");
+    }
+
     if (form.password !== form.confirmPassword) {
       return setError("Passwords do not match");
+    }
+
+    // Phone validation per backend schema (E.164 format roughly)
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(form.phone.trim())) {
+      return setError("Please enter a valid phone number (e.g. 98...) without spaces");
+    }
+
+    // Validate optional URLs
+    const urlFields = ['website', 'linkedin', 'github', 'facebook'];
+    for (const field of urlFields) {
+      if (form[field].trim()) {
+        try {
+          new URL(form[field].trim());
+        } catch (_) {
+          return setError(`Please enter a valid URL for ${field.charAt(0).toUpperCase() + field.slice(1)} (must include http:// or https://)`);
+        }
+      }
     }
 
     setLoading(true);
     try {
       const formData = new FormData();
 
-      // Append basic form fields
+      // Append form fields — skip confirmPassword (UI-only) and empty optional fields
+      const excludeFields = ['confirmPassword'];
       Object.entries(form).forEach(([key, value]) => {
-        formData.append(key, value);
+        if (!excludeFields.includes(key) && value.trim() !== "") {
+          formData.append(key, value.trim());
+        }
       });
 
       // Role is already in form fields via Object.entries above
@@ -199,7 +233,7 @@ function Register() {
                 )}
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">Province</label>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">Region</label>
                   <div className="relative group">
                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
                       <FaMapPin />
@@ -211,7 +245,7 @@ function Register() {
                       required
                       className="w-full pl-14 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                     >
-                      <option value="">Select Province</option>
+                      <option value="">Select Region</option>
                       {['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali'].map(p => (
                         <option key={p} value={p}>{p}</option>
                       ))}
@@ -236,6 +270,59 @@ function Register() {
                       <FaCamera className="text-gray-300 group-hover:text-secondary" />
                       <span className="text-xs truncate">{profilePicture ? profilePicture.name : "Choose profile picture"}</span>
                     </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Professional & Additional Info Section */}
+              <div className="space-y-6 md:col-span-2 pt-6 border-t border-secondary/5">
+                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                  <FaInfoCircle className="text-secondary" /> Additional Details & Links (Optional)
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+
+                  {/* Gender Select */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">Gender (Optional)</label>
+                    <div className="relative group">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                        <FaVenusMars />
+                      </div>
+                      <select
+                        name="gender"
+                        value={form.gender}
+                        onChange={handleChange}
+                        className="w-full pl-14 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <InputField label="Date of Birth (Optional)" name="dateOfBirth" type="date" icon={FaCalendar} placeholder="" value={form.dateOfBirth} onChange={handleChange} />
+                  <InputField label="Address (Optional)" name="address" icon={FaHome} placeholder="Enter your address" value={form.address} onChange={handleChange} />
+                  <InputField label="LinkedIn Profile (Optional)" name="linkedin" icon={FaLinkedin} placeholder="https://linkedin.com/in/..." value={form.linkedin} onChange={handleChange} />
+                  <InputField label="GitHub Profile (Optional)" name="github" icon={FaGithub} placeholder="https://github.com/..." value={form.github} onChange={handleChange} />
+                  <InputField label="Portfolio / Website (Optional)" name="website" icon={FaGlobe} placeholder="https://yourwebsite.com" value={form.website} onChange={handleChange} />
+                  <InputField label="Facebook Profile (Optional)" name="facebook" icon={FaFacebook} placeholder="https://facebook.com/..." value={form.facebook} onChange={handleChange} />
+
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">Short Bio (Optional)</label>
+                    <div className="relative group">
+                      <FaInfoCircle className="absolute left-6 top-6 -translate-y-1/2 text-gray-300 transition-colors" />
+                      <textarea
+                        name="bio"
+                        placeholder="Tell us a little about yourself (max 1000 characters)..."
+                        maxLength="1000"
+                        className="w-full pl-16 pr-8 py-4 bg-secondary/5 border border-transparent rounded-3xl outline-none focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-secondary/20 font-medium transition-all text-sm resize-none"
+                        value={form.bio}
+                        onChange={handleChange}
+                        rows="3"
+                      ></textarea>
+                    </div>
                   </div>
                 </div>
               </div>

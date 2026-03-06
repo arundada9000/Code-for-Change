@@ -24,7 +24,7 @@ const SEO = ({
   const baseUrl = window.location.origin;
   const fullUrl = `${baseUrl}${pathname}`;
   const defaultDescription = "Code for Change (CFC) is a movement of changemakers uniting IT students and professionals for technological transition and social impact in Nepal.";
-  const defaultImage = `${baseUrl}/og-image.png`;
+  const defaultImage = `${baseUrl}/logo.png`;
 
   const seoTitle = title ? `${title} | ${siteName}` : siteName;
   const seoDescription = description || defaultDescription;

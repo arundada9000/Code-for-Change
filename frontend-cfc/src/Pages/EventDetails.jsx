@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { 
-  FaCalendarAlt, FaMapMarkerAlt, FaMapPin, FaUserTie, FaLightbulb, 
-  FaGift, FaExternalLinkAlt, FaClock, FaArrowLeft, FaLinkedin 
+import {
+  FaCalendarAlt, FaMapMarkerAlt, FaMapPin, FaUserTie, FaLightbulb,
+  FaGift, FaExternalLinkAlt, FaClock, FaArrowLeft, FaLinkedin
 } from "react-icons/fa";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
@@ -19,13 +19,13 @@ function EventDetails() {
         let endpoint = "";
         // Check if eventSlug is a valid MongoID (24 hex characters)
         const isMongoId = /^[0-9a-fA-F]{24}$/.test(eventSlug);
-        
+
         if (isMongoId) {
-            endpoint = `/events/${eventSlug}`;
+          endpoint = `/events/${eventSlug}`;
         } else {
-            endpoint = `/events/slug/${eventSlug}`;
+          endpoint = `/events/slug/${eventSlug}`;
         }
-        
+
         const { data } = await API.get(endpoint);
         setEvent(data.data);
       } catch (error) {
@@ -35,7 +35,7 @@ function EventDetails() {
       }
     };
     if (eventSlug) {
-        fetchEvent();
+      fetchEvent();
     }
   }, [eventSlug]);
 
@@ -44,25 +44,25 @@ function EventDetails() {
 
   const isUpcoming = event.status === "Upcoming" || event.status === "Published" || event.status === "Live";
   const registrationOpen = isUpcoming && event.registrationDeadline && new Date(event.registrationDeadline) > new Date();
-  
+
   const safeParseArr = (arr) => {
     if (!arr) return [];
     if (typeof arr === 'string') {
-        try {
-            const parsed = JSON.parse(arr);
-            return Array.isArray(parsed) ? parsed : [arr];
-        } catch (e) {
-            return arr.split(',').map(s => s.trim()).filter(Boolean);
-        }
+      try {
+        const parsed = JSON.parse(arr);
+        return Array.isArray(parsed) ? parsed : [arr];
+      } catch (e) {
+        return arr.split(',').map(s => s.trim()).filter(Boolean);
+      }
     }
     if (Array.isArray(arr)) {
-        if (arr.length === 1 && typeof arr[0] === 'string' && arr[0].startsWith('[')) {
-            try {
-                const parsed = JSON.parse(arr[0]);
-                if (Array.isArray(parsed)) return parsed;
-            } catch (e) {}
-        }
-        return arr;
+      if (arr.length === 1 && typeof arr[0] === 'string' && arr[0].startsWith('[')) {
+        try {
+          const parsed = JSON.parse(arr[0]);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) { }
+      }
+      return arr;
     }
     return [];
   };
@@ -106,34 +106,33 @@ function EventDetails() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-      <SEO 
+      <SEO
         title={event.title}
         description={event.description}
         image={event.image}
-        type="website"
+        type="article"
         breadcrumbs={breadcrumbs}
         jsonLd={eventJsonLd}
       />
       {/* Hero Section */}
       <div className="relative h-[60vh] overflow-hidden">
-        <img 
-          src={event.image} 
-          alt={event.title} 
+        <img
+          src={event.image}
+          alt={event.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-        
+
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-7xl mx-auto px-5 pb-16 w-full">
             <Link to="/events" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 font-medium">
               <FaArrowLeft /> Back to Events
             </Link>
             <div className="flex gap-3 mb-4">
-              <span className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest backdrop-blur-md ${
-                event.status === 'Live' ? 'bg-rose-500/90 text-white' :
-                isUpcoming ? 'bg-secondary/90 text-white' :
-                'bg-slate-800/90 text-white'
-              }`}>
+              <span className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest backdrop-blur-md ${event.status === 'Live' ? 'bg-rose-500/90 text-white' :
+                  isUpcoming ? 'bg-secondary/90 text-white' :
+                    'bg-slate-800/90 text-white'
+                }`}>
                 {event.status}
               </span>
               <span className="px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest bg-white/20 text-white backdrop-blur-md">
@@ -266,7 +265,7 @@ function EventDetails() {
             {/* Event Info Card */}
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 space-y-6">
               <h3 className="text-xl font-black text-slate-900 mb-4">Event Information</h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <FaCalendarAlt className="text-secondary mt-1" />

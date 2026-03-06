@@ -8,7 +8,7 @@ import Breadcrumbs from "../Components/UI/Breadcrumbs";
 function BlogDetail() {
   const { slug: urlSlug } = useParams();
   const [idStr, ...slugParts] = urlSlug.split("-");
-  
+
   const { data: apiBlog, loading } = useFetch(`/blogs/${idStr}`);
   const { data: allBlogs } = useFetch("/blogs"); // Fetch all for navigation
   const [blog, setBlog] = useState(null);
@@ -54,15 +54,15 @@ function BlogDetail() {
     "image": [blog.coverImage],
     "datePublished": blog.date,
     "author": [{
-        "@type": "Person",
-        "name": blog.authorDetails?.name || blog.author,
-        "url": window.location.origin
-      }]
+      "@type": "Person",
+      "name": blog.authorDetails?.name || blog.author,
+      "url": window.location.origin
+    }]
   };
 
   return (
     <div className="bg-white min-h-screen">
-      <SEO 
+      <SEO
         title={blog.title}
         description={blog.content?.replace(/<[^>]*>/g, '').substring(0, 160)}
         image={blog.coverImage}
@@ -107,7 +107,7 @@ function BlogDetail() {
               </span>
             ))}
             <span className="text-[9px] uppercase tracking-[0.2em] font-black px-4 py-1.5 bg-blue-600 text-white rounded-full">
-                {blog.category}
+              {blog.category}
             </span>
           </div>
 
@@ -117,11 +117,11 @@ function BlogDetail() {
 
           <div className="flex items-center gap-6 p-1 pr-8 w-fit bg-slate-50/50 rounded-full border border-slate-100/50 backdrop-blur-sm">
             {blog.authorDetails?.image ? (
-                <img src={blog.authorDetails.image} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-xl" alt={blog.authorDetails.name} />
+              <img src={blog.authorDetails.image} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-xl" alt={blog.authorDetails.name} />
             ) : (
-                <div className="w-14 h-14 rounded-full bg-linear-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-xl border-2 border-white">
-                    {blog.authorDetails?.name?.[0] || blog.author?.[0]}
-                </div>
+              <div className="w-14 h-14 rounded-full bg-linear-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-xl border-2 border-white">
+                {blog.authorDetails?.name?.[0] || blog.author?.[0]}
+              </div>
             )}
             <div>
               <p className="font-black text-slate-900 text-lg tracking-tight leading-none mb-1">
@@ -189,7 +189,7 @@ function BlogDetail() {
             </figure>
           </div>
 
-            <div className="relative">
+          <div className="relative">
             <div
               className="prose prose-slate max-w-none
                 prose-first-letter:text-6xl prose-first-letter:font-black 
@@ -214,53 +214,53 @@ function BlogDetail() {
 
             {/* Simple Brand Author Card */}
             <div className="mt-20 p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex flex-col md:flex-row items-center gap-8 group">
-                <div className="relative shrink-0">
-                  {blog.authorDetails?.image ? (
-                    <img src={blog.authorDetails.image} className="w-20 h-20 rounded-2xl object-cover transition-all duration-500" alt="" />
-                  ) : (
-                   <div className="w-20 h-20 rounded-2xl bg-slate-900 flex items-center justify-center text-white text-2xl font-black">
-                     {blog.authorDetails?.name?.[0] || blog.author?.[0]}
-                   </div>
-                  )}
-                </div>
-
-                <div className="flex-1 text-center md:text-left">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
-                    <div>
-                      <h4 className="text-xl font-black text-slate-900">
-                        {blog.authorDetails?.name || blog.author}
-                      </h4>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        {blog.authorDetails?.role || "Article Contributor"}
-                      </p>
-                    </div>
-                    
-                    {/* Minimal Social Links */}
-                    <div className="flex justify-center md:justify-end gap-3">
-                        {[
-                          { id: 'linkedin', icon: <FaLinkedinIn size={12} />, color: 'hover:text-[#0A66C2]' },
-                          { id: 'facebook', icon: <FaFacebookF size={12} />, color: 'hover:text-[#1877F2]' },
-                          { id: 'instagram', icon: <FaInstagram size={12} />, color: 'hover:text-[#ee2a7b]' },
-                          { id: 'youtube', icon: <FaYoutube size={12} />, color: 'hover:text-[#FF0000]' },
-                        ].map((social) => (
-                          blog.authorDetails?.[social.id] && (
-                            <a 
-                              key={social.id}
-                              href={blog.authorDetails[social.id].startsWith('http') ? blog.authorDetails[social.id] : `https://${blog.authorDetails[social.id]}`} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className={`w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg transition-all ${social.color} hover:bg-white hover:shadow-sm`}
-                            >
-                              {social.icon}
-                            </a>
-                          )
-                        ))}
-                    </div>
+              <div className="relative shrink-0">
+                {blog.authorDetails?.image ? (
+                  <img src={blog.authorDetails.image} className="w-20 h-20 rounded-2xl object-cover transition-all duration-500" alt={blog.authorDetails?.name || "Author"} />
+                ) : (
+                  <div className="w-20 h-20 rounded-2xl bg-slate-900 flex items-center justify-center text-white text-2xl font-black">
+                    {blog.authorDetails?.name?.[0] || blog.author?.[0]}
                   </div>
-                  <p className="text-slate-500 text-sm leading-relaxed max-w-2xl font-medium line-clamp-2">
-                    {blog.authorDetails?.bio || `A dedicated ${blog.authorDetails?.role || 'contributor'} exploring ${blog.category} through professional insights and storytelling.`}
-                  </p>
+                )}
+              </div>
+
+              <div className="flex-1 text-center md:text-left">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+                  <div>
+                    <h4 className="text-xl font-black text-slate-900">
+                      {blog.authorDetails?.name || blog.author}
+                    </h4>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      {blog.authorDetails?.role || "Article Contributor"}
+                    </p>
+                  </div>
+
+                  {/* Minimal Social Links */}
+                  <div className="flex justify-center md:justify-end gap-3">
+                    {[
+                      { id: 'linkedin', icon: <FaLinkedinIn size={12} />, color: 'hover:text-[#0A66C2]' },
+                      { id: 'facebook', icon: <FaFacebookF size={12} />, color: 'hover:text-[#1877F2]' },
+                      { id: 'instagram', icon: <FaInstagram size={12} />, color: 'hover:text-[#ee2a7b]' },
+                      { id: 'youtube', icon: <FaYoutube size={12} />, color: 'hover:text-[#FF0000]' },
+                    ].map((social) => (
+                      blog.authorDetails?.[social.id] && (
+                        <a
+                          key={social.id}
+                          href={blog.authorDetails[social.id].startsWith('http') ? blog.authorDetails[social.id] : `https://${blog.authorDetails[social.id]}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg transition-all ${social.color} hover:bg-white hover:shadow-sm`}
+                        >
+                          {social.icon}
+                        </a>
+                      )
+                    ))}
+                  </div>
                 </div>
+                <p className="text-slate-500 text-sm leading-relaxed max-w-2xl font-medium line-clamp-2">
+                  {blog.authorDetails?.bio || `A dedicated ${blog.authorDetails?.role || 'contributor'} exploring ${blog.category} through professional insights and storytelling.`}
+                </p>
+              </div>
             </div>
           </div>
         </article>
@@ -334,9 +334,8 @@ function BlogDetail() {
           {/* Previous Post */}
           <Link
             to={prevBlog ? `/blog/${prevBlog.slug}` : "#"}
-            className={`group relative p-10 md:p-16 flex flex-col items-start justify-center transition-all duration-500 overflow-hidden border-b md:border-b-0 md:border-r border-gray-100 ${
-              !prevBlog ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
-            }`}
+            className={`group relative p-10 md:p-16 flex flex-col items-start justify-center transition-all duration-500 overflow-hidden border-b md:border-b-0 md:border-r border-gray-100 ${!prevBlog ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+              }`}
           >
             {prevBlog && (
               <>
@@ -370,11 +369,10 @@ function BlogDetail() {
           {/* Next Post */}
           <Link
             to={nextBlog ? `/blog/${nextBlog.slug}` : "#"}
-            className={`group relative p-10 md:p-16 flex flex-col items-end text-right justify-center transition-all duration-500 overflow-hidden ${
-              !nextBlog
+            className={`group relative p-10 md:p-16 flex flex-col items-end text-right justify-center transition-all duration-500 overflow-hidden ${!nextBlog
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-gray-950 hover:text-white"
-            }`}
+              }`}
           >
             {nextBlog && (
               <>

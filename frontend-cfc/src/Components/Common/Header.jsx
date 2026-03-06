@@ -27,15 +27,14 @@ function Header({ setShowSidebar }) {
 
   return (
     <header
-      className={`sticky py-2 max-w-7xl pr-3 pl-7 mx-auto z-50 transition-all rounded-full duration-300 ${
-        scrolled
-          ? "bg-primary/50 backdrop-blur-xs top-5 border border-white/30"
-          : "bg-transparent top-0 border-none"
-      }`}
+      className={`sticky py-2 max-w-7xl pr-3 pl-7 mx-auto z-50 transition-all rounded-full duration-300 ${scrolled
+        ? "bg-primary/50 backdrop-blur-xs top-5 border border-white/30"
+        : "bg-transparent top-0 border-none"
+        }`}
     >
       <div className=" flex items-center gap-3 justify-between">
         <Link to="/">
-          <img src="/logo.png" alt="logo" className="h-12" />
+          <img src="/logo.png" alt="Code for Change Nepal Logo" className="h-12" />
         </Link>
         <nav className="lg:gap-2 hidden lg:flex items-center">
           {navItems.map((val, i) => (
@@ -43,13 +42,12 @@ function Header({ setShowSidebar }) {
               <Link
                 to={val.path}
                 className={`hover:bg-primary py-1  px-4 flex items-center gap-1 rounded-full hover:text-white transition duration-200
-          ${
-            location.pathname === val.path
-              ? "text-white bg-primary border-2 border-primary"
-              : scrolled
-                ? "text-white"
-                : "text-primary"
-          }`}
+          ${location.pathname === val.path
+                    ? "text-white bg-primary border-2 border-primary"
+                    : scrolled
+                      ? "text-white"
+                      : "text-primary"
+                  }`}
               >
                 {val.title}
                 {val.subMenu && <FiChevronDown className="text-lg" />}
@@ -83,16 +81,17 @@ function Header({ setShowSidebar }) {
         <div className="flex gap-5 items-center">
           <Link
             to="/join-us"
-            className={`px-7 py-2.5 border-2 border-secondary rounded-full text-white hover:bg-secondary/50 hover:text-white transition ${
-              scrolled ? "bg-secondary/70" : "bg-secondary"
-            }`}
+            className={`px-7 py-2.5 border-2 border-secondary rounded-full text-white hover:bg-secondary/50 hover:text-white transition ${scrolled ? "bg-secondary/70" : "bg-secondary"
+              }`}
           >
             Join us
           </Link>
           <RiMenu3Fill
-            className={`text-4xl lg:hidden transition-all ${
-              scrolled ? "text-white !important" : "text-primary"
-            }`}
+            aria-label="Open navigation menu"
+            role="button"
+            tabIndex={0}
+            className={`text-4xl lg:hidden transition-all ${scrolled ? "text-white !important" : "text-primary"
+              }`}
             onClick={(event) => {
               // console.log("hello");
               event.stopPropagation();

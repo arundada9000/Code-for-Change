@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  FaUserTie, FaUserGraduate, FaUsers, FaSearch, 
+import {
+  FaUserTie, FaUserGraduate, FaUsers, FaSearch,
   FaCheckCircle, FaClock, FaMapMarkerAlt, FaCalendarAlt, FaTimes,
   FaFileCsv, FaFilePdf, FaFileWord, FaDownload, FaPlus, FaCamera
 } from 'react-icons/fa';
@@ -20,11 +20,31 @@ const AVAILABLE_PERMISSIONS = {
   "System Access": ["settings:manage", "log:view", "report:view", "certificate:issue", "internship:create"]
 };
 
-const TIER_STYLE = {
-  executive: "bg-emerald-100 text-emerald-600",
-  representative: "bg-blue-100 text-blue-600",
-  general: "bg-slate-100 text-slate-600"
+const ROLE_STYLE = {
+  superadmin: "bg-purple-100 text-purple-600",
+  admin: "bg-emerald-100 text-emerald-600",
+  eb: "bg-blue-100 text-blue-600",
+  cr: "bg-amber-100 text-amber-600",
+  gm: "bg-slate-100 text-slate-600",
+  guest: "bg-gray-100 text-gray-600"
 };
+
+const EB_POSITIONS = [
+  { value: "tech-lead", label: "Tech Lead" },
+  { value: "project-lead", label: "Project Lead" },
+  { value: "vice-project-lead", label: "Vice Project Lead" },
+  { value: "operation-lead", label: "Operation Lead" },
+  { value: "admin-lead", label: "Admin Lead" },
+  { value: "hr-lead", label: "HR Lead" },
+  { value: "pr-lead", label: "PR Lead" },
+  { value: "treasurer", label: "Treasurer" },
+  { value: "vice-treasurer", label: "Vice Treasurer" },
+  { value: "executive-member", label: "Executive Member" },
+  { value: "secretary", label: "Secretary" },
+  { value: "vice-secretary", label: "Vice Secretary" }
+];
+
+const PROVINCES = ['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali'];
 
 function Member() {
   const { hasPermission } = useAuth();
@@ -45,13 +65,15 @@ function Member() {
   const [btnLoading, setBtnLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    role: "",
-    position: "",
+    role: "gm",
+    ebBody: "",
     tenure: "2025-2026",
     bio: "",
     email: "",
-    type: "volunteer",
-    tier: "general",
+    phone: "",
+    gender: "",
+    dateOfBirth: "",
+    address: "",
     province: "Kathmandu",
     socialLinks: {
       linkedin: "",
@@ -83,31 +105,32 @@ function Member() {
 
   const fetchMembers = async () => {
     try {
-      // Fetch only active/verified users
-      // Fetch users from the correct endpoint
       const { data } = await API.get("/users/list-user");
       const mapped = (data.data || []).map(m => ({
         id: m?._id || m?.id,
         name: m?.name || "Unknown Member",
-        role: m?.role || "volunteer",
-        position: m?.executiveDetails?.position || m?.position || "Member",
-        province: m?.province || m?.location || "National",
+        role: m?.role || "gm",
+        ebBody: m?.executiveDetails?.position || "",
+        province: m?.province || "National",
         tenure: m?.tenure || "2025-2026",
         status: m?.isVerified ? "Verified" : "Pending",
-        tier: m?.membership?.membershipStatus || m?.tier || "general",
-        type: m?.role === 'admin' ? 'executive' : 'volunteer',
         bio: m?.bio || "",
         email: m?.email || "",
+        phone: m?.phone || "",
+        gender: m?.gender || "",
+        dateOfBirth: m?.dateOfBirth ? m.dateOfBirth.split('T')[0] : "",
+        address: m?.address || "",
         socialLinks: {
-          linkedin: m?.linkedin || m?.socialLinks?.linkedin || "",
-          github: m?.github || m?.socialLinks?.github || "",
-          twitter: m?.twitter || m?.socialLinks?.twitter || "",
-          facebook: m?.facebook || m?.socialLinks?.facebook || "",
-          instagram: m?.instagram || m?.socialLinks?.instagram || "",
-          tiktok: m?.tiktok || m?.socialLinks?.tiktok || "",
-          youtube: m?.youtube || m?.socialLinks?.youtube || ""
+          linkedin: m?.linkedin || "",
+          github: m?.github || "",
+          twitter: m?.twitter || "",
+          facebook: m?.facebook || "",
+          instagram: m?.instagram || "",
+          tiktok: m?.tiktok || "",
+          youtube: m?.youtube || ""
         },
         image: m?.profileImage || m?.image,
+        permissions: m?.permissions || [],
         createdAt: m?.createdAt || new Date()
       }));
       setMembers(mapped);
@@ -125,12 +148,14 @@ function Member() {
       setFormData({
         name: member.name,
         role: member.role,
-        position: member.position,
+        ebBody: member.ebBody || "",
         tenure: member.tenure,
         bio: member.bio,
         email: member.email,
-        type: member.type,
-        tier: member.tier,
+        phone: member.phone || "",
+        gender: member.gender || "",
+        dateOfBirth: member.dateOfBirth || "",
+        address: member.address || "",
         province: member.province,
         socialLinks: {
           linkedin: member.socialLinks?.linkedin || "",
@@ -149,13 +174,15 @@ function Member() {
       setCurrentMemberId(null);
       setFormData({
         name: "",
-        role: "",
-        position: "",
+        role: "gm",
+        ebBody: "",
         tenure: "2025-2026",
         bio: "",
         email: "",
-        type: "volunteer",
-        tier: "general",
+        phone: "",
+        gender: "",
+        dateOfBirth: "",
+        address: "",
         province: "Kathmandu",
         socialLinks: {
           linkedin: "",
@@ -182,8 +209,8 @@ function Member() {
   const handlePermissionToggle = (perm) => {
     setFormData(prev => {
       const perms = prev.permissions || [];
-      const newPerms = perms.includes(perm) 
-        ? perms.filter(p => p !== perm) 
+      const newPerms = perms.includes(perm)
+        ? perms.filter(p => p !== perm)
         : [...perms, perm];
       return { ...prev, permissions: newPerms };
     });
@@ -215,21 +242,31 @@ function Member() {
     setBtnLoading(true);
 
     const data = new FormData();
-    Object.keys(formData).forEach(key => {
-      if (key === "socialLinks") {
-        // Map social links to root level for User model
-        Object.entries(formData[key]).forEach(([sKey, sVal]) => {
-          data.append(sKey, sVal);
-        });
-      } else if (key === "image") {
-        if (selectedFile) data.append("profileImage", selectedFile);
-      } else {
-        data.append(key, formData[key]);
+    const excludeFields = ['socialLinks', 'permissions'];
+
+    // Append basic fields (skip empty optional ones)
+    Object.entries(formData).forEach(([key, value]) => {
+      if (excludeFields.includes(key)) return;
+      if (typeof value === 'string' && value.trim() !== '') {
+        data.append(key, value.trim());
       }
     });
 
+    // Flatten social links to root level (backend stores them as root fields)
+    Object.entries(formData.socialLinks || {}).forEach(([sKey, sVal]) => {
+      if (sVal && sVal.trim() !== '') {
+        data.append(sKey, sVal.trim());
+      }
+    });
+
+    // Permissions array
+    if (formData.permissions?.length) {
+      formData.permissions.forEach(p => data.append('permissions[]', p));
+    }
+
+    // Profile image
     if (selectedFile) {
-      data.append("image", selectedFile);
+      data.append("profileImage", selectedFile);
     }
 
     try {
@@ -266,7 +303,7 @@ function Member() {
     const csv = Papa.unparse(filteredMembers.map(m => ({
       Name: m.name,
       Role: m.role,
-      Province: m.province,
+      Region: m.province,
       Tenure: m.tenure,
       Status: m.status,
       Tier: m.tier
@@ -290,12 +327,12 @@ function Member() {
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.text("All Members List", 14, 30);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 38);
-    
-    const tableColumn = ["Name", "Role", "Province", "Tenure", "Status"];
+
+    const tableColumn = ["Name", "Role", "Region", "Tenure", "Status"];
     const tableRows = filteredMembers.map(m => [
       m.name,
       m.role,
@@ -321,18 +358,18 @@ function Member() {
     let content = "CODE FOR CHANGE\nMEMBER VERIFICATION REPORT\n\n";
     content += `Report Date: ${new Date().toLocaleString()}\n`;
     content += "==========================================\n\n";
-    
+
     filteredMembers.forEach((m, index) => {
       content += `${index + 1}. TEAM MEMBER PROFILE\n`;
       content += `   Name: ${m.name}\n`;
       content += `   Role: ${m.role}\n`;
-      content += `   Province: ${m.province}\n`;
+      content += `   Region: ${m.province}\n`;
       content += `   Tenure: ${m.tenure}\n`;
       content += `   Status: ${m.status}\n`;
       content += `   Tier: ${m.tier}\n`;
       content += "------------------------------------------\n";
     });
-    
+
     const blob = new Blob([content], { type: "application/msword" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -356,7 +393,7 @@ function Member() {
             const payload = {
               name: row.Name || row.name,
               role: row.Role || row.role,
-              province: row.Province || row.province || "Kathmandu",
+              province: row.Region || row.province || "Kathmandu",
               tenure: row.Tenure || row.tenure || "2025-2026",
               status: row.Status || row.status || "Pending",
               tier: row.Tier || row.tier || "general"
@@ -379,11 +416,11 @@ function Member() {
   const toggleVerification = async (id) => {
     const member = members.find(m => m.id === id);
     if (!member) return;
-    
+
     const newStatus = member.status === "Verified" ? "Pending" : "Verified";
-    
+
     // Optimistic update
-    setMembers(members.map(m => 
+    setMembers(members.map(m =>
       m.id === id ? { ...m, status: newStatus } : m
     ));
 
@@ -393,7 +430,7 @@ function Member() {
     } catch (error) {
       console.error("Failed to update status", error);
       // Revert if failed
-      setMembers(members.map(m => 
+      setMembers(members.map(m =>
         m.id === id ? { ...m, status: member.status } : m
       ));
     }
@@ -402,29 +439,27 @@ function Member() {
   // --- Logic: Multi-Filter (Tabs + Dropdowns + Search) ---
   const filteredMembers = useMemo(() => {
     if (!members) return [];
-    
-    // 1. Filter
+
     const filtered = members.filter(m => {
-      const matchesSearch = 
+      const matchesSearch =
         m.name.toLowerCase().includes(search.toLowerCase()) ||
         m.role.toLowerCase().includes(search.toLowerCase()) ||
-        m.position.toLowerCase().includes(search.toLowerCase());
-        
+        (m.ebBody || '').toLowerCase().includes(search.toLowerCase());
+
       const matchesProvince = filterProvince === "All" || m.province === filterProvince;
       const matchesTenure = filterTenure === "All" || m.tenure === filterTenure;
-      const matchesTier = activeFilter === "all" || m.tier === activeFilter;
+      const matchesRole = activeFilter === "all" || m.role === activeFilter;
       const matchesStatus = filterStatus === "All" || m.status === filterStatus;
-      
-      return matchesSearch && matchesProvince && matchesTenure && matchesTier && matchesStatus;
+
+      return matchesSearch && matchesProvince && matchesTenure && matchesRole && matchesStatus;
     });
 
-    // 2. Sort by latest added (createdAt desc)
     return [...filtered].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [search, filterProvince, filterTenure, activeFilter, filterStatus, members]);
 
   return (
-    <div className="max-w-full mx-auto p-2 space-y-8 animate-in fade-in duration-500">  
-     {/* 1. Header */}
+    <div className="max-w-full mx-auto p-2 space-y-8 animate-in fade-in duration-500">
+      {/* 1. Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">Member Verification</h2>
@@ -433,7 +468,7 @@ function Member() {
 
         <div className="flex flex-wrap items-center gap-3">
           {hasPermission('member_create') && (
-            <button 
+            <button
               onClick={() => handleOpenModal()}
               className="flex items-center justify-center gap-3 bg-slate-900 text-white border border-slate-900 px-8 py-4 rounded-2xl hover:bg-primary transition-all shadow-xl shadow-slate-900/20 font-black text-[10px] uppercase tracking-widest cursor-pointer"
             >
@@ -446,7 +481,7 @@ function Member() {
               <input type="file" accept=".csv" className="hidden" onChange={handleImport} />
             </label>
           )}
-          
+
           <div className="relative group/export">
             <button className="flex items-center justify-center gap-3 bg-white text-slate-600 border border-slate-200 px-8 py-4 rounded-2xl hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm font-black text-[10px] uppercase tracking-widest">
               <FaFileCsv className="text-lg text-emerald-500" /> Export
@@ -477,19 +512,18 @@ function Member() {
         </div>
       </div>
 
-      {/* 2. Tier Filter Tabs */}
+      {/* 2. Role Filter Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {['all', 'executive', 'representative', 'general'].map((tier) => (
+        {['all', 'superadmin', 'admin', 'eb', 'cr', 'gm', 'guest'].map((role) => (
           <button
-            key={tier}
-            onClick={() => setActiveFilter(tier)}
-            className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border ${
-              activeFilter === tier 
-              ? 'bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-200' 
+            key={role}
+            onClick={() => setActiveFilter(role)}
+            className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeFilter === role
+              ? 'bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-200'
               : 'bg-white text-slate-400 border-slate-100 hover:border-emerald-500 hover:text-emerald-600'
-            }`}
+              }`}
           >
-            {tier}
+            {role === 'all' ? 'All' : role === 'gm' ? 'General' : role.toUpperCase()}
           </button>
         ))}
       </div>
@@ -499,7 +533,7 @@ function Member() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
             <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
-            <input 
+            <input
               placeholder="Search member by name..."
               className="w-full pl-16 pr-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-medium text-sm transition-all"
               value={search}
@@ -507,11 +541,11 @@ function Member() {
             />
           </div>
 
-          <select 
+          <select
             className="px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest outline-none cursor-pointer hover:bg-white transition-all appearance-none border-r-[16px] border-r-transparent"
             onChange={(e) => setFilterProvince(e.target.value)}
           >
-            <option value="All">All Provinces</option>
+            <option value="All">All Regions</option>
             <option value="Kathmandu">Kathmandu</option>
             <option value="Pokhara">Pokhara</option>
             <option value="Rupandehi">Rupandehi</option>
@@ -523,7 +557,7 @@ function Member() {
             <option value="LB Karnali">LB Karnali</option>
           </select>
 
-          <select 
+          <select
             className="px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest outline-none cursor-pointer hover:bg-white transition-all appearance-none border-r-[16px] border-r-transparent"
             onChange={(e) => setFilterTenure(e.target.value)}
           >
@@ -532,7 +566,7 @@ function Member() {
             <option value="2024-2025">2024-2025</option>
           </select>
 
-          <select 
+          <select
             className="px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest outline-none cursor-pointer hover:bg-white transition-all appearance-none border-r-[16px] border-r-transparent"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -550,7 +584,7 @@ function Member() {
           <thead className="bg-slate-50/50 border-b border-slate-100">
             <tr className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
               <th className="px-8 py-5">Member Identity</th>
-              <th className="px-8 py-5">Province / Tenure</th>
+              <th className="px-8 py-5">Region / Tenure</th>
               <th className="px-8 py-5">Status</th>
               <th className="px-8 py-5 text-right">Actions</th>
             </tr>
@@ -560,14 +594,14 @@ function Member() {
               <tr key={member.id} className="hover:bg-gray-50/50 transition-all group">
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-4">
-                    <img 
-                      src={member.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random&color=fff`} 
-                      alt={member.name} 
-                      className="w-12 h-12 rounded-xl object-cover border border-slate-100 shadow-sm" 
+                    <img
+                      src={member.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random&color=fff`}
+                      alt={member.name}
+                      className="w-12 h-12 rounded-xl object-cover border border-slate-100 shadow-sm"
                     />
                     <div>
                       <div className="font-black text-gray-900 leading-none">{member.name}</div>
-                      <div className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-wider">{member.role?.replace('-', ' ')}</div>
+                      <div className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-wider">{member.role}{member.ebBody ? ` · ${member.ebBody.replace(/-/g, ' ')}` : ''}</div>
                     </div>
                   </div>
                 </td>
@@ -582,9 +616,8 @@ function Member() {
                   </div>
                 </td>
                 <td className="px-8 py-6">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                    member.status === 'Verified' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
-                  }`}>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${member.status === 'Verified' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
+                    }`}>
                     {member.status === 'Verified' ? <FaCheckCircle /> : <FaClock />}
                     {member.status}
                   </span>
@@ -601,17 +634,16 @@ function Member() {
                   </button>
 
                   {openMenuId === member.id && (
-                    <div 
+                    <div
                       ref={menuRef}
                       className="absolute right-20 top-6 w-54 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
                     >
                       {hasPermission('member_update') && (
                         <>
-                          <button 
+                          <button
                             onClick={() => { toggleVerification(member.id); setOpenMenuId(null); }}
-                            className={`w-full px-5 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all ${
-                              member.status === 'Verified' ? 'text-rose-500 hover:bg-rose-50' : 'text-emerald-600 hover:bg-emerald-50'
-                            }`}
+                            className={`w-full px-5 py-3 text-left flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all ${member.status === 'Verified' ? 'text-rose-500 hover:bg-rose-50' : 'text-emerald-600 hover:bg-emerald-50'
+                              }`}
                           >
                             {member.status === 'Verified' ? (
                               <><FaTimes /> Revoke Verification</>
@@ -620,7 +652,7 @@ function Member() {
                             )}
                           </button>
                           <div className="h-[1px] bg-slate-50 my-1 mx-4"></div>
-                          <button 
+                          <button
                             onClick={() => { handleOpenModal(member); setOpenMenuId(null); }}
                             className="w-full px-5 py-3 text-left flex items-center gap-3 text-[10px] font-black text-blue-600 hover:bg-blue-50 transition-all uppercase tracking-widest"
                           >
@@ -629,7 +661,7 @@ function Member() {
                         </>
                       )}
                       {hasPermission('member_delete') && (
-                        <button 
+                        <button
                           onClick={() => { handleDelete(member.id); setOpenMenuId(null); }}
                           className="w-full px-5 py-3 text-left flex items-center gap-3 text-[10px] font-black text-rose-600 hover:bg-rose-50 transition-all uppercase tracking-widest"
                         >
@@ -664,7 +696,7 @@ function Member() {
                   Fill in the credentials for CFC Community
                 </p>
               </div>
-              <button 
+              <button
                 onClick={handleCloseModal}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-all shadow-sm"
               >
@@ -676,29 +708,29 @@ function Member() {
               {/* Image & Basic Info */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
                 <div className="md:col-span-4 space-y-4">
-                   <div className="relative group aspect-[4/5] rounded-[2rem] overflow-hidden bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center transition-all hover:border-emerald-500">
-                      {previewUrl ? (
-                         <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                      ) : (
-                         <div className="text-center p-6">
-                            <FaCamera className="mx-auto text-3xl text-slate-300 mb-3" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Upload Portrait</p>
-                         </div>
-                      )}
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleFileChange}
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                      />
-                   </div>
-                   <p className="text-[9px] text-center text-slate-400 font-bold uppercase tracking-[0.2em]">Recommended: 800x1000px</p>
+                  <div className="relative group aspect-[4/5] rounded-[2rem] overflow-hidden bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center transition-all hover:border-emerald-500">
+                    {previewUrl ? (
+                      <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="text-center p-6">
+                        <FaCamera className="mx-auto text-3xl text-slate-300 mb-3" />
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Upload Portrait</p>
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                  </div>
+                  <p className="text-[9px] text-center text-slate-400 font-bold uppercase tracking-[0.2em]">Recommended: 800x1000px</p>
                 </div>
 
                 <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Full Name</label>
-                    <input 
+                    <input
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
@@ -709,54 +741,67 @@ function Member() {
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Role</label>
-                    <select 
+                    <select
                       name="role"
                       value={formData.role}
                       onChange={handleInputChange}
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none cursor-pointer hover:bg-white transition-all appearance-none"
                       required
                     >
-                      <option value="">Select Role</option>
-                      {/* Standard Roles Hierarchy */}
+                      <option value="gm">General Member</option>
+                      <option value="eb">Executive Board (EB)</option>
+                      <option value="cr">Campus Representative (CR)</option>
+                      <option value="guest">Guest</option>
                       {(useAuth().user?.role === 'superadmin' || useAuth().user?.role === 'admin') && (
                         <>
-                          <option value="superadmin">Super Admin</option>
                           <option value="admin">Admin</option>
+                          <option value="superadmin">Super Admin</option>
                         </>
                       )}
-                      <option value="tech-lead">Tech Lead</option>
-                      <option value="cr">CR</option>
-                      <option value="project-lead">Project Lead</option>
-                      <option value="general-member">General Member</option>
-                      <option value="cr-eb">CR EB</option>
-                      <option value="guest">Guest</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Position</label>
-                    <input 
-                      name="position"
-                      value={formData.position}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Tech Lead"
-                      className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-bold text-sm transition-all"
-                      required
-                    />
-                  </div>
+                  {formData.role === 'eb' && (
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">EB Position</label>
+                      <select
+                        name="ebBody"
+                        value={formData.ebBody}
+                        onChange={handleInputChange}
+                        className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none cursor-pointer hover:bg-white transition-all appearance-none"
+                        required
+                      >
+                        <option value="">Select Position</option>
+                        {EB_POSITIONS.map(pos => (
+                          <option key={pos.value} value={pos.value}>{pos.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Email</label>
-                    <input 
+                    <input
                       name="email"
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="e.g. bipsay@codeforchange.org"
+                      placeholder="e.g. member@codeforchange.org"
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-bold text-sm transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Phone</label>
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 9841234567"
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-bold text-sm transition-all"
                     />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Tenure</label>
-                    <select 
+                    <select
                       name="tenure"
                       value={formData.tenure}
                       onChange={handleInputChange}
@@ -770,59 +815,61 @@ function Member() {
                 </div>
               </div>
 
-              {/* Classification */}
+              {/* Additional Details */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Member Type</label>
-                  <select 
-                    name="type"
-                    value={formData.type}
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Gender</label>
+                  <select
+                    name="gender"
+                    value={formData.gender}
                     onChange={handleInputChange}
                     className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none cursor-pointer hover:bg-white transition-all appearance-none"
                   >
-                    <option value="volunteer">Volunteer</option>
-                    <option value="executive">Executive</option>
-                    <option value="advisor">Advisor</option>
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Member Tier</label>
-                  <select 
-                    name="tier"
-                    value={formData.tier}
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Date of Birth</label>
+                  <input
+                    name="dateOfBirth"
+                    type="date"
+                    value={formData.dateOfBirth}
                     onChange={handleInputChange}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none cursor-pointer hover:bg-white transition-all appearance-none"
-                  >
-                    <option value="general">General</option>
-                    <option value="representative">Representative</option>
-                    <option value="executive">Board / Executive</option>
-                  </select>
+                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-bold text-sm transition-all"
+                  />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Province</label>
-                  <select 
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Region</label>
+                  <select
                     name="province"
                     value={formData.province}
                     onChange={handleInputChange}
                     className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none cursor-pointer hover:bg-white transition-all appearance-none"
                   >
-                    <option value="Kathmandu">Kathmandu</option>
-                    <option value="Pokhara">Pokhara</option>
-                    <option value="Rupandehi">Rupandehi</option>
-                    <option value="Dang">Dang</option>
-                    <option value="Birgunj">Birgunj</option>
-                    <option value="Farwest">Farwest</option>
-                    <option value="Koshi">Koshi</option>
-                    <option value="Chitwan">Chitwan</option>
-                    <option value="LB Karnali">LB Karnali</option>
+                    {PROVINCES.map(p => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
                   </select>
                 </div>
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Address</label>
+                <input
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  placeholder="Enter address"
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-bold text-sm transition-all"
+                />
               </div>
 
               {/* Bio */}
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Biography / Tagline</label>
-                <textarea 
+                <textarea
                   name="bio"
                   value={formData.bio}
                   onChange={handleInputChange}
@@ -839,7 +886,7 @@ function Member() {
                   {['linkedin', 'github', 'facebook', 'instagram', 'tiktok', 'youtube'].map((social) => (
                     <div key={social}>
                       <label className="block text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1 capitalize">{social}</label>
-                      <input 
+                      <input
                         name={`social.${social}`}
                         value={formData.socialLinks?.[social] || ""}
                         onChange={handleInputChange}
@@ -852,13 +899,13 @@ function Member() {
               </div>
 
               {/* Permissions Override */}
-              {(hasPermission('settings_manage') || useAuth().user?.role === 'tech-lead') && (
+              {(hasPermission('settings_manage') || ['superadmin', 'admin'].includes(useAuth().user?.role)) && (
                 <div className="space-y-6 pt-8 border-t border-slate-100">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-[0.2em] text-slate-900 border-l-4 border-amber-500 pl-4">Permission Overrides</h4>
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2 ml-5">Assign specific capabilities outside of defaults</p>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ml-5">
                     {Object.entries(AVAILABLE_PERMISSIONS).map(([group, perms]) => (
                       <div key={group} className="space-y-4">
@@ -869,11 +916,10 @@ function Member() {
                               key={perm}
                               type="button"
                               onClick={() => handlePermissionToggle(perm)}
-                              className={`px-3 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border ${
-                                formData.permissions?.includes(perm)
-                                  ? 'bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-200'
-                                  : 'bg-white text-slate-400 border-slate-100 hover:border-amber-200'
-                              }`}
+                              className={`px-3 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border ${formData.permissions?.includes(perm)
+                                ? 'bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-200'
+                                : 'bg-white text-slate-400 border-slate-100 hover:border-amber-200'
+                                }`}
                             >
                               {perm.replace(':', ' ')}
                             </button>
@@ -887,14 +933,14 @@ function Member() {
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-3 pt-6">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={handleCloseModal}
                   className="px-10 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all font-bold"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   type="submit"
                   disabled={btnLoading}
                   className="px-12 py-5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-primary transition-all disabled:opacity-50 flex items-center gap-2"

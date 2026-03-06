@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  FaArrowLeft, FaCalendarAlt, FaMapMarkerAlt, FaUserTie,
-  FaClock, FaMapPin, FaLink, FaEdit, FaTrash, FaExternalLinkAlt
+  FaArrowLeft,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaUserTie,
+  FaClock,
+  FaMapPin,
+  FaLink,
+  FaEdit,
+  FaTrash,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
 import API from "../../Services/api";
@@ -33,21 +41,32 @@ function AdminEventDetail() {
     }
   };
 
-  if (loading) return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="flex flex-col items-center gap-4">
-        <BsArrowRepeat className="text-4xl text-emerald-500 animate-spin" />
-        <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Retrieving event data...</p>
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <BsArrowRepeat className="text-4xl text-emerald-500 animate-spin" />
+          <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">
+            Retrieving event data...
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
-  if (!event) return (
-    <div className="text-center p-20">
-      <h2 className="text-2xl font-black text-slate-900 italic">Event not found.</h2>
-      <button onClick={() => navigate(-1)} className="mt-4 text-emerald-600 font-bold underline">Go Back</button>
-    </div>
-  );
+  if (!event)
+    return (
+      <div className="text-center p-20">
+        <h2 className="text-2xl font-black text-slate-900 italic">
+          Event not found.
+        </h2>
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-4 text-emerald-600 font-bold underline"
+        >
+          Go Back
+        </button>
+      </div>
+    );
 
   return (
     <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
@@ -58,11 +77,15 @@ function AdminEventDetail() {
           className="group flex items-center gap-3 bg-white px-6 py-3 rounded-2xl border border-slate-100 hover:bg-slate-900 transition-all shadow-sm"
         >
           <FaArrowLeft className="text-emerald-600 group-hover:text-white transition-colors" />
-          <span className="text-xs font-black uppercase tracking-widest text-slate-900 group-hover:text-white transition-colors">Events List</span>
+          <span className="text-xs font-black uppercase tracking-widest text-slate-900 group-hover:text-white transition-colors">
+            Events List
+          </span>
         </button>
 
         <div className="flex items-center gap-3">
-          <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600`}>
+          <span
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600`}
+          >
             {event.status}
           </span>
           <span className="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white">
@@ -83,18 +106,30 @@ function AdminEventDetail() {
           </div>
           <div className="p-12 space-y-8">
             <div className="space-y-4">
-              <h1 className="text-4xl font-black text-slate-950 tracking-tight leading-tight">{event.title}</h1>
-              <p className="text-slate-500 text-lg leading-relaxed">{event.description}</p>
+              <h1 className="text-4xl font-black text-slate-950 tracking-tight leading-tight">
+                {event.title}
+              </h1>
+              <p className="text-slate-500 text-lg leading-relaxed">
+                {event.description}
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</p>
-                <p className="text-sm font-bold text-slate-900">{new Date(event.date).toLocaleDateString()}</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Date
+                </p>
+                <p className="text-sm font-bold text-slate-900">
+                  {new Date(event.date).toLocaleDateString()}
+                </p>
               </div>
               <div className="space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location</p>
-                <p className="text-sm font-bold text-slate-900">{event.location}</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Location
+                </p>
+                <p className="text-sm font-bold text-slate-900">
+                  {event.location}
+                </p>
               </div>
             </div>
 
@@ -121,16 +156,26 @@ function AdminEventDetail() {
             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-emerald-600">
               <FaClock />
             </div>
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Schedule</h3>
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">
+              Schedule
+            </h3>
           </div>
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Start Date</p>
-              <p className="text-sm font-bold text-slate-900">{new Date(event.startDate).toLocaleString()}</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Start Date
+              </p>
+              <p className="text-sm font-bold text-slate-900">
+                {new Date(event.startDate).toLocaleString()}
+              </p>
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">End Date</p>
-              <p className="text-sm font-bold text-slate-900">{new Date(event.endDate).toLocaleString()}</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                End Date
+              </p>
+              <p className="text-sm font-bold text-slate-900">
+                {new Date(event.endDate).toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
@@ -140,16 +185,24 @@ function AdminEventDetail() {
             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-emerald-600">
               <FaMapPin />
             </div>
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Venue Info</h3>
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">
+              Venue Info
+            </h3>
           </div>
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Venue</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Venue
+              </p>
               <p className="text-sm font-bold text-slate-900">{event.venue}</p>
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Organizer</p>
-              <p className="text-sm font-bold text-slate-900">{event.organizer}</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Organizer
+              </p>
+              <p className="text-sm font-bold text-slate-900">
+                {event.organizer}
+              </p>
             </div>
           </div>
         </div>
@@ -159,16 +212,30 @@ function AdminEventDetail() {
             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-emerald-600">
               <FaLink />
             </div>
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Registration</h3>
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">
+              Registration
+            </h3>
           </div>
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Registration Link</p>
-              <a href={event.registrationLink} target="_blank" className="text-sm font-bold text-emerald-600 break-all underline decoration-2">{event.registrationLink}</a>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Registration Link
+              </p>
+              <a
+                href={event.registrationLink}
+                target="_blank"
+                className="text-sm font-bold text-emerald-600 break-all underline decoration-2"
+              >
+                {event.registrationLink}
+              </a>
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Deadline</p>
-              <p className="text-sm font-bold text-slate-900">{new Date(event.registrationDeadline).toLocaleDateString()}</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Deadline
+              </p>
+              <p className="text-sm font-bold text-slate-900">
+                {new Date(event.registrationDeadline).toLocaleDateString()}
+              </p>
             </div>
           </div>
         </div>
@@ -176,14 +243,18 @@ function AdminEventDetail() {
 
       {/* Full Description */}
       <div className="bg-white rounded-[3rem] p-12 border border-slate-100 shadow-sm space-y-8">
-        <h3 className="text-2xl font-black text-slate-950 tracking-tight">Additional Information</h3>
+        <h3 className="text-2xl font-black text-slate-950 tracking-tight">
+          Additional Information
+        </h3>
         <div className="prose prose-slate max-w-none">
-          <p className="text-slate-600 leading-relaxed font-medium whitespace-pre-line">{event.fullDescription}</p>
+          <p className="text-slate-600 leading-relaxed font-medium whitespace-pre-line">
+            {event.fullDescription}
+          </p>
         </div>
       </div>
 
       <div className="p-8 text-center text-slate-400 font-bold text-[10px] uppercase tracking-[0.3em] opacity-40">
-        Admin Event Management Record • v2.0
+        Admin Event Management Record
       </div>
     </div>
   );

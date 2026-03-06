@@ -1,4 +1,5 @@
 import { useNavigate, Link, Outlet } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import AdminSidebar from "../Pages/Admin/AdminSidebar";
 import { useAuth } from "../Context/AuthContext";
 import {
@@ -62,6 +63,9 @@ function AdminLayout() {
   };
   return (
     <div className="flex min-h-screen bg-gray-50">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <aside>
         <AdminSidebar />
       </aside>
@@ -105,10 +109,10 @@ function AdminLayout() {
             {isProfileOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-lg py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">User Profile</p>
-                   <p className="text-xs font-bold text-gray-700 truncate">{user?.email || "admin@example.com"}</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">User Profile</p>
+                  <p className="text-xs font-bold text-gray-700 truncate">{user?.email || "admin@example.com"}</p>
                 </div>
-                
+
                 <Link
                   to="/admin/profile"
                   className="flex items-center gap-3 px-4 py-2 text-xs text-gray-600 font-bold hover:bg-gray-50 transition-colors"
@@ -117,9 +121,9 @@ function AdminLayout() {
                   <FaRegUser className="text-gray-400" size={14} />
                   My Profile
                 </Link>
-                
+
                 <hr className="my-1 border-gray-50" />
-                
+
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-2 text-xs text-rose-600 font-bold hover:bg-rose-50 transition-colors"

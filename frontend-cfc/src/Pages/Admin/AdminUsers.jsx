@@ -573,7 +573,7 @@ function AdminUsers() {
               onChange={(e) => setActiveProvince(e.target.value)}
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
-              <option value="all">All Provinces</option>
+              <option value="all">All Regions</option>
               {['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali'].map(p => (
                 <option key={p} value={p}>{p}</option>
               ))}
@@ -800,7 +800,7 @@ function AdminUsers() {
                   <img
                     src={user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&color=fff`}
                     className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm"
-                    alt=""
+                    alt={user.name}
                   />
                   <div>
                     <h3 className="font-extrabold text-gray-900 text-lg leading-tight">{user.name}</h3>
@@ -976,14 +976,14 @@ function AdminUsers() {
                     <ModalInput label="Home Address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} required />
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Province</label>
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Region</label>
                       <select
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
                         value={formData.province}
                         onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                         required
                       >
-                        <option value="">Select Province</option>
+                        <option value="">Select Region</option>
                         <option value="Kathmandu">Kathmandu</option>
                         <option value="Pokhara">Pokhara</option>
                         <option value="Rupandehi">Rupandehi</option>

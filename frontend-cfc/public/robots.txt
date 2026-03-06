@@ -1,0 +1,13 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Block admin and auth routes from being crawled
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /forget-password
+Disallow: /verify-otp
+Disallow: /reset-password
+
+Sitemap: https://codeforchangenepal.com/sitemap.xml

@@ -3,6 +3,7 @@ import { FaEnvelope, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import API from "../../Services/api";
+import SEO from "../../Components/Common/SEO";
 
 function ForgetPassword() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function ForgetPassword() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
+
     try {
       const res = await API.post("/auth/forget-password", { email });
       if (res.data.success) {
@@ -37,10 +38,11 @@ function ForgetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#FDFDFD] font-sans selection:bg-secondary/10 selection:text-secondary">
+      <SEO title="Forgot Password" />
       <div className="w-full max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <Link to="/" className="block group text-center">
           <img src={logo} alt="Logo" className="w-32 mx-auto group-hover:scale-105 transition-transform duration-300" />
-          
+
           <div className="text-center space-y-4 mt-8">
             <h1 className="text-4xl font-bold tracking-tight text-primary">
               Code <span className="text-secondary">For Change</span>
@@ -69,7 +71,7 @@ function ForgetPassword() {
                 OTP sent successfully! Redirecting...
               </div>
             )}
-            
+
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-6">
                 Email Address
@@ -96,7 +98,7 @@ function ForgetPassword() {
             </button>
 
             <div className="text-center pt-4">
-              <button 
+              <button
                 type="button"
                 onClick={() => navigate("/login")}
                 className="text-xs text-gray-400 font-bold hover:text-secondary flex items-center justify-center gap-2 transition-colors mx-auto"

@@ -181,7 +181,7 @@ function UserDetail() {
         <InfoCard title="Communication & Location" icon={FaEnvelope}>
           <DataItem label="Primary Email" value={user.email} icon={FaEnvelope} />
           <DataItem label="Phone Number" value={user.phone} icon={FaPhone} />
-          <DataItem label="Province" value={user.province} icon={FaMapMarkerAlt} />
+          <DataItem label="Region" value={user.province} icon={FaMapMarkerAlt} />
           <DataItem label="Region" value={user.region} />
           <DataItem label="Current Address" value={user.address} />
         </InfoCard>

@@ -3,6 +3,7 @@ import { FaLock, FaArrowRight, FaCheckCircle } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import API from "../../Services/api";
+import SEO from "../../Components/Common/SEO";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -35,12 +36,12 @@ function ResetPassword() {
 
     setLoading(true);
     setError("");
-    
+
     try {
-      const res = await API.post("/auth/reset-password", { 
-        email, 
+      const res = await API.post("/auth/reset-password", {
+        email,
         resetToken,
-        newPassword: formData.newPassword 
+        newPassword: formData.newPassword
       });
       if (res.data.success) {
         setSuccess(true);
@@ -61,10 +62,11 @@ function ResetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#FDFDFD] font-sans selection:bg-secondary/10 selection:text-secondary">
+      <SEO title="Reset Password" />
       <div className="w-full max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <Link to="/" className="block group text-center">
           <img src={logo} alt="Logo" className="w-32 mx-auto group-hover:scale-105 transition-transform duration-300" />
-          
+
           <div className="text-center space-y-4 mt-8">
             <h1 className="text-4xl font-bold tracking-tight text-primary">
               Code <span className="text-secondary">For Change</span>
@@ -90,7 +92,7 @@ function ResetPassword() {
                     {error}
                   </div>
                 )}
-                
+
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-6">
                     New Password

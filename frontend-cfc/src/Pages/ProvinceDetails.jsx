@@ -165,11 +165,27 @@ const ProvinceDetails = () => {
     fetchData();
   }, [displayName]);
 
+  // Generate Person JSON-LD for team members (helps Google index members without individual pages)
+  const teamJsonLd = team.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": `Code for Change Nepal - ${displayName}`,
+    "url": `${window.location.origin}/provinces/${provinceName}`,
+    "member": team.map(member => ({
+      "@type": "Person",
+      "name": member.name,
+      ...(member.role && { "jobTitle": member.position || member.role }),
+      ...(member.image && { "image": member.image }),
+    }))
+  } : null;
+
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-900 font-sans selection:bg-blue-100">
       <SEO
         title={`${displayName} Chapter`}
         description={`Empowering technology students in ${displayName} through youth initiative and digital projects by Code for Change Nepal.`}
+        image={heroImage}
+        jsonLd={teamJsonLd}
         breadcrumbs={[
           { name: "Home", path: "/" },
           { name: "Provinces", path: "/provinces" },

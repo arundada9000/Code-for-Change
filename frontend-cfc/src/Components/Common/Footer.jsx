@@ -8,27 +8,32 @@ import { FiSend } from "react-icons/fi";
 import { navItems } from "../../Data/navItems";
 
 function Footer() {
-  const importantLinks = navItems.filter((item)=>!["More"].includes(item.title))
+  const importantLinks = navItems.filter((item) => !["More"].includes(item.title))
   const socialMediaItems = [
     {
       icon: <FaFacebookF />,
       link: "https://www.facebook.com/CodeForChangeNepal",
+      label: "Follow Code for Change Nepal on Facebook",
     },
     {
       icon: <FaInstagram />,
       link: "https://www.instagram.com/codeforchangeofficial/",
+      label: "Follow Code for Change Nepal on Instagram",
     },
     {
       icon: <FaYoutube />,
       link: "https://www.youtube.com/channel/UC9x8pdE8UWErO6hW2mJSVLQ",
+      label: "Watch Code for Change Nepal on YouTube",
     },
     {
       icon: <FaLinkedinIn />,
       link: "https://www.linkedin.com/company/codeforchangenepal/",
+      label: "Connect with Code for Change Nepal on LinkedIn",
     },
     {
       icon: <FaTwitter />,
       link: "https://x.com/CodeforChange2",
+      label: "Follow Code for Change Nepal on X (Twitter)",
     },
   ];
   const services = [
@@ -38,11 +43,11 @@ function Footer() {
     },
     {
       title: "Internship",
-      path: "/",
+      path: "/internships",
     },
     {
       title: "Workshops",
-      path: "/",
+      path: "/events",
     },
     {
       title: "Entrance Preparation",
@@ -60,7 +65,7 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-[1.7fr_1fr_1fr_1fr] py-10  gap-14">
           <div>
             <Link to="/">
-              <img src="/logo.png" alt="logo" className="w-30" />
+              <img src="/logo.png" alt="Code for Change Nepal Logo" className="w-30" />
             </Link>
             <p className="text-white pt-10">
               We are Open platform for the learners to learn and trainers to
@@ -108,19 +113,21 @@ function Footer() {
         <hr className="w-full" />
         <div className="flex max-md:flex-col gap-5 justify-between items-center mt-10">
           <p className="">
-            &copy; 2025 Code for Change. All right reserved. Developed by Sajilo
+            &copy; {new Date().getFullYear()} Code for Change. All right reserved. Developed by Sajilo
             Digital&trade;
           </p>
           <div className="flex gap-5">
             {socialMediaItems.map((val, i) => (
-              <Link
+              <a
                 key={i}
-                to={val.link}
+                href={val.link}
                 target="_blank"
+                rel="noopener noreferrer"
+                aria-label={val.label}
                 className="bg-secondary p-3 rounded-full hover:bg-primary cursor-pointer transition-all ease-in duration-300"
               >
                 {val.icon}
-              </Link>
+              </a>
             ))}
           </div>
         </div>

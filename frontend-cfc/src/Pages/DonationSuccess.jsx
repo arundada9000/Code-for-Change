@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { FaCheckCircle, FaDownload, FaHome } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 import API from "../Services/api";
 import Banner from "../Components/UI/Banner";
 
@@ -46,8 +47,12 @@ const DonationSuccess = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
+      <Helmet>
+        <title>Donation Confirmed | Code for Change</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <Banner />
-      
+
       <div className="max-w-3xl mx-auto px-6 -mt-20 relative z-10">
         <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-primary/5 border border-gray-100 overflow-hidden">
           {error ? (
@@ -100,7 +105,7 @@ const DonationSuccess = () => {
                   <div>
                     <h4 className="font-bold text-primary text-sm">Official Confirmation</h4>
                     <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                      A confirmation email has been sent to <strong>{donation?.email}</strong>. 
+                      A confirmation email has been sent to <strong>{donation?.email}</strong>.
                       This record is stored in our secure impact database.
                     </p>
                   </div>

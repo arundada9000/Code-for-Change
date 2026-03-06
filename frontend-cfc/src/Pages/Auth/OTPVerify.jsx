@@ -3,6 +3,7 @@ import { FaKey, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import API from "../../Services/api";
+import SEO from "../../Components/Common/SEO";
 
 function OTPVerify() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function OTPVerify() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
+
     try {
       const res = await API.post("/auth/verify-otp", { email, otp });
       if (res.data.success) {
@@ -64,10 +65,11 @@ function OTPVerify() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#FDFDFD] font-sans selection:bg-secondary/10 selection:text-secondary">
+      <SEO title="Verify OTP" />
       <div className="w-full max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <Link to="/" className="block group text-center">
           <img src={logo} alt="Logo" className="w-32 mx-auto group-hover:scale-105 transition-transform duration-300" />
-          
+
           <div className="text-center space-y-4 mt-8">
             <h1 className="text-4xl font-bold tracking-tight text-primary">
               Code <span className="text-secondary">For Change</span>
@@ -96,7 +98,7 @@ function OTPVerify() {
                 OTP Verified! Redirecting...
               </div>
             )}
-            
+
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-6">
                 Verification Code
@@ -126,7 +128,7 @@ function OTPVerify() {
             <div className="flex flex-col gap-6 text-center pt-4">
               <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">
                 Didn't receive code?{" "}
-                <button 
+                <button
                   type="button"
                   disabled={cooldown > 0}
                   onClick={handleResend}
@@ -135,8 +137,8 @@ function OTPVerify() {
                   {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Now"}
                 </button>
               </p>
-              
-              <button 
+
+              <button
                 type="button"
                 onClick={() => navigate("/forget-password")}
                 className="text-xs text-gray-400 font-bold hover:text-secondary flex items-center justify-center gap-2 transition-colors mx-auto"
