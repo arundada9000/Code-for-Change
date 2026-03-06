@@ -1,153 +1,143 @@
-# Code for Change Nepal - Backend
+# Code for Change Nepal - Backend API
 
-Enterprise-level backend API for [codeforchangenepal.com](https://codeforchangenepal.com/) built with Express, TypeScript, MongoDB, Redis, and Cloudinary.
+The enterprise-level backend service for [codeforchangenepal.com](https://codeforchangenepal.com/), powering the main website and administrative dashboard.
 
-## 🚀 Features
+## Key Features
 
-- **Modular Architecture**: Clean separation of concerns with domain-driven design
-- **TypeScript**: Full type safety across the codebase
-- **Security**: Helmet, CORS, rate limiting, HPP, mongo sanitization
-- **Caching**: Redis integration for high-performance data retrieval
-- **File Upload**: Cloudinary integration with Multer for image management
-- **Error Handling**: Global error handler with custom AppError class
-- **Validation**: Zod for environment variables, Mongoose for data validation
+- **Modern Stack**: Built with Express 5, TypeScript, and Mongoose for robust backend operations.
+- **Advanced Security & Authentication**:
+  - Secure stateless JWT authentication via `httpOnly` secure cookies with `sameSite: strict`.
+  - Comprehensive Role-Based Access Control (RBAC) supporting hierarchical roles (GM, CR, EB, Admin) and discrete granular permissions (e.g., `manage_events`, `manage_users`).
+  - Strict input validation and sanitization using **Zod** schema parser.
+  - Hardened endpoints using Helmet, CORS, Rate Limiting, HPP, and NoSQL injection protection.
+- **Dynamic Content Management**: Supports uploading and managing images and digital assets seamlessly via Cloudinary integration and `multer`.
+- **Global Error Handling**: Centralized error management system using a custom `AppError` class and asynchronous route handlers.
 
-## 📁 Project Structure
+---
 
-```
+## Architecture & Working Mechanism
+
+The backend uses a strict **Domain-Driven Module Architecture** separating concerns logically.
+
+### 1. Request Lifecycle
+
+Client Request ➡️ Global Middlewares (CORS, Rate Limit) ➡️ Auth/Role Middleware (if protected) ➡️ Zod Validation ➡️ Controller ➡️ Service (Business Logic) ➡️ MongoDB ➡️ Response Formatter
+
+### 2. Authentication Flow (`/src/modules/auth`)
+
+- **Login**: Verifies credentials securely via `bcryptjs`, tracks login history (IP & device), generates a signed JWT payload, and sets an `httpOnly` cookie.
+- **Registration**: Ensures users are strictly assigned the base `gm` (General Member) role initially to prevent privilege escalation.
+- **Password Reset**: Utilizes time-limited signed tokens sent via email SMTP to recover accounts securely without leaking user existence info.
+
+### 3. Role-Based Access Control (RBAC)
+
+- Checked via `role.middleware.ts` which decodes the JWT and validates the user's role against required roles or specific permissions stored in `permissions.ts`.
+- **Hierarchy Mapping**: Centralized in `configs/permissions.ts` where permissions cascade based on roles.
+
+### 4. Database Schema (`/src/modules/*/` )
+
+Each module (e.g., user, event, blog, donation, contact) has a dedicated folder containing its `model`, `interface`, `route`, `service`, and `controller`. Mongoose strictly enforces database schema constraints and nested relationships.
+
+---
+
+## 📁 Core Directory Structure
+
+```text
 src/
-├── app.ts                    # Express app configuration
-├── server.ts                 # Entry point
-├── loaders/
-│   └── database.ts           # Database connection loader
+├── app.ts                    # Global Express app setups and middlewares
+├── shared/
+│   ├── configs/              # Zod Environment validation and permissions map
+│   ├── middlewares/          # Global Auth, Role, Validation, and Multer middlewares
+│   └── utils/                # JWT parsing, password hashing, Cloudinary utils, Error handling
 ├── modules/
-│   ├── events/               # Events module
-│   │   ├── event.interface.ts
-│   │   ├── event.model.ts
-│   │   ├── event.service.ts
-│   │   ├── event.controller.ts
-│   │   └── event.route.ts
-│   ├── blogs/                # Blogs module
-│   │   ├── blog.interface.ts
-│   │   ├── blog.model.ts
-│   │   ├── blog.service.ts
-│   │   ├── blog.controller.ts
-│   │   └── blog.route.ts
-│   └── [other modules...]
-└── shared/
-    ├── configs/              # Configuration files
-    │   ├── env.ts
-    │   ├── redis.ts
-    │   └── cloudinary.ts
-    ├── middlewares/          # Global middlewares
-    │   └── multer.ts
-    ├── utils/                # Utility functions
-    │   ├── response.ts
-    │   ├── errorHandler.ts
-    │   └── cloudinary.ts
-    ├── types/                # TypeScript types
-    └── constants/            # Constants
+│   ├── auth/                 # Login, Registration, OTP, Password Reset
+│   ├── user/                 # Profile updates, Role & Permission management
+│   ├── admin/                # Administrative controls
+│   ├── events/               # Event planning and registrations
+│   ├── blogs/                # News and articles management
+│   ├── donations/            # Financial donation tracking
+│   ├── internships/          # Custom Internship applications processing
+│   └── [impact, gallery, certificates...]
 ```
 
-## 🛠️ Tech Stack
+---
 
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Language**: TypeScript
-- **Database**: MongoDB (Mongoose)
-- **Cache**: Redis (ioredis)
-- **File Storage**: Cloudinary
-- **Validation**: Zod, Joi
-- **Security**: Helmet, CORS, HPP, express-mongo-sanitize
+## Technology Stack
 
-## 📦 Installation
+- **Runtime Environment:** Node.js
+- **Framework:** Express 5.0
+- **Language:** TypeScript
+- **Database:** MongoDB (Mongoose)
+- **Validation:** Zod
+- **Authentication:** jsonwebtoken (JWT), bcryptjs
+- **File Management:** Cloudinary, Multer
+
+---
+
+## Local Development Setup
+
+Follow these steps to safely run the backend locally:
+
+### 1. Install Dependencies
+
+The project uses `pnpm` as its primary package manager.
 
 ```bash
-# Install dependencies
-pnpm install
+# Navigate to backend directory
+cd backend-cfc
 
-# Setup environment variables
-cp .env.example .env
-# Edit .env with your configuration
+# Install packages
+pnpm install
 ```
 
-## 🔐 Environment Variables
+### 2. Configure Environment Options
 
-```env
+Create a `.env` file referencing the `.env.example`.
+
+```bash
+# Example required fields
 PORT=5000
 NODE_ENV=development
-MONGO_URI=mongodb://localhost:27017/codeforchange
-REDIS_URL=redis://localhost:6379
 
-JWT_SECRET=your_jwt_secret
+# Database
+MONGO_URI=mongodb://localhost:27017/codeforchange
+
+# JWT Secret keys
+JWT_SECRET=your_super_secret_jwt_key
 JWT_EXPIRES_IN=1d
 
+# External services
 SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_password
-
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-FRONTEND_URL=https://codeforchangenepal.com
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+FRONTEND_URL=http://localhost:5173
 ```
 
-## 🚀 Running the Application
+### 3. Start the Server
 
 ```bash
-# Development mode with hot reload
+# Start in development environment with hot-reload (ts-node-dev)
 pnpm dev
 
-# Build for production
+# Build the TypeScript project for production
 pnpm build
 
-# Start production server
+# Start the built version
 pnpm start
 ```
 
-## 📡 API Endpoints
+## Best Practices Applied
 
-### Events
-- `GET /api/events` - Get all events
-- `GET /api/events/:id` - Get event by ID
-- `POST /api/events` - Create event (with image upload)
-- `PUT /api/events/:id` - Update event
-- `DELETE /api/events/:id` - Delete event
+- Passwords are strictly one-way hashed.
+- Secret tokens never exist in logs or frontend responses.
+- API validation ensures no unexpected payload arguments crash the application.
+- Redundant dependencies have been audited out to keep module footprints small.
 
-### Blogs
-- `GET /api/blogs` - Get all blogs
-- `GET /api/blogs/:id` - Get blog by ID
-- `POST /api/blogs` - Create blog (with image upload)
-- `PUT /api/blogs/:id` - Update blog
-- `DELETE /api/blogs/:id` - Delete blog
+---
 
-## 🏗️ Architecture Patterns
-
-### Module Structure
-Each module follows a consistent pattern:
-1. **Interface**: TypeScript interfaces for type safety
-2. **Model**: Mongoose schema with validation
-3. **Service**: Business logic with Redis caching
-4. **Controller**: Request handling with error management
-5. **Routes**: API endpoint definitions
-
-### Reusable Components
-- **Error Handler**: `asyncHandler` wrapper and `AppError` class
-- **Response Utility**: Standardized success/error responses
-- **Cloudinary Utility**: Upload, delete, and URL parsing functions
-- **Multer Middleware**: File upload handling with validation
-
-## 🔒 Security Features
-
-- **Helmet**: Security headers
-- **CORS**: Cross-origin resource sharing
-- **Rate Limiting**: 100 requests per hour per IP
-- **HPP**: HTTP parameter pollution prevention
-- **Mongo Sanitize**: NoSQL injection prevention
-- **File Validation**: Type and size restrictions
-
-## 📝 License
-
-MIT
+<div align="center">
+  <a href="https://sajilodigital.com.np" target="_blank">
+    <img src="../frontend-cfc/public/sajilodigital.png" alt="Sajilo Digital" width="200" />
+  </a>
+  <br />
+  <p><b>Developed & Maintained by <a href="https://sajilodigital.com.np" target="_blank">Sajilo Digital</a></b></p>
+</div>
