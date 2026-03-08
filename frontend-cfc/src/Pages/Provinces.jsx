@@ -38,7 +38,7 @@ import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
 import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
 
 const Provinces = () => {
-  const { data: apiTeam, loading } = useFetch("/team", []);
+  const { data: apiTeam, Loading } = useFetch("/team", []);
   const { data: provincialStats } = useFetch("/province-stats", {});
   const { data: publicUsers } = useFetch("/users/public-users", []);
 
@@ -281,10 +281,11 @@ const Provinces = () => {
                     key={p.name}
                     onClick={() => setActiveTab(p.name)}
                     className={`px-6 py-3 rounded-full tracking-wider cursor-pointer text-sm font-medium uppercase transition-all duration-500 border-2
-              ${activeTab === p.name
-                        ? "bg-white -translate-y-1"
-                        : "bg-white-50 text-white hover:bg-gray-100"
-                      }`}
+              ${
+                activeTab === p.name
+                  ? "bg-white -translate-y-1"
+                  : "bg-white-50 text-white hover:bg-gray-100"
+              }`}
                   >
                     {p.name}
                   </button>
@@ -430,7 +431,7 @@ const Provinces = () => {
                               className="text-[11px] uppercase font-black mt-1.5 tracking-[0.15em] opacity-80"
                               style={{ color: activeProvince?.colorCode }}
                             >
-                              {member.role}
+                              {member.position}
                             </p>
                           </div>
                         </div>
@@ -449,6 +450,7 @@ const Provinces = () => {
                 <TeamMemberModal
                   isOpen={!!selectedMember}
                   member={selectedMember}
+                  links={selectedMember?.socialLinks}
                   onClose={() => setSelectedMember(null)}
                 />
                 {/* Section: Advisors */}
@@ -462,7 +464,12 @@ const Provinces = () => {
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                       {currentTeam.advisors.map((member, i) => (
-                        <TeamCard key={i} member={member} variant="glass" />
+                        <TeamCard
+                          key={i}
+                          member={member}
+                          onSelect={setSelectedMember}
+                          variant="glass"
+                        />
                       ))}
                     </div>
                   </section>
@@ -479,7 +486,12 @@ const Provinces = () => {
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                       {currentTeam.alumni.map((member, i) => (
-                        <TeamCard key={i} member={member} variant="glass" />
+                        <TeamCard
+                          key={i}
+                          member={member}
+                          onSelect={setSelectedMember}
+                          variant="glass"
+                        />
                       ))}
                     </div>
                   </section>
@@ -494,7 +506,7 @@ const Provinces = () => {
 };
 
 // TeamCard remains the same
-const TeamCard = ({ member, variant }) => {
+const TeamCard = ({ member, variant, onSelect }) => {
   const isGlass = variant === "glass";
 
   const socialIcons = {
@@ -509,10 +521,11 @@ const TeamCard = ({ member, variant }) => {
   const availableSocials = Object.entries(member.socialLinks || {}).filter(
     ([_, url]) => url,
   );
-
   // console.log(member.socialLinks);
+
   return (
     <div
+      onClick={() => onSelect(member)}
       className={`group relative rounded-3xl p-3 transition-all duration-700 
       ${isGlass ? "bg-white/40 backdrop-blur-2xl border border-white/50 shadow-xl" : "bg-white border border-slate-100 shadow-md"}
       hover:-translate-y-4 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)]`}
@@ -520,29 +533,31 @@ const TeamCard = ({ member, variant }) => {
       <div className="aspect-4/5 rounded-2xl relative overflow-hidden bg-slate-100">
         {/* Social Overlay */}
 
-        {availableSocials.map(([platform, url], idx) => (
-          <div
-            key={platform}
-            className={`absolute z-20 ${idx < 3 ? "left-6" : "right-6"}
-            [--icon-gap:3.5rem] lg:[--icon-gap:2.5rem]`}
-            style={{
-              top: `calc(1.5rem + ${idx % 3} * var(--icon-gap))`,
-            }}
-          >
-            <a
-              href={url.startsWith("http") ? url : `https://${url}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`lg:w-9 w-11 h-11 lg:h-9  rounded-xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
-      opacity-100 md:opacity-0 ${idx < 3 ? "md:-translate-x-12" : "md:translate-x-12"
-                }
-      group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
-              style={{ transitionDelay: `${idx * 100}ms` }}
+        {availableSocials.length > 0 &&
+          availableSocials.map(([platform, url], idx) => (
+            <div
+              key={platform}
+              className={`absolute z-20 ${idx < 3 ? "left-6" : "right-6"}
+             [--icon-gap:3.5rem] lg:[--icon-gap:2.5rem]`}
+              style={{
+                top: `calc(1.5rem + ${idx % 3} * var(--icon-gap))`,
+              }}
             >
-              {socialIcons[platform] || <FiExternalLink />}
-            </a>
-          </div>
-        ))}
+              <a
+                href={url.startsWith("http") ? url : `https://${url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`lg:w-9 w-11 h-11 lg:h-9 rounded-xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
+               opacity-100 md:opacity-0 ${
+                 idx < 3 ? "md:-translate-x-12" : "md:translate-x-12"
+               }
+               group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
+                style={{ transitionDelay: `${idx * 100}ms` }}
+              >
+                {socialIcons[platform] || <FiExternalLink />}
+              </a>
+            </div>
+          ))}
 
         <img
           src={member.image}

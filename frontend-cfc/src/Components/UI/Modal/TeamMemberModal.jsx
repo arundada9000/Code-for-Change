@@ -1,29 +1,27 @@
 import React, { useEffect } from "react";
 import {
   FaTimes,
+  FaCheckCircle,
   FaEnvelope,
   FaGithub,
   FaLinkedinIn,
   FaInstagram,
   FaTwitter,
   FaFacebookF,
-  FaGraduationCap,
 } from "react-icons/fa";
 import { FiGlobe } from "react-icons/fi";
 
-/* SOCIAL CONFIG */
 const SOCIAL_CONFIG = {
-  email: { icon: <FaEnvelope />, label: "Email", isEmail: true },
-  linkedin: { icon: <FaLinkedinIn />, label: "LinkedIn" },
-  github: { icon: <FaGithub />, label: "GitHub" },
-  twitter: { icon: <FaTwitter />, label: "Twitter" },
-  instagram: { icon: <FaInstagram />, label: "Instagram" },
-  facebook: { icon: <FaFacebookF />, label: "Facebook" },
-  website: { icon: <FiGlobe />, label: "Portfolio" },
+  email: { icon: <FaEnvelope />, isEmail: true },
+  linkedin: { icon: <FaLinkedinIn /> },
+  github: { icon: <FaGithub /> },
+  twitter: { icon: <FaTwitter /> },
+  instagram: { icon: <FaInstagram /> },
+  facebook: { icon: <FaFacebookF /> },
+  website: { icon: <FiGlobe /> },
 };
 
-export default function TeamMemberModal({ isOpen, onClose, member }) {
-  /* ESC CLOSE */
+export default function TeamMemberModal({ isOpen, onClose, member, links }) {
   useEffect(() => {
     const handleEsc = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", handleEsc);
@@ -32,82 +30,80 @@ export default function TeamMemberModal({ isOpen, onClose, member }) {
 
   if (!isOpen || !member) return null;
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+  // Merge possible link sources safely
+  const socialLinks = links || member.socialLinks || {};
 
-      {/* BACKDROP */}
+  // Get only links that actually exist
+  const socialEntries = Object.entries(SOCIAL_CONFIG).filter(
+    ([key]) => socialLinks?.[key],
+  );
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* MODAL */}
-      <div className="relative bg-white rounded-3xl shadow-xl w-full max-w-3xl overflow-hidden flex flex-col md:flex-row">
+      {/* Modal */}
+      <div className="relative w-full md:max-w-125 sm:aspect-5/6 aspect-9/14 rounded-[40px] overflow-hidden shadow-2xl bg-gray-900">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 z-20 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors cursor-pointer"
+        >
+          <FaTimes size={18} />
+        </button>
 
-        {/* LEFT */}
-        <div className="w-full md:w-[40%] p-8 flex flex-col items-center border-b md:border-b-0 md:border-r">
-          <img
-            src={member.image}
-            alt={member.name}
-            className="w-40 h-40 rounded-2xl object-cover shadow-md"
-          />
+        {/* Background Image */}
+        <img
+          src={member.image}
+          alt={member.name}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-          <h2 className="mt-6 text-2xl font-bold text-gray-800 text-center">
-            {member.name}
-          </h2>
+        {/* Gradient Overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-[60%] z-10 bg-black/20 backdrop-blur-xl [mask-image:linear-gradient(to_top,black_20%,transparent_100%)]" />
 
-          <p className="mt-2 text-sm font-semibold text-gray-500 uppercase">
-            {member.position || member.role}
-          </p>
-        </div>
-
-        {/* RIGHT */}
-        <div className="w-full md:w-[60%] p-8 flex flex-col relative">
-
-          {/* CLOSE */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100"
-          >
-            <FaTimes />
-          </button>
-
-          {/* EDUCATION */}
-          {member.college && (
-            <div className="flex items-center gap-3 text-gray-500 mb-6">
-              <FaGraduationCap />
-              <span className="text-sm font-semibold">
-                {member.college}
-              </span>
-            </div>
-          )}
-
-          {/* BIO */}
-          <p className="text-gray-600 leading-relaxed mb-8">
-            {member.bio || "No bio available."}
-          </p>
-
-          {/* SOCIALS */}
-          <div className="flex flex-wrap gap-3 mt-auto">
-            {Object.entries(SOCIAL_CONFIG).map(([key, config]) => {
-              const value = member[key];
-              // if (!value) return null;
-
-              return (
-                <a
-                  key={key}
-                  href={config.isEmail ? `mailto:${value}` : value}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium hover:bg-gray-100"
-                >
-                  {config.icon}
-                  {config.label}
-                </a>
-              );
-            })}
+        {/* Content */}
+        <div className="absolute bottom-0 left-0 w-full px-8 pb-8 z-10 bg-white/10 text-white">
+          <div className="flex items-center gap-2 mb-2">
+            <h2 className="text-3xl font-semibold tracking-tight">
+              {member.name}
+            </h2>
+            <FaCheckCircle className="text-white text-lg" />
           </div>
 
+          <p className="text-white/90 text-lg capitalize leading-snug mb-4 max-w-[90%]">
+            {member.role?.replace("-", " ") || "Team Member"}.
+          </p>
+
+          <p className="text-white/80 mb-6">
+            {member.bio || "Focused on building meaningful impact."}
+          </p>
+
+          {/* Social Section */}
+          {socialEntries.length > 0 && (
+            <div className="flex gap-3 pt-2">
+              {socialEntries.map(([key, config]) => {
+                const value = socialLinks[key];
+
+                return (
+                  <a
+                    key={key}
+                    href={config.isEmail ? `mailto:${value}` : value}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="p-3 cursor-pointer bg-white/10 text-2xl hover:bg-white/20 rounded-full backdrop-blur-md transition-all"
+                  >
+                    {config.icon}
+                  </a>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>
