@@ -12,8 +12,16 @@ export class EventService {
    * Get all events with optional filtering
    */
   async getAllEvents(queryParams: any = {}): Promise<IEvent[]> {
-    const { search, type, province, startDate, endDate, sort, ...otherFilters } = queryParams;
-    
+    const {
+      search,
+      type,
+      province,
+      startDate,
+      endDate,
+      sort,
+      ...otherFilters
+    } = queryParams;
+
     // Build query
     const query: any = { ...otherFilters };
 
@@ -25,7 +33,7 @@ export class EventService {
       ];
     }
 
-    if (province && province !== 'all') {
+    if (province && province !== "all") {
       query.province = province;
     }
 
@@ -57,14 +65,16 @@ export class EventService {
     try {
       const sortQuery = sort ? { [sort]: 1 } : { date: -1 };
       const events = await Event.find(query).sort(sortQuery as any);
-      
+
       // Cache the result only if it was a broad fetch
       if (isCacheable) {
-        redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(events)).catch(err => {
+        redis
+          .setex(CACHE_KEY, CACHE_TTL, JSON.stringify(events))
+          .catch((err: any) => {
             console.warn("Redis cache set failed:", err);
-        });
+          });
       }
-      
+
       return events;
     } catch (error) {
       throw new AppError("Failed to fetch events", 500);
@@ -101,21 +111,28 @@ export class EventService {
    */
   async createEvent(data: Partial<IEvent>): Promise<IEvent> {
     // Duplicate Protection: Title + Date
-    const existingEvent = await Event.findOne({ 
-      title: data.title, 
-      date: data.date 
+    const existingEvent = await Event.findOne({
+      title: data.title,
+      date: data.date,
     });
 
     if (existingEvent) {
-      throw new AppError(`An event with this title already exists on ${new Date(data.date!).toLocaleDateString()}`, 409);
+      throw new AppError(
+        `An event with this title already exists on ${new Date(data.date!).toLocaleDateString()}`,
+        409,
+      );
     }
 
     try {
       const event = await Event.create(data);
-      
+
       // Invalidate cache
-      redis.del(CACHE_KEY).catch(err => console.warn("Redis cache invalidation failed:", err));
-      
+      redis
+        .del(CACHE_KEY)
+        .catch((err: any) =>
+          console.warn("Redis cache invalidation failed:", err),
+        );
+
       return event;
     } catch (error) {
       console.error("Event Creation Error Details:", error);
@@ -137,7 +154,11 @@ export class EventService {
     }
 
     // Invalidate cache
-    redis.del(CACHE_KEY).catch(err => console.warn("Redis cache invalidation failed:", err));
+    redis
+      .del(CACHE_KEY)
+      .catch((err: any) =>
+        console.warn("Redis cache invalidation failed:", err),
+      );
 
     return event;
   }
@@ -147,12 +168,16 @@ export class EventService {
    */
   async deleteEvent(id: string): Promise<void> {
     const event = await Event.findByIdAndDelete(id);
-    
+
     if (!event) {
       throw new AppError("Event not found", 404);
     }
 
     // Invalidate cache
-    redis.del(CACHE_KEY).catch(err => console.warn("Redis cache invalidation failed:", err));
+    redis
+      .del(CACHE_KEY)
+      .catch((err: any) =>
+        console.warn("Redis cache invalidation failed:", err),
+      );
   }
 }

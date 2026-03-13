@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IResource } from "./resource.interface";
+import { IResource } from "./resource.interface.js";
 
 const resourceSchema = new Schema < IResource > (
     {

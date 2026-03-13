@@ -57,7 +57,7 @@ export class BlogService {
       const blogs = await Blog.find(query).sort({ createdAt: -1 });
       
       if (isCacheable) {
-        redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(blogs)).catch(err => {
+        redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(blogs)).catch((err:any) => {
              console.warn("Redis cache set failed:", err);
         });
       }

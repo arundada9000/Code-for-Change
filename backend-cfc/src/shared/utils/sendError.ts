@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { AppError } from "./appError";
+import { AppError } from "./appError.js";
 
 // Helper to send standardized error responses
 export const sendErrorResponse = (error: unknown, res: Response) => {

@@ -12,15 +12,15 @@ export class GalleryService {
 
     const query: any = { ...otherFilters };
 
-    if (category && category !== 'All') {
+    if (category && category !== "All") {
       query.category = category;
     }
 
     if (isFeatured !== undefined) {
-      query.isFeatured = isFeatured === 'true' || isFeatured === true;
+      query.isFeatured = isFeatured === "true" || isFeatured === true;
     }
 
-    if (queryParams.province && queryParams.province !== 'all') {
+    if (queryParams.province && queryParams.province !== "all") {
       query.province = queryParams.province;
     }
 
@@ -41,9 +41,11 @@ export class GalleryService {
       const items = await Gallery.find(query).sort({ createdAt: -1 });
 
       if (isCacheable) {
-        redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(items)).catch(err => {
-          console.warn("Redis gallery cache set failed:", err);
-        });
+        redis
+          .setex(CACHE_KEY, CACHE_TTL, JSON.stringify(items))
+          .catch((err: any) => {
+            console.warn("Redis gallery cache set failed:", err);
+          });
       }
 
       return items;
@@ -70,7 +72,10 @@ export class GalleryService {
     }
   }
 
-  async updateGalleryItem(id: string, data: Partial<IGallery>): Promise<IGallery> {
+  async updateGalleryItem(
+    id: string,
+    data: Partial<IGallery>,
+  ): Promise<IGallery> {
     const item = await Gallery.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,

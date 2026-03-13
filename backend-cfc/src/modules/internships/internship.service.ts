@@ -11,8 +11,18 @@ export class InternshipService {
    * Get all internships with optional filtering
    */
   async getAllInternships(queryParams: any = {}): Promise<IInternship[]> {
-    const { search, type, category, status, province, deadlineStart, deadlineEnd, sort, ...otherFilters } = queryParams;
-    
+    const {
+      search,
+      type,
+      category,
+      status,
+      province,
+      deadlineStart,
+      deadlineEnd,
+      sort,
+      ...otherFilters
+    } = queryParams;
+
     // Build query
     const query: any = { ...otherFilters };
 
@@ -28,11 +38,12 @@ export class InternshipService {
     if (type) query.type = type;
     if (category) query.category = category;
     if (status) query.status = status;
-    if (province && province !== 'all') query.province = province;
+    if (province && province !== "all") query.province = province;
 
     if (deadlineStart || deadlineEnd) {
       query.applicationDeadline = {};
-      if (deadlineStart) query.applicationDeadline.$gte = new Date(deadlineStart);
+      if (deadlineStart)
+        query.applicationDeadline.$gte = new Date(deadlineStart);
       if (deadlineEnd) query.applicationDeadline.$lte = new Date(deadlineEnd);
     }
 
@@ -54,14 +65,16 @@ export class InternshipService {
     try {
       const sortQuery = sort ? { [sort]: 1 } : { createdAt: -1 };
       const internships = await Internship.find(query).sort(sortQuery as any);
-      
+
       // Cache the result only if it was a broad fetch
       if (isCacheable) {
-        redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(internships)).catch(err => {
+        redis
+          .setex(CACHE_KEY, CACHE_TTL, JSON.stringify(internships))
+          .catch((err: any) => {
             console.warn("Redis cache set failed:", err);
-        });
+          });
       }
-      
+
       return internships;
     } catch (error) {
       throw new AppError("Failed to fetch internships", 500);
@@ -84,21 +97,28 @@ export class InternshipService {
    */
   async createInternship(data: Partial<IInternship>): Promise<IInternship> {
     // Duplicate Protection: Title + Company
-    const existingInternship = await Internship.findOne({ 
-      title: data.title, 
-      companyName: data.companyName 
+    const existingInternship = await Internship.findOne({
+      title: data.title,
+      companyName: data.companyName,
     });
 
     if (existingInternship) {
-      throw new AppError(`A vacancy for "${data.title}" at "${data.companyName}" already exists`, 409);
+      throw new AppError(
+        `A vacancy for "${data.title}" at "${data.companyName}" already exists`,
+        409,
+      );
     }
 
     try {
       const internship = await Internship.create(data);
-      
+
       // Invalidate cache
-      redis.del(CACHE_KEY).catch(err => console.warn("Redis cache invalidation failed:", err));
-      
+      redis
+        .del(CACHE_KEY)
+        .catch((err: any) =>
+          console.warn("Redis cache invalidation failed:", err),
+        );
+
       return internship;
     } catch (error) {
       console.error("Internship Creation Error Details:", error);
@@ -109,7 +129,10 @@ export class InternshipService {
   /**
    * Update an internship
    */
-  async updateInternship(id: string, data: Partial<IInternship>): Promise<IInternship> {
+  async updateInternship(
+    id: string,
+    data: Partial<IInternship>,
+  ): Promise<IInternship> {
     const internship = await Internship.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
@@ -120,7 +143,11 @@ export class InternshipService {
     }
 
     // Invalidate cache
-    redis.del(CACHE_KEY).catch(err => console.warn("Redis cache invalidation failed:", err));
+    redis
+      .del(CACHE_KEY)
+      .catch((err: any) =>
+        console.warn("Redis cache invalidation failed:", err),
+      );
 
     return internship;
   }
@@ -130,12 +157,16 @@ export class InternshipService {
    */
   async deleteInternship(id: string): Promise<void> {
     const internship = await Internship.findByIdAndDelete(id);
-    
+
     if (!internship) {
       throw new AppError("Internship/Job vacancy not found", 404);
     }
 
     // Invalidate cache
-    redis.del(CACHE_KEY).catch(err => console.warn("Redis cache invalidation failed:", err));
+    redis
+      .del(CACHE_KEY)
+      .catch((err: any) =>
+        console.warn("Redis cache invalidation failed:", err),
+      );
   }
 }

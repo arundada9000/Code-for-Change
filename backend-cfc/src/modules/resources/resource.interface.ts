@@ -11,4 +11,6 @@ export interface IResource extends Document {
   uploadedBy?: string;
   isApproved?: boolean;
   downloads?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

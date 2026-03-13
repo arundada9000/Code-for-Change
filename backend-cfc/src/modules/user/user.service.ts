@@ -12,7 +12,7 @@ import {
   IUpdateUserInput,
   IUser,
   PermissionOperationResult,
-} from "modules/user/user.interface";
+} from "../../modules/user/user.interface.js";
 import { hashPassword } from "../../shared/utils/hash.js";
 import { ROLES } from "../../shared/configs/permissions.js";
 import { UserTable } from "./user.model.js";
@@ -21,7 +21,7 @@ import { Types } from "mongoose";
 
 // Create user function with proper Promise return type
 export const createUser = async (
-  input: ICreateUserInput
+  input: ICreateUserInput,
 ): Promise<CreatedUser> => {
   try {
     // 1. Normalize role (safe, since RoleValue is string)
@@ -31,8 +31,8 @@ export const createUser = async (
     if (!Object.values(ROLES).includes(normalizedRole)) {
       throw new Error(
         `Invalid role: "${input.role}". Allowed: ${Object.values(ROLES).join(
-          ", "
-        )}`
+          ", ",
+        )}`,
       );
     }
 
@@ -87,14 +87,14 @@ export const createUser = async (
 };
 
 export const getUsers = async (
-  options: GetUsersOptions = {}
+  options: GetUsersOptions = {},
 ): Promise<any[]> => {
   const { excludeUserId } = options;
 
   const query: any = {
     // Exclude super admin email - strictly hidden from all lists
     email: { $ne: "sajhilodigital@gmail.com" },
-    role: { $ne: ROLES.SUPER_ADMIN }
+    role: { $ne: ROLES.SUPER_ADMIN },
   };
 
   // If logged-in user ID is provided, exclude them too
@@ -103,7 +103,7 @@ export const getUsers = async (
   }
 
   const users = await UserTable.find(query).select(
-    "-password -otp -otpExpiry -failedLoginAttempts -lockUntil -resetPasswordToken -resetPasswordExpiry"
+    "-password -otp -otpExpiry -failedLoginAttempts -lockUntil -resetPasswordToken -resetPasswordExpiry",
   );
 
   return users.map((user: any) => ({
@@ -127,7 +127,7 @@ export const getUsers = async (
 // Update user
 export const updateUser = async (
   id: string,
-  data: Partial<IUpdateUserInput>
+  data: Partial<IUpdateUserInput>,
 ): Promise<CreatedUser> => {
   try {
     const updatePayload: Partial<IUpdateUserInput> = {};
@@ -135,7 +135,9 @@ export const updateUser = async (
     // 0️⃣ Superadmin protection
     const userToUpdate = await UserTable.findById(id);
     if (userToUpdate && userToUpdate.email === "sajhilodigital@gmail.com") {
-      throw new Error("Superadmin account cannot be modified via secondary admin channels.");
+      throw new Error(
+        "Superadmin account cannot be modified via secondary admin channels.",
+      );
     }
 
     // 1️⃣ Password update
@@ -166,23 +168,17 @@ export const updateUser = async (
       updatePayload.province = data.province;
     if (typeof data.profileImage === "string")
       updatePayload.profileImage = data.profileImage;
-    if (typeof data.address === "string")
-      updatePayload.address = data.address;
-    if (typeof data.bio === "string")
-      updatePayload.bio = data.bio;
-    if (typeof data.gender === "string")
-      updatePayload.gender = data.gender;
+    if (typeof data.address === "string") updatePayload.address = data.address;
+    if (typeof data.bio === "string") updatePayload.bio = data.bio;
+    if (typeof data.gender === "string") updatePayload.gender = data.gender;
     if (data.dateOfBirth)
       updatePayload.dateOfBirth = new Date(data.dateOfBirth);
     if (typeof data.linkedin === "string")
       updatePayload.linkedin = data.linkedin;
-    if (typeof data.github === "string")
-      updatePayload.github = data.github;
+    if (typeof data.github === "string") updatePayload.github = data.github;
     if (typeof data.facebook === "string")
       updatePayload.facebook = data.facebook;
-    if (typeof data.website === "string")
-      updatePayload.website = data.website;
-
+    if (typeof data.website === "string") updatePayload.website = data.website;
 
     // Helper to parse potential JSON string
     const parseNested = (val: any) => {
@@ -200,21 +196,27 @@ export const updateUser = async (
     if (data.membership) {
       const membership = parseNested(data.membership);
       updatePayload.membership = {
-        ...(userToUpdate?.membership ? (userToUpdate.membership as any).toObject() : {}),
+        ...(userToUpdate?.membership
+          ? (userToUpdate.membership as any).toObject()
+          : {}),
         ...membership,
       };
     }
     if (data.education) {
       const education = parseNested(data.education);
       updatePayload.education = {
-        ...(userToUpdate?.education ? (userToUpdate.education as any).toObject() : {}),
+        ...(userToUpdate?.education
+          ? (userToUpdate.education as any).toObject()
+          : {}),
         ...education,
       };
     }
     if (data.executiveDetails) {
       const exec = parseNested(data.executiveDetails);
       updatePayload.executiveDetails = {
-        ...(userToUpdate?.executiveDetails ? (userToUpdate.executiveDetails as any).toObject() : {}),
+        ...(userToUpdate?.executiveDetails
+          ? (userToUpdate.executiveDetails as any).toObject()
+          : {}),
         ...exec,
       };
     }
@@ -226,7 +228,7 @@ export const updateUser = async (
       {
         new: true,
         runValidators: true,
-      }
+      },
     ).select("-password -otp -otpExpiry -failedLoginAttempts -lockUntil");
 
     if (!updatedUser) {
@@ -265,7 +267,10 @@ export const deleteUser = async (id: string, currentUserId: string) => {
   }
 
   // Prevent deletion of superadmin
-  if (user.email === "sajhilodigital@gmail.com" || user.role === ROLES.SUPER_ADMIN) {
+  if (
+    user.email === "sajhilodigital@gmail.com" ||
+    user.role === ROLES.SUPER_ADMIN
+  ) {
     throw new Error("Superadmin account is immutable and cannot be deleted.");
   }
 
@@ -286,7 +291,7 @@ export const deleteUser = async (id: string, currentUserId: string) => {
 export const addUserPermissionService = async (
   userId: string,
   permission: PermissionValue,
-  currentUser: CurrentUser
+  currentUser: CurrentUser,
 ): Promise<PermissionOperationResult> => {
   // Early validation
   if (!Types.ObjectId.isValid(userId)) {
@@ -329,7 +334,7 @@ export const addUserPermissionService = async (
         new: true,
         select: "permissions role email name",
         lean: true,
-      }
+      },
     );
 
     return {
@@ -345,9 +350,10 @@ export const addUserPermissionService = async (
     console.error("addUserPermissionService unexpected error:", error);
 
     throw new AppError(
-      `Failed to add permission: ${error instanceof Error ? error.message : "Unknown error"
+      `Failed to add permission: ${
+        error instanceof Error ? error.message : "Unknown error"
       }`,
-      500
+      500,
     );
   }
 };
@@ -357,7 +363,7 @@ export const addUserPermissionService = async (
 export const removeUserPermissionService = async (
   userId: string,
   permission: PermissionValue,
-  currentUser: CurrentUser
+  currentUser: CurrentUser,
 ) => {
   try {
     const targetUser = await UserTable.findById(userId).select("+permissions");
@@ -379,7 +385,7 @@ export const removeUserPermissionService = async (
 
     // Remove & save
     targetUser.permissions = targetUser.permissions.filter(
-      (p) => p !== permission
+      (p) => p !== permission,
     );
     targetUser.markModified("permissions");
 
@@ -396,9 +402,10 @@ export const removeUserPermissionService = async (
     }
 
     throw new AppError(
-      `Failed to remove permission: ${error instanceof Error ? error.message : "Unknown error"
+      `Failed to remove permission: ${
+        error instanceof Error ? error.message : "Unknown error"
       }`,
-      500
+      500,
     );
   }
 };
@@ -409,7 +416,7 @@ export const removeUserPermissionService = async (
 export const getPublicUsers = async (filters: { province?: string } = {}) => {
   const query: any = {
     isDeleted: false,
-    isActive: true // Only show active/verified users
+    isActive: true, // Only show active/verified users
   };
 
   if (filters.province) {
@@ -418,6 +425,8 @@ export const getPublicUsers = async (filters: { province?: string } = {}) => {
 
   // Only return safe, non-sensitive fields
   return await UserTable.find(query)
-    .select("name role province profileImage education.collegeName executiveDetails bio")
+    .select(
+      "name role province profileImage education.collegeName executiveDetails bio",
+    )
     .sort({ createdAt: -1 });
 };
