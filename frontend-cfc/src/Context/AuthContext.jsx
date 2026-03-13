@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
         // If 401, user is not logged in or cookie expired
         setUser(null);
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
       }
     };
     checkAuth();
@@ -37,10 +38,11 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await API.post("/auth/login", { email, password });
-      const { user: userData } = response.data.data;
+      const { user: userData, token } = response.data.data;
 
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
+      if (token) localStorage.setItem("token", token);
       return { success: true };
     } catch (error) {
       console.error("Login failed:", error);
@@ -61,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
   };
 

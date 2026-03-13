@@ -5,6 +5,17 @@ const API = axios.create({
   withCredentials: true,
 });
 
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // Interceptor to handle errors globally if needed
 API.interceptors.response.use(
   (response) => response,
@@ -13,6 +24,7 @@ API.interceptors.response.use(
     if (error.response?.status === 401) {
       // Potentially clear local storage or redirect to login
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
     return Promise.reject(error);
   }
