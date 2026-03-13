@@ -3,9 +3,11 @@ import { IoMdClose } from "react-icons/io";
 import { navItems } from "../../../Data/navItems";
 import { Link, useLocation } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
+import { useAuth } from "../../../Context/AuthContext";
 
 function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
   const location = useLocation();
+  const { user } = useAuth();
   const sideBarItems = navItems.filter(
     (items) => !["More"].includes(items.title)
   );
@@ -54,6 +56,9 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
             title: "Contact us",
             path: "/contact-us",
           },
+          user
+            ? { title: "My Profile", path: "/profile" }
+            : { title: "Join Us", path: "/join-us" },
         ].map((val, i) => (
           <Link
             key={i}

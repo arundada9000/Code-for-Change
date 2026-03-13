@@ -12,7 +12,9 @@ export const register = async (data: any) => {
   }
 
   const user = new UserTable({
-    ...data,
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
     password: await hashPassword(data.password),
     role: "gm",
     isVerified: false,
@@ -32,6 +34,7 @@ export const register = async (data: any) => {
     executiveDetails: {
       position: data.ebBody,
     },
+    profileImage: data.profileImage,
   });
 
   await user.save();
@@ -56,6 +59,7 @@ export const getMe = async (userId: string) => {
     role: user.role,
     isVerified: user.isVerified,
     isActive: user.isActive,
+    accountStatus: user.accountStatus,
     permissions: user.permissions,
     lastLogin: user.lastLogin,
     createdAt: (user as any).createdAt,
@@ -64,6 +68,15 @@ export const getMe = async (userId: string) => {
     education: user.education,
     membership: user.membership,
     executiveDetails: user.executiveDetails,
+    bio: user.bio,
+    address: user.address,
+    gender: user.gender,
+    dateOfBirth: user.dateOfBirth,
+    profileImage: user.profileImage,
+    website: user.website,
+    linkedin: user.linkedin,
+    github: user.github,
+    facebook: user.facebook,
   };
 };
 
@@ -155,6 +168,16 @@ export const loginUser = async (
     education: user.education,
     membership: user.membership,
     executiveDetails: user.executiveDetails,
+    phone: user.phone,
+    bio: user.bio,
+    address: user.address,
+    gender: user.gender,
+    dateOfBirth: user.dateOfBirth,
+    profileImage: user.profileImage,
+    website: user.website,
+    linkedin: user.linkedin,
+    github: user.github,
+    facebook: user.facebook,
   };
 
   return {

@@ -13,73 +13,51 @@ import { UserTable } from "./user.model.js";
 // Create User
 export const createUserController = asyncHandler(
   async (req: Request, res: Response) => {
-    try {
-      const user = await createUser(req.body);
-
-      successResponse(res, user, "User created", 201);
-    } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message || "Failed to Create user",
-      });
-    }
+    const user = await createUser(req.body);
+    successResponse(res, user, "User created", 201);
   }
 );
 
 // Get User
 export const getUsersController = asyncHandler(
   async (req: Request, res: Response) => {
-    try {
-      const users = await getUsers();
-      successResponse(res, users);
-    } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message || "Failed To Get User list",
-      });
-    }
+    const users = await getUsers();
+    successResponse(res, users);
   }
 );
 
 // Update User
 export const updateUserController = asyncHandler(
   async (req: Request, res: Response) => {
-    try {
-      let updateData = { ...req.body };
+    let updateData = { ...req.body };
 
-      // Handle profile image upload
-      if (req.file) {
-        const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.PROFILES);
-        updateData.profileImage = result.secure_url;
+    // Handle profile image upload
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.PROFILES);
+      updateData.profileImage = result.secure_url;
 
-        // Delete old profile image if exists
-        try {
-          const oldUser = await UserTable.findById(req.params.id);
-          if (oldUser?.profileImage) {
-            const publicId = extractPublicId(oldUser.profileImage);
-            await deleteFromCloudinary(publicId);
-          }
-        } catch (error) {
-          console.error("Failed to delete old profile image:", error);
-          // Continue with update even if deletion fails
+      // Delete old profile image if exists
+      try {
+        const oldUser = await UserTable.findById(req.params.id);
+        if (oldUser?.profileImage) {
+          const publicId = extractPublicId(oldUser.profileImage);
+          await deleteFromCloudinary(publicId);
         }
+      } catch (error) {
+        console.error("Failed to delete old profile image:", error);
+        // Continue with update even if deletion fails
       }
-
-      const user = await updateUser(req.params.id, updateData);
-      successResponse(res, user, "User updated");
-    } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message || "Failed to update user",
-      });
     }
+
+    const user = await updateUser(req.params.id, updateData);
+    successResponse(res, user, "User updated");
   }
 );
 // User Delete
 export const deleteUserController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userIdToDelete = req.params.id;
-    const currentUserId = req.user?._id;
+    const currentUserId = req.user?.id;
 
     if (!currentUserId) {
       return res.status(401).json({
@@ -88,15 +66,8 @@ export const deleteUserController = asyncHandler(
       });
     }
 
-    try {
-      await deleteUser(userIdToDelete, currentUserId);
-      successResponse(res, null, "User deleted successfully");
-    } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message || "Failed to delete user",
-      });
-    }
+    await deleteUser(userIdToDelete, currentUserId);
+    successResponse(res, null, "User deleted successfully");
   }
 );
 

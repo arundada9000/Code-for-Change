@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
+import DOMPurify from "dompurify";
 import useFetch from "../Hooks/useFetch";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
@@ -209,7 +210,7 @@ function BlogDetail() {
                 prose-img:rounded-3xl prose-img:shadow-lg
                 
                 prose-strong:text-slate-950 prose-strong:font-black"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content) }}
             />
 
             {/* Simple Brand Author Card */}

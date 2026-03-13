@@ -5,6 +5,7 @@ import {
   FaExternalLinkAlt, FaClock, FaTag, FaParagraph
 } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
+import DOMPurify from "dompurify";
 import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 
@@ -158,7 +159,7 @@ function AdminBlogDetail() {
         </h3>
         <div 
           className="prose prose-slate max-w-none prose-headings:font-black prose-p:text-slate-600 prose-p:leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content) }}
         />
       </div>
 

@@ -32,7 +32,7 @@ const envSchema = z.object({
   // Payment
   PAYMENT_GATEWAY_URL: z.string().optional(),
   ESEWA_PRODUCT_CODE: z.string().default("EPAYTEST"),
-  ESEWA_SECRET_KEY: z.string().default("8g8M89Pgg8UXX80c"),
+  ESEWA_SECRET_KEY: z.string().describe("eSewa Secret Key"),
   ESEWA_GATEWAY_URL: z.string().default("https://rc-epay.esewa.com.np/api/epay/main/v2/form"),
   ESEWA_VERIFICATION_URL: z.string().default("https://uat.esewa.com.np/api/epay/main/v2/verify"),
 });

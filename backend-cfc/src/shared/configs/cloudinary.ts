@@ -1,11 +1,13 @@
 import { v2 as cloudinary } from "cloudinary";
 import { ENV } from "./env.js";
 
-// Debug logging
-console.log("🔧 Cloudinary Configuration:");
-console.log("  CLOUD_NAME:", ENV.CLOUDINARY_CLOUD_NAME || "MISSING");
-console.log("  API_KEY:", ENV.CLOUDINARY_API_KEY ? "***" + ENV.CLOUDINARY_API_KEY.slice(-4) : "MISSING");
-console.log("  API_SECRET:", ENV.CLOUDINARY_API_SECRET ? "***" : "MISSING");
+// Debug logging (development only)
+if (ENV.NODE_ENV === "development") {
+  console.log("🔧 Cloudinary Configuration:");
+  console.log("  CLOUD_NAME:", ENV.CLOUDINARY_CLOUD_NAME || "MISSING");
+  console.log("  API_KEY:", ENV.CLOUDINARY_API_KEY ? "***" + ENV.CLOUDINARY_API_KEY.slice(-4) : "MISSING");
+  console.log("  API_SECRET:", ENV.CLOUDINARY_API_SECRET ? "***" : "MISSING");
+}
 
 if (!ENV.CLOUDINARY_CLOUD_NAME || !ENV.CLOUDINARY_API_KEY || !ENV.CLOUDINARY_API_SECRET) {
   console.error("❌ ERROR: Cloudinary credentials are missing!");

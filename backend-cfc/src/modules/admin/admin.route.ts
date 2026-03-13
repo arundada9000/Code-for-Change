@@ -9,10 +9,11 @@ import { createUserController, updateUserController } from "../user/user.control
 const router = Router();
 const adminController = new AdminController();
 
-router.get("/admin/dashboard", adminController.getDashboardStats);
-router.get("/admin/content", adminController.getAllContent);
+// Dashboard & Content (read-only, but still require authentication)
+router.get("/admin/dashboard", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_VIEW), adminController.getDashboardStats);
+router.get("/admin/content", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_VIEW), adminController.getAllContent);
 
-// User & Member Management
+// User & Member Management (with file upload support)
 router.post(
   "/admin/users/create-user",
   authenticate,
@@ -29,13 +30,15 @@ router.put(
   updateUserController
 );
 
-router.post("/admin/users", adminController.createUserController);
-router.patch("/admin/users/:id", adminController.updateUserController);
-router.delete("/admin/users/:id", adminController.deleteUserController);
+// User CRUD via AdminController (previously unprotected!)
+router.post("/admin/users", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_CREATE), adminController.createUserController);
+router.patch("/admin/users/:id", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_UPDATE), adminController.updateUserController);
+router.delete("/admin/users/:id", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_DELETE), adminController.deleteUserController);
 
-router.get("/admin/users/:id", adminController.getUserDetails);
-router.get("/admin/events/:id", adminController.getEventDetails);
-router.get("/admin/blogs/:id", adminController.getBlogDetails);
-router.get("/admin/search", adminController.globalSearch);
+// Detail views & search (read-only, require auth + view permission)
+router.get("/admin/users/:id", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_VIEW), adminController.getUserDetails);
+router.get("/admin/events/:id", authenticate, requireAnyPermission(PERMISSIONS.EVENT_VIEW), adminController.getEventDetails);
+router.get("/admin/blogs/:id", authenticate, requireAnyPermission(PERMISSIONS.BLOG_VIEW), adminController.getBlogDetails);
+router.get("/admin/search", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_VIEW), adminController.globalSearch);
 
 export default router;

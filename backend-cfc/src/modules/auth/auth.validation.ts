@@ -48,3 +48,39 @@ export const resetPasswordSchema = z.object({
       "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
     ),
 });
+
+// Register schema — explicit allowlist of fields
+export const registerSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100, "Name is too long"),
+  email: z.string().trim().toLowerCase().email("Valid email is required"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password is too long"),
+  phone: z.string().optional(),
+  province: z.string().optional(),
+  collegeName: z.string().optional(),
+  faculty: z.string().optional(),
+  semester: z.string().optional(),
+  code: z.string().optional(),
+  ebBody: z.string().optional(),
+});
+
+// Profile update schema
+export const updateProfileSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  phone: z.string().optional(),
+  bio: z.string().max(500).optional(),
+  website: z.string().url().optional().or(z.literal("")),
+  linkedin: z.string().optional(),
+  github: z.string().optional(),
+  facebook: z.string().optional(),
+  address: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  gender: z.string().optional(),
+  collegeName: z.string().optional(),
+  university: z.string().optional(),
+  faculty: z.string().optional(),
+  semester: z.string().optional(),
+  graduationYear: z.string().optional(),
+});

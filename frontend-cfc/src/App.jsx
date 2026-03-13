@@ -23,6 +23,7 @@ import Contact from "./Pages/Contact";
 import FAQ from "./Pages/FAQ";
 import NotFound from "./Pages/NotFound";
 import MainLayout from "./Layout/MainLayout";
+import UserProfile from "./Pages/UserProfile";
 import useScrollToTop from "./Hooks/useScrollToTop";
 import { lazy, Suspense } from "react";
 
@@ -101,6 +102,13 @@ function App() {
             />
             <Route path="/our-impact/:id" element={<ImpactDetail />} />
             <Route path="*" element={<NotFound />} />
+          </Route>
+
+          {/* Regular Protected Routes for Normal Users */}
+          <Route element={<PrivateRoute />}>
+            <Route element={<MainLayout />}>
+              <Route path="/profile" element={<UserProfile />} />
+            </Route>
           </Route>
 
           {/* Auth routes */}

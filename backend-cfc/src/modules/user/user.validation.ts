@@ -1,5 +1,6 @@
 import {
   PERMISSIONS,
+  PermissionValue,
   ROLES,
   RoleValue
 } from "../../shared/configs/permissions.js";
@@ -45,7 +46,7 @@ export const createUserByAdminSchema = z.object({
 });
 
 
-const validPermissions = Object.values(PERMISSIONS) as [string, ...string[]];
+const validPermissions = Object.values(PERMISSIONS) as [PermissionValue, ...PermissionValue[]];
 
 export const permissionParamsSchema = z.object({
   userId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId"),

@@ -4,6 +4,8 @@ import { DonationController } from "./donation.controller.js";
 import { createDonationSchema, updateDonationStatusSchema, updateDonationSchema } from "./donation.validation.js";
 import { validate } from "../../shared/middlewares/validate.middleware.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
+import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
+import { PERMISSIONS } from "../../shared/configs/permissions.js";
 import { upload } from "../../shared/middlewares/multer.js";
 
 const router = Router();
@@ -17,28 +19,32 @@ router.post(
   donationController.createDonation
 );
 
-// Admin routes
+// Admin routes (require authentication + permission)
 router.get(
   "/admin/donations", 
   authenticate, 
+  requireAnyPermission(PERMISSIONS.REPORT_VIEW),
   donationController.getAllDonations
 );
 
 router.get(
   "/admin/donations/stats", 
   authenticate, 
+  requireAnyPermission(PERMISSIONS.REPORT_VIEW),
   donationController.getDonationStats
 );
 
 router.get(
   "/admin/donations/:id", 
   authenticate, 
+  requireAnyPermission(PERMISSIONS.REPORT_VIEW),
   donationController.getDonationById
 );
 
 router.patch(
   "/admin/donations/:id/status", 
   authenticate, 
+  requireAnyPermission(PERMISSIONS.SETTINGS_MANAGE),
   validate(updateDonationStatusSchema), 
   donationController.updateDonationStatus
 );
@@ -46,6 +52,7 @@ router.patch(
 router.put(
   "/admin/donations/:id", 
   authenticate, 
+  requireAnyPermission(PERMISSIONS.SETTINGS_MANAGE),
   upload.single('receipt'),
   validate(updateDonationSchema), 
   donationController.updateDonation

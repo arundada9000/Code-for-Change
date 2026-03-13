@@ -3,10 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { RiMenu3Fill } from "react-icons/ri";
 import { FiChevronDown } from "react-icons/fi";
 import { navItems } from "../../Data/navItems";
+import { useAuth } from "../../Context/AuthContext";
 
 function Header({ setShowSidebar }) {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,13 +81,23 @@ function Header({ setShowSidebar }) {
         </nav>
 
         <div className="flex gap-5 items-center">
-          <Link
-            to="/join-us"
-            className={`px-7 py-2.5 border-2 border-secondary rounded-full text-white hover:bg-secondary/50 hover:text-white transition ${scrolled ? "bg-secondary/70" : "bg-secondary"
-              }`}
-          >
-            Join us
-          </Link>
+          {user ? (
+            <Link
+              to="/profile"
+              className={`px-7 py-2.5 border-2 border-primary rounded-full text-white hover:bg-primary/50 hover:text-white transition ${scrolled ? "bg-primary/70 border-white/30" : "bg-primary"
+                }`}
+            >
+              Profile
+            </Link>
+          ) : (
+            <Link
+              to="/join-us"
+              className={`px-7 py-2.5 border-2 border-secondary rounded-full text-white hover:bg-secondary/50 hover:text-white transition ${scrolled ? "bg-secondary/70" : "bg-secondary"
+                }`}
+            >
+              Join us
+            </Link>
+          )}
           <RiMenu3Fill
             aria-label="Open navigation menu"
             role="button"

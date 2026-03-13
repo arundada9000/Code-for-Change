@@ -18,16 +18,16 @@ export class ContactController {
 
   createContact = asyncHandler(async (req: Request, res: Response) => {
     const contact = await contactService.createContact(req.body);
-    sendSuccess(res, contact, "Contact form submitted successfully", 201);
+    successResponse(res, contact, "Contact form submitted successfully", 201);
   });
 
   markAsRead = asyncHandler(async (req: Request, res: Response) => {
     const contact = await contactService.markAsRead(req.params.id);
-    sendSuccess(res, contact, "Contact marked as read");
+    successResponse(res, contact, "Contact marked as read");
   });
 
   deleteContact = asyncHandler(async (req: Request, res: Response) => {
     await contactService.deleteContact(req.params.id);
-    sendSuccess(res, null, "Contact deleted successfully");
+    successResponse(res, null, "Contact deleted successfully");
   });
 }
