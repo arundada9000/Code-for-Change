@@ -71,7 +71,7 @@ export const loginController = asyncHandler(
     res.cookie("jwt", token, {
       httpOnly: true, // Prevents JS access (XSS protection)
       secure: ENV.NODE_ENV === "production", // false in local dev (HTTP)
-      sameSite: "none", // CSRF protection
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "strict", // CSRF protection
       maxAge: 24 * 60 * 60 * 1000, // 1 day - match your JWT expiry
     });
 
@@ -94,7 +94,7 @@ export const logoutController = asyncHandler(
     res.clearCookie("jwt", {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "strict",
       path: "/",
     });
 
