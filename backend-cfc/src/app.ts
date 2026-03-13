@@ -43,8 +43,8 @@ const customSanitize = (req: any, res: any, next: any) => {
   if (req.body) sanitize(req.body);
   if (req.params) sanitize(req.params);
   if (req.query) {
-    // In Express 5, req.query is a getter. 
-    // We sanitize the object returned by the getter if it's mutable, 
+    // In Express 5, req.query is a getter.
+    // We sanitize the object returned by the getter if it's mutable,
     // or we skip if it's already safe.
     try {
       sanitize(req.query);
@@ -64,11 +64,13 @@ app.use(
       "http://localhost:5173",
       "http://127.0.0.1:5173",
       "http://localhost:3000",
+      "https://code-for-change-nepal.onrender.com",
+      "https://codeforchangenepal.vercel.app",
     ].filter(Boolean) as string[],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-  })
+  }),
 );
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
