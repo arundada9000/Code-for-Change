@@ -466,6 +466,184 @@ export const BlogCardListSkeleton = ({ count = 3 }) => (
   </>
 );
 
+/* ============================================================
+   10. AdminTableSkeleton
+   Use for: All lists within the Admin Dashboard (Users, Events, Blogs, etc)
+   ============================================================ */
+export const AdminTableSkeleton = ({ rows = 5 }) => (
+  <>
+    <StyleInjector />
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-700">
+      {/* Search / Filter Bar Skeleton */}
+      <div className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-center">
+        <Pulse className="h-12 w-full md:w-1/3 rounded-xl" />
+        <div className="flex gap-3 w-full md:w-auto">
+          <Pulse className="h-12 w-full md:w-32 rounded-xl" />
+          <Pulse className="h-12 w-full md:w-32 rounded-xl" />
+          <Pulse className="h-12 w-full md:w-32 rounded-xl" />
+        </div>
+      </div>
+
+      {/* Table Data Skeleton */}
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        {/* Table Header */}
+        <div className="hidden md:grid grid-cols-4 gap-4 px-8 py-5 bg-slate-50/50 border-b border-slate-100">
+          <Pulse className="h-4 w-24 rounded" />
+          <Pulse className="h-4 w-32 rounded" />
+          <Pulse className="h-4 w-20 rounded" />
+          <Pulse className="h-4 w-28 mx-auto rounded" />
+        </div>
+        
+        {/* Table Rows (Terminal IT style) */}
+        <div className="divide-y divide-slate-50">
+          {Array.from({ length: rows }).map((_, i) => (
+            <div 
+              key={i} 
+              className="p-6 sm:px-8 bg-[#01152E]/[0.01] hover:bg-slate-50/80 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              {/* Col 1: Terminal Style Content */}
+              <div className="w-full md:w-1/3 space-y-3">
+                <TerminalDots />
+                <CodeLine width="w-3/4" />
+                <Pulse className="h-3 w-1/2 rounded" />
+              </div>
+
+              {/* Col 2: Meta Info */}
+              <div className="w-full md:w-1/4 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Pulse className="w-4 h-4 rounded-full" />
+                  <Pulse className="h-3 w-24 rounded" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Pulse className="w-4 h-4 rounded-full" />
+                  <Pulse className="h-3 w-32 rounded" />
+                </div>
+              </div>
+
+              {/* Col 3: Status Badge */}
+              <div className="w-full md:w-1/6 flex justify-start md:justify-center">
+                 <Pulse className="h-6 w-20 rounded-full" />
+              </div>
+
+              {/* Col 4: Action Buttons */}
+              <div className="w-full md:w-1/6 flex justify-start md:justify-end gap-2">
+                 <Pulse className="w-8 h-8 rounded-lg" />
+                 <Pulse className="w-8 h-8 rounded-lg" />
+                 <Pulse className="w-8 h-8 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </>
+);
+
+/* ============================================================
+   11. AdminDashboardSkeleton
+   Use for: Main Admin Dashboard overview page
+   ============================================================ */
+export const AdminDashboardSkeleton = () => (
+  <>
+    <StyleInjector />
+    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 pb-12">
+      {/* Header Skeleton */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div className="space-y-3">
+          <Pulse className="h-10 w-64 rounded-xl" />
+          <Pulse className="h-4 w-48 rounded" />
+        </div>
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <Pulse className="h-14 w-full md:w-80 rounded-2xl" />
+          <Pulse className="h-14 w-14 rounded-2xl shrink-0" />
+        </div>
+      </div>
+
+      {/* Grid Stats Skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden">
+             {/* Background glow decoration */}
+             <div className="absolute -right-6 -top-6 w-32 h-32 bg-slate-100 rounded-full opacity-50"></div>
+             
+             <div className="flex justify-between items-start">
+               <div className="space-y-4">
+                 <Pulse className="h-4 w-24 rounded" />
+                 <CodeLine width="w-20" />
+               </div>
+               <Pulse className="h-12 w-12 rounded-2xl" />
+             </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Main Analysis grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        {/* Left Column (Chart & Table) */}
+        <div className="lg:col-span-8 space-y-10">
+           {/* Chart */}
+           <div className="bg-[#01152E]/[0.02] rounded-3xl p-8 border border-slate-100/50 shadow-sm">
+             <div className="flex justify-between items-center mb-8">
+               <div className="space-y-2">
+                 <Pulse className="h-6 w-40 rounded-lg" />
+                 <Pulse className="h-3 w-32 rounded" />
+               </div>
+               <Pulse className="h-8 w-32 rounded-lg" />
+             </div>
+             {/* Fake terminal graph lines */}
+             <div className="h-48 flex items-end justify-between gap-2 border-b border-slate-200 pb-2">
+               {[40, 60, 30, 80, 50, 90, 100, 70].map((h, j) => (
+                 <Pulse key={j} className="w-full rounded-t-sm" style={{ height: `${h}%` }} />
+               ))}
+             </div>
+           </div>
+
+           {/* Recent Table */}
+           <div className="bg-white rounded-3xl border border-slate-100 p-6 space-y-6">
+             <Pulse className="h-6 w-48 rounded-lg mb-4" />
+             {[1, 2, 3, 4].map((j) => (
+               <div key={j} className="flex items-center justify-between py-3 border-b border-slate-50">
+                 <div className="flex items-center gap-3">
+                    <TerminalDots />
+                    <Pulse className="h-4 w-32 rounded" />
+                 </div>
+                 <Pulse className="h-4 w-20 rounded" />
+               </div>
+             ))}
+           </div>
+        </div>
+
+        {/* Right Column (Live feed) */}
+        <div className="lg:col-span-4 space-y-6">
+           <div className="bg-slate-900 rounded-3xl p-8 space-y-8 relative overflow-hidden shadow-lg">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-slate-800 rounded-full blur-3xl"></div>
+              
+              <div className="flex justify-between relative z-10">
+                <Pulse className="h-6 w-32 rounded bg-slate-700" />
+                <Pulse className="h-6 w-20 rounded-full bg-slate-700" />
+              </div>
+
+              <div className="space-y-6 relative z-10">
+                 {[1, 2, 3].map((j) => (
+                   <div key={j} className="flex gap-4 items-center">
+                     <Pulse className="h-10 w-10 rounded-xl bg-slate-800" />
+                     <div className="space-y-2 flex-1">
+                        <Pulse className="h-4 w-3/4 rounded bg-slate-700" />
+                        <Pulse className="h-3 w-1/2 rounded bg-slate-800" />
+                     </div>
+                   </div>
+                 ))}
+              </div>
+           </div>
+        </div>
+
+      </div>
+    </div>
+  </>
+);
+
 export default {
   TerminalCardSkeleton,
   InternshipCardSkeleton,
@@ -476,4 +654,6 @@ export default {
   CertificateResultSkeleton,
   DonationVerificationSkeleton,
   BlogCardListSkeleton,
+  AdminTableSkeleton,
+  AdminDashboardSkeleton,
 };

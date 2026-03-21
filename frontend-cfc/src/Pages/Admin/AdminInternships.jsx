@@ -31,6 +31,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
 
 const InputField = React.memo(
@@ -472,6 +473,8 @@ function AdminInternships() {
     setFilterDeadlineEnd("");
     setFilterProvince("");
   };
+
+  if (loading && internships.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6">

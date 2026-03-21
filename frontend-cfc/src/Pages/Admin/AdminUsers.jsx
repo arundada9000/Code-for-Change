@@ -13,6 +13,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
 
 const FilterSelect = React.memo(({ label, options, value, onChange }) => (
@@ -484,6 +485,8 @@ function AdminUsers() {
   const uniqueColleges = [...new Set(users.map(u => u.education?.collegeName).filter(Boolean))].sort();
   const uniqueFaculties = [...new Set(users.map(u => u.education?.faculty).filter(Boolean))].sort();
   const uniqueYears = [...new Set(users.map(u => u.createdAt ? new Date(u.createdAt).getFullYear() : null).filter(Boolean))].sort((a, b) => b - a);
+
+  if (loading && users.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6">

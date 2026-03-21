@@ -23,6 +23,7 @@ import "jspdf-autotable";
 import JSZip from "jszip";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import CertificatePreview from "../../Components/UI/CertificatePreview";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
 import logo from "../../assets/logo.png";
 
@@ -574,6 +575,8 @@ function Certificate() {
     doc.save(`Certificate_${cert.certificateId}_${cert.recipientName}.pdf`);
     toast.success("High-Fidelity Certificate Exported");
   };
+
+  if (loading && certificates.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6">

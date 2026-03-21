@@ -21,7 +21,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
-
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 const InputField = React.memo(
   ({
     label,
@@ -504,6 +504,8 @@ function AdminBlogs() {
       },
     });
   };
+
+  if (loading && blogs.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">

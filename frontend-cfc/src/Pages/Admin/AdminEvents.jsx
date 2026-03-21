@@ -36,7 +36,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
-
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 const InputField = React.memo(
   ({
     label,
@@ -556,6 +556,8 @@ function AdminEvents() {
       },
     });
   };
+
+  if (loading && events.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6">

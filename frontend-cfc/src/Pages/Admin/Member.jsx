@@ -12,6 +12,7 @@ import Papa from "papaparse";
 
 import API from "../../Services/api";
 import { useAuth } from "../../Context/AuthContext";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 
 const AVAILABLE_PERMISSIONS = {
   "Member Management": ["member:create", "member:update", "member:view", "member:delete", "member:verify"],
@@ -456,6 +457,8 @@ function Member() {
 
     return [...filtered].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [search, filterProvince, filterTenure, activeFilter, filterStatus, members]);
+
+  if (loading && members.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="max-w-full mx-auto p-2 space-y-8 animate-in fade-in duration-500">

@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { HiTrendingUp, HiTrendingDown } from "react-icons/hi";
 import API from "../../Services/api";
+import { AdminDashboardSkeleton } from "../../Components/Loading/Skeleton";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -73,14 +74,7 @@ function Dashboard() {
     }
   };
 
-  if (loading || !stats) return (
-    <div className="flex items-center justify-center min-h-[600px]">
-      <div className="relative w-24 h-24">
-        <div className="absolute inset-0 border-4 border-emerald-500/20 rounded-full animate-ping"></div>
-        <div className="absolute inset-0 border-4 border-t-emerald-600 rounded-full animate-spin"></div>
-      </div>
-    </div>
-  );
+  if (loading || !stats) return <AdminDashboardSkeleton />;
 
   const StatCard = ({ title, value, trend, icon: Icon, color, link }) => (
     <div

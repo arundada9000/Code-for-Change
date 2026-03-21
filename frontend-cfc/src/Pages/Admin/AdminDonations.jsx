@@ -31,6 +31,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Papa from "papaparse";
 import { useAuth } from "../../Context/AuthContext";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 
 function AdminDonations() {
   const { hasPermission } = useAuth();
@@ -363,6 +364,8 @@ function AdminDonations() {
       filterMethod === "All" || d.paymentMethod === filterMethod;
     return matchesSearch && matchesMethod;
   });
+
+  if (loading && donations.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-20">
