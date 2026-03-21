@@ -15,7 +15,7 @@ export function OurImpact() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-secondary border-t-transparent"></div>
     </div>
   );
 
@@ -34,7 +34,7 @@ export function OurImpact() {
       {/* Featured Impact Section */}
       <section className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
         <div className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tightest uppercase mb-2">Featured <span className="text-emerald-600">Initiatives</span></h2>
+          <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tightest uppercase mb-2">Featured <span className="text-secondary">Initiatives</span></h2>
           <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Direct social impact across Nepal</p>
         </div>
 
@@ -45,29 +45,29 @@ export function OurImpact() {
               <Link 
                 to={`/our-impact/${id}`} 
                 key={index} 
-                className={`group bg-white rounded-[2rem] shadow-sm overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 ${item.isLarge ? 'md:col-span-2 lg:col-span-2' : ''}`}
+                className={`group bg-white rounded-4xl shadow-sm overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 ${item.isLarge ? 'md:col-span-2 lg:col-span-2' : ''}`}
               >
-                <div className="relative overflow-hidden aspect-[16/10]">
+                <div className="relative overflow-hidden aspect-16/10">
                   <img 
                     src={item.image} 
                     alt={item.title} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute top-6 left-6">
-                    <span className="px-4 py-2 bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-full">
+                    <span className="px-4 py-2 bg-secondary/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-full">
                       Impact Story
                     </span>
                   </div>
                 </div>
                 
                 <div className="p-8 lg:p-10">
-                  <h3 className="text-2xl lg:text-3xl font-black text-primary mb-4 group-hover:text-emerald-600 transition-colors tracking-tight leading-tight">
+                  <h3 className="text-2xl lg:text-3xl font-black text-primary mb-4 group-hover:text-secondary transition-colors tracking-tight leading-tight">
                     {item.title}
                   </h3>
                   <div className="flex flex-wrap gap-6 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">
                     <span className="flex items-center gap-2">
-                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {item.location || "National"}
+                       <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> {item.location || "National"}
                     </span>
                     <span className="flex items-center gap-2">
                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> {item.dates}
@@ -76,7 +76,7 @@ export function OurImpact() {
                   <p className="text-slate-500 text-sm lg:text-base leading-relaxed mb-8 line-clamp-2 font-medium">
                     {item.description}
                   </p>
-                  <div className="flex items-center gap-2 text-emerald-600 font-black text-xs uppercase tracking-[0.2em] group-hover:gap-4 transition-all">
+                  <div className="flex items-center gap-2 text-secondary font-black text-xs uppercase tracking-[0.2em] group-hover:gap-4 transition-all">
                     READ FULL STORY <span className="text-lg">→</span>
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export function OurImpact() {
                 <Link 
                   to={`/our-impact/${id}`} 
                   key={idx} 
-                  className="flex flex-col md:flex-row md:items-center justify-between p-8 rounded-[2rem] border border-slate-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all group gap-6"
+                  className="flex flex-col md:flex-row md:items-center justify-between p-8 rounded-4xl border border-slate-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all group gap-6"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
