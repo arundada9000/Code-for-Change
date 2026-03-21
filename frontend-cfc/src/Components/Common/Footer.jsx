@@ -39,11 +39,11 @@ function Footer() {
   const services = [
     {
       title: "Hackathons",
-      path: "/",
+      path: "/events",
     },
     {
       title: "Internship",
-      path: "/internships",
+      path: "/internship-application",
     },
     {
       title: "Workshops",
@@ -51,11 +51,11 @@ function Footer() {
     },
     {
       title: "Entrance Preparation",
-      path: "/",
+      path: "/events",
     },
     {
       title: "Job Placement",
-      path: "/",
+      path: "/internships",
     },
   ];
 
