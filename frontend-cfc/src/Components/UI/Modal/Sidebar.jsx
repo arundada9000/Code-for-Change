@@ -15,11 +15,11 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
   return (
     <aside
       ref={sidebarRef}
-      className={`fixed top-0 z-100 bg-primary px-10 py-5 w-96 max-h-screen transition-all duration-500 ease-in overflow-y-scroll ${
+      className={`fixed top-0 z-100 bg-primary px-10 pb-5 w-96 max-h-screen transition-all duration-500 ease-in overflow-y-scroll ${
         showSidebar ? "right-0" : "-right-[108%]"
       }`}
     >
-      <div className="flex items-center justify-between pb-4 border-b border-b-secondary">
+      <div className="flex bg-primary sticky top-0 pt-5 items-center justify-between pb-4 border-b border-b-secondary">
         <img src="/logo.png" alt="logo" className="w-20" />
         <IoMdClose
           className="text-3xl text-white"
