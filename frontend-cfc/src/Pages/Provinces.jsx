@@ -265,7 +265,7 @@ const Provinces = () => {
                 activeProvince={activeProvince}
               />
 
-              <div className="hidden sm:flex flex-wrap justify-center gap-3 mb-16">
+              <div className="hidden sm:flex flex-wrap justify-center gap-2 mb-16">
                 {provinces.map((p) => (
                   <button
                     style={{
