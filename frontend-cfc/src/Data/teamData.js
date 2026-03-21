@@ -3,7 +3,7 @@ export const ADVISORS = [
     name: "Biplav Sharma",
     role: "Co-Founder",
     organization: "Basobass.com",
-    image: "/src/assets/team/biplac-sharma.jpg",
+    image: "../assets/team/biplac-sharma.jpg",
     quote: "It is great to see the progress made by CFC since its initiation.",
     socialLinks: {
       linkedin: "linkedin.com/bijaykuc",
@@ -18,7 +18,7 @@ export const ADVISORS = [
     name: "Santosh Lamsal",
     role: "Full Stack Developer",
     organization: "Canada",
-    image: "/src/assets/team/shantosh-lamsal.jpg",
+    image: "../assets/team/shantosh-lamsal.jpg",
     quote: "It is great to see the progress made by CFC since its initiation.",
     socialLinks: {
       linkedin: "linkedin.com/bijaykuc",
@@ -35,7 +35,7 @@ export const CORE_TEAM = [
   {
     name: "Nirajan Chhetri",
     role: "Director",
-    image: "/src/assets/team/niranjan-chettri.jpg",
+    image: "../assets/team/niranjan-chettri.jpg",
     socialLinks: {
       linkedin: "linkedin.com/bijaykuc",
       facebook: "linkedin.com/bijaykuc",
@@ -48,7 +48,7 @@ export const CORE_TEAM = [
   {
     name: "Suman Gaihre",
     role: "Core Member, CTO",
-    image: "/src/assets/team/sunam-ghaire.jpg",
+    image: "../assets/team/sunam-ghaire.jpg",
     socialLinks: {
       linkedin: "linkedin.com/bijaykuc",
       facebook: "linkedin.com/bijaykuc",
@@ -61,7 +61,7 @@ export const CORE_TEAM = [
   {
     name: "Krishna Prasad Pokhrel",
     role: "Project Lead",
-    image: "/src/assets/team/rishna-prashad-pokhrel.jpg",
+    image: "../assets/team/rishna-prashad-pokhrel.jpg",
     socialLinks: {
       linkedin: "linkedin.com/bijaykuc",
       facebook: "linkedin.com/bijaykuc",
