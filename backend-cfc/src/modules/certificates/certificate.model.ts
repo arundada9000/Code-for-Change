@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { ICertificate, CertificateStatus, CertificateType } from "./certificate.interface.js";
 import crypto from "crypto";
 import QRCode from "qrcode";
+import { ENV } from "../../shared/configs/env.js";
 
 const CertificateSchema: Schema = new Schema(
   {
@@ -60,7 +61,8 @@ CertificateSchema.pre("save", async function () {
     // Generate QR Code for verification
     if (!this.qrCode || this.isModified("tokenHash")) {
       try {
-        const verifyUrl = `https://codeforchange.org.np/verify-certificate/${this.tokenHash}`;
+        const baseUrl = ENV.FRONTEND_URL || "https://codeforchangenepal.com";
+        const verifyUrl = `${baseUrl}/certificate-verification/${this.certificateId}`;
         this.qrCode = await QRCode.toDataURL(verifyUrl, {
           errorCorrectionLevel: 'H',
           margin: 1,
