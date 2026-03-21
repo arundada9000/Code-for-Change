@@ -6,7 +6,7 @@ import QRCode from "qrcode";
 const CertificateSchema: Schema = new Schema(
   {
     recipientName: { type: String, required: true, trim: true },
-    recipientEmail: { type: String, required: true, lowercase: true, trim: true },
+    recipientEmail: { type: String, required: false, lowercase: true, trim: true },
     courseName: { type: String, required: true, trim: true },
     province: { type: String, trim: true },
     certificateType: {

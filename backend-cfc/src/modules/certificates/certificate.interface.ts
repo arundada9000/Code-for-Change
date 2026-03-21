@@ -17,7 +17,7 @@ export enum CertificateType {
 
 export interface ICertificate extends Document {
   recipientName: string;
-  recipientEmail: string;
+  recipientEmail?: string;
   courseName: string;
   province?: string;
   certificateType: CertificateType;

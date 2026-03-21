@@ -20,6 +20,7 @@ import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import JSZip from "jszip";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import CertificatePreview from "../../Components/UI/CertificatePreview";
 import { useAuth } from "../../Context/AuthContext";
@@ -45,6 +46,136 @@ function Certificate() {
     "Chitwan",
     "LB Karnali",
   ];
+
+  // Strict 2-letter region codes matching the backend dictionary exactly
+  const PROVINCE_REGIONS = {
+    Kathmandu: "KA", Pokhara: "PO", Rupandehi: "RU", Dang: "DA",
+    Birgunj: "BI", Farwest: "FW", Koshi: "KO", Chitwan: "CH", "LB Karnali": "LB",
+  };
+
+  // Template defaults per certificate type — pre-fills the dynamic text fields
+  const TEMPLATE_DEFAULTS = {
+    Training:  { header: "Certificate",    subHeader: "OF ACHIEVEMENT",   tagline: "on successfully completing",                   primaryDetail: "professional" },
+    Bootcamp:  { header: "Certificate",    subHeader: "OF ACHIEVEMENT",   tagline: "on successfully completing",                   primaryDetail: "professional" },
+    Workshop:  { header: "Certificate",    subHeader: "OF ACHIEVEMENT",   tagline: "on successfully completing",                   primaryDetail: "professional" },
+    Internship:{ header: "Experience",     subHeader: "CREDENTIAL",       tagline: "has successfully completed an internship in",   primaryDetail: "as a Trainee / Intern in" },
+    Event:     { header: "Participation",  subHeader: "CERTIFICATE",      tagline: "for active participation and achievement in",  primaryDetail: "during the grand event of" },
+    Hackathon: { header: "Participation",  subHeader: "CERTIFICATE",      tagline: "for active participation and achievement in",  primaryDetail: "during the grand event of" },
+  };
+
+  // ── Bulk Generation State ─────────────────────────────────────────────────
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  const [bulkStep, setBulkStep] = useState(1);
+  const [bulkSubmitting, setBulkSubmitting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState("");
+  const today = new Date().toISOString().split("T")[0];
+  const currentYear = String(new Date().getFullYear() % 100).padStart(2, "0");
+
+  const defaultBulkShared = {
+    courseName: "", certificateType: "Event", province: "",
+    startDate: today, endDate: today, hours: "", grade: "",
+    issueDate: today,
+    template: { ...TEMPLATE_DEFAULTS["Event"] },
+  };
+  const [sharedData, setSharedData] = useState(defaultBulkShared);
+  const [recipientCount, setRecipientCount] = useState(5);
+  const [recipients, setRecipients] = useState(
+    Array.from({ length: 5 }, () => ({ recipientName: "", recipientEmail: "", prefix1: "", prefix2: "" }))
+  );
+
+  const sanitizePrefix = (val) => val.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
+
+  const buildPreviewId = (recipient) => {
+    const region = PROVINCE_REGIONS[sharedData.province] || "??";
+    const p1 = sanitizePrefix(recipient.prefix1 || "");
+    const p2 = sanitizePrefix(recipient.prefix2 || "");
+    const parts = [p1, region, currentYear, p2, "####"].filter(Boolean);
+    return parts.join("-");
+  };
+
+  const initRecipients = (count) => {
+    setRecipients(Array.from({ length: count }, (_, i) =>
+      recipients[i] || { recipientName: "", recipientEmail: "", prefix1: "", prefix2: "" }
+    ));
+  };
+
+  const handleTypeChange = (type) => {
+    setSharedData(prev => ({ ...prev, certificateType: type, template: { ...TEMPLATE_DEFAULTS[type] } }));
+  };
+
+  const resetBulkModal = () => {
+    setSharedData(defaultBulkShared);
+    setRecipientCount(5);
+    setRecipients(Array.from({ length: 5 }, () => ({ recipientName: "", recipientEmail: "", prefix1: "", prefix2: "" })));
+    setBulkStep(1);
+    setBulkProgress("");
+    setIsBulkModalOpen(false);
+  };
+
+  const handleBulkSubmit = async () => {
+    if (!sharedData.province) { toast.error("Please select a province."); return; }
+    if (!sharedData.courseName.trim()) { toast.error("Course/Event name is required."); return; }
+    const validRecipients = recipients.filter(r => r.recipientName.trim());
+    if (validRecipients.length === 0) { toast.error("At least one recipient name is required."); return; }
+
+    setBulkSubmitting(true);
+    setBulkProgress(`Issuing ${validRecipients.length} certificates...`);
+    try {
+      const payload = {
+        sharedData: {
+          courseName: sharedData.courseName,
+          certificateType: sharedData.certificateType,
+          province: sharedData.province,
+          startDate: sharedData.startDate || null,
+          endDate: sharedData.endDate || null,
+          hours: sharedData.hours || null,
+          grade: sharedData.grade || null,
+          issueDate: sharedData.issueDate,
+          metadata: { template: sharedData.template },
+        },
+        recipients: validRecipients.map(r => ({
+          recipientName: r.recipientName.trim(),
+          recipientEmail: r.recipientEmail?.trim() || undefined,
+          prefix1: sanitizePrefix(r.prefix1 || ""),
+          prefix2: sanitizePrefix(r.prefix2 || ""),
+        })),
+      };
+
+      const { data } = await API.post("/certificates/bulk-issue", payload);
+      const issued = data.data;
+      setCertificates(prev => [...issued, ...prev]);
+      toast.success(`✅ ${issued.length} certificates issued!`);
+
+      // ── Auto-download QR codes as a ZIP ──
+      setBulkProgress("Packaging QR codes into ZIP...");
+      const zip = new JSZip();
+      const qrFolder = zip.folder(sharedData.courseName.replace(/\s+/g, "_"));
+      for (const cert of issued) {
+        if (cert.qrCode) {
+          // qrCode is a base64 data-URL from the backend
+          const base64 = cert.qrCode.replace(/^data:image\/png;base64,/, "");
+          const safeName = cert.recipientName.replace(/[^a-zA-Z0-9 _-]/g, "").replace(/\s+/g, "_");
+          qrFolder.file(`${safeName}_${cert.certificateId}_QR.png`, base64, { base64: true });
+        }
+      }
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `QR_${sharedData.courseName.replace(/\s+/g, "_")}_${today}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      resetBulkModal();
+    } catch (error) {
+      console.error("Bulk Issue Error:", error);
+      toast.error(error.response?.data?.message || "Bulk issuance failed.");
+    } finally {
+      setBulkSubmitting(false);
+      setBulkProgress("");
+    }
+  };
+
   const [openMenuId, setOpenMenuId] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [certToDelete, setCertToDelete] = useState(null);
@@ -477,14 +608,24 @@ function Certificate() {
             </div>
           </div>
           {hasPermission("certificate_issue") && (
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-primary text-white px-6 py-4 rounded-2xl hover:bg-secondary transition-all shadow-xl shadow-slate-200 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
-            >
-              <FaPlus className="text-lg" />{" "}
-              <span className="hidden sm:inline">Issue Certificate</span>
-              <span className="sm:hidden">Issue New</span>
-            </button>
+            <div className="flex flex-wrap gap-3 flex-1 md:flex-none">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-primary text-white px-6 py-4 rounded-2xl hover:bg-secondary transition-all shadow-xl shadow-slate-200 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
+              >
+                <FaPlus className="text-lg" />{" "}
+                <span className="hidden sm:inline">Issue Certificate</span>
+                <span className="sm:hidden">Issue New</span>
+              </button>
+              <button
+                onClick={() => { setBulkStep(1); setIsBulkModalOpen(true); }}
+                className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-secondary text-white px-6 py-4 rounded-2xl hover:bg-primary transition-all shadow-xl shadow-secondary/20 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
+              >
+                <FaDownload className="text-lg" />{" "}
+                <span className="hidden sm:inline">Bulk Generate</span>
+                <span className="sm:hidden">Bulk</span>
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -1071,7 +1212,249 @@ function Certificate() {
         </div>
       )}
 
-      {/* 5. Delete Confirmation */}
+      {/* 5. Bulk Issue Modal */}
+      {isBulkModalOpen && (
+        <div className="fixed inset-0 bg-primary/70 backdrop-blur-md z-[150] flex items-center justify-center p-4">
+          <div className="bg-white max-h-[92vh] overflow-y-auto rounded-4xl w-full max-w-4xl shadow-2xl animate-in zoom-in-95 duration-300">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white z-10 flex justify-between items-center px-10 pt-8 pb-5 border-b border-slate-50">
+              <div>
+                <h3 className="text-2xl font-black tracking-tighter text-primary uppercase">
+                  Bulk Certificate Generation
+                </h3>
+                <div className="flex items-center gap-2 mt-1">
+                  {[1, 2].map(s => (
+                    <div key={s} className="flex items-center gap-2">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all ${bulkStep >= s ? "bg-primary text-white" : "bg-slate-100 text-slate-400"}`}>{s}</div>
+                      {s < 2 && <div className={`h-px w-8 transition-all ${bulkStep >= 2 ? "bg-primary" : "bg-slate-100"}`} />}
+                    </div>
+                  ))}
+                  <span className="ml-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    {bulkStep === 1 ? "Shared Configuration" : "Recipient Entry"}
+                  </span>
+                </div>
+              </div>
+              <button onClick={resetBulkModal} className="w-12 h-12 flex items-center justify-center bg-slate-50 rounded-2xl text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all">
+                <FaTimes size={20} />
+              </button>
+            </div>
+
+            <div className="px-10 py-8">
+              {/* ── STEP 1: Shared Configuration ── */}
+              {bulkStep === 1 && (
+                <div className="space-y-6">
+                  {/* Row: Count + Province + Type */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="label-xs">No. of Certificates</label>
+                      <input
+                        type="number" min="1" max="500"
+                        className="input-field mt-1"
+                        value={recipientCount}
+                        onChange={e => setRecipientCount(Math.max(1, Math.min(500, Number(e.target.value))))}
+                      />
+                    </div>
+                    <div>
+                      <label className="label-xs">Province <span className="text-rose-400">*</span></label>
+                      <select
+                        className="input-field mt-1"
+                        value={sharedData.province}
+                        onChange={e => setSharedData(p => ({ ...p, province: e.target.value }))}
+                      >
+                        <option value="">Select Province</option>
+                        {PROVINCES.map(p => <option key={p} value={p}>{p} ({PROVINCE_REGIONS[p]})</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="label-xs">Certificate Type</label>
+                      <select className="input-field mt-1" value={sharedData.certificateType} onChange={e => handleTypeChange(e.target.value)}>
+                        {["Training","Bootcamp","Hackathon","Event","Internship","Workshop"].map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Course Name */}
+                  <div>
+                    <label className="label-xs">Event / Course Name <span className="text-rose-400">*</span></label>
+                    <input className="input-field mt-1" placeholder="e.g. Code for Change Kathmandu Hackathon 2026" value={sharedData.courseName} onChange={e => setSharedData(p => ({ ...p, courseName: e.target.value }))} />
+                  </div>
+
+                  {/* Dates Row */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="label-xs">Start Date</label>
+                      <input type="date" className="input-field mt-1" value={sharedData.startDate} onChange={e => setSharedData(p => ({ ...p, startDate: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className="label-xs">End Date</label>
+                      <input type="date" className="input-field mt-1" value={sharedData.endDate} onChange={e => setSharedData(p => ({ ...p, endDate: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className="label-xs">Issue Date</label>
+                      <input type="date" className="input-field mt-1" value={sharedData.issueDate} onChange={e => setSharedData(p => ({ ...p, issueDate: e.target.value }))} />
+                    </div>
+                  </div>
+
+                  {/* Hours + Grade */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="label-xs">Accredited Hours <span className="text-slate-400 font-bold">(optional)</span></label>
+                      <input className="input-field mt-1" placeholder="e.g. 48 Hours" value={sharedData.hours} onChange={e => setSharedData(p => ({ ...p, hours: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className="label-xs">Achievement / Grade <span className="text-slate-400 font-bold">(optional)</span></label>
+                      <input className="input-field mt-1" placeholder="e.g. Winner, Participation, Mentorship" value={sharedData.grade} onChange={e => setSharedData(p => ({ ...p, grade: e.target.value }))} />
+                    </div>
+                  </div>
+
+                  {/* Dynamic Template Text */}
+                  <div className="bg-slate-50/80 border border-slate-100 rounded-3xl p-6">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
+                      🎨 Certificate Display Text — Pre-filled from type, fully editable
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[
+                        { key: "header", label: "Main Header" },
+                        { key: "subHeader", label: "Sub-Header" },
+                        { key: "tagline", label: "Tagline (below name)" },
+                        { key: "primaryDetail", label: "Primary Detail (before course)" },
+                      ].map(({ key, label }) => (
+                        <div key={key}>
+                          <label className="label-xs">{label}</label>
+                          <input
+                            className="input-field mt-1"
+                            value={sharedData.template?.[key] ?? ""}
+                            onChange={e => setSharedData(p => ({ ...p, template: { ...p.template, [key]: e.target.value } }))}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Year display (read-only) */}
+                  <div className="flex items-center gap-3 bg-blue-50 border border-blue-100 px-5 py-3 rounded-2xl">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">Year Suffix (auto)</span>
+                    <span className="font-mono font-black text-primary">{currentYear}</span>
+                    <span className="text-[10px] text-blue-400 ml-auto">Region: {PROVINCE_REGIONS[sharedData.province] || "select province →"}</span>
+                  </div>
+
+                  <button
+                    onClick={() => { initRecipients(recipientCount); setBulkStep(2); }}
+                    disabled={!sharedData.province || !sharedData.courseName.trim()}
+                    className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest bg-primary text-white hover:bg-secondary transition-all disabled:bg-slate-300 disabled:cursor-not-allowed shadow-xl"
+                  >
+                    Next → Enter Recipients ({recipientCount} students)
+                  </button>
+                </div>
+              )}
+
+              {/* ── STEP 2: Recipient Entry ── */}
+              {bulkStep === 2 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <button onClick={() => setBulkStep(1)} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-all flex items-center gap-2">
+                      ← Back to Config
+                    </button>
+                    <span className="text-[10px] font-black text-secondary uppercase tracking-widest">
+                      {sharedData.courseName} · {sharedData.province} · ID Preview: {buildPreviewId(recipients[0] || {})}
+                    </span>
+                  </div>
+
+                  {/* Column headers */}
+                  <div className="hidden md:grid grid-cols-12 gap-2 pb-2 text-[9px] font-black uppercase tracking-widest text-slate-400 px-1">
+                    <div className="col-span-1">#</div>
+                    <div className="col-span-3">Recipient Name *</div>
+                    <div className="col-span-2">Email (opt.)</div>
+                    <div className="col-span-2">Prefix 1 (E/C/M)</div>
+                    <div className="col-span-2">Prefix 2 (LE/TC)</div>
+                    <div className="col-span-2">ID Preview</div>
+                  </div>
+
+                  <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+                    {recipients.map((r, i) => (
+                      <div key={i} className="grid grid-cols-12 gap-2 items-center">
+                        <div className="col-span-1 text-[10px] font-black text-slate-400 text-center">{i + 1}</div>
+                        <div className="col-span-12 md:col-span-3">
+                          <input
+                            className="input-field w-full"
+                            placeholder="Full Name"
+                            value={r.recipientName}
+                            onChange={e => {
+                              const upd = [...recipients];
+                              upd[i] = { ...upd[i], recipientName: e.target.value };
+                              setRecipients(upd);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-12 md:col-span-2">
+                          <input
+                            className="input-field w-full"
+                            placeholder="Email"
+                            type="email"
+                            value={r.recipientEmail}
+                            onChange={e => {
+                              const upd = [...recipients];
+                              upd[i] = { ...upd[i], recipientEmail: e.target.value };
+                              setRecipients(upd);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-6 md:col-span-2">
+                          <input
+                            className="input-field w-full font-mono uppercase"
+                            placeholder="e.g. E"
+                            maxLength={4}
+                            value={r.prefix1}
+                            onChange={e => {
+                              const upd = [...recipients];
+                              upd[i] = { ...upd[i], prefix1: sanitizePrefix(e.target.value) };
+                              setRecipients(upd);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-6 md:col-span-2">
+                          <input
+                            className="input-field w-full font-mono uppercase"
+                            placeholder="e.g. LE"
+                            maxLength={4}
+                            value={r.prefix2}
+                            onChange={e => {
+                              const upd = [...recipients];
+                              upd[i] = { ...upd[i], prefix2: sanitizePrefix(e.target.value) };
+                              setRecipients(upd);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-12 md:col-span-2">
+                          <span className="font-mono text-[9px] font-black text-secondary bg-secondary/5 px-2 py-1.5 rounded-lg border border-secondary/10 block text-center truncate">
+                            {buildPreviewId(r)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {bulkProgress && (
+                    <div className="bg-blue-50 border border-blue-100 rounded-2xl px-5 py-3 text-sm font-bold text-blue-600 animate-pulse">
+                      {bulkProgress}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleBulkSubmit}
+                    disabled={bulkSubmitting}
+                    className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all bg-secondary text-white hover:bg-primary disabled:bg-slate-400 disabled:cursor-not-allowed"
+                  >
+                    {bulkSubmitting ? bulkProgress || "Generating..." : `🚀 Generate & Download ${recipients.filter(r => r.recipientName.trim()).length} Certificates`}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Delete Confirmation */}
       <DeleteModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}

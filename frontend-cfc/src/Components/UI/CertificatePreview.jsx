@@ -36,6 +36,16 @@ const CertificatePreview = ({ data }) => {
   }, []);
 
   const getTemplateConfig = (type) => {
+    // Dynamic: if admin set custom text during bulk generation, use it directly
+    const t = data?.metadata?.template;
+    if (t?.header) return {
+      header: t.header,
+      subHeader: t.subHeader || "",
+      tagline: t.tagline || "",
+      primaryDetail: t.primaryDetail || "",
+    };
+
+    // Fallback: hardcoded per-type defaults (keeps all old certificates working)
     switch (type) {
       case "Training":
       case "Bootcamp":

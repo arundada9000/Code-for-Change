@@ -37,6 +37,34 @@ export class CertificateController {
   });
 
   /**
+   * Admin: Bulk-issue multiple certificates in one request
+   */
+  bulkIssueCertificates = asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthRequest;
+    const { sharedData, recipients } = req.body;
+
+    const certificates = await certificateService.bulkIssueCertificates(
+      { ...sharedData, issuedBy: authReq.user?.id },
+      recipients,
+      authReq.user!.id
+    );
+
+    // Log as a single activity entry
+    if (authReq.user) {
+      await adminService.logActivity({
+        userId: authReq.user.id,
+        userName: authReq.user.name || authReq.user.email,
+        action: "CREATE",
+        resource: "CERTIFICATE",
+        resourceId: "bulk",
+        details: `Bulk issued ${certificates.length} × "${sharedData.courseName}" certificates for ${sharedData.province}`,
+      });
+    }
+
+    sendSuccess(res, certificates, `${certificates.length} certificates issued successfully`, 201);
+  });
+
+  /**
    * Admin: Get all certificates (Ledger)
    */
   getAllCertificates = asyncHandler(async (req: Request, res: Response) => {

@@ -4,7 +4,12 @@ import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { validate, validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
-import { issueCertificateSchema, updateCertificateStatusSchema, verifyCertificateSchema } from "./certificate.validation.js";
+import {
+  issueCertificateSchema,
+  bulkIssueCertificateSchema,
+  updateCertificateStatusSchema,
+  verifyCertificateSchema,
+} from "./certificate.validation.js";
 
 const router = Router();
 const certificateController = new CertificateController();
@@ -27,6 +32,14 @@ router.post(
   requireAnyPermission(PERMISSIONS.CERTIFICATE_ISSUE),
   validate(issueCertificateSchema),
   certificateController.issueCertificate
+);
+
+router.post(
+  "/bulk-issue",
+  authenticate,
+  requireAnyPermission(PERMISSIONS.CERTIFICATE_ISSUE),
+  validate(bulkIssueCertificateSchema),
+  certificateController.bulkIssueCertificates
 );
 
 router.get(
