@@ -212,7 +212,7 @@ function Certificate() {
     const pageHeight = doc.internal.pageSize.getHeight();
 
     // 1. Decorative Borders
-    doc.setDrawColor(15, 23, 42); // slate-900
+    doc.setDrawColor(15, 23, 42); // primary
     doc.setLineWidth(4);
     doc.rect(5, 5, pageWidth - 10, pageHeight - 10); // outer
 
@@ -406,12 +406,12 @@ function Certificate() {
     doc.text("VAULT REGISTRY ACCESS", textX, textYStart);
 
     // Link: verify.codeforchange.org.np
-    doc.setTextColor(15, 23, 42); // slate-900
+    doc.setTextColor(15, 23, 42); // primary
     doc.setFontSize(8); // text-[10px]
     doc.text("verify.codeforchange.org.np", textX, textYStart + 4);
 
     // Underline/Border-b simulation
-    doc.setDrawColor(15, 23, 42); // slate-900 opacity 20% approx
+    doc.setDrawColor(15, 23, 42); // primary opacity 20% approx
     doc.setDrawColor(203, 213, 225); // slate-300 for lighter border
     doc.setLineWidth(0.2);
     doc.line(textX, textYStart + 5, textX + 38, textYStart + 5);
@@ -450,8 +450,8 @@ function Certificate() {
       {/* 1. Dashboard Header - Responsive */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-800 tracking-tighter uppercase italic leading-none">
-            Certificate <span className="text-emerald-500">Registry</span>
+          <h2 className="text-2xl font-black text-slate-800 tracking-tighter uppercase leading-none">
+            Certificate <span className="text-secondary">Registry</span>
           </h2>
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2">
             Management & Distribution Portal
@@ -459,11 +459,11 @@ function Certificate() {
         </div>
         <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
           <div className="hidden md:flex gap-2 mr-4">
-            <div className="bg-emerald-50 px-4 py-2 rounded-xl text-center border border-emerald-100">
-              <p className="text-[9px] font-black text-emerald-600 uppercase">
+            <div className="bg-secondary/10 px-4 py-2 rounded-xl text-center border border-secondary/50">
+              <p className="text-[9px] font-black text-secondary uppercase">
                 Valid
               </p>
-              <p className="text-lg font-black text-emerald-700 leading-none">
+              <p className="text-lg font-black text-secondary leading-none">
                 {certificates.filter((c) => c.status === "Valid").length}
               </p>
             </div>
@@ -479,7 +479,7 @@ function Certificate() {
           {hasPermission("certificate_issue") && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-slate-900 text-white px-6 py-4 rounded-2xl hover:bg-emerald-600 transition-all shadow-xl shadow-slate-200 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
+              className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-primary text-white px-6 py-4 rounded-2xl hover:bg-secondary transition-all shadow-xl shadow-slate-200 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
             >
               <FaPlus className="text-lg" />{" "}
               <span className="hidden sm:inline">Issue Certificate</span>
@@ -498,7 +498,7 @@ function Certificate() {
             <input
               type="text"
               placeholder="Search by ID, Name or Email..."
-              className="w-full pl-16 pr-8 py-4 bg-slate-50 rounded-2xl outline-none text-slate-700 font-bold text-xs uppercase tracking-widest focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all border border-transparent focus:border-emerald-500/20"
+              className="w-full pl-16 pr-8 py-4 bg-slate-50 rounded-2xl outline-none text-slate-700 font-bold text-xs uppercase tracking-widest focus:ring-4 focus:ring-secondary/10 focus:bg-white transition-all border border-transparent focus:border-secondary/20"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -541,7 +541,7 @@ function Certificate() {
               ))}
             </select>
 
-            <button className="col-span-2 md:col-span-1 w-full md:w-12 h-12 flex items-center justify-center bg-slate-900 text-white rounded-2xl hover:bg-emerald-600 transition-all shadow-lg shadow-slate-100">
+            <button className="col-span-2 md:col-span-1 w-full md:w-12 h-12 flex items-center justify-center bg-primary text-white rounded-2xl hover:bg-secondary transition-all shadow-lg shadow-slate-100">
               <FaFilter />
             </button>
           </div>
@@ -595,14 +595,14 @@ function Certificate() {
                             size={24}
                           />
                         </div>
-                        <span className="font-mono text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
+                        <span className="font-mono text-xs font-black text-secondary bg-secondary/10 px-2 py-1 rounded">
                           {cert.certificateId}
                         </span>
                       </div>
                     </td>
                     <td className="px-8 py-6">
                       <div>
-                        <div className="font-black text-slate-900 group-hover:text-emerald-600 transition-colors uppercase tracking-tight">
+                        <div className="font-black text-primary group-hover:text-secondary transition-colors uppercase tracking-tight">
                           {cert.recipientName}
                         </div>
                         <div className="text-[10px] font-bold text-slate-400 truncate max-w-[150px]">
@@ -619,7 +619,7 @@ function Certificate() {
                       <div
                         className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.1em] ${
                           cert.status === "Valid"
-                            ? "text-emerald-500"
+                            ? "text-secondary"
                             : "text-rose-500"
                         }`}
                       >
@@ -633,7 +633,7 @@ function Certificate() {
                             openMenuId === cert._id ? null : cert._id,
                           )
                         }
-                        className="w-10 h-10 inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:bg-slate-900 hover:text-white transition-all shadow-sm"
+                        className="w-10 h-10 inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:bg-primary hover:text-white transition-all shadow-sm"
                       >
                         <BsThreeDotsVertical />
                       </button>
@@ -643,7 +643,7 @@ function Certificate() {
                             onClick={() => generatePDF(cert)}
                             className="w-full px-5 py-3 text-left flex items-center gap-3 text-xs font-black text-slate-700 hover:bg-slate-50 transition-all uppercase tracking-widest"
                           >
-                            <BsDownload className="text-emerald-500" /> Export
+                            <BsDownload className="text-secondary" /> Export
                             PDF
                           </button>
                           <button
@@ -669,8 +669,8 @@ function Certificate() {
                                       }
                                       className={`flex-1 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all border ${
                                         cert.status === status
-                                          ? "bg-slate-900 text-white border-slate-900"
-                                          : "bg-white text-slate-400 border-slate-200 hover:border-slate-900 hover:text-slate-900"
+                                          ? "bg-primary text-white border-primary"
+                                          : "bg-white text-slate-400 border-slate-200 hover:border-primary hover:text-primary"
                                       }`}
                                     >
                                       {status.charAt(0)}
@@ -728,10 +728,10 @@ function Certificate() {
                       />
                     </div>
                     <div>
-                      <p className="font-mono text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded w-fit mb-1">
+                      <p className="font-mono text-[10px] font-black text-secondary bg-secondary/10 px-2 py-0.5 rounded w-fit mb-1">
                         {cert.certificateId}
                       </p>
-                      <h3 className="font-black text-slate-900 uppercase tracking-tight leading-none text-sm">
+                      <h3 className="font-black text-primary uppercase tracking-tight leading-none text-sm">
                         {cert.recipientName}
                       </h3>
                     </div>
@@ -789,7 +789,7 @@ function Certificate() {
                   <span
                     className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${
                       cert.status === "Valid"
-                        ? "bg-emerald-100 text-emerald-700"
+                        ? "bg-emerald-100 text-secondary"
                         : "bg-rose-100 text-rose-700"
                     }`}
                   >
@@ -808,35 +808,35 @@ function Certificate() {
 
       {/* 4. Issue Certificate Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[150] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] w-full max-w-xl p-10 shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 bg-primary/60 backdrop-blur-md z-150 flex items-center justify-center p-4">
+          <div className="bg-white max-h-[90vh] overflow-y-scroll rounded-4xl w-full max-w-2xl p-10 shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="flex justify-between items-center mb-8 border-b border-slate-50 pb-6">
               <div>
-                <h3 className="text-2xl font-black tracking-tighter italic text-slate-900 uppercase">
+                <h3 className="text-2xl font-black tracking-tighter text-primary uppercase">
                   Issue new certificate
                 </h3>
-                <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-1">
+                <p className="text-[10px] font-black text-secondary uppercase tracking-widest mt-1">
                   Official Certification Form
                 </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-12 h-12 flex items-center justify-center bg-slate-50 rounded-2xl text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all"
+                className="w-12 h-12 flex items-center justify-center cursor-pointer group bg-slate-50 rounded-2xl text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all"
               >
-                <FaTimes size={20} />
+                <FaTimes size={20} className="group-hover:rotate-90 transition"/>
               </button>
             </div>
 
             <div className="flex gap-4 mb-8 flex-col md:flex-row">
               <button
                 onClick={() => setShowPreview(false)}
-                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${!showPreview ? "bg-slate-900 text-white" : "bg-slate-50 text-slate-400"}`}
+                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${!showPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400"}`}
               >
                 Build Data
               </button>
               <button
                 onClick={() => setShowPreview(true)}
-                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${showPreview ? "bg-slate-900 text-white" : "bg-slate-50 text-slate-400"}`}
+                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${showPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400"}`}
               >
                 Live Preview
               </button>
@@ -859,7 +859,7 @@ function Certificate() {
                     name="recipientName"
                     required
                     placeholder="Aarav Sharma"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                     value={formData.recipientName}
                     onChange={(e) =>
                       setFormData({
@@ -878,7 +878,7 @@ function Certificate() {
                     type="email"
                     required
                     placeholder="aarav@example.com"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -895,7 +895,7 @@ function Certificate() {
                     name="courseName"
                     required
                     placeholder="Fullstack Web Development Bootcamp"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                     value={formData.courseName}
                     onChange={(e) =>
                       setFormData({ ...formData, courseName: e.target.value })
@@ -908,7 +908,7 @@ function Certificate() {
                   </label>
                   <select
                     name="certificateType"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                     value={formData.certificateType}
                     onChange={(e) =>
                       setFormData({
@@ -931,7 +931,7 @@ function Certificate() {
                   </label>
                   <select
                     name="province"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                     value={formData.province}
                     onChange={(e) =>
                       setFormData({ ...formData, province: e.target.value })
@@ -952,7 +952,7 @@ function Certificate() {
                   <input
                     name="certificateId"
                     placeholder="Auto-generated if empty"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -980,7 +980,7 @@ function Certificate() {
                       <input
                         name="startDate"
                         type="date"
-                        className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                        className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                         value={formData.startDate}
                         onChange={(e) =>
                           setFormData({
@@ -1003,7 +1003,7 @@ function Certificate() {
                       <input
                         name="endDate"
                         type="date"
-                        className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                        className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                         value={formData.endDate}
                         onChange={(e) =>
                           setFormData({ ...formData, endDate: e.target.value })
@@ -1024,7 +1024,7 @@ function Certificate() {
                     <input
                       name="hours"
                       placeholder="e.g. 135 Hours"
-                      className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                      className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                       value={formData.hours}
                       onChange={(e) =>
                         setFormData({ ...formData, hours: e.target.value })
@@ -1045,7 +1045,7 @@ function Certificate() {
                         ? "e.g. Winner / Participation"
                         : "e.g. Grade A"
                     }
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-emerald-500/30 focus:bg-white font-bold transition-all mt-1"
+                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
                     value={formData.grade}
                     onChange={(e) =>
                       setFormData({ ...formData, grade: e.target.value })
@@ -1059,7 +1059,7 @@ function Certificate() {
                     className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all ${
                       submitting
                         ? "bg-slate-400 cursor-not-allowed"
-                        : "bg-slate-900 text-white hover:bg-emerald-600"
+                        : "bg-primary text-white hover:bg-secondary"
                     }`}
                   >
                     {submitting ? "Registering..." : "Register Certificate"}
@@ -1082,11 +1082,11 @@ function Certificate() {
 
       {/* 6. Fullscreen Preview Modal */}
       {isPreviewOpen && (
-        <div className="fixed inset-0 bg-slate-900/98 backdrop-blur-2xl z-[200] flex flex-col items-center justify-center p-4 md:p-12 overflow-hidden">
+        <div className="fixed inset-0 bg-primary/98 backdrop-blur-2xl z-[200] flex flex-col items-center justify-center p-4 md:p-12 overflow-hidden">
           {/* Top Navigation Bar */}
           <div className="w-full max-w-7xl flex flex-col md:flex-row items-center justify-between mb-4 md:mb-8 animate-in slide-in-from-top-4 duration-500 gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-500/20">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-secondary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-secondary/20">
                 <FaShieldAlt size={20} className="md:text-2xl" />
               </div>
               <div>

@@ -33,6 +33,22 @@ const provinces = [
   { name: "LB Karnali", colorCode: "#bbd704" },
 ];
 
+// Position hierarchy
+const positionOrder = [
+  "project-lead",
+  "vice-project-lead",
+  "secretary",
+  "treasurer",
+  "vice-secretary",
+  "vice-treasurer",
+  "pr-lead",
+  "hr-lead",
+  "operation-lead",
+  "tech-lead",
+  "admin-lead",
+  "executive-member",
+];
+
 import useFetch from "../Hooks/useFetch";
 import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
 import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
@@ -119,6 +135,28 @@ const Provinces = () => {
       volunteers: provincialVolunteers.length,
     },
   };
+
+  //Reusable sort function
+  const sortByPosition = (members) => {
+    return [...members].sort((a, b) => {
+      const posA = a.position?.toLowerCase().replace(/\s+/g, "-");
+      const posB = b.position?.toLowerCase().replace(/\s+/g, "-");
+
+      const indexA = positionOrder.indexOf(posA);
+      const indexB = positionOrder.indexOf(posB);
+
+      return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+    });
+  };
+  console.log(currentTeam);
+
+  const executiveMember = sortByPosition(
+    currentTeam?.provincial?.filter((member) =>
+      ["eb", "executive"].includes(member.role?.toLowerCase()),
+    ) || [],
+  );
+
+  console.log(executiveMember);
 
   // console.log(currentTeam.provincial)
   // console.log(currentTeam);
@@ -383,8 +421,8 @@ const Provinces = () => {
 
                 {/* Current team member */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 pb-10 gap-5 md:gap-7">
-                  {currentTeam.provincial.length > 0 ? (
-                    currentTeam.provincial.map((member, i) => (
+                  {executiveMember.length > 0 ? (
+                    executiveMember.map((member, i) => (
                       <div
                         key={member._id || i}
                         className="relative group rounded-3xl cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl"
@@ -431,7 +469,7 @@ const Provinces = () => {
                               className="text-[11px] uppercase font-black mt-1.5 tracking-[0.15em] opacity-80"
                               style={{ color: activeProvince?.colorCode }}
                             >
-                              {member.position}
+                              {member.position.replace(/-/g, " ")}
                             </p>
                           </div>
                         </div>
