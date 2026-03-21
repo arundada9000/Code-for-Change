@@ -18,6 +18,7 @@ import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import Banner from "../Components/UI/Banner";
 import CertificatePreview from "../Components/UI/CertificatePreview";
+import { CertificateResultSkeleton } from "../Components/Loading/Skeleton";
 
 function CertificateVerification() {
   const { token } = useParams();
@@ -212,14 +213,7 @@ function CertificateVerification() {
         )}
 
         {/* Loading State */}
-        {loading && (
-          <div className="mt-20 text-center space-y-6 animate-pulse">
-            <div className="w-16 h-16 bg-white border border-slate-100 rounded-full mx-auto flex items-center justify-center shadow-sm">
-               <FaShieldAlt className="text-[#0076B4] text-2xl animate-spin-slow" />
-            </div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Synching with Digital Ledger...</p>
-          </div>
-        )}
+        {loading && <CertificateResultSkeleton />}
 
         {/* Results Section */}
         {result && (

@@ -4,6 +4,7 @@ import { FaCheckCircle, FaDownload, FaHome } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
 import API from "../Services/api";
 import Banner from "../Components/UI/Banner";
+import { DonationVerificationSkeleton } from "../Components/Loading/Skeleton";
 
 const DonationSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -34,16 +35,7 @@ const DonationSuccess = () => {
     verifyPayment();
   }, [searchParams]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-gray-600 font-medium">Verifying your donation...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <DonationVerificationSkeleton />;
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">

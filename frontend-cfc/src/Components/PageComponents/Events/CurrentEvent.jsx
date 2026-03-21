@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import useFetch from "../../../Hooks/useFetch";
+import { TerminalCardSkeleton } from "../../Loading/Skeleton";
 
 export default function CurrentEvent() {
   const { data: apiEvents, loading } = useFetch("/events");
@@ -37,7 +38,13 @@ export default function CurrentEvent() {
     activeTab === "upcoming" ? upcomingEvents : completedEvents;
 
   if (loading && !apiEvents)
-    return <div className="py-10 text-center">Loading events...</div>;
+    return (
+      <section className="px-5 bg-gradient-to-br from-slate-50 to-white py-8">
+        <div className="max-w-7xl mx-auto">
+          <TerminalCardSkeleton count={4} cols="md:grid-cols-2" />
+        </div>
+      </section>
+    );
   if (displayEvents.length === 0) return null;
 
   return (

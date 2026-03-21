@@ -13,6 +13,7 @@ import SEO from "../Components/Common/SEO";
 import { provinces } from "./Provinces";
 import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
 import EventCard from "../Components/UI/EventCard";
+import { Pulse } from "../Components/Loading/Skeleton";
 
 const TeamMemberCard = ({ member, themeColor }) => (
   <div
@@ -381,7 +382,15 @@ const ProvinceDetails = () => {
         </div>
 
         {loading ? (
-          <div className="text-center text-gray-500">Loading team...</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {[0,1,2,3,4].map(i => (
+              <div key={i} className="flex flex-col items-center gap-3 p-4 rounded-3xl" style={{ backgroundColor: `${themeColor}20` }}>
+                <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                <Pulse className="h-4 w-24 rounded mx-auto" />
+                <Pulse className="h-3 w-16 rounded mx-auto" />
+              </div>
+            ))}
+          </div>
         ) : team.filter(m => m.role === 'eb').length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'eb').map((member, i) => (
@@ -409,7 +418,15 @@ const ProvinceDetails = () => {
           </p>
         </div>
         {loading ? (
-          <div className="text-center text-gray-500">Loading representatives...</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {[0,1,2,3].map(i => (
+              <div key={i} className="flex flex-col items-center gap-3 p-4 rounded-3xl" style={{ backgroundColor: `${themeColor}20` }}>
+                <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                <Pulse className="h-4 w-24 rounded mx-auto" />
+                <Pulse className="h-3 w-16 rounded mx-auto" />
+              </div>
+            ))}
+          </div>
         ) : team.filter(m => m.role === 'cr').length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'cr').map((member, i) => (
@@ -438,7 +455,15 @@ const ProvinceDetails = () => {
           </p>
         </div>
         {loading ? (
-          <div className="text-center text-gray-500">Loading members...</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {[0,1,2,3].map(i => (
+              <div key={i} className="flex flex-col items-center gap-3 p-4 rounded-3xl" style={{ backgroundColor: `${themeColor}20` }}>
+                <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                <Pulse className="h-4 w-24 rounded mx-auto" />
+                <Pulse className="h-3 w-16 rounded mx-auto" />
+              </div>
+            ))}
+          </div>
         ) : team.filter(m => m.role === 'gm').length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'gm').map((member, i) => (
@@ -572,7 +597,21 @@ const ProvinceDetails = () => {
         </div>
 
         {loading ? (
-          <div className="text-center text-gray-500">Loading events...</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[0,1,2,3,4,5].map(i => (
+              <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+                <Pulse className="w-full h-48 rounded-none" />
+                <div className="p-6 space-y-3">
+                  <Pulse className="h-5 w-full rounded" />
+                  <Pulse className="h-4 w-3/4 rounded" />
+                  <div className="flex gap-3 mt-2">
+                    <Pulse className="h-4 w-20 rounded" />
+                    <Pulse className="h-4 w-20 rounded" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event, i) => (

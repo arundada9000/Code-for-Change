@@ -2,11 +2,22 @@ import React from "react";
 import { Link } from "react-router-dom";
 import blog1 from "../../../assets/BlogImage/js.jpg";
 import useFetch from "../../../Hooks/useFetch";
+import { BlogCardListSkeleton } from "../../Loading/Skeleton";
 
 export function BlogCard() {
   const { data: apiBlogs, loading } = useFetch("/blogs");
 
   const displayBlogs = apiBlogs || [];
+
+  if (loading) return (
+    <section className="max-w-7xl mx-auto px-5">
+      <div className="mb-12 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Latest Articles</h2>
+        <p className="text-gray-500 max-w-2xl mx-auto">Explore our latest insights on React, JavaScript, and modern web development.</p>
+      </div>
+      <BlogCardListSkeleton count={3} />
+    </section>
+  );
 
   return (
     <section className="max-w-7xl mx-auto px-5">

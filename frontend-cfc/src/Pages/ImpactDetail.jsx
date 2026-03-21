@@ -4,6 +4,7 @@ import useFetch from "../Hooks/useFetch";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import { FaChevronLeft } from "react-icons/fa";
+import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
 
 
 
@@ -87,7 +88,7 @@ function ImpactDetail() {
     }
   }, [apiImpact, id]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50">Loading details...</div>;
+  if (loading) return <ArticleDetailSkeleton />;
 
   if (!item) {
     return (

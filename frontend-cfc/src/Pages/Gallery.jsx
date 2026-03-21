@@ -4,6 +4,7 @@ import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
 import API from "../Services/api";
 import { toast } from "react-hot-toast";
+import { GalleryMasonrySkeleton } from "../Components/Loading/Skeleton";
 
 function Gallery() {
   const [galleryImages, setGalleryImages] = useState([]);
@@ -110,9 +111,7 @@ function Gallery() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
+          <GalleryMasonrySkeleton count={9} />
         ) : filteredImages.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-500 font-bold text-xl">No memories found.</p>

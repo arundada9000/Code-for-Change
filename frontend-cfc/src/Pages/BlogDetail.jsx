@@ -5,6 +5,7 @@ import DOMPurify from "dompurify";
 import useFetch from "../Hooks/useFetch";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
+import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
 
 function BlogDetail() {
   const { slug: urlSlug } = useParams();
@@ -27,7 +28,7 @@ function BlogDetail() {
     }
   }, [apiBlog]);
 
-  if (loading) return <div className="py-20 text-center text-2xl font-bold text-gray-400">Loading article...</div>;
+  if (loading) return <ArticleDetailSkeleton />;
 
   if (!blog)
     return (

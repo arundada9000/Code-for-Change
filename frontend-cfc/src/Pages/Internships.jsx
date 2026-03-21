@@ -8,6 +8,7 @@ import {
   FaBuilding, FaArrowRight, FaSearch, FaFilter 
 } from "react-icons/fa";
 import API from "../Services/api";
+import { InternshipCardSkeleton } from "../Components/Loading/Skeleton";
 
 const parseArray = (data) => {
   const result = [];
@@ -286,11 +287,7 @@ const Internships = () => {
         </div>
 
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="bg-white rounded-3xl p-10 border border-secondary/5 animate-pulse h-[450px]"></div>
-            ))}
-          </div>
+          <InternshipCardSkeleton count={4} />
         ) : filteredInternships.length > 0 ? (
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
             {filteredInternships.map(job => {

@@ -4,6 +4,7 @@ import Banner from '../Components/UI/Banner';
 import Breadcrumbs from '../Components/UI/Breadcrumbs';
 import SEO from '../Components/Common/SEO';
 import useFetch from '../Hooks/useFetch';
+import { ImpactCardSkeleton } from '../Components/Loading/Skeleton';
 
 export function OurImpact() {
   const { data: apiImpacts, loading } = useFetch("/impacts");
@@ -14,8 +15,9 @@ export function OurImpact() {
   const historyData = impacts.filter(item => item.category === "History");
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-secondary border-t-transparent"></div>
+    <div className="bg-[#fbfcff] min-h-screen font-sans">
+      <Banner title="Harnessing the Power of Youth" />
+      <ImpactCardSkeleton />
     </div>
   );
 

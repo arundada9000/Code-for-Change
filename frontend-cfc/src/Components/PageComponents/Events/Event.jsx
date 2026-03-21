@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import useFetch from "../../../Hooks/useFetch";
 import EventCard from "../../UI/EventCard";
+import { TerminalCardSkeleton } from "../../Loading/Skeleton";
 
 function Event({ events: propEvents, loading: propLoading }) {
   const { data: apiEvents, loading: apiLoading } = useFetch("/events");
@@ -27,7 +28,11 @@ function Event({ events: propEvents, loading: propLoading }) {
         .slice(0, 6);
 
   if (loading)
-    return <div className="py-16 text-center">Loading events...</div>;
+    return (
+      <div className="py-16 max-w-7xl mx-auto px-5">
+        <TerminalCardSkeleton count={6} cols="md:grid-cols-2 lg:grid-cols-3" />
+      </div>
+    );
   if (displayEvents.length === 0) return null;
 
   return (
