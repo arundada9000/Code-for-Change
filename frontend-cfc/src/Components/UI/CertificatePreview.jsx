@@ -123,7 +123,7 @@ const CertificatePreview = ({ data }) => {
   };
 
   return (
-    <div className="w-full aspect-4/3 bg-white border-[4px] sm:border-[6px] md:border-[8px] lg:border-[12px] border-slate-900 p-2 sm:p-4 md:p-6 lg:p-10 shadow-2xl relative overflow-hidden font-sans text-slate-900 select-none flex flex-col justify-between">
+    <div id="certificate-preview-node" className="w-full aspect-4/3 bg-white border-[4px] sm:border-[6px] md:border-[8px] lg:border-[12px] border-slate-900 p-2 sm:p-4 md:p-6 lg:p-10 shadow-2xl relative overflow-hidden font-sans text-slate-900 select-none flex flex-col justify-between">
       {/* Decorative Overlays */}
       <div className="absolute inset-[1px] sm:inset-1 md:inset-4 border border-slate-300 pointer-events-none z-0"></div>
       <div className="absolute inset-[2px] sm:inset-2 md:inset-5 border-2 md:border-3 border-slate-900 pointer-events-none z-0"></div>

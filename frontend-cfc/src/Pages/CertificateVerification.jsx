@@ -10,9 +10,12 @@ import {
   FaArrowRight,
   FaCamera,
   FaImage,
-  FaUpload
+  FaUpload,
+  FaDownload
 } from "react-icons/fa";
 import { Html5QrcodeScanner, Html5Qrcode } from "html5-qrcode";
+import { toPng } from "html-to-image";
+import toast from "react-hot-toast";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
@@ -99,6 +102,61 @@ function CertificateVerification() {
     } finally {
       setLoading(false);
       html5QrCode.clear();
+    }
+  };
+
+  const handleDownloadQR = () => {
+    if (!result?.data?.qrCode) {
+      toast.error("QR Code not available");
+      return;
+    }
+    const tokenParts = result.data.qrCode.split(";base64,");
+    if (tokenParts.length !== 2) {
+      toast.error("Invalid QR Code format");
+      return;
+    }
+    const bstr = atob(tokenParts[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    const blob = new Blob([u8arr], { type: "image/png" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `QR_${result.data.certificateId || "Certificate"}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("QR Code downloaded successfully");
+  };
+
+  const handleDownloadCertificate = async () => {
+    const node = document.getElementById("certificate-preview-node");
+    if (!node) {
+      toast.error("Certificate preview not loaded");
+      return;
+    }
+    
+    const loadingToast = toast.loading("Generating high-quality certificate image...");
+    try {
+      // Scale for higher definition print quality
+      const dataUrl = await toPng(node, {
+        cacheBust: true,
+        pixelRatio: 4, // Higher resolution
+        style: {
+          transform: "scale(1)",
+          transformOrigin: "top left",
+        }
+      });
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `${result.data.recipientName.replace(/\s+/g, '_')}_Certificate_${result.data.certificateId}.png`;
+      a.click();
+      toast.success("Certificate downloaded successfully!", { id: loadingToast });
+    } catch (err) {
+      console.error("Failed to generate certificate", err);
+      toast.error("Failed to download certificate. Try again.", { id: loadingToast });
     }
   };
 
@@ -250,6 +308,22 @@ function CertificateVerification() {
                 {/* Maximized Certificate View */}
                 <div className="max-w-5xl mx-auto bg-white rounded-[3rem] p-1 shadow-2xl shadow-slate-200/30 border border-slate-100/50">
                    <CertificatePreview data={result.data} />
+                </div>
+
+                {/* Download Actions Panel */}
+                <div className="max-w-4xl mx-auto mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                   <button 
+                     onClick={handleDownloadCertificate}
+                     className="w-full sm:w-auto flex items-center justify-center gap-3 bg-[#01152E] hover:bg-[#0076B4] text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-slate-200"
+                   >
+                     <FaDownload className="text-lg" /> Download Certificate
+                   </button>
+                   <button 
+                     onClick={handleDownloadQR}
+                     className="w-full sm:w-auto flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-[#01152E] border-2 border-slate-100 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-sm"
+                   >
+                     <FaQrcode className="text-lg text-secondary" /> Save QR Code
+                   </button>
                 </div>
 
                 {/* Audit Footer */}
