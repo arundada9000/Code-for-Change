@@ -11,6 +11,7 @@ import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 
 const InputField = React.memo(
   ({
@@ -199,6 +200,8 @@ function AdminGallery() {
       setSubmitting(false);
     }
   };
+
+  if (loading && items.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">

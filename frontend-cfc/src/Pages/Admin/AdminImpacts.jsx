@@ -18,6 +18,7 @@ import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 
 const InputField = React.memo(
   ({
@@ -271,6 +272,8 @@ function AdminImpacts() {
   const filteredImpacts = impacts.filter((impact) =>
     impact.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  if (loading && impacts.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">

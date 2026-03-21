@@ -27,6 +27,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
+import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 
 const TRACKS = [
   "Frontend",
@@ -169,6 +170,8 @@ function Internship() {
     doc.save(`CFC_Applications_${Date.now()}.pdf`);
     toast.success("PDF Exported successfully");
   };
+
+  if (loading && applications.length === 0) return <AdminTableSkeleton />;
 
   return (
     <div className="space-y-6">
