@@ -9,14 +9,14 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
   const location = useLocation();
   const { user } = useAuth();
   const sideBarItems = navItems.filter(
-    (items) => !["More"].includes(items.title)
+    (items) => !["More"].includes(items.title),
   );
   // console.log(sideBarItems);
   return (
     <aside
       ref={sidebarRef}
-      className={`fixed top-0 z-100 bg-primary px-10 py-5 w-96 min-h-screen transition-all duration-500 ease-in ${
-        showSidebar ? "right-0" : "-right-full"
+      className={`fixed top-0 z-100 bg-primary px-10 py-5 w-96 max-h-screen transition-all duration-500 ease-in overflow-y-scroll ${
+        showSidebar ? "right-0" : "-right-[108%]"
       }`}
     >
       <div className="flex items-center justify-between pb-4 border-b border-b-secondary">
