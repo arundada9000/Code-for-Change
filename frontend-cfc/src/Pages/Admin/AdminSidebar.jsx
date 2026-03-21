@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { RiDashboardLine } from "react-icons/ri";
 import {
   FaRegUser,
@@ -35,6 +35,7 @@ const sideBarItems = [
 ];
 
 function AdminSidebar() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
 
   const activeStyle = "bg-secondary text-white shadow-md";
@@ -50,7 +51,12 @@ function AdminSidebar() {
         {/* Header Section */}
         <div className="flex items-center justify-between pb-4 border-b border-white/20">
           {isOpen && (
-            <img src="/logo.png" alt="logo" className="w-16 object-contain" />
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="w-16 object-contain cursor-pointer"
+              onClick={() => navigate("/")}
+            />
           )}
 
           <button
@@ -92,7 +98,11 @@ function AdminSidebar() {
             <div
               className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden bg-white/10`}
             >
-              <img src="/sajilodigital.png" alt="SD" className="w-5 h-5 object-contain brightness-0 invert opacity-80 group-hover/sajilo:opacity-100 group-hover/sajilo:scale-110 transition-all" />
+              <img
+                src="/sajilodigital.png"
+                alt="SD"
+                className="w-5 h-5 object-contain brightness-0 invert opacity-80 group-hover/sajilo:opacity-100 group-hover/sajilo:scale-110 transition-all"
+              />
             </div>
             {isOpen && (
               <div className="flex flex-col">
@@ -147,7 +157,11 @@ function AdminSidebar() {
             `}
           >
             <div className="w-8 h-8 mb-1 flex items-center justify-center bg-slate-900 rounded-lg overflow-hidden">
-              <img src="/sajilodigital.png" alt="SD" className="w-5 h-5 object-contain brightness-0 invert" />
+              <img
+                src="/sajilodigital.png"
+                alt="SD"
+                className="w-5 h-5 object-contain brightness-0 invert"
+              />
             </div>
             <span className="text-[8px] font-black uppercase tracking-tighter leading-none text-center">
               Sajilo
