@@ -426,7 +426,7 @@ export const getPublicUsers = async (filters: { province?: string } = {}) => {
   // Only return safe, non-sensitive fields
   return await UserTable.find(query)
     .select(
-      "name role province profileImage education.collegeName executiveDetails bio",
+      "name role province profileImage education.collegeName executiveDetails bio facebook github website linkedin",
     )
     .sort({ createdAt: -1 });
 };

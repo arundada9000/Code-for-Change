@@ -98,6 +98,13 @@ const Provinces = () => {
         college: u.education?.collegeName,
         bio: u.bio,
         type: ["eb"].includes(u.role) ? "executive" : "volunteer", // Categorize for filtering below
+        socialLinks: {
+          linkedin: u.linkedin,
+          github: u.github,
+          facebook: u.facebook,
+          twitter: u.twitter,
+          website: u.website,
+        },
         isPublicUser: true,
       })) || [];
 
