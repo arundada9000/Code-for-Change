@@ -8,6 +8,7 @@ import {
   FaBook,
   FaRocket,
   FaUserTie,
+  FaFolderOpen,
 } from "react-icons/fa";
 import { BiDonateHeart, BiCalendarEvent } from "react-icons/bi";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
@@ -32,6 +33,7 @@ const sideBarItems = [
   { title: "Gallery", icon: <GoFileMedia />, path: "/admin/gallery" },
   { title: "Jobs", icon: <GoBriefcase />, path: "/admin/internships" },
   { title: "Applications", icon: <FaUserTie />, path: "/admin/internship" },
+  { title: "Resources", icon: <FaFolderOpen />, path: "/admin/resource" },
 ];
 
 function AdminSidebar() {

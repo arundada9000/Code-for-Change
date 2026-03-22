@@ -13,6 +13,7 @@ import DonationSuccess from "./Pages/DonationSuccess";
 import DonationFailure from "./Pages/DonationFailure";
 import Register from "./Pages/Auth/Register";
 import JoinUs from "./Pages/JoinUs";
+import Resources from "./Pages/Resources";
 import EventDetails from "./Pages/EventDetails";
 import Blog from "./Pages/Blog";
 import BlogDetail from "./Pages/BlogDetail";
@@ -88,6 +89,7 @@ function App() {
             <Route path="/internships" element={<Internships />}></Route>
             <Route path="/donate-us" element={<DonateUs />}></Route>
             <Route path="/gallery" element={<Gallery />}></Route>
+            <Route path="/resources" element={<Resources />} />
             <Route path="/contact-us" element={<Contact />}></Route>
             <Route path="/faq" element={<FAQ />}></Route>
             <Route path="/donation-success" element={<DonationSuccess />} />
@@ -138,6 +140,7 @@ function App() {
               <Route path="internships" element={<AdminInternships />} />
               <Route path="internship" element={<Internship />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="resource" element={<AdminResources />} />
               <Route path="sajilo-digital" element={<SajiloDigital />} />
             </Route>
           </Route>

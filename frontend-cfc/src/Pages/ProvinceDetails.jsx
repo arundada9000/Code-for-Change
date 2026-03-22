@@ -79,7 +79,7 @@ const ProvinceDetails = () => {
 
   const themeColor = activeProvince?.colorCode;
 
-  // Dynamic Hero Image Map
+  // Dynamic Hero Image Map (Fallback Defaults)
   const provinceHeroImages = {
     Kathmandu:
       "https://images.unsplash.com/photo-1544216717-3bbf52512659?q=80&w=2000",
@@ -100,9 +100,22 @@ const ProvinceDetails = () => {
       "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2000",
   };
 
-  const heroImage =
+  const [heroImage, setHeroImage] = useState(
     provinceHeroImages[displayName] ||
-    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000";
+    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000"
+  );
+
+  // Fetch background resource from admin-uploaded assets (with fallback)
+  useEffect(() => {
+    API.get(`/resources?category=background&subject=${encodeURIComponent(displayName)}`)
+      .then(res => {
+        const items = res.data?.data;
+        if (Array.isArray(items) && items.length > 0 && items[0].fileUrl) {
+          setHeroImage(items[0].fileUrl);
+        }
+      })
+      .catch(() => {}); // Silently fall back to default on error
+  }, [displayName]);
 
   useEffect(() => {
     const fetchData = async () => {

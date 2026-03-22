@@ -14,6 +14,8 @@ import { FaUserGraduate } from "react-icons/fa";
 import { FaRegHandshake } from "react-icons/fa";
 
 function Home() {
+  console.clear();
+  console.log("Changes: resources page added.");
   const Works = [
     {
       icon: <FaChalkboardTeacher />,
