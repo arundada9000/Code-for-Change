@@ -118,13 +118,7 @@ const Provinces = () => {
   // console.log(provincialVolunteers);
 
   const provincialExecutives =
-    allProvincialMembers?.filter(
-      (m) =>
-        m.type === "executive" ||
-        m.tier === "representative" ||
-        m.role === "eb" ||
-        m.role === "cr",
-    ) || [];
+    allProvincialMembers?.filter((m) => m.role === "eb") || [];
 
   // console.log(provincialExecutives);
 
