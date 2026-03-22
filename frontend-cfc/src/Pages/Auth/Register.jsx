@@ -227,7 +227,7 @@ function Register() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                 {/* Personal Info Section */}
                 <div className="space-y-6">
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                     <FaUser className="text-secondary" /> Basic Information
                   </h3>
 
@@ -273,7 +273,7 @@ function Register() {
 
                 {/* Academic/CFC Info Section */}
                 <div className="space-y-6">
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                     <FaUniversity className="text-secondary" /> Association
                     Details
                   </h3>
@@ -334,7 +334,7 @@ function Register() {
                       <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
                         EB Position
                       </label>
-                      <div className="relative group">
+                      <div className="relative group mt-1">
                         <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
                           <FaIdCard />
                         </div>
@@ -343,7 +343,7 @@ function Register() {
                           value={form.ebBody}
                           onChange={handleChange}
                           required
-                          className="w-full pl-14 pr-6 py-4 border border-secondary/10 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                          className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                         >
                           <option value="">Select Position</option>
                           <option value="tech-lead">Tech Lead</option>
@@ -368,10 +368,10 @@ function Register() {
                   )}
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">
                       Region
                     </label>
-                    <div className="relative group">
+                    <div className="relative group mt-1">
                       <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
                         <FaMapPin />
                       </div>
@@ -380,7 +380,7 @@ function Register() {
                         value={form.province}
                         onChange={handleChange}
                         required
-                        className="w-full pl-14 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                        className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                       >
                         <option value="">Select Region</option>
                         {[
@@ -403,16 +403,17 @@ function Register() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-6">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ">
                       Profile Picture
                     </label>
-                    <div className="relative group">
+                    <div className="relative group mt-1">
                       <input
                         type="file"
                         id="profilePic"
                         hidden
                         onChange={handleFileChange}
                         accept="image/*"
+                        className="bg-none border border-secondary/20"
                       />
                       <label
                         htmlFor="profilePic"
@@ -431,7 +432,7 @@ function Register() {
 
                 {/* Professional & Additional Info Section */}
                 <div className="space-y-6 md:col-span-2 pt-6 border-t border-secondary/5">
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                     <FaInfoCircle className="text-secondary" /> Additional
                     Details & Links (Optional)
                   </h3>
@@ -449,7 +450,7 @@ function Register() {
                           name="gender"
                           value={form.gender}
                           onChange={handleChange}
-                          className="w-full pl-14 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs focus:ring focus:ring-secondary"
+                          className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs focus:ring focus:ring-secondary"
                         >
                           <option value="">Select Gender</option>
                           <option value="male">Male</option>
@@ -513,13 +514,13 @@ function Register() {
                       <label className="text-xs font-bold text-gray-400 group-focus-within:text-secondary uppercase tracking-widest">
                         Short Bio (Optional)
                       </label>
-                      <div className="relative group mt-2">
+                      <div className="relative group mt-1">
                         <FaInfoCircle className="absolute left-6 top-6 -translate-y-1/2 text-gray-300 transition-colors group-hover:text-secondary cursor-pointer" />
                         <textarea
                           name="bio"
                           placeholder="Tell us a little about yourself (max 1000 characters)..."
                           maxLength="1000"
-                          className="w-full rounded-2xl pl-16 pr-8 py-4 bg-secondary/5 border border-transparent rounded-3x cursor-pointer outline-none focus:bg-white focus:ring focus:ring-secondary focus:border-secondary/20 font-medium transition-all text-sm resize-none"
+                          className="w-full rounded-2xl pl-16 pr-8 py-4 border border-secondary/20 rounded-3x cursor-pointer outline-none focus:bg-white focus:ring focus:ring-secondary focus:border-secondary/20 font-medium transition-all text-sm resize-none"
                           value={form.bio}
                           onChange={handleChange}
                           rows="7"
@@ -568,7 +569,7 @@ function Register() {
 
             <div className="mt-8 text-center pt-8 border-t border-secondary/5">
               <p className="text-base text-gray-400">
-                Already a member?{" "}
+                Already a member? <br />
                 <Link
                   to="/login"
                   className="text-secondary font-bold hover:underline"
@@ -581,7 +582,7 @@ function Register() {
 
           <button
             onClick={() => navigate("/")}
-            className="mx-auto flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-secondary transition-colors"
+            className="mx-auto flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-secondary transition-colors"
           >
             <FaChevronLeft size={8} /> Back to website
           </button>
