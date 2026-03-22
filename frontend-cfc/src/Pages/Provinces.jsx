@@ -416,7 +416,7 @@ const Provinces = () => {
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    <FiUsers size={16} /> {currentTeam.stats.volunteers} Active
+                    <FiUsers size={16} /> {currentTeam.stats.executives} Active
                     Leads
                   </div>
                 </div>
