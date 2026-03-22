@@ -6,6 +6,7 @@ import OurObjectives from "../Components/PageComponents/About/OurObjectives";
 import Mission from "../Components/PageComponents/About/Mission";
 import OurValues from "../Components/PageComponents/About/OurValues";
 import TeamSection from "../Components/PageComponents/About/TeamSection";
+import { FadeIn } from "../Components/Common/Animations";
 
 function About() {
   return (
@@ -19,15 +20,25 @@ function About() {
         ]}
       />
       <Banner />
-      <div className="max-w-7xl mx-auto px-5">
-        <AboutSection />
-      </div>
-      <OurObjectives />
-      <Mission />
-      <OurValues />
-      <div className="max-w-7xl mx-auto px-5">
-        <TeamSection />
-      </div>
+      <FadeIn delay={0.1}>
+        <div className="max-w-7xl mx-auto px-5">
+          <AboutSection />
+        </div>
+      </FadeIn>
+      <FadeIn delay={0.2}>
+        <OurObjectives />
+      </FadeIn>
+      <FadeIn delay={0.3}>
+        <Mission />
+      </FadeIn>
+      <FadeIn delay={0.4}>
+        <OurValues />
+      </FadeIn>
+      <FadeIn delay={0.5}>
+        <div className="max-w-7xl mx-auto px-5">
+          <TeamSection />
+        </div>
+      </FadeIn>
     </div>
   );
 }

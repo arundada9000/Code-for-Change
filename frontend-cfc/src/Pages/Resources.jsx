@@ -9,6 +9,7 @@ import {
   FaLock, FaGlobe, FaCheck, FaCopy, FaPalette,
   FaImage, FaFileAlt, FaBook, FaLink, FaTimes,
 } from "react-icons/fa";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 // ─────────────────────────────────────────────────────────
 // CFC Region Palette (hardcoded)
@@ -441,7 +442,7 @@ export default function Resources() {
         </div>
 
         {/* ── Search & Filters Card ── */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl shadow-primary/5 border border-primary/10 overflow-hidden mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
+        <SlideUp className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl shadow-primary/5 border border-primary/10 overflow-hidden mb-12">
           <div className="p-6 md:p-8 space-y-8">
             {/* Search */}
             <div className="relative group">
@@ -517,7 +518,7 @@ export default function Resources() {
               </button>
             </div>
           )}
-        </div>
+        </SlideUp>
 
         {/* ── Region Colour Palette ── */}
         {(activeCategory === "All" || activeCategory === "branding") && !search && activeType === "All" && (
@@ -572,9 +573,13 @@ export default function Resources() {
                   {items.length} item{items.length !== 1 ? "s" : ""}
                 </span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {items.map(r => <ResourceCard key={r._id} resource={r} />)}
-              </div>
+              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {items.map(r => (
+                  <StaggerItem key={r._id}>
+                    <ResourceCard resource={r} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
             </section>
           ))
         )}

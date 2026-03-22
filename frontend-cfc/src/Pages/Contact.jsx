@@ -5,6 +5,7 @@ import SEO from "../Components/Common/SEO";
 import { IoLocationOutline } from "react-icons/io5";
 import { IoMailUnreadOutline } from "react-icons/io5";
 import { IoCallOutline } from "react-icons/io5";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 import API from "../Services/api";
 
@@ -77,7 +78,7 @@ function ContactUs() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left Side: Contact Information */}
           <section className="space-y-12">
-            <div>
+            <SlideUp>
               <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-6">
                 Let's start a <br />
                 <span className="text-blue-600">Conversation.</span>
@@ -86,51 +87,58 @@ function ContactUs() {
                 Have questions about our workshops, events, or how you can get
                 involved? We're here to help.
               </p>
-            </div>
+            </SlideUp>
 
-            <div className="space-y-8">
-              <div className="flex gap-6 items-start">
-                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
-                  <IoLocationOutline className="text-2xl font-black" />
+            <StaggerContainer className="space-y-8">
+              <StaggerItem>
+                <div className="flex gap-6 items-start">
+                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
+                    <IoLocationOutline className="text-2xl font-black" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
+                      Our Location
+                    </h4>
+                    <p className="text-slate-600 font-medium">Kathmandu, Nepal</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
-                    Our Location
-                  </h4>
-                  <p className="text-slate-600 font-medium">Kathmandu, Nepal</p>
-                </div>
-              </div>
+              </StaggerItem>
 
-              <div className="flex gap-6 items-start">
-                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
-                  <IoMailUnreadOutline className="text-2xl font-black" />
+              <StaggerItem>
+                <div className="flex gap-6 items-start">
+                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
+                    <IoMailUnreadOutline className="text-2xl font-black" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
+                      Email Us
+                    </h4>
+                    <p className="text-slate-600 font-medium">
+                      codeforchange2019@gmail.com
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
-                    Email Us
-                  </h4>
-                  <p className="text-slate-600 font-medium">
-                    codeforchange2019@gmail.com
-                  </p>
-                </div>
-              </div>
+              </StaggerItem>
 
-              <div className="flex gap-6 items-start">
-                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
-                  <IoCallOutline className="text-2xl font-black" />
+              <StaggerItem>
+                <div className="flex gap-6 items-start">
+                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
+                    <IoCallOutline className="text-2xl font-black" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
+                      Call Us
+                    </h4>
+                    <p className="text-slate-600 font-medium">+977-1234567890</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
-                    Call Us
-                  </h4>
-                  <p className="text-slate-600 font-medium">+977-1234567890</p>
-                </div>
-              </div>
-            </div>
+              </StaggerItem>
+            </StaggerContainer>
           </section>
 
           {/* Right Side: Controlled Form */}
-          <section className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100">
+          <SlideUp delay={0.2}>
+            <section className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100">
             <form onSubmit={handleSubmit} className="space-y-6">
               {status.message && (
                 <div
@@ -242,6 +250,7 @@ function ContactUs() {
               </button>
             </form>
           </section>
+          </SlideUp>
         </div>
       </main>
     </div>

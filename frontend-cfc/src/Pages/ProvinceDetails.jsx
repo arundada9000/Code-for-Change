@@ -14,9 +14,10 @@ import { provinces } from "./Provinces";
 import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
 import EventCard from "../Components/UI/EventCard";
 import { Pulse } from "../Components/Loading/Skeleton";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 const TeamMemberCard = ({ member, themeColor }) => (
-  <div
+  <StaggerItem
     className="group relative p-4 backdrop-blur rounded-3xl"
     style={{ backgroundColor: `${themeColor}30` }}
   >
@@ -60,7 +61,7 @@ const TeamMemberCard = ({ member, themeColor }) => (
         {member.role}
       </p>
     </div>
-  </div>
+  </StaggerItem>
 );
 
 const ProvinceDetails = () => {
@@ -221,20 +222,20 @@ const ProvinceDetails = () => {
           />
         </div>
 
-        <div className="relative z-10 text-center px-4 md:px-6 max-w-4xl">
+        <FadeIn className="relative z-10 text-center px-4 md:px-6 max-w-4xl">
           <Link
             to="/provinces"
             className="inline-flex items-center gap-2 mb-4 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md text-white text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] border border-white/20 hover:bg-white/20 transition-all active:scale-95"
           >
             <FiArrowLeft /> Back
           </Link>
-          <h1 className="text-5xl md:text-8xl lg:text-9xl font-black text-white mb-2 uppercase tracking-tightest leading-[0.8] animate-fade-in-up">
+          <h1 className="text-5xl md:text-8xl lg:text-9xl font-black text-white mb-2 uppercase tracking-tightest leading-[0.8]">
             {displayName}
             <span className="block text-2xl md:text-4xl lg:text-5xl font-light opacity-80 tracking-tight mt-4 italic font-serif lowercase">
               Chapter
             </span>
           </h1>
-        </div>
+        </FadeIn>
 
         {/* Floating Watermark */}
         <div className="absolute -bottom-10 -right-10 text-[20rem] font-black text-white/[0.03] select-none pointer-events-none leading-none">
@@ -251,7 +252,7 @@ const ProvinceDetails = () => {
 
       {/* 2. Floating Stats Glass-morphism */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 -mt-16 md:-mt-24 relative z-30">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <SlideUp delay={0.1} className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <StatCard
             icon={<FiUsers />}
             label="Province Reach"
@@ -276,12 +277,12 @@ const ProvinceDetails = () => {
             value={team.length.toString()}
             accent={themeColor}
           />
-        </div>
+        </SlideUp>
       </section>
 
       {/* 3. Narrative & Visual Split */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-12 grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
-        <div className="order-2 lg:order-1">
+        <SlideUp className="order-2 lg:order-1">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-500 text-[9px] md:text-[10px] font-bold uppercase tracking-widest mb-4">
             <FiMapPin style={{ color: themeColor }} /> Regional Presence
           </div>
@@ -311,9 +312,9 @@ const ProvinceDetails = () => {
               </p>
             </div>
           </div>
-        </div>
+        </SlideUp>
 
-        <div className="order-1 lg:order-2 relative">
+        <SlideUp delay={0.2} className="order-1 lg:order-2 relative">
           <div className="relative z-10 grid grid-cols-2 gap-4">
             <img
               src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=500"
@@ -327,7 +328,7 @@ const ProvinceDetails = () => {
             />
           </div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-slate-100 -rotate-6 rounded-[3rem] -z-10" />
-        </div>
+        </SlideUp>
       </section>
 
       {/* 4. Strategic Roadmap - Clean & Managed */}
@@ -405,7 +406,7 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : team.filter(m => m.role === 'eb').length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'eb').map((member, i) => (
               <TeamMemberCard
                 key={member._id || i}
@@ -413,7 +414,7 @@ const ProvinceDetails = () => {
                 themeColor={themeColor}
               />
             ))}
-          </div>
+          </StaggerContainer>
         ) : (
           <div className="text-center text-gray-400 italic">
             No executive board members found for this region.
@@ -441,7 +442,7 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : team.filter(m => m.role === 'cr').length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'cr').map((member, i) => (
               <TeamMemberCard
                 key={member._id || i}
@@ -449,7 +450,7 @@ const ProvinceDetails = () => {
                 themeColor={themeColor}
               />
             ))}
-          </div>
+          </StaggerContainer>
         ) : (
           <div className="text-center text-gray-400 italic">
             No college representatives found for this region.
@@ -478,7 +479,7 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : team.filter(m => m.role === 'gm').length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'gm').map((member, i) => (
               <TeamMemberCard
                 key={member._id || i}
@@ -486,7 +487,7 @@ const ProvinceDetails = () => {
                 themeColor={themeColor}
               />
             ))}
-          </div>
+          </StaggerContainer>
         ) : (
           <div className="text-center text-gray-400 italic">
             No general members found for this region.
@@ -506,7 +507,7 @@ const ProvinceDetails = () => {
                 National Alumni Members
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
               {ALUMNI.map((member, i) => (
                 <TeamMemberCard
                   key={i}
@@ -514,7 +515,7 @@ const ProvinceDetails = () => {
                   themeColor={themeColor}
                 />
               ))}
-            </div>
+            </StaggerContainer>
           </div>
 
           {/* Central Advisors */}
@@ -580,7 +581,7 @@ const ProvinceDetails = () => {
                 Core Members
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
               {CORE_TEAM.map((member, i) => (
                 <TeamMemberCard
                   key={i}
@@ -588,7 +589,7 @@ const ProvinceDetails = () => {
                   themeColor={themeColor}
                 />
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         </div>
       </section>
@@ -626,11 +627,13 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : events.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event, i) => (
-              <EventCard key={event._id || i} event={event} />
+              <StaggerItem key={event._id || i}>
+                <EventCard event={event} />
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         ) : (
           <div className="text-center text-gray-400 italic">
             No events found in this region.

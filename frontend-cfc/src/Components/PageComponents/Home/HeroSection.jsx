@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HeroImage from "../../../assets/HeroImage.jpg";
 import { Link } from "react-router-dom";
+import { FadeIn, SlideUp } from "../../Common/Animations";
 
 function HeroSection() {
   const data = [
@@ -42,31 +43,37 @@ function HeroSection() {
 
       <div className="max-w-7xl mx-auto z-10 w-full">
         <div className="max-w-5xl">
-          <h1 className="text-white text-6xl font-bold pb-10">
-            Code the change you want to see
-          </h1>
+          <SlideUp delay={0.1}>
+            <h1 className="text-white text-6xl font-bold pb-10">
+              Code the change you want to see
+            </h1>
+          </SlideUp>
 
-          <p className="pb-8 text-white">
-            We are Open platform for the Learners to learn and trainers to
-            transfer their learning to learners. We are the group of Young
-            people uniting all the IT students and professionals under the same
-            roof for the technological revolutions.
-          </p>
+          <FadeIn delay={0.3}>
+            <p className="pb-8 text-white">
+              We are Open platform for the Learners to learn and trainers to
+              transfer their learning to learners. We are the group of Young
+              people uniting all the IT students and professionals under the same
+              roof for the technological revolutions.
+            </p>
+          </FadeIn>
 
-          <div className="flex gap-7">
-              <Link
-                        to="/donate-us"
-                        className="px-8 py-3 border-4 border-secondary rounded-full text-white bg-secondary hover:bg-secondary/70 hover:text-white transition"
-                      >
-                        Donate us
-                      </Link>
-              <Link
-                        to="/join-us"
-                        className="px-8 py-3 border-4 border-secondary rounded-full text-white bg-secondary hover:bg-secondary/70 hover:text-white transition"
-                      >
-                        Join us
-                      </Link>
-          </div>
+          <FadeIn delay={0.5}>
+            <div className="flex gap-7">
+                <Link
+                          to="/donate-us"
+                          className="px-8 py-3 border-4 border-secondary rounded-full text-white bg-secondary hover:bg-secondary/70 hover:text-white transition"
+                        >
+                          Donate us
+                        </Link>
+                <Link
+                          to="/join-us"
+                          className="px-8 py-3 border-4 border-secondary rounded-full text-white bg-secondary hover:bg-secondary/70 hover:text-white transition"
+                        >
+                          Join us
+                        </Link>
+            </div>
+          </FadeIn>
         </div>
 
         {/* Animated Numbers */}

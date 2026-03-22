@@ -22,6 +22,7 @@ import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import Banner from "../Components/UI/Banner";
 import CertificatePreview from "../Components/UI/CertificatePreview";
 import { CertificateResultSkeleton } from "../Components/Loading/Skeleton";
+import { SlideUp } from "../Components/Common/Animations";
 
 function CertificateVerification() {
   const { token } = useParams();
@@ -179,7 +180,7 @@ function CertificateVerification() {
       <div className={`max-w-7xl mx-auto px-6 ${token ? 'py-12' : 'py-20'}`}>
         {/* Verification Card - Simplistic & Clean */}
         {(!token || !result || result.status !== 'success') && (
-          <div className="max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-top-4 duration-700">
+          <SlideUp delay={0.1} className="max-w-4xl mx-auto mb-20">
             <div className="text-center mb-10">
               <h2 className="text-4xl font-black text-[#01152E] tracking-tight mb-3">Certificate Verification</h2>
               <p className="text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
@@ -218,7 +219,7 @@ function CertificateVerification() {
                     </button>
                 </div>
             </div>
-          </div>
+          </SlideUp>
         )}
 
         {/* Scanner Modal */}
@@ -275,7 +276,7 @@ function CertificateVerification() {
 
         {/* Results Section */}
         {result && (
-          <div className="animate-in fade-in slide-in-from-bottom-5 duration-700">
+          <SlideUp className="duration-700">
             {result.status === 'success' ? (
               <div className="space-y-10">
                 {/* Sleek Integrated Status Bar */}
@@ -360,7 +361,7 @@ function CertificateVerification() {
                  </button>
               </div>
             )}
-          </div>
+          </SlideUp>
         )}
 
         {/* Support Strip - Simplified */}

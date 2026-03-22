@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"; // Import Link for navigation
 import Banner from "../Components/UI/Banner";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 // import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
 import {
   FaFacebookF,
@@ -190,6 +191,7 @@ const Provinces = () => {
           <div className="grid lg:grid-cols-12 gap-16 items-center">
             {/* Text Content Area (Column Span 7) */}
             <div className="lg:col-span-7 relative z-10">
+              <SlideUp>
               {/* Premium Badge Label */}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-8 border border-slate-200">
                 <span className="relative flex h-2 w-2">
@@ -237,10 +239,11 @@ const Provinces = () => {
                   </p>
                 </div> */}
               </div>
+              </SlideUp>
             </div>
 
             {/* Visual Image Block (Column Span 5) */}
-            <div className="lg:col-span-5 relative group">
+            <FadeIn delay={0.2} className="lg:col-span-5 relative group">
               {/* Decorative Floating Card - Adds "Depth" */}
               <div className="absolute -left-8 top-1/2 -translate-y-1/2 z-20 hidden xl:block animate-bounce-slow">
                 <div className="bg-white/80 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-white/50">
@@ -273,7 +276,7 @@ const Provinces = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </div>
-            </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -333,7 +336,7 @@ const Provinces = () => {
 
             <div className="grid lg:grid-cols-[380px_1fr] gap-12 items-start">
               {/* 2. Province Feature Card (Sticky Side) */}
-              <div className="lg:sticky lg:top-10">
+              <FadeIn delay={0.1} className="lg:sticky lg:top-10">
                 <div
                   className="relative overflow-hidden rounded-[2.5rem] p-1 shadow-2xl transition-all duration-700"
                   style={{ backgroundColor: activeProvince?.colorCode }}
@@ -397,7 +400,7 @@ const Provinces = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </FadeIn>
 
               {/* 3. Refined Impact Team Grid */}
               <div>
@@ -420,13 +423,13 @@ const Provinces = () => {
                 </div>
 
                 {/* Current team member */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 pb-10 gap-5 md:gap-7">
+                <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 pb-10 gap-5 md:gap-7">
                   {executiveMember.length > 0 ? (
                     executiveMember.map((member, i) => (
-                      <div
+                      <StaggerItem
                         key={member._id || i}
-                        className="relative group rounded-3xl cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl"
                       >
+                      <div className="relative group rounded-3xl cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full">
                         {/* {console.log(currentTeam)} */}
                         {/* Neumorphic background */}
                         <div
@@ -474,6 +477,7 @@ const Provinces = () => {
                           </div>
                         </div>
                       </div>
+                      </StaggerItem>
                     ))
                   ) : (
                     <div className="col-span-full py-20 text-center">
@@ -482,7 +486,7 @@ const Provinces = () => {
                       </p>
                     </div>
                   )}
-                </div>
+                </StaggerContainer>
 
                 {/* Team member details modal */}
                 <TeamMemberModal

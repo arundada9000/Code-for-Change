@@ -5,6 +5,7 @@ import SEO from "../Components/Common/SEO";
 import API from "../Services/api";
 import { toast } from "react-hot-toast";
 import { GalleryMasonrySkeleton } from "../Components/Loading/Skeleton";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 function Gallery() {
   const [galleryImages, setGalleryImages] = useState([]);
@@ -91,24 +92,26 @@ function Gallery() {
 
       <main className="max-w-7xl mx-auto px-4 py-12">
         {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setFilter(cat);
-                setCurrentIndex(null);
-              }}
-              className={`px-6 py-2 rounded-full font-bold transition-all ${
-                filter === cat
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+        <SlideUp>
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => {
+                  setFilter(cat);
+                  setCurrentIndex(null);
+                }}
+                className={`px-6 py-2 rounded-full font-bold transition-all ${
+                  filter === cat
+                    ? "bg-blue-600 text-white shadow-lg"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </SlideUp>
 
         {loading ? (
           <GalleryMasonrySkeleton count={9} />
@@ -117,41 +120,42 @@ function Gallery() {
             <p className="text-gray-500 font-bold text-xl">No memories found.</p>
           </div>
         ) : (
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 lg:px-10">
+          <StaggerContainer className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 lg:px-10">
             {filteredImages.map((image, index) => (
-              <div
-                key={image._id || image.id}
-                onClick={() => setCurrentIndex(index)}
-                className="group relative break-inside-avoid rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer bg-slate-50 border border-slate-100"
-              >
-                <img
-                  src={image.imageUrl}
-                  alt={image.title}
-                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                />
-                
-                {/* Visual refinement matching image: glassmorphism hover effect */}
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-                  <div className="bg-white/20 backdrop-blur-xl p-5 rounded-3xl border border-white/30 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-700 ease-out shadow-2xl">
-                    <span className="text-white/80 text-[10px] font-black uppercase tracking-widest block mb-1.5 drop-shadow-sm">
-                      {image.category}
-                    </span>
-                    <h3 className="text-white text-base font-bold truncate drop-shadow-md">{image.title}</h3>
-                  </div>
-                </div>
-
-                {/* Always visible title if requested, but let's stick to clean hover for now as per "arrangement" */}
-                {image.isFeatured && (
-                  <div className="absolute top-4 right-4 z-10">
-                    <div className="bg-emerald-500 text-white text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
-                      Featured
+              <StaggerItem key={image._id || image.id} className="break-inside-avoid">
+                <div
+                  onClick={() => setCurrentIndex(index)}
+                  className="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer bg-slate-50 border border-slate-100"
+                >
+                  <img
+                    src={image.imageUrl}
+                    alt={image.title}
+                    className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  
+                  {/* Visual refinement matching image: glassmorphism hover effect */}
+                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
+                    <div className="bg-white/20 backdrop-blur-xl p-5 rounded-3xl border border-white/30 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-700 ease-out shadow-2xl">
+                      <span className="text-white/80 text-[10px] font-black uppercase tracking-widest block mb-1.5 drop-shadow-sm">
+                        {image.category}
+                      </span>
+                      <h3 className="text-white text-base font-bold truncate drop-shadow-md">{image.title}</h3>
                     </div>
                   </div>
-                )}
-              </div>
+
+                  {/* Always visible title if requested, but let's stick to clean hover for now as per "arrangement" */}
+                  {image.isFeatured && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <div className="bg-emerald-500 text-white text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+                        Featured
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         )}
       </main>
 

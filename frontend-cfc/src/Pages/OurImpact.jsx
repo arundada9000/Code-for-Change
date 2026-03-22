@@ -5,6 +5,7 @@ import Breadcrumbs from '../Components/UI/Breadcrumbs';
 import SEO from '../Components/Common/SEO';
 import useFetch from '../Hooks/useFetch';
 import { ImpactCardSkeleton } from '../Components/Loading/Skeleton';
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from '../Components/Common/Animations';
 
 export function OurImpact() {
   const { data: apiImpacts, loading } = useFetch("/impacts");
@@ -35,20 +36,20 @@ export function OurImpact() {
       
       {/* Featured Impact Section */}
       <section className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
-        <div className="mb-12">
+        <SlideUp className="mb-12">
           <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tightest uppercase mb-2">Featured <span className="text-secondary">Initiatives</span></h2>
           <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Direct social impact across Nepal</p>
-        </div>
+        </SlideUp>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
           {currentImpacts.map((item, index) => {
             const id = item._id || item.id;
             return (
-              <Link 
-                to={`/our-impact/${id}`} 
-                key={index} 
-                className={`group bg-white rounded-4xl shadow-sm overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 ${item.isLarge ? 'md:col-span-2 lg:col-span-2' : ''}`}
-              >
+              <StaggerItem key={index} className={item.isLarge ? 'md:col-span-2 lg:col-span-2' : ''}>
+                <Link 
+                  to={`/our-impact/${id}`} 
+                  className={`block h-full group bg-white rounded-4xl shadow-sm overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500`}
+                >
                 <div className="relative overflow-hidden aspect-16/10">
                   <img 
                     src={item.image} 
@@ -83,29 +84,30 @@ export function OurImpact() {
                   </div>
                 </div>
               </Link>
+            </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </section>
 
       {/* History Section */}
       <section className="bg-white py-16 lg:py-24 border-t border-slate-50">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <SlideUp className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tightest uppercase mb-2">Our <span className="text-blue-600">Activities</span></h2>
             <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Archived impact reports & webinars</p>
-          </div>
+          </SlideUp>
 
-          <div className="space-y-4">
+          <StaggerContainer className="space-y-4">
             {historyData.map((item, idx) => {
               const id = item._id || item.id;
               return (
-                <Link 
-                  to={`/our-impact/${id}`} 
-                  key={idx} 
-                  className="flex flex-col md:flex-row md:items-center justify-between p-8 rounded-4xl border border-slate-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all group gap-6"
-                >
-                  <div className="flex-1">
+                <StaggerItem key={idx}>
+                  <Link 
+                    to={`/our-impact/${id}`} 
+                    className="flex flex-col md:flex-row md:items-center justify-between p-8 rounded-4xl border border-slate-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all group gap-6"
+                  >
+                    <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="w-2 h-2 rounded-full bg-blue-600"></span>
                       <h4 className="text-xl lg:text-2xl font-black text-primary group-hover:text-blue-600 transition-colors tracking-tight">
@@ -123,10 +125,11 @@ export function OurImpact() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7-7 7" />
                     </svg>
                   </div>
-                </Link>
+                  </Link>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
     </div>

@@ -6,6 +6,7 @@ import useFetch from "../Hooks/useFetch";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
+import { FadeIn, SlideUp } from "../Components/Common/Animations";
 
 function BlogDetail() {
   const { slug: urlSlug } = useParams();
@@ -78,7 +79,7 @@ function BlogDetail() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2"></div>
 
-        <div className="max-w-5xl mx-auto px-2 relative">
+        <FadeIn className="max-w-5xl mx-auto px-2 relative">
           <Link
             to="/blog"
             className="inline-flex items-center text-xs font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 mb-8 px-4 py-2 bg-blue-50 rounded-full transition-all hover:gap-3 group"
@@ -134,7 +135,7 @@ function BlogDetail() {
               </p>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </header>
       {/* <div className="max-w-5xl mx-auto px-4 mt-8">
         <Breadcrumbs crumbs={[
@@ -146,7 +147,7 @@ function BlogDetail() {
       {/* 3. Main Content Layout */}
       <main className="max-w-7xl mx-auto px-5 py-20 grid grid-cols-1 lg:grid-cols-12 gap-20">
         {/* Floating/Sticky Share Bar */}
-        <aside className="lg:col-span-1">
+        <SlideUp delay={0.1} className="lg:col-span-1">
           <div
             className="
                hidden lg:flex gap-4 items-center lg:sticky lg:top-32 lg:flex-col
@@ -169,10 +170,10 @@ function BlogDetail() {
               </button>
             ))}
           </div>
-        </aside>
+        </SlideUp>
 
         {/* Article Body */}
-        <article className="lg:col-span-8">
+        <SlideUp delay={0.2} className="lg:col-span-8">
           {/* 1. Immersive Media Section */}
           <div className="relative mb-20">
             <div className="absolute -inset-4 bg-blue-100 rounded-[3rem] blur-2xl opacity-30 -z-10"></div>
@@ -265,10 +266,10 @@ function BlogDetail() {
               </div>
             </div>
           </div>
-        </article>
+        </SlideUp>
 
         {/* Right Sidebar (Newsletter or Related) */}
-        <aside className="lg:col-span-3">
+        <SlideUp delay={0.3} className="lg:col-span-3">
           <div className="sticky top-32 p-6 bg-gray-50 rounded-lg border border-gray-100">
             <h4 className="font-bold text-gray-900 mb-2">Subscribe to News</h4>
             <p className="text-sm text-gray-500 mb-4">
@@ -283,10 +284,10 @@ function BlogDetail() {
               Join Now
             </button>
           </div>
-        </aside>
+        </SlideUp>
 
         {/* Share in medium device */}
-        <aside className="p-6 bg-gray-50 rounded-lg border border-gray-100 lg:hidden">
+        <SlideUp delay={0.1} className="p-6 bg-gray-50 rounded-lg border border-gray-100 lg:hidden">
           <p className="text-base font-black text-gray-400 uppercase tracking-[0.2em] mb-4">
             Share
           </p>
@@ -327,7 +328,7 @@ function BlogDetail() {
               </button>
             ))}
           </div>
-        </aside>
+        </SlideUp>
       </main>
 
       {/* 4. Next Post Navigation */}

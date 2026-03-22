@@ -14,6 +14,7 @@ import {
 import { useLocation } from "react-router-dom";
 import API from "../Services/api";
 import { toast } from "react-hot-toast";
+import { SlideUp } from "../Components/Common/Animations";
 
 const TRACKS = [
   "Frontend",
@@ -165,7 +166,7 @@ function InternshipApplication() {
       <div className="max-w-6xl mx-auto px-6 pt-16">
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Left Sidebar: Info */}
-          <div className="lg:col-span-1 space-y-6">
+          <SlideUp className="lg:col-span-1 space-y-6">
             <div className="bg-linear-to-br from-primary to-indigo-700 text-white p-8 rounded-lg shadow-xl">
               <h3 className="text-2xl font-bold mb-6">Student-Led Growth</h3>
               <div className="space-y-6">
@@ -197,10 +198,10 @@ function InternshipApplication() {
                 projects. This helps us match you faster!
               </p>
             </div>
-          </div>
+          </SlideUp>
 
           {/* Right Column: The Controlled Form */}
-          <div className="lg:col-span-2">
+          <SlideUp delay={0.2} className="lg:col-span-2">
             <form
               onSubmit={handleSubmit}
               className="bg-white rounded-lg shadow-sm border border-slate-200 p-8 md:p-12"
@@ -389,7 +390,7 @@ function InternshipApplication() {
                 </div>
               </div>
             </form>
-          </div>
+          </SlideUp>
         </div>
       </div>
     </div>

@@ -12,6 +12,7 @@ import { FaChalkboardTeacher } from "react-icons/fa";
 import { FaCode } from "react-icons/fa";
 import { FaUserGraduate } from "react-icons/fa";
 import { FaRegHandshake } from "react-icons/fa";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 function Home() {
   console.clear();
@@ -63,9 +64,11 @@ function Home() {
             </div>
             {/* Main Heading */}
             <div className=" py-4">
-              <h2 className="md:text-4xl text-3xl font-bold text-primary">
-                Empowering learners and professionals through innovation
-              </h2>
+              <SlideUp>
+                <h2 className="md:text-4xl text-3xl font-bold text-primary">
+                  Empowering learners and professionals through innovation
+                </h2>
+              </SlideUp>
             </div>
             <p className="max-w-3xl text-gray-600">
               We bridge the gap between education and industry by providing
@@ -75,20 +78,21 @@ function Home() {
             </p>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 py-10 px-4">
+        <StaggerContainer className="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 py-10 px-4">
           {Works.map((val, i) => (
-            <div
-              key={i}
-              className="flex flex-col group hover:shadow-md items-center text-center bg-white rounded-xl p-8 shadow-secondary/20 transition-all duration-200 ease-in cursor-pointer hover:-translate-y-2"
-            >
-              <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 text-secondary text-3xl rounded-full mb-5 group-hover:text-white group-hover:bg-secondary">
-                {val.icon}
+            <StaggerItem key={i}>
+              <div
+                className="flex flex-col group hover:shadow-md items-center text-center bg-white rounded-xl p-8 shadow-secondary/20 transition-all duration-200 ease-in cursor-pointer h-full hover:-translate-y-2"
+              >
+                <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 text-secondary text-3xl rounded-full mb-5 group-hover:text-white group-hover:bg-secondary transition-all">
+                  {val.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{val.title}</h3>
+                <p className="text-gray-600 text-sm ">{val.shortDisc}</p>
               </div>
-              <h3 className="text-xl font-bold mb-3">{val.title}</h3>
-              <p className="text-gray-600 text-sm ">{val.shortDisc}</p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
       <CurrentEvent />
       {/* <div className="bg-secondary/10">
