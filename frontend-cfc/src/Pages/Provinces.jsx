@@ -443,7 +443,7 @@ const Provinces = () => {
                       executiveMember.map((member, i) => (
                         <StaggerItem
                           key={member._id || i}
-                          className="relative group rounded-3xl cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full"
+                          className="relative group cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full"
                         >
                           {/* {console.log(currentTeam)} */}
                           {/* Neumorphic background */}
@@ -451,15 +451,14 @@ const Provinces = () => {
                             onClick={() => {
                               setSelectedMember(member);
                             }}
-                            className="relative rounded-3xl md:p-6 p-4 shadow-xl transition-all duration-500 overflow-hidden border-b-4 hover:shadow-2xl"
+                            className="relative shadow-xl transition-all duration-500 overflow-hidden hover:shadow-2xl"
                             style={{
-                              backgroundColor: `${activeProvince?.colorCode}10`,
                               borderColor: activeProvince?.colorCode,
                               boxShadow: `0 20px 40px -20px ${activeProvince?.colorCode}40`,
                             }}
                           >
                             {/* Image container */}
-                            <div className="aspect-4/5 rounded-2xl overflow-hidden relative mb-5">
+                            <div className="aspect-4/5 overflow-hidden relative">
                               <img
                                 src={member.image}
                                 alt={member.name}
@@ -467,28 +466,23 @@ const Provinces = () => {
                               />
 
                               {/* Soft colored overlay on hover */}
-                              <div
-                                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl flex flex-col justify-end p-4"
-                                style={{
-                                  background: `linear-gradient(to top, ${activeProvince?.colorCode}55, transparent)`,
-                                }}
-                              ></div>
-                            </div>
-
-                            {/* Text */}
-                            <div className="text-center">
-                              <p
-                                style={{ color: activeProvince?.colorCode }}
-                                className="font-black text-base group-hover:text-primary transition-colors tracking-tight"
-                              >
-                                {member.name}
-                              </p>
-                              <p
-                                className="text-[11px] uppercase font-black mt-1.5 tracking-[0.15em] opacity-80"
-                                style={{ color: activeProvince?.colorCode }}
-                              >
-                                {member.position.replace(/-/g, " ")}
-                              </p>
+                              <div className="absolute inset-0 transition-opacity duration-500 flex flex-col justify-end">
+                                {/* Text */}
+                                <div
+                                  style={{
+                                    backgroundColor: activeProvince?.colorCode,
+                                  }}
+                                  className="py-4 px-3 md:px-4"
+                                >
+                                  <p className="transition-colors flex text-white gap-2 items-baseline tracking-tight">
+                                    <span className="capitalize text-[10px] sm:text-sm">
+                                      {member.position.replace(/-/g, " ")}
+                                    </span>
+                                    <span className=" md:text-xl lg:text-2xl font-bold">{member.name.split(" ")[0]}</span>
+                                  </p>
+                                  
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </StaggerItem>
