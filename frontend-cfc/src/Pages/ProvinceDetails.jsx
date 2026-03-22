@@ -120,6 +120,7 @@ const ProvinceDetails = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const [eventsRes, teamRes, usersRes] = await Promise.allSettled([
           API.get("/events"),
@@ -195,7 +196,7 @@ const ProvinceDetails = () => {
   } : null;
 
   return (
-    <div key={provinceName} className="min-h-screen bg-[#FAFAFA] text-slate-900 font-sans selection:bg-blue-100">
+    <div className="min-h-screen bg-[#FAFAFA] text-slate-900 font-sans selection:bg-blue-100">
       <SEO
         title={`${displayName} Chapter`}
         description={`Empowering technology students in ${displayName} through youth initiative and digital projects by Code for Change Nepal.`}
