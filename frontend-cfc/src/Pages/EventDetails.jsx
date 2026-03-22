@@ -8,6 +8,7 @@ import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
+import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
 
 function EventDetails() {
   const { eventSlug } = useParams();
@@ -40,7 +41,7 @@ function EventDetails() {
     }
   }, [eventSlug]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading event...</div>;
+  if (loading) return <ArticleDetailSkeleton />;
   if (!event) return <div className="min-h-screen flex items-center justify-center">Event not found</div>;
 
   const isUpcoming = event.status === "Upcoming" || event.status === "Published" || event.status === "Live";
