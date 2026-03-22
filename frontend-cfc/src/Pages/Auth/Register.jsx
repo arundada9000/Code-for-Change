@@ -367,8 +367,8 @@ function Register() {
                     </div>
                   )}
 
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  <div className="space-y-2 group">
+                    <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
                       Region
                     </label>
                     <div className="relative group mt-1">
@@ -380,7 +380,7 @@ function Register() {
                         value={form.province}
                         onChange={handleChange}
                         required
-                        className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                        className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                       >
                         <option value="">Select Region</option>
                         {[
@@ -417,7 +417,7 @@ function Register() {
                       />
                       <label
                         htmlFor="profilePic"
-                        className="w-full flex items-center gap-4 pl-6 pr-6 py-4 bg-secondary/5 border border-transparent rounded-full cursor-pointer hover:bg-white hover:border-secondary/20 transition-all font-medium text-gray-400"
+                        className="w-full flex items-center gap-4 pl-6 pr-6 py-4 border border-secondary/20 rounded-full cursor-pointer hover:bg-white hover:border-secondary/20 transition-all font-medium text-gray-400"
                       >
                         <FaCamera className="text-gray-300 group-hover:text-secondary" />
                         <span className="text-xs truncate">
@@ -431,7 +431,7 @@ function Register() {
                 </div>
 
                 {/* Professional & Additional Info Section */}
-                <div className="space-y-6 md:col-span-2 pt-6 border-t border-secondary/5">
+                <div className="space-y-6 md:col-span-2 pt-6 border-t border-secondary/50">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                     <FaInfoCircle className="text-secondary" /> Additional
                     Details & Links (Optional)
@@ -532,7 +532,7 @@ function Register() {
               </div>
 
               {/* Password Section */}
-              <div className="pt-8 border-t border-secondary/5">
+              <div className="pt-8 border-t border-secondary/50">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <InputField
                     label="Password"
@@ -560,19 +560,19 @@ function Register() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-4 bg-secondary cursor-pointer  hover:bg-primary text-white rounded-full text-base font-medium capitalize shadow-lg shadow-secondary/20 transition-all ease-in duration-150 active:scale-95 flex items-center justify-center gap-3 ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+                className={`w-full py-4 bg-secondary group cursor-pointer hover:bg-secondary/95 hover:-translate-y-1 text-white rounded-full text-base font-medium capitalize hover:shadow-lg shadow-secondary/20 transition-all ease-in duration-200 active:scale-95 flex items-center justify-center gap-3 ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
               >
                 {loading ? "Processing Membership..." : "Complete Registration"}{" "}
-                <FaArrowRight />
+                <FaArrowRight className="group-hover:translate-x-3 transition-all ease-in duration-200" />
               </button>
             </form>
 
-            <div className="mt-8 text-center pt-8 border-t border-secondary/5">
+            <div className="mt-8 text-center pt-8 border-t border-secondary/50">
               <p className="text-base text-gray-400">
                 Already a member? <br />
                 <Link
                   to="/login"
-                  className="text-secondary font-bold hover:underline"
+                  className="text-secondary block py-4 mt-8 border border-secondary rounded-full hover:bg-secondary transition-all ease-in duration-200 hover:text-white hover:shadow-lg shadow-secondary/20 hover:-translate-y-1 font-semibold"
                 >
                   Log In
                 </Link>
