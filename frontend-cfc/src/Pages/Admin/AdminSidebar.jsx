@@ -47,7 +47,7 @@ function AdminSidebar() {
     <>
       {/* Desktop Sidebar - Hidden on Mobile */}
       <aside
-        className={`branch-scrollbar bg-primary max-h-screen overflow-y-auto sticky top-0 hidden md:flex flex-col gap-5 p-5 text-white transition-all duration-300 shadow-xl z-40 
+        className={`branch-scrollbar bg-primary min-h-screen max-h-screen overflow-y-auto sticky top-0 hidden md:flex flex-col gap-5 p-5 text-white transition-all duration-300 shadow-xl z-40 
         ${isOpen ? "w-64" : "w-20"}`}
       >
         {/* Header Section */}
@@ -63,9 +63,13 @@ function AdminSidebar() {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-2xl hover:bg-white/10 p-1 rounded-md transition-colors"
+            className="text-2xl hover:bg-white/10 p-1  rounded-md transition-colors  cursor-pointer"
           >
-            {isOpen ? <IoMdClose /> : <IoMdMenu />}
+            {isOpen ? (
+              <IoMdClose className="hover:rotate-120 transition-all duration-300 ease-in cursor-pointer" />
+            ) : (
+              <IoMdMenu />
+            )}
           </button>
         </div>
 
