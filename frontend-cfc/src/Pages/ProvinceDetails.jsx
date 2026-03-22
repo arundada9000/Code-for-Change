@@ -16,8 +16,9 @@ import EventCard from "../Components/UI/EventCard";
 import { Pulse } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
-const TeamMemberCard = ({ member, themeColor }) => (
-  <StaggerItem
+const TeamMemberCard = ({ member, themeColor, index = 0 }) => (
+  <SlideUp
+    delay={0.1 * index}
     className="group relative p-4 backdrop-blur rounded-3xl"
     style={{ backgroundColor: `${themeColor}30` }}
   >
@@ -61,7 +62,7 @@ const TeamMemberCard = ({ member, themeColor }) => (
         {member.role}
       </p>
     </div>
-  </StaggerItem>
+  </SlideUp>
 );
 
 const ProvinceDetails = () => {
@@ -407,15 +408,16 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : team.filter(m => m.role === 'eb').length > 0 ? (
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'eb').map((member, i) => (
               <TeamMemberCard
                 key={member._id || i}
                 member={member}
                 themeColor={themeColor}
+                index={i}
               />
             ))}
-          </StaggerContainer>
+          </div>
         ) : (
           <div className="text-center text-gray-400 italic">
             No executive board members found for this region.
@@ -443,15 +445,16 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : team.filter(m => m.role === 'cr').length > 0 ? (
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'cr').map((member, i) => (
               <TeamMemberCard
                 key={member._id || i}
                 member={member}
                 themeColor={themeColor}
+                index={i}
               />
             ))}
-          </StaggerContainer>
+          </div>
         ) : (
           <div className="text-center text-gray-400 italic">
             No college representatives found for this region.
@@ -480,15 +483,16 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : team.filter(m => m.role === 'gm').length > 0 ? (
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team.filter(m => m.role === 'gm').map((member, i) => (
               <TeamMemberCard
                 key={member._id || i}
                 member={member}
                 themeColor={themeColor}
+                index={i}
               />
             ))}
-          </StaggerContainer>
+          </div>
         ) : (
           <div className="text-center text-gray-400 italic">
             No general members found for this region.
@@ -508,15 +512,16 @@ const ProvinceDetails = () => {
                 National Alumni Members
               </p>
             </div>
-            <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
               {ALUMNI.map((member, i) => (
                 <TeamMemberCard
                   key={i}
                   member={member}
                   themeColor={themeColor}
+                  index={i}
                 />
               ))}
-            </StaggerContainer>
+            </div>
           </div>
 
           {/* Central Advisors */}
@@ -582,15 +587,16 @@ const ProvinceDetails = () => {
                 Core Members
               </p>
             </div>
-            <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
               {CORE_TEAM.map((member, i) => (
                 <TeamMemberCard
                   key={i}
                   member={member}
                   themeColor={themeColor}
+                  index={i}
                 />
               ))}
-            </StaggerContainer>
+            </div>
           </div>
         </div>
       </section>
@@ -628,13 +634,13 @@ const ProvinceDetails = () => {
             ))}
           </div>
         ) : events.length > 0 ? (
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event, i) => (
-              <StaggerItem key={event._id || i}>
+              <SlideUp key={event._id || i} delay={0.1 * i}>
                 <EventCard event={event} />
-              </StaggerItem>
+              </SlideUp>
             ))}
-          </StaggerContainer>
+          </div>
         ) : (
           <div className="text-center text-gray-400 italic">
             No events found in this region.
