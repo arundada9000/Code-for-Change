@@ -14,11 +14,14 @@ import { provinces } from "./Provinces";
 import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
 import EventCard from "../Components/UI/EventCard";
 import { Pulse } from "../Components/Loading/Skeleton";
-import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
+import { FadeIn, SlideUp } from "../Components/Common/Animations";
+import { motion } from "framer-motion";
 
 const TeamMemberCard = ({ member, themeColor, index = 0 }) => (
-  <SlideUp
-    delay={0.1 * index}
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: 0.1 * index, type: "spring", stiffness: 80, damping: 20 }}
     className="group relative p-4 backdrop-blur rounded-3xl"
     style={{ backgroundColor: `${themeColor}30` }}
   >
@@ -62,7 +65,7 @@ const TeamMemberCard = ({ member, themeColor, index = 0 }) => (
         {member.role}
       </p>
     </div>
-  </SlideUp>
+  </motion.div>
 );
 
 const ProvinceDetails = () => {
@@ -636,9 +639,14 @@ const ProvinceDetails = () => {
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event, i) => (
-              <SlideUp key={event._id || i} delay={0.1 * i}>
+              <motion.div 
+                key={event._id || i}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 * i, type: "spring", stiffness: 80, damping: 20 }}
+              >
                 <EventCard event={event} />
-              </SlideUp>
+              </motion.div>
             ))}
           </div>
         ) : (
