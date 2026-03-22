@@ -173,12 +173,20 @@ export const updateUser = async (
     if (typeof data.gender === "string") updatePayload.gender = data.gender;
     if (data.dateOfBirth)
       updatePayload.dateOfBirth = new Date(data.dateOfBirth);
+    // Social links
     if (typeof data.linkedin === "string")
       updatePayload.linkedin = data.linkedin;
     if (typeof data.github === "string") updatePayload.github = data.github;
     if (typeof data.facebook === "string")
       updatePayload.facebook = data.facebook;
     if (typeof data.website === "string") updatePayload.website = data.website;
+    // Additional fields present in schema but previously unmapped
+    if (typeof data.phone === "string") updatePayload.phone = data.phone;
+    if (typeof data.tenure === "string") updatePayload.tenure = data.tenure;
+    if (typeof data.twitter === "string") updatePayload.twitter = data.twitter;
+    if (typeof data.instagram === "string") updatePayload.instagram = data.instagram;
+    if (typeof data.tiktok === "string") updatePayload.tiktok = data.tiktok;
+    if (typeof data.youtube === "string") updatePayload.youtube = data.youtube;
 
     // Helper to parse potential JSON string
     const parseNested = (val: any) => {
@@ -218,6 +226,16 @@ export const updateUser = async (
           ? (userToUpdate.executiveDetails as any).toObject()
           : {}),
         ...exec,
+      };
+    }
+    // ebBody is the flat field sent by Member.jsx for EB position
+    if (data.ebBody) {
+      updatePayload.executiveDetails = {
+        ...(updatePayload.executiveDetails || {}),
+        ...(userToUpdate?.executiveDetails
+          ? (userToUpdate.executiveDetails as any).toObject()
+          : {}),
+        position: data.ebBody,
       };
     }
 

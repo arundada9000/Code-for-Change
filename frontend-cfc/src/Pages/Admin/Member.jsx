@@ -272,10 +272,10 @@ function Member() {
 
     try {
       if (isEditing) {
-        await API.patch(`/admin/users/${currentMemberId}`, data);
+        await API.put(`/admin/users/update-user/${currentMemberId}`, data);
         toast.success("Member updated successfully");
       } else {
-        await API.post("/admin/users", data);
+        await API.post("/admin/users/create-user", data);
         toast.success("Member added successfully");
       }
       fetchMembers();

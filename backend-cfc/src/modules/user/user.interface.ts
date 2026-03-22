@@ -167,6 +167,7 @@ export interface IUpdateUserInput {
   role?: RoleValue;
   permissions?: PermissionValue[];
   phone?: string;
+  tenure?: string;
   isActive?: boolean;
   province?: string;
   profileImage?: string;
@@ -177,7 +178,13 @@ export interface IUpdateUserInput {
   linkedin?: string;
   github?: string;
   facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  tiktok?: string;
+  youtube?: string;
   website?: string;
+  // Flat field sent by Member.jsx for EB position shortcut
+  ebBody?: string;
   membership?: {
     membershipId?: string;
     membershipStatus?: "active" | "expired" | "revoked";
@@ -191,6 +198,9 @@ export interface IUpdateUserInput {
   };
   executiveDetails?: {
     position?: string;
+    department?: string;
+    termStart?: Date;
+    termEnd?: Date;
   };
 }
 
