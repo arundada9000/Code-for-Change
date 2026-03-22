@@ -422,14 +422,20 @@ const Provinces = () => {
                   </div>
                 </div>
 
-                {/* Current team member */}
-                <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 pb-10 gap-5 md:gap-7">
-                  {executiveMember.length > 0 ? (
-                    executiveMember.map((member, i) => (
+                {Loading ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 pb-10 gap-5 md:gap-7">
+                    {[0, 1, 2, 3].map((i) => (
+                      <Pulse key={i} className="aspect-4/5 rounded-3xl" />
+                    ))}
+                  </div>
+                ) : (
+                  <StaggerContainer key={activeTab} className="grid grid-cols-2 sm:grid-cols-3 pb-10 gap-5 md:gap-7">
+                    {executiveMember.length > 0 ? (
+                      executiveMember.map((member, i) => (
                       <StaggerItem
                         key={member._id || i}
+                        className="relative group rounded-3xl cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full"
                       >
-                      <div className="relative group rounded-3xl cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full">
                         {/* {console.log(currentTeam)} */}
                         {/* Neumorphic background */}
                         <div
@@ -476,7 +482,6 @@ const Provinces = () => {
                             </p>
                           </div>
                         </div>
-                      </div>
                       </StaggerItem>
                     ))
                   ) : (
@@ -486,7 +491,8 @@ const Provinces = () => {
                       </p>
                     </div>
                   )}
-                </StaggerContainer>
+                  </StaggerContainer>
+                )}
 
                 {/* Team member details modal */}
                 <TeamMemberModal
