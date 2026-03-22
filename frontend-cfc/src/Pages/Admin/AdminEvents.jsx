@@ -186,7 +186,7 @@ function AdminEvents() {
       if (filterEndDate) params.append("endDate", filterEndDate);
 
       const { data } = await API.get(`/events?${params.toString()}`);
-      setEvents(data.data || []);
+      setEvents(data.data?.events || []);
     } catch (error) {
       console.error("Failed to fetch events", error);
     } finally {
@@ -369,6 +369,8 @@ function AdminEvents() {
             headers: { "Content-Type": "multipart/form-data" },
           },
         );
+        // Admin update might just return the single updated event under data.data
+        // We handle that differently from a list
         setEvents(
           events.map((e) =>
             (e._id || e.id) === (editingEvent._id || editingEvent.id)
@@ -380,6 +382,7 @@ function AdminEvents() {
         const { data: response } = await API.post("/events", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        // Create endpoint also returns single event in data.data
         setEvents([response.data, ...events]);
       }
       setIsModalOpen(false);

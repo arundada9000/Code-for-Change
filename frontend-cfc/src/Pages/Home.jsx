@@ -12,11 +12,14 @@ import { FaChalkboardTeacher } from "react-icons/fa";
 import { FaCode } from "react-icons/fa";
 import { FaUserGraduate } from "react-icons/fa";
 import { FaRegHandshake } from "react-icons/fa";
-import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
+import {
+  FadeIn,
+  SlideUp,
+  StaggerContainer,
+  StaggerItem,
+} from "../Components/Common/Animations";
 
 function Home() {
-  console.clear();
-  console.log("Changes: resources page updated.");
   const Works = [
     {
       icon: <FaChalkboardTeacher />,
@@ -81,9 +84,7 @@ function Home() {
         <StaggerContainer className="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 py-10 px-4">
           {Works.map((val, i) => (
             <StaggerItem key={i}>
-              <div
-                className="flex flex-col group hover:shadow-md items-center text-center bg-white rounded-xl p-8 shadow-secondary/20 transition-all duration-200 ease-in cursor-pointer h-full hover:-translate-y-2"
-              >
+              <div className="flex flex-col group hover:shadow-md items-center text-center bg-white rounded-xl p-8 shadow-secondary/20 transition-all duration-200 ease-in cursor-pointer h-full hover:-translate-y-2">
                 <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 text-secondary text-3xl rounded-full mb-5 group-hover:text-white group-hover:bg-secondary transition-all">
                   {val.icon}
                 </div>

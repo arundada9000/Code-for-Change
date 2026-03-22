@@ -7,24 +7,6 @@ import Event from '../Components/PageComponents/Events/Event';
 import API from '../Services/api';
 
 function Events() {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        const { data } = await API.get("/events");
-        setEvents(data.data);
-      } catch (error) {
-        console.error("Failed to fetch events", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, []);
 
   return (
     <div>

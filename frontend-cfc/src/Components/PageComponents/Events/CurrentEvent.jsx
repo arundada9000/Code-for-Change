@@ -15,38 +15,49 @@ import { TerminalCardSkeleton } from "../../Loading/Skeleton";
 import { SlideUp, StaggerContainer, StaggerItem } from "../../Common/Animations";
 
 export default function CurrentEvent() {
-  const { data: apiEvents, loading } = useFetch("/events");
   const [activeTab, setActiveTab] = useState("upcoming");
-  const location = useLocation()
+  const [page, setPage] = useState(1);
+  const [accumulatedEvents, setAccumulatedEvents] = useState([]);
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
-  const displayEvents = apiEvents || [];
+  const limit = isHome ? 2 : 10;
+  const statusParam = activeTab === "upcoming" ? "Upcoming,Published,Live" : "Completed";
+  const sortParam = activeTab === "upcoming" ? "&sort=date" : "";
+  const url = `/events?status=${statusParam}&limit=${limit}&page=${page}${sortParam}`;
 
-  // Categorize events
-  const upcomingEvents = displayEvents
-    .filter(
-      (e) =>
-        e.status === "Upcoming" ||
-        e.status === "Published" ||
-        e.status === "Live",
-    )
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const { data: apiResponse, loading } = useFetch(url);
 
-  const completedEvents = displayEvents
-    .filter((e) => e.status === "Completed")
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  // When new data arrives, accumulate (for Load More) OR reset (for tab switch, which resets page to 1)
+  React.useEffect(() => {
+    if (!apiResponse?.events) return;
+    if (page === 1) {
+      // Tab changed — reset accumulated list
+      setAccumulatedEvents(apiResponse.events);
+    } else {
+      // Load More — append new events
+      setAccumulatedEvents((prev) => [...prev, ...apiResponse.events]);
+    }
+  }, [apiResponse]);
 
-  const eventsToShow =
-    activeTab === "upcoming" ? upcomingEvents : completedEvents;
+  const pagination = apiResponse?.pagination || null;
+  const eventsToShow = accumulatedEvents;
 
-  if (loading && !apiEvents)
+  const handleTabChange = (tab) => {
+    setAccumulatedEvents([]);
+    setActiveTab(tab);
+    setPage(1);
+  };
+
+  if (loading && accumulatedEvents.length === 0)
     return (
       <section className="px-5 bg-gradient-to-br from-slate-50 to-white py-8">
         <div className="max-w-7xl mx-auto">
-          <TerminalCardSkeleton count={4} cols="md:grid-cols-2" />
+          <TerminalCardSkeleton count={isHome ? 2 : 4} cols="md:grid-cols-2" />
         </div>
       </section>
     );
-  if (displayEvents.length === 0) return null;
+  if (!loading && accumulatedEvents.length === 0 && !apiResponse) return null;
 
   return (
     <section className={` px-5 bg-gradient-to-br from-slate-50 to-white ${location.pathname=="/events"?"py-8":"pt-8"}`}>
@@ -74,7 +85,7 @@ export default function CurrentEvent() {
         {/* Tabs */}
         <div className="flex gap-4 mb-8 border-b border-slate-200">
           <button
-            onClick={() => setActiveTab("upcoming")}
+            onClick={() => handleTabChange("upcoming")}
             className={`px-6 py-3 font-bold text-sm uppercase tracking-widest transition-all relative ${
               activeTab === "upcoming"
                 ? "text-secondary border-b-2 border-secondary"
@@ -82,14 +93,14 @@ export default function CurrentEvent() {
             }`}
           >
             Upcoming Events
-            {upcomingEvents.length > 0 && (
+            {activeTab === "upcoming" && pagination?.total > 0 && (
               <span className="ml-2 px-2 py-0.5 bg-secondary/10 text-secondary rounded-full text-[10px]">
-                {upcomingEvents.length}
+                {pagination.total}
               </span>
             )}
           </button>
           <button
-            onClick={() => setActiveTab("completed")}
+            onClick={() => handleTabChange("completed")}
             className={`px-6 py-3 font-bold text-sm uppercase tracking-widest transition-all relative ${
               activeTab === "completed"
                 ? "text-secondary border-b-2 border-secondary"
@@ -97,9 +108,9 @@ export default function CurrentEvent() {
             }`}
           >
             Past Events
-            {completedEvents.length > 0 && (
+            {activeTab === "completed" && pagination?.total > 0 && (
               <span className="ml-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded-full text-[10px]">
-                {completedEvents.length}
+                {pagination.total}
               </span>
             )}
           </button>
@@ -211,14 +222,26 @@ export default function CurrentEvent() {
             ))
           )}
         </StaggerContainer>
-        {/* View All Button */}
+        
+        {/* View All / Load More Button */}
         <div className="flex justify-center pt-6">
-          <Link
-            to="/events"
-            className="px-8 py-4 bg-secondary rounded-full text-white hover:bg-secondary/90 hover:scale-105 transition-all font-bold shadow-lg shadow-secondary/20"
-          >
-            View All Events
-          </Link>
+          {isHome ? (
+            <Link
+              to="/events"
+              className="px-8 py-4 bg-secondary rounded-full text-white hover:bg-secondary/90 hover:scale-105 transition-all font-bold shadow-lg shadow-secondary/20"
+            >
+              View All Events
+            </Link>
+          ) : (
+            pagination && pagination.page < pagination.totalPages && (
+              <button
+                onClick={() => setPage(page + 1)}
+                className="px-8 py-4 bg-secondary rounded-full text-white hover:bg-secondary/90 hover:scale-105 transition-all font-bold shadow-lg shadow-secondary/20"
+              >
+                {loading ? "Loading..." : "Load More"}
+              </button>
+            )
+          )}
         </div>
       </div>
     </section>

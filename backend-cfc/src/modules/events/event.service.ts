@@ -11,7 +11,7 @@ export class EventService {
   /**
    * Get all events with optional filtering
    */
-  async getAllEvents(queryParams: any = {}): Promise<IEvent[]> {
+  async getAllEvents(queryParams: any = {}): Promise<{ events: IEvent[], pagination: any }> {
     const {
       search,
       type,
@@ -19,11 +19,22 @@ export class EventService {
       startDate,
       endDate,
       sort,
+      status,
+      page = 1,
+      limit = 10,
       ...otherFilters
     } = queryParams;
 
     // Build query
     const query: any = { ...otherFilters };
+
+    if (status) {
+      if (typeof status === 'string' && status.includes(',')) {
+        query.status = { $in: status.split(',') };
+      } else {
+        query.status = status;
+      }
+    }
 
     if (search) {
       query.$or = [
@@ -64,18 +75,36 @@ export class EventService {
 
     try {
       const sortQuery = sort ? { [sort]: 1 } : { date: -1 };
-      const events = await Event.find(query).sort(sortQuery as any);
+      
+      const parsedPage = parseInt(page as string, 10) || 1;
+      const parsedLimit = parseInt(limit as string, 10) || 10;
+      const skip = (parsedPage - 1) * parsedLimit;
+
+      const [events, total] = await Promise.all([
+        Event.find(query).sort(sortQuery as any).skip(skip).limit(parsedLimit),
+        Event.countDocuments(query)
+      ]);
+
+      const result = {
+        events,
+        pagination: {
+          total,
+          page: parsedPage,
+          limit: parsedLimit,
+          totalPages: Math.ceil(total / parsedLimit)
+        }
+      };
 
       // Cache the result only if it was a broad fetch
       if (isCacheable) {
         redis
-          .setex(CACHE_KEY, CACHE_TTL, JSON.stringify(events))
+          .setex(CACHE_KEY, CACHE_TTL, JSON.stringify(result))
           .catch((err: any) => {
             console.warn("Redis cache set failed:", err);
           });
       }
 
-      return events;
+      return result;
     } catch (error) {
       throw new AppError("Failed to fetch events", 500);
     }

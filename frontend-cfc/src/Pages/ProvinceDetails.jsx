@@ -213,7 +213,7 @@ const ProvinceDetails = () => {
         ]);
 
         const allEvents =
-          eventsRes.status === "fulfilled" ? eventsRes.value.data.data : [];
+          eventsRes.status === "fulfilled" ? (eventsRes.value.data.data?.events || eventsRes.value.data.data || []) : [];
         const allTeam =
           teamRes.status === "fulfilled" ? teamRes.value.data.data : [];
         const allPublicUsers =
