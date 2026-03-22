@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import API from "../Services/api";
 import { InternshipCardSkeleton } from "../Components/Loading/Skeleton";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 const parseArray = (data) => {
   const result = [];
@@ -168,7 +169,7 @@ const Internships = () => {
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Compact Brand Header */}
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-3">
+          <SlideUp className="space-y-3">
             <div className="flex items-center gap-3">
               <span className="h-0.5 w-10 bg-primary"></span>
               <h4 className="uppercase tracking-wider text-xs font-bold text-primary">
@@ -181,19 +182,20 @@ const Internships = () => {
             <p className="text-gray-500 font-medium max-w-xl text-base">
               Explore open roles and build the future of Nepal's tech ecosystem.
             </p>
-          </div>
+          </SlideUp>
           
-          <div className="bg-secondary/5 px-6 py-3 rounded-2xl border border-secondary/10 backdrop-blur-sm">
+          <FadeIn delay={0.2} className="bg-secondary/5 px-6 py-3 rounded-2xl border border-secondary/10 backdrop-blur-sm">
             <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Available Roles</p>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-primary">{filteredInternships.length}</span>
               <span className="text-xs font-medium text-gray-500">Matching</span>
             </div>
-          </div>
+          </FadeIn>
         </div>
 
         {/* Discovery Hub: Compact Premium Suite */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl shadow-secondary/5 border border-secondary/10 overflow-hidden mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
+        <SlideUp delay={0.2}>
+        <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl shadow-secondary/5 border border-secondary/10 overflow-hidden mb-12 duration-700">
           <div className="p-6 md:p-8 space-y-8">
             {/* Search Focal Point */}
             <div className="relative group">
@@ -285,20 +287,21 @@ const Internships = () => {
             </div>
           )}
         </div>
+        </SlideUp>
 
         {loading ? (
           <InternshipCardSkeleton count={4} />
         ) : filteredInternships.length > 0 ? (
-          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+          <StaggerContainer className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
             {filteredInternships.map(job => {
               const status = getJobStatus(job.applicationDeadline, job.createdAt);
               const isClosed = status.type === 'expired';
               const isExpanded = expandedJobs.has(job._id);
 
               return (
+                <StaggerItem key={job._id}>
                 <div 
-                  key={job._id} 
-                  className={`group bg-white rounded-3xl p-8 border border-secondary/10 shadow-sm transition-all duration-500 flex flex-col ${
+                  className={`group bg-white rounded-3xl p-8 border border-secondary/10 shadow-sm transition-all duration-500 flex flex-col h-full ${
                     isClosed 
                       ? "opacity-60 scale-[0.98]" 
                       : "hover:border-secondary/30 hover:shadow-xl hover:shadow-secondary/5"
@@ -455,9 +458,10 @@ const Internships = () => {
                     )}
                   </div>
                 </div>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
         ) : (
           <div className="bg-white rounded-3xl p-24 text-center border border-secondary/10 shadow-sm">
              <div className="w-24 h-24 bg-secondary/5 rounded-full flex items-center justify-center mx-auto mb-8 text-secondary/30">

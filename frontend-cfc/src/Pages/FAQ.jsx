@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Banner from "../Components/UI/Banner";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 const faqData = [
   {
@@ -56,7 +57,7 @@ function FAQ() {
       </div> */}
 
       <main className="max-w-4xl mx-auto px-6 py-16">
-        <div className="text-center mb-16">
+        <SlideUp className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
             Have Questions?{" "}
             <span className="text-blue-600">We have Answers.</span>
@@ -65,15 +66,15 @@ function FAQ() {
             Find quick answers to common inquiries about our community and
             events.
           </p>
-        </div>
+        </SlideUp>
 
-        <div className="space-y-4">
+        <StaggerContainer className="space-y-4">
           {faqData.map((item, index) => (
-            <div
-              key={index}
-              className="group bg-white cursor-pointer rounded-2xl border border-slate-200 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md"
-            >
-              <button
+            <StaggerItem key={index}>
+              <div
+                className="group bg-white cursor-pointer rounded-2xl border border-slate-200 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md"
+              >
+                <button
                 onClick={() => toggleAccordion(index)}
                 className="w-full flex items-center justify-between cursor-pointer p-6 text-left outline-none"
               >
@@ -107,11 +108,13 @@ function FAQ() {
                 </div>
               </div>
             </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
         {/* Support Section */}
-        <div className="mt-20 p-10 bg-blue-600 rounded-[2.5rem] text-center text-white relative overflow-hidden">
+        <SlideUp delay={0.2}>
+          <div className="mt-20 p-10 bg-blue-600 rounded-[2.5rem] text-center text-white relative overflow-hidden">
           <div className="relative z-10">
             <h3 className="text-2xl font-bold mb-4">Still have questions?</h3>
             <p className="text-blue-100 mb-8">
@@ -128,6 +131,7 @@ function FAQ() {
           {/* Decorative Circle */}
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         </div>
+        </SlideUp>
       </main>
     </div>
   );

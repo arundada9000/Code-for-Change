@@ -7,6 +7,7 @@ import {
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
+import { FadeIn, SlideUp } from "../Components/Common/Animations";
 
 function EventDetails() {
   const { eventSlug } = useParams();
@@ -124,7 +125,7 @@ function EventDetails() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-7xl mx-auto px-5 pb-16 w-full">
+          <SlideUp className="max-w-7xl mx-auto px-5 pb-16 w-full">
             <Link to="/events" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 font-medium">
               <FaArrowLeft /> Back to Events
             </Link>
@@ -141,7 +142,7 @@ function EventDetails() {
             </div>
             <h1 className="text-5xl md:text-6xl font-black text-white mb-4">{event.title}</h1>
             <p className="text-xl text-white/90 max-w-3xl">{event.description}</p>
-          </div>
+          </SlideUp>
         </div>
       </div>
       {/* <div className="max-w-7xl mx-auto px-5 mt-8">
@@ -155,7 +156,7 @@ function EventDetails() {
       <div className="max-w-7xl mx-auto px-5 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-12">
+          <SlideUp delay={0.1} className="lg:col-span-2 space-y-12">
             {/* Event Details */}
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
               <h2 className="text-2xl font-black text-slate-900 mb-6">About This Event</h2>
@@ -229,10 +230,10 @@ function EventDetails() {
                 </ul>
               </div>
             )}
-          </div>
+          </SlideUp>
 
           {/* Right Column - Sidebar */}
-          <div className="space-y-6">
+          <FadeIn delay={0.2} className="space-y-6">
             {/* Registration Card */}
             {isUpcoming && event.registrationLink && (
               <div className="bg-gradient-to-br from-secondary to-primary rounded-3xl p-8 text-white shadow-xl sticky top-6">
@@ -322,7 +323,7 @@ function EventDetails() {
                 Spread the word and invite your friends to join this amazing event!
               </p>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </div>
     </div>

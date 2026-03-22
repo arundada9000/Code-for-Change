@@ -4,6 +4,7 @@ import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
 import RegisterImg from "../assets/RegisterIllustration.jpg";
 import API from "../Services/api";
+import { FadeIn, SlideUp } from "../Components/Common/Animations";
 
 const roleFields = {
   member: [
@@ -375,7 +376,7 @@ export default function RegistrationForm() {
       </div> */}
       <div>
         <div className="max-w-7xl mx-auto px-4 py-16 lg:px-8 flex flex-col lg:flex-row gap-12 items-center">
-          <div className="lg:w-1/2 w-full">
+          <SlideUp className="lg:w-1/2 w-full">
             {/* Section Header */}
             <div className="mb-10 max-w-2xl">
               <div className="flex items-center gap-3 mb-4">
@@ -395,31 +396,33 @@ export default function RegistrationForm() {
                 real impact.
               </p>
             </div>
-          </div>
-          <div className="lg:w-1/2 w-full flex justify-center">
+          </SlideUp>
+          <FadeIn delay={0.2} className="lg:w-1/2 w-full flex justify-center">
             <img
               src={RegisterImg}
               alt="Register Illustration"
-              className="w-full max-w-md rounded-lg"
+              className="w-full max-w-md rounded-lg shadow-xl"
             />
-          </div>
+          </FadeIn>
         </div>
         <div className="bg-secondary/5 mb-16">
           <div className="max-w-7xl mx-auto py-16 px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 text-center">
-                Registration Form
-              </h2>
-              <p className="text-center text-gray-600 mb-10">
-                Choose your role and complete the registration to get started.
-              </p>
+              <SlideUp className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+                  Registration Form
+                </h2>
+                <p className="text-gray-600">
+                  Choose your role and complete the registration to get started.
+                </p>
+              </SlideUp>
 
               <div className="">
                 <div className=" px-4">
                   <div className="grid md:grid-cols-[1fr_4fr] gap-8">
                     {/* LEFT: Role Filter */}
                     <div className="">
-                      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                      <SlideUp className="bg-white rounded-lg shadow-sm overflow-hidden">
                         <h3 className="px-6 py-4 font-semibold text-lg text-gray-800 border-b">
                           Register As
                         </h3>
@@ -443,11 +446,11 @@ export default function RegistrationForm() {
                             {r.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                           </button>
                         ))}
-                      </div>
+                      </SlideUp>
                     </div>
 
                     {/* RIGHT: Dynamic Form */}
-                    <div className="">
+                    <SlideUp delay={0.2} className="">
                       <form
                         onSubmit={handleSubmit}
                         className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-slate-100 p-8 md:p-12 space-y-10"
@@ -614,7 +617,7 @@ export default function RegistrationForm() {
                           </p>
                         </div>
                       </form>
-                    </div>
+                    </SlideUp>
                   </div>
                 </div>
               </div>

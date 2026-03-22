@@ -5,7 +5,7 @@ import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import { FaChevronLeft } from "react-icons/fa";
 import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
-
+import { FadeIn, SlideUp } from "../Components/Common/Animations";
 
 
 /**
@@ -135,7 +135,7 @@ function ImpactDetail() {
 
       {/* Hero Section */}
       <section className="py-12 lg:py-16 px-6">
-        <div className="max-w-7xl mx-auto">
+        <FadeIn className="max-w-7xl mx-auto">
           <div className="mb-6">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary tracking-tightest uppercase leading-none">
               {item.title}
@@ -157,7 +157,7 @@ function ImpactDetail() {
                </div>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Content Grid */}
@@ -165,7 +165,7 @@ function ImpactDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-24">
           
           {/* Main Narrative */}
-          <div className="lg:col-span-2 space-y-12 lg:space-y-16">
+          <SlideUp delay={0.1} className="lg:col-span-2 space-y-12 lg:space-y-16">
             <section>
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-[2px] w-12 bg-emerald-500"></div>
@@ -213,10 +213,10 @@ function ImpactDetail() {
                 </div>
               </section>
             )}
-          </div>
+          </SlideUp>
 
           {/* Sidebar */}
-          <div className="space-y-8">
+          <SlideUp delay={0.2} className="space-y-8">
              <InfoSidebar location={item.location} dates={item.dates} />
              
              {/* Additional Quick Info */}
@@ -226,7 +226,7 @@ function ImpactDetail() {
                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Verified Impact
                 </div>
              </div>
-          </div>
+          </SlideUp>
         </div>
       </main>
 

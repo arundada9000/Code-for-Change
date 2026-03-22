@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import blog1 from "../../../assets/BlogImage/js.jpg";
 import useFetch from "../../../Hooks/useFetch";
 import { BlogCardListSkeleton } from "../../Loading/Skeleton";
+import { SlideUp, StaggerContainer, StaggerItem } from "../../Common/Animations";
 
 export function BlogCard() {
   const { data: apiBlogs, loading } = useFetch("/blogs");
@@ -22,7 +23,7 @@ export function BlogCard() {
   return (
     <section className="max-w-7xl mx-auto px-5">
       {/* Optional: Section Header */}
-      <div className="mb-12 text-center">
+      <SlideUp className="mb-12 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Latest Articles
         </h2>
@@ -30,9 +31,9 @@ export function BlogCard() {
           Explore our latest insights on React, JavaScript, and modern web
           development.
         </p>
-      </div>
+      </SlideUp>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {displayBlogs.map((blog) => {
           // Mapper for backend to frontend fields
           const id = blog._id || blog.id;
@@ -41,9 +42,9 @@ export function BlogCard() {
           const date = blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : blog.date;
 
           return (
+            <StaggerItem key={id} className="h-full">
             <article
-              key={id}
-              className="group flex flex-col bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+              className="h-full group flex flex-col bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
             >
               {/* Image Container */}
               <div className="relative overflow-hidden">
@@ -118,9 +119,10 @@ export function BlogCard() {
                 </div>
               </div>
             </article>
+            </StaggerItem>
           );
         })}
-      </div>
+      </StaggerContainer>
     </section>
   );
 }

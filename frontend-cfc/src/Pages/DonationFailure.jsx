@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaExclamationTriangle, FaArrowLeft, FaEnvelope } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
 import Banner from "../Components/UI/Banner";
+import { SlideUp } from "../Components/Common/Animations";
 
 const DonationFailure = () => {
   return (
@@ -11,10 +12,8 @@ const DonationFailure = () => {
         <title>Payment Cancelled | Code for Change</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <Banner />
-
       <div className="max-w-2xl mx-auto px-6 -mt-20 relative z-10">
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-red-900/5 border border-red-50 overflow-hidden">
+        <SlideUp className="bg-white rounded-[2.5rem] shadow-2xl shadow-red-900/5 border border-red-50 overflow-hidden">
           <div className="p-12 text-center space-y-8">
             <div className="w-24 h-24 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto text-5xl animate-pulse">
               <FaExclamationTriangle />
@@ -53,7 +52,7 @@ const DonationFailure = () => {
               </a>
             </div>
           </div>
-        </div>
+        </SlideUp>
       </div>
     </div>
   );

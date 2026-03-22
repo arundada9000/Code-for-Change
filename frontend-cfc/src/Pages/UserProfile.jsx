@@ -26,6 +26,7 @@ import {
   FaIdCard,
   FaHistory,
 } from "react-icons/fa";
+import { FadeIn, SlideUp } from "../Components/Common/Animations";
 
 // Region color map
 const REGION_COLORS = {
@@ -276,7 +277,7 @@ function UserProfile() {
         )}
 
         {/* ===== PROFILE HEADER CARD ===== */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <FadeIn className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
           {/* Accent bar */}
           <div
             className="h-2"
@@ -389,12 +390,12 @@ function UserProfile() {
               </div>
             </div>
           </div>
-        </div>
+        </FadeIn>
 
         {/* ===== CONTENT GRID ===== */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           {/* LEFT — Form sections */}
-          <div className="lg:col-span-8 space-y-5">
+          <SlideUp delay={0.1} className="lg:col-span-8 space-y-5">
             {/* Personal Info */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7">
               <SectionTitle icon={FaUser} title="Personal Information" regionColor={regionColor} />
@@ -653,10 +654,10 @@ function UserProfile() {
                 />
               </div>
             </div>
-          </div>
+          </SlideUp>
 
           {/* RIGHT — Sidebar */}
-          <div className="lg:col-span-4 space-y-5">
+          <SlideUp delay={0.2} className="lg:col-span-4 space-y-5">
             {/* Quick Actions */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
@@ -804,7 +805,7 @@ function UserProfile() {
                 </div>
               </div>
             </div>
-          </div>
+          </SlideUp>
         </div>
       </div>
 

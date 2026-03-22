@@ -12,6 +12,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import useFetch from "../../../Hooks/useFetch";
 import { TerminalCardSkeleton } from "../../Loading/Skeleton";
+import { SlideUp, StaggerContainer, StaggerItem } from "../../Common/Animations";
 
 export default function CurrentEvent() {
   const { data: apiEvents, loading } = useFetch("/events");
@@ -58,10 +59,12 @@ export default function CurrentEvent() {
               Our Events
             </h4>
           </div>
-          <h2 className="md:text-4xl text-3xl font-bold text-primary py-4">
-            Join us in shaping the future through exciting projects and
-            initiatives
-          </h2>
+          <SlideUp>
+            <h2 className="md:text-4xl text-3xl font-bold text-primary py-4">
+              Join us in shaping the future through exciting projects and
+              initiatives
+            </h2>
+          </SlideUp>
           <p className="text-slate-600 max-w-3xl">
             Collaborate with passionate individuals, gain real-world experience,
             and make a meaningful impact through technology-driven initiatives.
@@ -103,17 +106,17 @@ export default function CurrentEvent() {
         </div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {eventsToShow.length === 0 ? (
             <div className="col-span-2 text-center py-20 text-slate-400">
               No {activeTab} events at the moment.
             </div>
           ) : (
             eventsToShow.map((event) => (
-              <div
-                key={event._id || event.id}
-                className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500"
-              >
+              <StaggerItem key={event._id || event.id}>
+                <div
+                  className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 h-full flex flex-col"
+                >
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden bg-slate-100">
                   <img
@@ -203,10 +206,11 @@ export default function CurrentEvent() {
                     )}
                   </div>
                 </div>
-              </div>
+                </div>
+              </StaggerItem>
             ))
           )}
-        </div>
+        </StaggerContainer>
         {/* View All Button */}
         <div className="flex justify-center pt-6">
           <Link

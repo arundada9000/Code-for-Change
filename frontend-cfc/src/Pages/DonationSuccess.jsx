@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import API from "../Services/api";
 import Banner from "../Components/UI/Banner";
 import { DonationVerificationSkeleton } from "../Components/Loading/Skeleton";
+import { SlideUp } from "../Components/Common/Animations";
 
 const DonationSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -43,10 +44,8 @@ const DonationSuccess = () => {
         <title>Donation Confirmed | Code for Change</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <Banner />
-
       <div className="max-w-3xl mx-auto px-6 -mt-20 relative z-10">
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-primary/5 border border-gray-100 overflow-hidden">
+        <SlideUp className="bg-white rounded-[2.5rem] shadow-2xl shadow-primary/5 border border-gray-100 overflow-hidden">
           {error ? (
             <div className="p-12 text-center space-y-6">
               <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto text-4xl">
@@ -114,7 +113,7 @@ const DonationSuccess = () => {
               </div>
             </>
           )}
-        </div>
+        </SlideUp>
       </div>
     </div>
   );

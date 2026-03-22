@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DonationImg from "../../../assets/Donate.png";
 import { useNavigate } from "react-router-dom";
 import API from "../../../Services/api";
+import { FadeIn, SlideUp } from "../../Common/Animations";
 
 function DonateSection() {
   const [formData, setFormData] = useState({
@@ -107,7 +108,7 @@ function DonateSection() {
     <section className="py-28 bg-linear-to-b from-gray-50 via-white to-gray-100">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         {/* LEFT CONTENT */}
-        <div>
+        <SlideUp>
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-5">
               <span className="h-0.5 w-12 bg-primary"></span>
@@ -127,15 +128,17 @@ function DonateSection() {
             </p>
           </div>
 
-          <img
-            src={DonationImg}
-            alt="Donate"
-            className="w-full max-w-md rounded-2xl"
-          />
-        </div>
+          <FadeIn delay={0.3}>
+            <img
+              src={DonationImg}
+              alt="Donate"
+              className="w-full max-w-md rounded-2xl"
+            />
+          </FadeIn>
+        </SlideUp>
 
         {/* RIGHT FORM */}
-        <div className="relative bg-white/80 backdrop-blur-xl border border-gray-200 rounded-lg shadow-sm p-10">
+        <FadeIn delay={0.2} className="relative bg-white/80 backdrop-blur-xl border border-gray-200 rounded-lg shadow-sm p-10 h-full">
           {submitSuccess ? (
             <div className="text-center py-10 animate-in fade-in zoom-in duration-500">
               <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -341,7 +344,7 @@ function DonateSection() {
             </form>
           </>
           )}
-        </div>
+        </FadeIn>
       </div>
     </section>
   );
