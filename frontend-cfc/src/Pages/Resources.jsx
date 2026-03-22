@@ -1,78 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import {
-  FaDownload,
-  FaLink,
-  FaPalette,
-  FaImage,
-  FaFileAlt,
-  FaBook,
-  FaSearch,
-  FaFilter,
-  FaLock,
-  FaGlobe,
-  FaCheck,
-  FaExternalLinkAlt,
-  FaCopy,
-} from "react-icons/fa";
-import { MdColorLens } from "react-icons/md";
+import Banner from "../Components/UI/Banner";
+import SEO from "../Components/Common/SEO";
 import API from "../Services/api";
 import { useAuth } from "../Context/AuthContext";
-import SEO from "../Components/Common/SEO";
+import {
+  FaSearch, FaFilter, FaDownload, FaExternalLinkAlt,
+  FaLock, FaGlobe, FaCheck, FaCopy, FaPalette,
+  FaImage, FaFileAlt, FaBook, FaLink, FaTimes,
+} from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────
-// Constants
-// ─────────────────────────────────────────────────────────
-const ROLE_LEVEL = { guest: 0, gm: 1, cr: 2, eb: 3, admin: 4, superadmin: 4 };
-
-const VISIBILITY_OPTIONS = [
-  { value: "public", label: "Public", color: "#10b981", bg: "#ecfdf5" },
-  { value: "gm", label: "Members", color: "#3b82f6", bg: "#eff6ff" },
-  { value: "cr", label: "Coordinators", color: "#f59e0b", bg: "#fffbeb" },
-  { value: "eb", label: "Executives", color: "#8b5cf6", bg: "#f5f3ff" },
-  { value: "admin", label: "Admin Only", color: "#ef4444", bg: "#fef2f2" },
-];
-
-const CATEGORY_LABELS = {
-  academic: "Academic",
-  branding: "Branding",
-  background: "Backgrounds",
-  internal: "Internal",
-  other: "Other",
-};
-
-const CATEGORY_DESCRIPTIONS = {
-  academic: "Notes, assignments, and learning materials.",
-  branding: "Logos, banners, and branding assets.",
-  background: "Hero and background images for the website.",
-  internal: "Internal documents and references.",
-  other: "Miscellaneous resources.",
-};
-
-const TYPE_ICON = {
-  file: <FaFileAlt />,
-  image: <FaImage />,
-  link: <FaLink />,
-  "color-code": <FaPalette />,
-  notes: <FaBook />,
-  assignment: <FaFileAlt />,
-  lab: <FaFileAlt />,
-  project: <FaFileAlt />,
-};
-
-const TYPE_COLORS = {
-  file: { bg: "#eff6ff", fg: "#3b82f6" },
-  image: { bg: "#f5f3ff", fg: "#8b5cf6" },
-  link: { bg: "#ecfeff", fg: "#06b6d4" },
-  "color-code": { bg: "#fdf2f8", fg: "#ec4899" },
-  notes: { bg: "#fffbeb", fg: "#f59e0b" },
-  assignment: { bg: "#fff7ed", fg: "#f97316" },
-  lab: { bg: "#f0fdf4", fg: "#22c55e" },
-  project: { bg: "#f1f5f9", fg: "#64748b" },
-};
-
-// ─────────────────────────────────────────────────────────
-// CFC Region Color Palette (hardcoded)
+// CFC Region Palette (hardcoded)
 // ─────────────────────────────────────────────────────────
 const CFC_REGIONS = [
   { name: "Kathmandu",  colors: ["#CA163A"] },
@@ -88,135 +27,171 @@ const CFC_REGIONS = [
 ];
 
 // ─────────────────────────────────────────────────────────
-// Color Utilities
+// Constants
 // ─────────────────────────────────────────────────────────
-function hexToRgb(hex) {
-  const clean = (hex || "")
-    .replace(/[^0-9a-fA-F]/g, "")
-    .slice(0, 6)
-    .padEnd(6, "0");
-  const num = parseInt(clean, 16);
-  return `rgb(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255})`;
-}
+const VISIBILITY_OPTIONS = [
+  { value: "public", label: "Public",       color: "#10b981", bg: "#ecfdf5" },
+  { value: "gm",     label: "Members",      color: "#3b82f6", bg: "#eff6ff" },
+  { value: "cr",     label: "Coordinators", color: "#f59e0b", bg: "#fffbeb" },
+  { value: "eb",     label: "Executives",   color: "#8b5cf6", bg: "#f5f3ff" },
+  { value: "admin",  label: "Admin Only",   color: "#ef4444", bg: "#fef2f2" },
+];
 
-function hexToHsl(hex) {
-  let r = 0,
-    g = 0,
-    b = 0;
-  const c = (hex || "").replace("#", "");
-  if (c.length >= 6) {
-    r = parseInt(c.slice(0, 2), 16) / 255;
-    g = parseInt(c.slice(2, 4), 16) / 255;
-    b = parseInt(c.slice(4, 6), 16) / 255;
-  }
-  const max = Math.max(r, g, b),
-    min = Math.min(r, g, b);
-  let h = 0,
-    s = 0,
-    l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-        break;
-      case g:
-        h = ((b - r) / d + 2) / 6;
-        break;
-      case b:
-        h = ((r - g) / d + 4) / 6;
-        break;
-    }
-  }
-  return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
-}
+const CATEGORY_LABELS = {
+  academic:   "Academic",
+  branding:   "Branding",
+  background: "Backgrounds",
+  internal:   "Internal",
+  other:      "Other",
+};
+const CATEGORY_EMOJI = {
+  academic: "📚", branding: "🎨", background: "🖼️", internal: "🔒", other: "📁",
+};
+const CATEGORY_DESC = {
+  academic:   "Notes, assignments and learning materials.",
+  branding:   "Logos, banners and branding assets.",
+  background: "Hero images for province and section backgrounds.",
+  internal:   "Internal documents and references.",
+  other:      "Miscellaneous resources.",
+};
 
+const TYPE_ICON = { file: <FaFileAlt />, image: <FaImage />, link: <FaLink />, "color-code": <FaPalette />, notes: <FaBook />, assignment: <FaFileAlt />, lab: <FaFileAlt />, project: <FaFileAlt /> };
+const TYPE_COLORS = {
+  file:         { bg: "#eff6ff", fg: "#3b82f6" },
+  image:        { bg: "#f5f3ff", fg: "#8b5cf6" },
+  link:         { bg: "#ecfeff", fg: "#06b6d4" },
+  "color-code": { bg: "#fdf2f8", fg: "#ec4899" },
+  notes:        { bg: "#fffbeb", fg: "#f59e0b" },
+  assignment:   { bg: "#fff7ed", fg: "#f97316" },
+  lab:          { bg: "#f0fdf4", fg: "#22c55e" },
+  project:      { bg: "#f1f5f9", fg: "#64748b" },
+};
+
+// ─────────────────────────────────────────────────────────
+// Color Helpers
+// ─────────────────────────────────────────────────────────
 function normaliseHex(hex) {
   const h = (hex || "").trim();
   return h.startsWith("#") ? h : `#${h}`;
 }
+function hexToRgb(hex) {
+  const c = (hex || "").replace(/[^0-9a-fA-F]/g, "").slice(0, 6).padEnd(6, "0");
+  const n = parseInt(c, 16);
+  return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`;
+}
+function hexToHsl(hex) {
+  let r = 0, g = 0, b = 0;
+  const c = (hex || "").replace("#", "");
+  if (c.length >= 6) { r = parseInt(c.slice(0,2),16)/255; g = parseInt(c.slice(2,4),16)/255; b = parseInt(c.slice(4,6),16)/255; }
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h=0, s=0, l=(max+min)/2;
+  if (max !== min) {
+    const d = max-min; s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){ case r: h=((g-b)/d+(g<b?6:0))/6; break; case g: h=((b-r)/d+2)/6; break; case b: h=((r-g)/d+4)/6; break; }
+  }
+  return `hsl(${Math.round(h*360)}, ${Math.round(s*100)}%, ${Math.round(l*100)}%)`;
+}
+function isLight(hex) {
+  const c = (hex||"").replace("#","");
+  return 0.299*parseInt(c.slice(0,2),16) + 0.587*parseInt(c.slice(2,4),16) + 0.114*parseInt(c.slice(4,6),16) > 140;
+}
 
 // ─────────────────────────────────────────────────────────
-// Region Palette Component
+// CopyButton (shared tiny component)
+// ─────────────────────────────────────────────────────────
+function CopyButton({ value, label, hex }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+  return (
+    <button
+      onClick={handleCopy}
+      className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl bg-gray-50 hover:bg-white border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all group/fmt"
+      title={`Copy ${label}: ${value}`}
+    >
+      <span className="text-[8px] font-bold uppercase tracking-wider text-gray-400 group-hover/fmt:text-primary">{label}</span>
+      {copied
+        ? <FaCheck className="text-emerald-500" size={9} />
+        : <FaCopy className="text-gray-200 opacity-0 group-hover/fmt:opacity-100" size={9} />}
+    </button>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Region Swatch
 // ─────────────────────────────────────────────────────────
 function RegionSwatch({ hex }) {
-  const [copied, setCopied] = useState(null);
-  const color = hex.startsWith("#") ? hex : `#${hex}`;
-  const formats = [
-    { label: "HEX", value: color.toUpperCase() },
-    { label: "RGB", value: hexToRgb(color) },
-    { label: "HSL", value: hexToHsl(color) },
-  ];
-  const copy = (val, label) => {
-    navigator.clipboard.writeText(val);
-    setCopied(label);
-    setTimeout(() => setCopied(null), 1800);
+  const [copied, setCopied] = useState(false);
+  const color = normaliseHex(hex);
+  const light = isLight(color);
+  const copyHex = () => {
+    navigator.clipboard.writeText(color.toUpperCase());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
   };
-  // Determine if color is dark (to pick text color)
-  const cleanH = color.replace("#", "");
-  const lum = 0.299 * parseInt(cleanH.slice(0,2),16) + 0.587 * parseInt(cleanH.slice(2,4),16) + 0.114 * parseInt(cleanH.slice(4,6),16);
-  const textColor = lum > 140 ? "text-slate-800" : "text-white";
-
   return (
-    <div className="flex flex-col gap-2">
-      {/* Main swatch */}
+    <div className="flex flex-col gap-1.5">
       <div
-        className="h-20 rounded-2xl flex items-end p-3 cursor-pointer hover:opacity-90 transition-opacity active:scale-95"
+        className="h-16 rounded-2xl flex items-end p-3 cursor-pointer hover:opacity-90 transition-all active:scale-95 group/sw relative overflow-hidden"
         style={{ backgroundColor: color }}
-        onClick={() => copy(color.toUpperCase(), "HEX")}
+        onClick={copyHex}
         title="Click to copy HEX"
       >
-        <span className={`font-black text-xs tracking-widest uppercase drop-shadow-sm ${textColor} opacity-80`}>
+        <span className={`font-bold text-[10px] tracking-widest uppercase drop-shadow-sm ${light ? "text-slate-800/70" : "text-white/80"}`}>
           {color.toUpperCase()}
         </span>
+        {copied && (
+          <span className={`absolute inset-0 flex items-center justify-center text-xs font-black ${light ? "text-slate-800" : "text-white"}`}>
+            <FaCheck className="mr-1" size={9} /> Copied!
+          </span>
+        )}
       </div>
-      {/* Format copy buttons */}
       <div className="flex gap-1">
-        {formats.map(f => (
-          <button
-            key={f.label}
-            onClick={() => copy(f.value, f.label)}
-            className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-slate-200 hover:shadow-sm transition-all group/fmt"
-            title={`Copy ${f.label}: ${f.value}`}
-          >
-            <span className="text-[8px] font-black uppercase tracking-wider text-slate-400 group-hover/fmt:text-slate-600">{f.label}</span>
-            {copied === f.label
-              ? <FaCheck className="text-emerald-500" size={9} />
-              : <FaCopy className="text-slate-300 opacity-0 group-hover/fmt:opacity-100" size={9} />}
-          </button>
-        ))}
+        <CopyButton value={color.toUpperCase()} label="HEX" hex={color} />
+        <CopyButton value={hexToRgb(color)} label="RGB" hex={color} />
+        <CopyButton value={hexToHsl(color)} label="HSL" hex={color} />
       </div>
     </div>
   );
 }
 
+// ─────────────────────────────────────────────────────────
+// Region Palette Section
+// ─────────────────────────────────────────────────────────
 function RegionPalette() {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-10">
-      {/* Header */}
-      <div className="flex items-end gap-4 mb-6">
+    <section className="mb-14">
+      <div className="flex items-end justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-black text-primary tracking-tight flex items-center gap-2">
-            🎨 Region Color Palette
+          <div className="flex items-center gap-3 mb-2">
+            <span className="h-0.5 w-8 bg-primary" />
+            <h4 className="uppercase tracking-wider text-xs font-bold text-primary">Colour Palette</h4>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+            Region Colour Codes
           </h2>
-          <p className="text-slate-400 text-xs font-medium mt-0.5">
-            Official branch colors — click any swatch or format button to copy.
+          <p className="text-gray-500 text-sm font-medium mt-1">
+            Official branch colors — click any swatch or HEX / RGB / HSL to copy instantly.
           </p>
         </div>
-        <span className="ml-auto px-3 py-1 bg-slate-100 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-wider shrink-0">
+        <span className="px-4 py-2 bg-primary/5 text-primary rounded-2xl text-[10px] font-bold uppercase tracking-widest border border-primary/10 shrink-0">
           {CFC_REGIONS.length} Regions
         </span>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {CFC_REGIONS.map(region => (
-          <div key={region.name} className="bg-white rounded-3xl border border-slate-100 p-4 shadow-sm hover:shadow-md transition-all">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">{region.name}</p>
-            <div className={`flex flex-col gap-3 ${region.colors.length > 1 ? "" : ""}`}>
-              {region.colors.map(hex => (
-                <RegionSwatch key={hex} hex={hex} />
-              ))}
+          <div
+            key={region.name}
+            className="bg-white rounded-3xl border border-gray-100 p-4 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-300"
+          >
+            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-3">{region.name}</p>
+            <div className="flex flex-col gap-3">
+              {region.colors.map(hex => <RegionSwatch key={hex} hex={hex} />)}
             </div>
           </div>
         ))}
@@ -226,67 +201,29 @@ function RegionPalette() {
 }
 
 // ─────────────────────────────────────────────────────────
-// Color Card
+// Resource Card – color-code type
 // ─────────────────────────────────────────────────────────
-function ColorCard({ resource }) {
-  const [copied, setCopied] = useState(null);
+function ColorResourceCard({ resource }) {
   const hex = normaliseHex(resource.colorHex);
-  const formats = [
-    { label: "HEX", value: hex.toUpperCase() },
-    { label: "RGB", value: hexToRgb(hex) },
-    { label: "HSL", value: hexToHsl(hex) },
-  ];
-  const copy = (val, label) => {
-    navigator.clipboard.writeText(val);
-    setCopied(label);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
+  const light = isLight(hex);
+  const vis = VISIBILITY_OPTIONS.find(v => v.value === resource.visibility) || VISIBILITY_OPTIONS[0];
   return (
-    <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-lg transition-all group">
-      {/* Swatch */}
-      <div className="h-36 relative" style={{ backgroundColor: hex }}>
-        <div className="absolute inset-0 flex items-end p-4">
-          <span className="text-white/80 font-black text-lg tracking-widest drop-shadow">
-            {hex.toUpperCase()}
-          </span>
-        </div>
+    <div className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden group">
+      <div className="h-28 relative" style={{ backgroundColor: hex }}>
+        <span className={`absolute bottom-3 left-4 font-bold text-sm tracking-widest ${light ? "text-slate-800/70" : "text-white/80"}`}>
+          {hex.toUpperCase()}
+        </span>
+        <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider bg-white/20 backdrop-blur text-white">
+          {vis.value === "public" ? <FaGlobe size={7} /> : <FaLock size={7} />} {vis.label}
+        </span>
       </div>
-      {/* Info */}
-      <div className="p-5">
-        <h3 className="font-black text-primary text-sm mb-1">
-          {resource.title}
-        </h3>
-        <p className="text-[11px] text-slate-400 font-medium mb-4">
-          {resource.description}
-        </p>
-        {/* Copy buttons */}
-        <div className="space-y-2">
-          {formats.map((f) => (
-            <button
-              key={f.label}
-              onClick={() => copy(f.value, f.label)}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 text-left transition-all group/btn"
-            >
-              <span
-                className="w-2.5 h-2.5 rounded-sm shrink-0"
-                style={{ backgroundColor: hex }}
-              />
-              <span className="text-[10px] font-black text-slate-400 w-8">
-                {f.label}
-              </span>
-              <span className="text-[11px] font-bold text-slate-600 flex-1 font-mono">
-                {f.value}
-              </span>
-              <span className="shrink-0 transition-all">
-                {copied === f.label ? (
-                  <FaCheck className="text-emerald-500 text-[10px]" />
-                ) : (
-                  <FaCopy className="text-slate-300 text-[10px] opacity-0 group-hover/btn:opacity-100" />
-                )}
-              </span>
-            </button>
-          ))}
+      <div className="p-4">
+        <h3 className="font-bold text-primary text-sm mb-0.5">{resource.title}</h3>
+        <p className="text-[11px] text-gray-400 mb-3 line-clamp-2">{resource.description}</p>
+        <div className="flex gap-1">
+          <CopyButton value={hex.toUpperCase()} label="HEX" />
+          <CopyButton value={hexToRgb(hex)} label="RGB" />
+          <CopyButton value={hexToHsl(hex)} label="HSL" />
         </div>
       </div>
     </div>
@@ -294,16 +231,14 @@ function ColorCard({ resource }) {
 }
 
 // ─────────────────────────────────────────────────────────
-// Generic Resource Card
+// Resource Card – generic
 // ─────────────────────────────────────────────────────────
-function ResourceCard({ resource, userRole }) {
-  if (resource.type === "color-code") return <ColorCard resource={resource} />;
+function ResourceCard({ resource }) {
+  if (resource.type === "color-code") return <ColorResourceCard resource={resource} />;
 
   const colors = TYPE_COLORS[resource.type] || TYPE_COLORS.file;
   const icon = TYPE_ICON[resource.type] || <FaFileAlt />;
-  const vis =
-    VISIBILITY_OPTIONS.find((v) => v.value === resource.visibility) ||
-    VISIBILITY_OPTIONS[0];
+  const vis = VISIBILITY_OPTIONS.find(v => v.value === resource.visibility) || VISIBILITY_OPTIONS[0];
   const hasContent = resource.fileUrl || resource.externalLink;
 
   const handleDownload = () => {
@@ -311,74 +246,52 @@ function ResourceCard({ resource, userRole }) {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col">
-      {/* Image Preview */}
+    <div className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-gray-200 transition-all duration-300 flex flex-col overflow-hidden group">
+      {/* Image preview */}
       {resource.type === "image" && resource.fileUrl && (
-        <div className="h-44 overflow-hidden">
-          <img
-            src={resource.fileUrl}
-            alt={resource.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-          />
+        <div className="h-40 overflow-hidden">
+          <img src={resource.fileUrl} alt={resource.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
         </div>
       )}
 
       <div className="p-5 flex flex-col flex-1">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div
-            className="w-11 h-11 rounded-2xl flex items-center justify-center text-sm"
-            style={{ backgroundColor: colors.bg, color: colors.fg }}
-          >
+        {/* Header row */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-inner" style={{ backgroundColor: colors.bg, color: colors.fg }}>
             {icon}
           </div>
           <span
-            className="flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[8px] font-bold uppercase tracking-wider"
             style={{ backgroundColor: vis.bg, color: vis.color }}
           >
-            {vis.value === "public" ? (
-              <FaGlobe className="text-[7px]" />
-            ) : (
-              <FaLock className="text-[7px]" />
-            )}
-            {vis.label}
+            {vis.value === "public" ? <FaGlobe size={7} /> : <FaLock size={7} />} {vis.label}
           </span>
         </div>
 
-        {/* Body */}
-        <h3 className="font-black text-primary text-sm mb-1 leading-tight">
-          {resource.title}
-        </h3>
-        <p className="text-[11px] text-slate-400 font-medium mb-3 flex-1 line-clamp-3">
-          {resource.description}
-        </p>
+        {/* Title & desc */}
+        <h3 className="font-bold text-primary text-sm mb-1 leading-tight">{resource.title}</h3>
+        <p className="text-xs text-gray-400 mb-3 flex-1 line-clamp-3 leading-relaxed">{resource.description}</p>
 
-        {/* Subject tag */}
+        {/* Subject */}
         {resource.subject && (
-          <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-3">
-            📍 {resource.subject}
-            {resource.semester ? ` · ${resource.semester} Sem` : ""}
+          <div className="text-[9px] font-bold text-gray-300 uppercase tracking-widest mb-2">
+            📍 {resource.subject}{resource.semester ? ` · Sem ${resource.semester}` : ""}
           </div>
         )}
 
         {/* Tags */}
         {resource.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
-            {resource.tags.slice(0, 3).map((t) => (
-              <span
-                key={t}
-                className="px-2 py-0.5 bg-slate-50 text-slate-400 rounded-lg text-[9px] font-bold border border-slate-100"
-              >
-                #{t}
-              </span>
+            {resource.tags.slice(0, 3).map(t => (
+              <span key={t} className="px-2 py-0.5 bg-gray-50 text-gray-400 rounded-lg text-[9px] font-bold border border-gray-100">#{t}</span>
             ))}
           </div>
         )}
 
         {/* Footer */}
-        <div className="flex items-center gap-2 pt-3 border-t border-slate-50 mt-auto">
-          <span className="text-[9px] font-black text-slate-300 flex items-center gap-1 flex-1">
-            <FaDownload className="text-[8px]" /> {resource.downloads || 0}
+        <div className="flex items-center gap-3 pt-3 border-t border-gray-50 mt-auto">
+          <span className="text-[9px] font-bold text-gray-300 flex items-center gap-1 flex-1">
+            <FaDownload size={8} /> {resource.downloads || 0}
           </span>
           {hasContent && (
             <a
@@ -386,18 +299,10 @@ function ResourceCard({ resource, userRole }) {
               target="_blank"
               rel="noreferrer"
               onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider text-white transition-all active:scale-95 shadow-sm hover:shadow-md"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white transition-all active:scale-95 hover:opacity-90"
               style={{ backgroundColor: colors.fg }}
             >
-              {resource.type === "link" ? (
-                <>
-                  <FaExternalLinkAlt size={9} /> Open
-                </>
-              ) : (
-                <>
-                  <FaDownload size={9} /> Download
-                </>
-              )}
+              {resource.type === "link" ? <><FaExternalLinkAlt size={8} /> Open</> : <><FaDownload size={8} /> Download</>}
             </a>
           )}
         </div>
@@ -407,17 +312,34 @@ function ResourceCard({ resource, userRole }) {
 }
 
 // ─────────────────────────────────────────────────────────
-// Skeleton Loaders
+// Skeleton
 // ─────────────────────────────────────────────────────────
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-3xl border border-slate-100 p-5 animate-pulse">
-      <div className="w-11 h-11 bg-slate-100 rounded-2xl mb-4" />
-      <div className="h-4 bg-slate-100 rounded-xl w-3/4 mb-2" />
-      <div className="h-3 bg-slate-50 rounded-xl w-full mb-1" />
-      <div className="h-3 bg-slate-50 rounded-xl w-2/3 mb-4" />
-      <div className="h-8 bg-slate-100 rounded-xl w-28 mt-auto" />
+    <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse">
+      <div className="w-10 h-10 bg-gray-100 rounded-2xl mb-4" />
+      <div className="h-4 bg-gray-100 rounded-xl w-3/4 mb-2" />
+      <div className="h-3 bg-gray-50 rounded-xl w-full mb-1" />
+      <div className="h-3 bg-gray-50 rounded-xl w-2/3 mb-5" />
+      <div className="h-8 bg-gray-100 rounded-xl w-28" />
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Active Filter Chip
+// ─────────────────────────────────────────────────────────
+function FilterChip({ label, onClear }) {
+  return (
+    <span className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-primary/20 transition-all group animate-in zoom-in duration-200">
+      {label}
+      <button
+        onClick={onClear}
+        className="w-4 h-4 flex items-center justify-center bg-primary/20 hover:bg-primary hover:text-white rounded-lg transition-all"
+      >
+        <FaTimes size={7} />
+      </button>
+    </span>
   );
 }
 
@@ -426,14 +348,13 @@ function SkeletonCard() {
 // ─────────────────────────────────────────────────────────
 export default function Resources() {
   const { user, isAuthenticated } = useAuth();
-  const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [activeType, setActiveType] = useState("all");
+  const [resources, setResources]   = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [search, setSearch]         = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeType, setActiveType]         = useState("All");
 
   const userRole = user?.role?.toLowerCase() ?? "guest";
-  const userLevel = ROLE_LEVEL[userRole] ?? 0;
 
   const fetchResources = useCallback(async () => {
     setLoading(true);
@@ -447,34 +368,26 @@ export default function Resources() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchResources();
-  }, [fetchResources]);
+  useEffect(() => { fetchResources(); }, [fetchResources]);
 
-  // Filter
-  const filtered = resources.filter((r) => {
-    const matchSearch =
-      !search ||
-      r.title?.toLowerCase().includes(search.toLowerCase()) ||
-      r.description?.toLowerCase().includes(search.toLowerCase()) ||
-      r.subject?.toLowerCase().includes(search.toLowerCase()) ||
-      r.tags?.some((t) => t.toLowerCase().includes(search.toLowerCase()));
-    const matchCat = activeCategory === "all" || r.category === activeCategory;
-    const matchType = activeType === "all" || r.type === activeType;
+  // Derived filter options
+  const categories = ["All", ...new Set(resources.map(r => r.category).filter(Boolean))];
+  const types      = ["All", ...new Set(resources.map(r => r.type).filter(Boolean))];
+
+  // Filtered resources
+  const filtered = resources.filter(r => {
+    const q = search.toLowerCase();
+    const matchSearch = !search ||
+      r.title?.toLowerCase().includes(q) ||
+      r.description?.toLowerCase().includes(q) ||
+      r.subject?.toLowerCase().includes(q) ||
+      r.tags?.some(t => t.toLowerCase().includes(q));
+    const matchCat  = activeCategory === "All" || r.category === activeCategory;
+    const matchType = activeType === "All" || r.type === activeType;
     return matchSearch && matchCat && matchType;
   });
 
-  // Unique categories in current results
-  const availableCategories = [
-    "all",
-    ...new Set(resources.map((r) => r.category).filter(Boolean)),
-  ];
-  const availableTypes = [
-    "all",
-    ...new Set(resources.map((r) => r.type).filter(Boolean)),
-  ];
-
-  // Group by category
+  // Grouped by category
   const grouped = filtered.reduce((acc, r) => {
     const cat = r.category || "other";
     if (!acc[cat]) acc[cat] = [];
@@ -482,196 +395,209 @@ export default function Resources() {
     return acc;
   }, {});
 
-  const visLabel = VISIBILITY_OPTIONS.find(
-    (v) => v.value === (userRole === "guest" ? "public" : userRole),
-  );
+  const hasActiveFilters = search || activeCategory !== "All" || activeType !== "All";
+
+  const clearFilters = () => {
+    setSearch(""); setActiveCategory("All"); setActiveType("All");
+  };
 
   return (
-    <>
+    <div className="bg-[#FDFDFD] min-h-screen pb-32">
       <SEO
-        title="Resources | Code for Change Nepal"
-        description="Access learning materials, branding assets, job descriptions, and shared resources from Code for Change Nepal."
+        title="Resource Hub | Code for Change Nepal"
+        description="Access branding assets, region color codes, academic resources, and shared materials from Code for Change Nepal."
+        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Resources", path: "/resources" }]}
       />
 
-      <div className="min-h-screen bg-[#FAFAFA] text-slate-900">
-        {/* ── HERO ── */}
-        <section className="bg-gradient-to-br from-primary via-slate-800 to-primary relative overflow-hidden py-24 px-4">
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-              backgroundSize: "40px 40px",
-            }}
-          />
-          <div className="max-w-4xl mx-auto text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/80 text-[10px] font-black uppercase tracking-widest mb-6">
-              {isAuthenticated ? (
-                <>
-                  <FaLock className="text-[9px]" />{" "}
-                  {visLabel?.label || userRole} Access
-                </>
-              ) : (
-                <>
-                  <FaGlobe className="text-[9px]" /> Public Resources
-                </>
-              )}
+      {/* Banner — matches all other pages */}
+      <Banner />
+
+      <div className="max-w-7xl mx-auto px-6 py-12">
+
+        {/* ── Page Header ── */}
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="h-0.5 w-8 bg-primary" />
+              <h4 className="uppercase tracking-wider text-xs font-bold text-primary">
+                {isAuthenticated ? `${userRole.toUpperCase()} Access` : "Open Resources"}
+              </h4>
             </div>
-            <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight mb-4 leading-none">
-              Resource <span className="text-emerald-400">Hub</span>
-            </h1>
-            <p className="text-slate-300 text-lg font-medium max-w-xl mx-auto leading-relaxed">
-              Branding materials, academic resources, links, and shared assets —
-              all in one place.
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+              Resource Hub
+            </h2>
+            <p className="text-gray-500 font-medium max-w-xl text-base">
+              Branding materials, color codes, academic resources, and shared assets — all in one place.
             </p>
+          </div>
 
-            {/* Auth CTA for guests */}
-            {!isAuthenticated && (
-              <div className="mt-8 inline-flex items-center gap-3 px-6 py-4 bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white/80 text-sm font-medium">
-                <FaLock className="text-emerald-400 shrink-0" />
-                <span>
-                  <Link
-                    to="/login"
-                    className="text-emerald-400 font-black hover:underline"
-                  >
-                    Log in
-                  </Link>{" "}
-                  to access member-only and exclusive resources.
-                </span>
-              </div>
-            )}
-
-            {/* Search */}
-            <div className="mt-8 max-w-lg mx-auto relative">
-              <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-white/30" />
-              <input
-                type="text"
-                placeholder="Search resources, tags, subjects..."
-                className="w-full pl-14 pr-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/30 font-medium text-sm outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 backdrop-blur transition-all"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <div className="bg-primary/5 px-6 py-3 rounded-2xl border border-primary/10">
+            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Available</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-primary">{filtered.length}</span>
+              <span className="text-xs font-medium text-gray-500">Resources</span>
             </div>
           </div>
-        </section>
-
-        {/* ── FILTERS ── */}
-        <section className="sticky top-0 bg-white border-b border-slate-100 z-20 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 overflow-x-auto no-scrollbar">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest shrink-0 flex items-center gap-1">
-              <FaFilter size={9} /> Category
-            </span>
-            {availableCategories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all shrink-0 ${activeCategory === cat ? "bg-primary text-white shadow-sm" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
-              >
-                {cat === "all" ? "All" : CATEGORY_LABELS[cat] || cat}
-              </button>
-            ))}
-            <div className="w-px h-5 bg-slate-200 shrink-0" />
-            {availableTypes.map((type) => (
-              <button
-                key={type}
-                onClick={() => setActiveType(type)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all shrink-0 ${activeType === type ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-50 text-slate-500 hover:bg-slate-100 border border-slate-100"}`}
-              >
-                {type === "all" ? "All Types" : type.replace("-", " ")}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* ── REGION PALETTE (always visible, hardcoded) ── */}
-        <RegionPalette />
-
-        <div className="max-w-7xl mx-auto px-4 pb-2">
-          <div className="border-t border-slate-100" />
         </div>
 
-        {/* ── CONTENT ── */}
-        <main className="max-w-7xl mx-auto px-4 py-12">
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {[...Array(8)].map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
+        {/* ── Search & Filters Card ── */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl shadow-primary/5 border border-primary/10 overflow-hidden mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="p-6 md:p-8 space-y-8">
+            {/* Search */}
+            <div className="relative group">
+              <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-all" />
+              <input
+                type="text"
+                placeholder="Search by title, subject, tags..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full pl-14 pr-6 py-4 bg-primary/5 border-2 border-transparent rounded-2xl text-sm font-bold text-primary placeholder:text-gray-400 outline-none focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all shadow-inner"
+              />
             </div>
-          ) : filtered.length === 0 ? (
-            <div className="text-center py-24">
-              <div className="text-5xl mb-4">🔍</div>
-              <h3 className="text-xl font-black text-slate-400 mb-2">
-                No resources found
-              </h3>
-              <p className="text-slate-300 text-sm font-medium">
-                {!isAuthenticated ? (
-                  <>
-                    <Link
-                      to="/login"
-                      className="text-emerald-600 font-black hover:underline"
-                    >
-                      Log in
-                    </Link>{" "}
-                    to access member resources.
-                  </>
-                ) : (
-                  "Try adjusting your search or filters."
-                )}
-              </p>
-            </div>
-          ) : (
-            Object.entries(grouped).map(([cat, items]) => (
-              <section key={cat} className="mb-14">
-                <div className="flex items-end gap-4 mb-6">
-                  <div>
-                    <h2 className="text-2xl font-black text-primary tracking-tight">
-                      {CATEGORY_LABELS[cat] || cat}
-                    </h2>
-                    <p className="text-slate-400 text-xs font-medium mt-0.5">
-                      {CATEGORY_DESCRIPTIONS[cat] || ""}
-                    </p>
-                  </div>
-                  <span className="ml-auto px-3 py-1 bg-slate-100 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-wider shrink-0">
-                    {items.length} item{items.length !== 1 ? "s" : ""}
-                  </span>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Category filter */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 ml-1">
+                  <FaFilter className="text-primary text-[10px]" />
+                  <label className="text-[9px] font-bold text-primary uppercase tracking-[0.2em]">Category</label>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {items.map((r) => (
-                    <ResourceCard
-                      key={r._id}
-                      resource={r}
-                      userRole={userRole}
-                    />
+                <div className="flex flex-wrap gap-2">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCategory(cat)}
+                      className={`px-4 py-2 rounded-xl border-2 transition-all duration-200 text-[10px] font-bold uppercase tracking-wider ${
+                        activeCategory === cat
+                          ? "bg-primary border-primary text-white shadow-md shadow-primary/10 -translate-y-0.5"
+                          : "bg-primary/5 border-transparent text-gray-400 hover:border-primary/20 hover:text-primary"
+                      }`}
+                    >
+                      {cat === "All" ? "All" : `${CATEGORY_EMOJI[cat] || ""} ${CATEGORY_LABELS[cat] || cat}`}
+                    </button>
                   ))}
                 </div>
-              </section>
-            ))
-          )}
-
-          {/* Teaser for locked content */}
-          {!isAuthenticated && resources.length > 0 && (
-            <div className="mt-8 p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-2xl mx-auto mb-4">
-                <FaLock className="text-emerald-400" />
               </div>
-              <h3 className="text-xl font-black text-white mb-2">
-                Members-only Resources
-              </h3>
-              <p className="text-slate-400 text-sm font-medium mb-6">
-                Log in to access branding kits, internal docs, and exclusive
-                materials.
-              </p>
-              <Link
-                to="/login"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-500/20"
-              >
-                Log In to Access
-              </Link>
+
+              {/* Type filter */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 ml-1">
+                  <FaFilter className="text-primary text-[10px]" />
+                  <label className="text-[9px] font-bold text-primary uppercase tracking-[0.2em]">Type</label>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {types.map(type => (
+                    <button
+                      key={type}
+                      onClick={() => setActiveType(type)}
+                      className={`px-4 py-2 rounded-xl border-2 transition-all duration-200 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                        activeType === type
+                          ? "bg-secondary border-secondary text-white shadow-md shadow-secondary/10 -translate-y-0.5"
+                          : "bg-white border-secondary/10 text-gray-400 hover:border-secondary/30 hover:text-secondary"
+                      }`}
+                    >
+                      {type !== "All" && <span style={{ color: activeType === type ? "white" : TYPE_COLORS[type]?.fg }}>{TYPE_ICON[type] || null}</span>}
+                      {type === "All" ? "All Types" : type.replace(/-/g, " ")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Active filters row */}
+          {hasActiveFilters && (
+            <div className="bg-primary/5 border-t border-primary/10 px-8 md:px-12 py-4 flex flex-wrap items-center gap-3 animate-in slide-in-from-bottom-2 duration-300">
+              <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Active Filters:</span>
+              {search && <FilterChip label={`"${search}"`} onClear={() => setSearch("")} />}
+              {activeCategory !== "All" && <FilterChip label={activeCategory} onClear={() => setActiveCategory("All")} />}
+              {activeType !== "All" && <FilterChip label={activeType} onClear={() => setActiveType("All")} />}
+              <button onClick={clearFilters} className="ml-auto text-[9px] font-bold text-red-400 uppercase tracking-widest hover:underline">
+                Clear All
+              </button>
             </div>
           )}
-        </main>
+        </div>
+
+        {/* ── Region Colour Palette ── */}
+        {(activeCategory === "All" || activeCategory === "branding") && !search && activeType === "All" && (
+          <RegionPalette />
+        )}
+
+        {/* ── Dynamic Resources ── */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="bg-white rounded-3xl p-24 text-center border border-gray-100 shadow-sm">
+            <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-primary/30">
+              <FaSearch size={36} />
+            </div>
+            <h3 className="text-xl font-bold text-primary mb-3">
+              {search ? "No matches found" : "No resources yet"}
+            </h3>
+            <p className="text-gray-400 text-sm max-w-sm mx-auto mb-8">
+              {!isAuthenticated
+                ? "Some resources are members-only. "
+                : search
+                  ? `No results for "${search}". Try different keywords or reset filters.`
+                  : "Nothing here yet. Check back soon."}
+            </p>
+            {!isAuthenticated && (
+              <Link to="/login" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-secondary transition-all shadow-lg shadow-primary/20">
+                Log In to Access More
+              </Link>
+            )}
+            {hasActiveFilters && (
+              <button onClick={clearFilters} className="px-6 py-3 bg-secondary text-white rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-primary transition-all ml-3">
+                Reset Filters
+              </button>
+            )}
+          </div>
+        ) : (
+          Object.entries(grouped).map(([cat, items]) => (
+            <section key={cat} className="mb-14">
+              <div className="flex items-end justify-between mb-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="h-0.5 w-6 bg-primary/30" />
+                    <h4 className="uppercase tracking-wider text-[10px] font-bold text-primary/60">
+                      {CATEGORY_EMOJI[cat] || ""} {CATEGORY_LABELS[cat] || cat}
+                    </h4>
+                  </div>
+                  <p className="text-gray-400 text-xs font-medium">{CATEGORY_DESC[cat] || ""}</p>
+                </div>
+                <span className="px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-[9px] font-bold uppercase tracking-wider shrink-0">
+                  {items.length} item{items.length !== 1 ? "s" : ""}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {items.map(r => <ResourceCard key={r._id} resource={r} />)}
+              </div>
+            </section>
+          ))
+        )}
+
+        {/* Members-only CTA */}
+        {!isAuthenticated && resources.length > 0 && !hasActiveFilters && (
+          <div className="mt-16 bg-white rounded-3xl p-12 text-center border border-primary/10 shadow-sm">
+            <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-5">
+              <FaLock className="text-primary/40" size={22} />
+            </div>
+            <h3 className="text-2xl font-bold text-primary mb-2">Members-only Resources</h3>
+            <p className="text-gray-500 text-sm font-medium mb-8 max-w-sm mx-auto">
+              Log in to access branding kits, internal docs, and exclusive materials shared by the CFC team.
+            </p>
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-full font-bold text-[11px] uppercase tracking-widest hover:bg-secondary transition-all shadow-xl shadow-primary/20"
+            >
+              Log In to Access
+            </Link>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
