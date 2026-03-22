@@ -24,6 +24,7 @@ import {
   FiStar,
   FiAward,
   FiExternalLink,
+  FiGlobe,
 } from "react-icons/fi"; // Example icons
 
 // Updated Information
@@ -172,6 +173,16 @@ const Provinces = () => {
     (province) => province.name === activeTab,
   );
 
+  const socialIcons = {
+    linkedin: <FaLinkedinIn />,
+    facebook: <FaFacebookF />,
+    instagram: <FaInstagram />,
+    github: <FaGithub />,
+    youtube: <FaYoutube />,
+    twitter: <FaTwitter />,
+    website: <FiGlobe />,
+  };
+
   // console.log(member)
   return (
     <main>
@@ -287,21 +298,6 @@ const Provinces = () => {
         </section>
 
         <div className="max-w-7xl mx-auto px-6 space-y-20">
-          {/* Section: Core Team */}
-          {/* {currentTeam.core.length > 0 && (
-            <section>
-              <h2 className="text-3xl font-bold text-primary mb-10 flex items-center gap-4">
-                Core Team Members{" "}
-                <div className="h-1 flex-1 bg-slate-200 rounded-full" />
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {currentTeam.core.map((member, i) => (
-                  <TeamCard key={i} member={member} variant="standard" />
-                ))}
-              </div>
-            </section>
-          )} */}
-
           {/* Province Navigation */}
           <section className="pb-16 px-4 max-w-7xl mx-auto">
             <section className="pb-16 px-4 max-w-7xl mx-auto">
@@ -443,7 +439,7 @@ const Provinces = () => {
                       executiveMember.map((member, i) => (
                         <StaggerItem
                           key={member._id || i}
-                          className="relative group cursor-pointer transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full"
+                          className="relative group cursor-pointer rounded-2xl transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full"
                         >
                           {/* {console.log(currentTeam)} */}
                           {/* Neumorphic background */}
@@ -451,14 +447,51 @@ const Provinces = () => {
                             onClick={() => {
                               setSelectedMember(member);
                             }}
-                            className="relative shadow-xl transition-all duration-500 overflow-hidden hover:shadow-2xl"
+                            className="relative shadow-xl rounded-2xl p-3 transition-all duration-500 overflow-hidden hover:shadow-2xl"
                             style={{
                               borderColor: activeProvince?.colorCode,
-                              boxShadow: `0 20px 40px -20px ${activeProvince?.colorCode}40`,
+                              boxShadow: `0 20px 40px -20px ${activeProvince?.colorCode}70`,
                             }}
                           >
                             {/* Image container */}
-                            <div className="aspect-4/5 overflow-hidden relative">
+                            <div className="aspect-4/5 rounded-xl overflow-hidden relative">
+                              {Object.entries(member.socialLinks || {})
+                                .filter(([_, url]) => url)
+                                .map(([platform, url], idx) => (
+                                  <div
+                                    key={platform}
+                                    className={`absolute z-20 ${idx < 3 ? "left-6" : "right-6"}
+                                     [--icon-gap:3.5rem] lg:[--icon-gap:2.5rem]`}
+                                    style={{
+                                      top: `calc(1.5rem + ${idx % 3} * var(--icon-gap))`,
+                                    }}
+                                  >
+                                    <a
+                                      href={
+                                        url.startsWith("http")
+                                          ? url
+                                          : `https://${url}`
+                                      }
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={`lg:w-9 w-11 h-11 lg:h-9 rounded-xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
+                                        opacity-100 md:opacity-0 ${
+                                          idx < 3
+                                            ? "md:-translate-x-12"
+                                            : "md:translate-x-12"
+                                        }
+                                         group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
+                                      style={{
+                                        transitionDelay: `${idx * 100}ms`,
+                                      }}
+                                    >
+                                      {socialIcons[platform] || (
+                                        <FiExternalLink />
+                                      )}
+                                    </a>
+                                  </div>
+                                ))}
+
                               <img
                                 src={member.image}
                                 alt={member.name}
@@ -478,9 +511,10 @@ const Provinces = () => {
                                     <span className="capitalize text-[10px] sm:text-sm">
                                       {member.position.replace(/-/g, " ")}
                                     </span>
-                                    <span className=" md:text-xl lg:text-2xl font-bold">{member.name.split(" ")[0]}</span>
+                                    <span className=" md:text-xl lg:text-2xl font-bold">
+                                      {member.name.split(" ")[0]}
+                                    </span>
                                   </p>
-                                  
                                 </div>
                               </div>
                             </div>

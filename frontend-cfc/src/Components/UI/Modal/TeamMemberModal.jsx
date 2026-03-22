@@ -51,7 +51,7 @@ export default function TeamMemberModal({ isOpen, onClose, member, links }) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 z-20 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors cursor-pointer"
+          className="absolute top-5 right-5 z-20 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full cursor-pointer hover:rotate-90 transition-all ease-in duration-200"
         >
           <FaTimes size={18} />
         </button>

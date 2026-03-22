@@ -7,6 +7,7 @@ import {
   FiArrowLeft,
   FiMapPin,
   FiActivity,
+  FiGlobe,
 } from "react-icons/fi";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
@@ -16,63 +17,140 @@ import EventCard from "../Components/UI/EventCard";
 import { Pulse } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
 import { motion } from "framer-motion";
+import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
+import {
+  FaFacebookF,
+  FaGithub,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa";
 
-const TeamMemberCard = ({ member, themeColor, index = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay: 0.1 * index, type: "spring", stiffness: 80, damping: 20 }}
-    className="group relative p-4 backdrop-blur rounded-3xl"
-    style={{ backgroundColor: `${themeColor}30` }}
-  >
-    <div
-      className="relative overflow-hidden rounded-2xl aspect-4/5 mb-4 transition-all duration-500"
-      style={{
-        border: `1px solid ${themeColor}20`,
-        boxShadow: `0 10px 30px -15px ${themeColor}30`,
+const socialIcons = {
+  linkedin: <FaLinkedinIn />,
+  facebook: <FaFacebookF />,
+  instagram: <FaInstagram />,
+  github: <FaGithub />,
+  youtube: <FaYoutube />,
+  twitter: <FaTwitter />,
+  website: <FiGlobe />,
+};
+
+const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
+  // Filter social links that exist
+  const availableSocials = Object.entries(member.socialLinks || {}).filter(
+    ([_, url]) => url
+  );
+
+  return (
+    <motion.div
+      onClick={() => onClick(member)}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.5,
+        delay: 0.1 * index,
+        type: "spring",
+        stiffness: 80,
+        damping: 20,
       }}
+      className="group relative cursor-pointer p-4 backdrop-blur rounded-3xl"
     >
-      <img
-        src={
-          member.image ||
-          `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random&color=fff`
-        }
-        alt={member.name}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-      />
-      {/* Dynamic Themed Overlay */}
       <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6"
+        className="relative overflow-hidden rounded-2xl aspect-4/5 mb-4 transition-all duration-500"
         style={{
-          background: `linear-gradient(to top, ${themeColor}55, transparent)`,
+          border: `1px solid ${themeColor}20`,
+          boxShadow: `0 10px 30px -15px ${themeColor}30`,
         }}
       >
-        {/* <p className="text-white font-black text-base tracking-tight mb-1">{member.name}</p> */}
-        {/* <p className="text-white/80 text-[10px] font-black uppercase tracking-widest">{member.role}</p> */}
+        <img
+          src={
+            member.image ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              member.name
+            )}&background=random&color=fff`
+          }
+          alt={member.name}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+
+        {/* Social Media Icons Overlay */}
+     {availableSocials.length > 0 && (
+  <>
+    {/* Left Column (first 3 icons) */}
+    <div className="absolute top-3 left-3 flex flex-col gap-2 z-20">
+      {availableSocials.slice(0, 3).map(([platform, url], idx) => (
+        <a
+          key={platform}
+          href={url.startsWith("http") ? url : `https://${url}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
+            transform translate-x-[-10px] opacity-0
+            group-hover:translate-x-0 group-hover:opacity-100
+            transition-all duration-500`}
+          style={{ transitionDelay: `${idx * 75}ms` }}
+        >
+          {socialIcons[platform] || <FiExternalLink />}
+        </a>
+      ))}
+    </div>
+
+    {/* Right Column (next 3 icons) */}
+    <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
+      {availableSocials.slice(3, 6).map(([platform, url], idx) => (
+        <a
+          key={platform}
+          href={url.startsWith("http") ? url : `https://${url}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
+            transform translate-x-[10px] opacity-0
+            group-hover:translate-x-0 group-hover:opacity-100
+            transition-all duration-500`}
+          style={{ transitionDelay: `${idx * 75}ms` }}
+        >
+          {socialIcons[platform] || <FiExternalLink />}
+        </a>
+      ))}
+    </div>
+  </>
+)}
+
+        {/* Dynamic Themed Overlay */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6"
+          style={{
+            background: `linear-gradient(to top, ${themeColor}55, transparent)`,
+          }}
+        ></div>
       </div>
-    </div>
-    <div className="text-center">
-      <h4
-        className="font-bold tracking-tight text-primary text-base group-hover:text-primary transition-colors"
-        style={{ color: themeColor }}
-      >
-        {member.name}
-      </h4>
-      <p
-        className="text-[11px] font-black uppercase tracking-[0.15em] mt-1.5 opacity-80"
-        style={{ color: themeColor }}
-      >
-        {member.role}
-      </p>
-    </div>
-  </motion.div>
-);
+
+      <div className="text-center">
+        <h4
+          className="font-bold tracking-tight text-primary text-base group-hover:text-primary transition-colors"
+          style={{ color: themeColor }}
+        >
+          {member.name}
+        </h4>
+        <p
+          className="text-[11px] font-black uppercase tracking-[0.15em] mt-1.5 opacity-80"
+          style={{ color: themeColor }}
+        >
+          {member.role}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
 
 const ProvinceDetails = () => {
   const { provinceName } = useParams();
   const [events, setEvents] = useState([]);
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const displayName = provinceName
     .replace(/-/g, " ")
@@ -107,13 +185,15 @@ const ProvinceDetails = () => {
 
   const [heroImage, setHeroImage] = useState(
     provinceHeroImages[displayName] ||
-    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000"
+      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000",
   );
 
   // Fetch background resource from admin-uploaded assets (with fallback)
   useEffect(() => {
-    API.get(`/resources?category=background&subject=${encodeURIComponent(displayName)}`)
-      .then(res => {
+    API.get(
+      `/resources?category=background&subject=${encodeURIComponent(displayName)}`,
+    )
+      .then((res) => {
         const items = res.data?.data;
         if (Array.isArray(items) && items.length > 0 && items[0].fileUrl) {
           setHeroImage(items[0].fileUrl);
@@ -186,18 +266,21 @@ const ProvinceDetails = () => {
   }, [displayName]);
 
   // Generate Person JSON-LD for team members (helps Google index members without individual pages)
-  const teamJsonLd = team.length > 0 ? {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": `Code for Change Nepal - ${displayName}`,
-    "url": `${window.location.origin}/provinces/${provinceName}`,
-    "member": team.map(member => ({
-      "@type": "Person",
-      "name": member.name,
-      ...(member.role && { "jobTitle": member.position || member.role }),
-      ...(member.image && { "image": member.image }),
-    }))
-  } : null;
+  const teamJsonLd =
+    team.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: `Code for Change Nepal - ${displayName}`,
+          url: `${window.location.origin}/provinces/${provinceName}`,
+          member: team.map((member) => ({
+            "@type": "Person",
+            name: member.name,
+            ...(member.role && { jobTitle: member.position || member.role }),
+            ...(member.image && { image: member.image }),
+          })),
+        }
+      : null;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-900 font-sans selection:bg-blue-100">
@@ -257,7 +340,10 @@ const ProvinceDetails = () => {
 
       {/* 2. Floating Stats Glass-morphism */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 -mt-16 md:-mt-24 relative z-30">
-        <SlideUp delay={0.1} className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <SlideUp
+          delay={0.1}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+        >
           <StatCard
             icon={<FiUsers />}
             label="Province Reach"
@@ -402,24 +488,31 @@ const ProvinceDetails = () => {
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-            {[0,1,2,3,4].map(i => (
-              <div key={i} className="flex flex-col items-center gap-3 p-4 rounded-3xl" style={{ backgroundColor: `${themeColor}20` }}>
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                style={{ backgroundColor: `${themeColor}20` }}
+              >
                 <Pulse className="w-full aspect-4/5 rounded-2xl" />
                 <Pulse className="h-4 w-24 rounded mx-auto" />
                 <Pulse className="h-3 w-16 rounded mx-auto" />
               </div>
             ))}
           </div>
-        ) : team.filter(m => m.role === 'eb').length > 0 ? (
+        ) : team.filter((m) => m.role === "eb").length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-            {team.filter(m => m.role === 'eb').map((member, i) => (
-              <TeamMemberCard
-                key={member._id || i}
-                member={member}
-                themeColor={themeColor}
-                index={i}
-              />
-            ))}
+            {team
+              .filter((m) => m.role === "eb")
+              .map((member, i) => (
+                <TeamMemberCard
+                  key={member._id || i}
+                  member={member}
+                  themeColor={themeColor}
+                  index={i}
+                  onClick={setSelectedMember}
+                />
+              ))}
           </div>
         ) : (
           <div className="text-center text-gray-400 italic">
@@ -427,6 +520,12 @@ const ProvinceDetails = () => {
           </div>
         )}
       </section>
+      <TeamMemberModal
+        isOpen={!!selectedMember}
+        member={selectedMember}
+        links={selectedMember?.socialLinks}
+        onClose={() => setSelectedMember(null)}
+      />
       {/* College representative */}
       <section className="max-w-7xl mx-auto px-6 py-5">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-4">
@@ -439,24 +538,31 @@ const ProvinceDetails = () => {
         </div>
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-            {[0,1,2,3].map(i => (
-              <div key={i} className="flex flex-col items-center gap-3 p-4 rounded-3xl" style={{ backgroundColor: `${themeColor}20` }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                style={{ backgroundColor: `${themeColor}20` }}
+              >
                 <Pulse className="w-full aspect-4/5 rounded-2xl" />
                 <Pulse className="h-4 w-24 rounded mx-auto" />
                 <Pulse className="h-3 w-16 rounded mx-auto" />
               </div>
             ))}
           </div>
-        ) : team.filter(m => m.role === 'cr').length > 0 ? (
+        ) : team.filter((m) => m.role === "cr").length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-            {team.filter(m => m.role === 'cr').map((member, i) => (
-              <TeamMemberCard
-                key={member._id || i}
-                member={member}
-                themeColor={themeColor}
-                index={i}
-              />
-            ))}
+            {team
+              .filter((m) => m.role === "cr")
+              .map((member, i) => (
+                <TeamMemberCard
+                  key={member._id || i}
+                  member={member}
+                  themeColor={themeColor}
+                  index={i}
+                  onClick={setSelectedMember}
+                />
+              ))}
           </div>
         ) : (
           <div className="text-center text-gray-400 italic">
@@ -477,24 +583,31 @@ const ProvinceDetails = () => {
         </div>
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-            {[0,1,2,3].map(i => (
-              <div key={i} className="flex flex-col items-center gap-3 p-4 rounded-3xl" style={{ backgroundColor: `${themeColor}20` }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                style={{ backgroundColor: `${themeColor}20` }}
+              >
                 <Pulse className="w-full aspect-4/5 rounded-2xl" />
                 <Pulse className="h-4 w-24 rounded mx-auto" />
                 <Pulse className="h-3 w-16 rounded mx-auto" />
               </div>
             ))}
           </div>
-        ) : team.filter(m => m.role === 'gm').length > 0 ? (
+        ) : team.filter((m) => m.role === "gm").length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-            {team.filter(m => m.role === 'gm').map((member, i) => (
-              <TeamMemberCard
-                key={member._id || i}
-                member={member}
-                themeColor={themeColor}
-                index={i}
-              />
-            ))}
+            {team
+              .filter((m) => m.role === "gm")
+              .map((member, i) => (
+                <TeamMemberCard
+                  key={member._id || i}
+                  member={member}
+                  themeColor={themeColor}
+                  index={i}
+                  onClick={setSelectedMember}
+                />
+              ))}
           </div>
         ) : (
           <div className="text-center text-gray-400 italic">
@@ -522,6 +635,7 @@ const ProvinceDetails = () => {
                   member={member}
                   themeColor={themeColor}
                   index={i}
+                  onClick={setSelectedMember}
                 />
               ))}
             </div>
@@ -540,6 +654,15 @@ const ProvinceDetails = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               {ADVISORS.map((advisor, i) => (
                 <div
+                  onClick={() =>
+                    setSelectedMember({
+                      name: advisor.name,
+                      role: advisor.role,
+                      image: advisor.image,
+                      bio: advisor.quote,
+                      socialLinks: advisor.socialLinks || {},
+                    })
+                  }
                   key={i}
                   className="bg-white p-8 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
                 >
@@ -597,6 +720,7 @@ const ProvinceDetails = () => {
                   member={member}
                   themeColor={themeColor}
                   index={i}
+                  onClick={setSelectedMember}
                 />
               ))}
             </div>
@@ -622,8 +746,11 @@ const ProvinceDetails = () => {
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[0,1,2,3,4,5].map(i => (
-              <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+              >
                 <Pulse className="w-full h-48 rounded-none" />
                 <div className="p-6 space-y-3">
                   <Pulse className="h-5 w-full rounded" />
@@ -639,11 +766,17 @@ const ProvinceDetails = () => {
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event, i) => (
-              <motion.div 
+              <motion.div
                 key={event._id || i}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 * i, type: "spring", stiffness: 80, damping: 20 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.1 * i,
+                  type: "spring",
+                  stiffness: 80,
+                  damping: 20,
+                }}
               >
                 <EventCard event={event} />
               </motion.div>
