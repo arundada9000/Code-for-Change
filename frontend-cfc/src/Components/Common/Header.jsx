@@ -43,7 +43,7 @@ function Header({ setShowSidebar }) {
             <div key={i} className="relative group">
               <Link
                 to={val.path}
-                className={`hover:bg-primary py-1  px-4 flex items-center gap-1 rounded-full hover:text-white transition duration-200
+                className={`hover:bg-primary py-1 border-2 border-transparent px-4 flex items-center gap-1 rounded-full hover:text-white transition duration-200
           ${location.pathname === val.path
                     ? "text-white bg-primary border-2 border-primary"
                     : scrolled
