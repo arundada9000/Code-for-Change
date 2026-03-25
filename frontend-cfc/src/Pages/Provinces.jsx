@@ -65,7 +65,7 @@ const Provinces = () => {
   const { data: provincialStats } = useFetch("/province-stats", {});
   const { data: publicUsers } = useFetch("/users/public-users", []);
 
-  console.log(publicUsers);
+  // console.log(publicUsers);
   // console.log(provincialStats);
   // console.log(apiTeam);
   // console.log("hello")
@@ -163,7 +163,7 @@ const Provinces = () => {
     ) || [],
   );
 
-  console.log(executiveMember);
+  // console.log(executiveMember);
 
   // console.log(currentTeam.provincial)
   // console.log(currentTeam);
