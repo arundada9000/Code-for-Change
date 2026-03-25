@@ -548,7 +548,7 @@ const ProvinceDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="sm:hidden relative z-50">
+    <div className="sm:hidden relative z-10">
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
