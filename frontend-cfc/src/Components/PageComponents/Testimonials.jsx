@@ -97,7 +97,10 @@ export default function Testimonial() {
 
   // Dots now represent each testimonial individually
   const totalDots = testimonials.length;
-  const activeDot = testimonials.length > 0 ? (index - visible + testimonials.length) % testimonials.length : 0;
+  const activeDot =
+    testimonials.length > 0
+      ? (index - visible + testimonials.length) % testimonials.length
+      : 0;
 
   if (loading || testimonials.length === 0) return null;
 
@@ -124,30 +127,30 @@ export default function Testimonial() {
       {/* Carousel viewport */}
       <div className="relative">
         {/* Left Arrow */}
-      <button
-  onClick={prev}
-  className="absolute left-0 top-1/2 -translate-y-1/2 z-20
+        <button
+          onClick={prev}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20
    rounded-full flex items-center justify-center
  text-3xl px-5 py-2 bg-white/80 backdrop-blur-md border border-gray-200
   shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer"
->
-  ‹
-</button>
+        >
+          ‹
+        </button>
 
-<button
-  onClick={next}
-  className="absolute right-0 top-1/2 -translate-y-1/2 z-20
+        <button
+          onClick={next}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20
    rounded-full flex items-center justify-center
  text-3xl px-5 py-2 bg-white/80 backdrop-blur-md border border-gray-200
   shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer"
->
-  ›
-</button>
+        >
+          ›
+        </button>
 
-<div
-  className="relative mx-auto overflow-x-hidden overflow-y-visible py-10"
-  style={{ width: visible * SLIDE_SIZE - GAP }}
->
+        <div
+          className="relative mx-auto overflow-x-hidden overflow-y-visible py-10"
+          style={{ width: visible * SLIDE_SIZE - GAP }}
+        >
           <div
             ref={trackRef}
             className="flex"
@@ -184,7 +187,7 @@ export default function Testimonial() {
                 {/* Quote */}
                 <div className="mt-8 text-center relative">
                   <FaQuoteRight className="absolute -top-10 right-2 text-5xl text-purple-100" />
-                  <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                  <p className="text-gray-700 leading-relaxed text-sm md:text-base line-clamp-3 md:line-clamp-4">
                     {item.text}
                   </p>
                 </div>
@@ -207,25 +210,24 @@ export default function Testimonial() {
         </div>
 
         {/* Dots */}
-       <div className="flex justify-center gap-3 mt-8">
-  {Array.from({ length: totalDots }).map((_, i) => (
-    <button
-      key={i}
-      onClick={() => {
-        if (animating) return;
-        setAnimating(true);
-        trackRef.current.style.transition = "transform 0.6s ease";
-        setIndex(visible + i);
-      }}
-      className={`h-2 rounded-full transition-all duration-500 ${
-        i === activeDot
-          ? "w-8 bg-primary"
-          : "w-2 bg-gray-300 hover:bg-gray-400"
-      }`}
-    />
-  ))}
-</div>
-
+        <div className="flex justify-center gap-3 mt-8">
+          {Array.from({ length: totalDots }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                if (animating) return;
+                setAnimating(true);
+                trackRef.current.style.transition = "transform 0.6s ease";
+                setIndex(visible + i);
+              }}
+              className={`h-2 rounded-full transition-all duration-500 ${
+                i === activeDot
+                  ? "w-8 bg-primary"
+                  : "w-2 bg-gray-300 hover:bg-gray-400"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
