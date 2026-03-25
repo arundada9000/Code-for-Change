@@ -80,7 +80,7 @@ export default function TeamMemberModal({ isOpen, onClose, member, links }) {
           </p>
 
           <p className="text-white/80 mb-6">
-            {member.bio || "Focused on building meaningful impact."}
+            {member.bio}
           </p>
 
           {/* Social Section */}

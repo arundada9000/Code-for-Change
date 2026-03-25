@@ -55,10 +55,11 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
         stiffness: 80,
         damping: 20,
       }}
-      className="group relative cursor-pointer p-4 backdrop-blur rounded-3xl"
+      style={{ "--theme-color": themeColor }}
+      className={`group relative hover:shadow-xl hover:-translate-y-2 transition-all ease-in duration-300 cursor-pointer hover:bg-(--theme-color)`}
     >
       <div
-        className="relative overflow-hidden rounded-2xl aspect-4/5 mb-4 transition-all duration-500"
+        className="relative overflow-hidden w-full h-60 mb-2 transition-all duration-500"
         style={{
           border: `1px solid ${themeColor}20`,
           boxShadow: `0 10px 30px -15px ${themeColor}30`,
@@ -79,17 +80,17 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
         {availableSocials.length > 0 && (
           <>
             {/* Left Column (first 3 icons) */}
-            <div className="absolute top-3 left-3 flex flex-col gap-2 z-20">
+            <div className="absolute top-3 left-5 md:right-3 flex flex-col gap-2 z-20">
               {availableSocials.slice(0, 3).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
-            transform translate-x-[-10px] opacity-0
-            group-hover:translate-x-0 group-hover:opacity-100
-            transition-all duration-500`}
+                  className={`w-7 h-7 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white text-primary shadow-md
+                  transform translate-x-[-10px] md:opacity-0
+                  group-hover:translate-x-0 md:group-hover:opacity-100
+                  transition-all duration-500`}
                   style={{ transitionDelay: `${idx * 75}ms` }}
                 >
                   {socialIcons[platform] || <FiExternalLink />}
@@ -98,17 +99,17 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
             </div>
 
             {/* Right Column (next 3 icons) */}
-            <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
+            <div className="absolute top-3 right-5 md:right-3 flex flex-col gap-2 z-20">
               {availableSocials.slice(3, 6).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
-            transform translate-x-[10px] opacity-0
-            group-hover:translate-x-0 group-hover:opacity-100
-            transition-all duration-500`}
+                  className={`w-7 h-7 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white text-primary shadow-md
+                  transform translate-x-[10px] md:opacity-0
+                  group-hover:translate-x-0 md:group-hover:opacity-100
+                  transition-all duration-500`}
                   style={{ transitionDelay: `${idx * 75}ms` }}
                 >
                   {socialIcons[platform] || <FiExternalLink />}
@@ -122,21 +123,21 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6"
           style={{
-            background: `linear-gradient(to top, ${themeColor}55, transparent)`,
+            background: `linear-gradient(to top, ${themeColor}30, transparent)`,
           }}
         ></div>
       </div>
 
-      <div className="text-center">
+      <div className="text-center  pb-2">
         <h4
-          className="font-bold tracking-tight text-primary text-base group-hover:text-primary transition-colors"
-          style={{ color: themeColor }}
+          className="font-bold tracking-tight text-(--theme-color) text-base group-hover:text-white transition-colors"
+          style={{ "--theme-color": themeColor }}
         >
           {member.name}
         </h4>
         <p
-          className="text-[11px] font-black uppercase tracking-[0.15em] mt-1.5 opacity-80"
-          style={{ color: themeColor }}
+          className="text-[11px] font-semibold uppercase text-(--theme-color) group-hover:text-white  tracking-[0.15em] mt-1.5 opacity-80"
+          style={{ "--theme-color": themeColor }}
         >
           {member.role}
         </p>
@@ -426,7 +427,116 @@ const ProvinceDetails = () => {
         </SlideUp>
       </section>
 
-      {/* 5. Team - Dynamic */}
+      {/* Central Advisors */}
+      <div className="max-w-7xl mx-auto pb-14 md:py-14 px-6">
+        <div className="flex justify-between mb-8 gap-4">
+          <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
+            Central <span style={{ color: themeColor }}>Advisors</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            Strategic Guidance
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          {ADVISORS.map((advisor, i) => (
+            <div
+              onClick={() =>
+                setSelectedMember({
+                  name: advisor.name,
+                  role: advisor.role,
+                  image: advisor.image,
+                  bio: advisor.quote,
+                  socialLinks: advisor.socialLinks || {},
+                })
+              }
+              key={i}
+              className="bg-white p-8 rounded-3xl cursor-pointer border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
+            >
+              <div
+                className="absolute top-0 left-0 w-full h-1"
+                style={{ backgroundColor: themeColor }}
+              />
+              <div className="flex items-center gap-6 mb-6">
+                <img
+                  src={advisor.image}
+                  className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110"
+                  alt={advisor.name}
+                />
+                <div>
+                  <h4 className=" text-primary text-xl leading-tight">
+                    {advisor.name}
+                  </h4>
+                  <p
+                    className="text-[11px] mt-1.5"
+                    style={{ color: themeColor }}
+                  >
+                    {advisor.role}
+                  </p>
+                  <p className="text-[10px]  text-slate-400  mt-1">
+                    {advisor.organization}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-slate-600  font-medium leading-relaxed relative z-10">
+                "{advisor.quote}"
+              </p>
+              <div
+                className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-5 transition-transform duration-700 group-hover:scale-150"
+                style={{ backgroundColor: themeColor }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Immediate past project lead (IPPL pannel) */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+          <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+            Immediate Past{" "}
+            <span style={{ color: themeColor }}>Project Lead</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            IPPL Panel
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                style={{ backgroundColor: `${themeColor}20` }}
+              >
+                <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                <Pulse className="h-4 w-24 rounded mx-auto" />
+                <Pulse className="h-3 w-16 rounded mx-auto" />
+              </div>
+            ))}
+          </div>
+        ) : team.filter((m) => m.role === "eb").length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {team
+              .filter((m) => m.role === "eb")
+              .map((member, i) => (
+                <TeamMemberCard
+                  key={member._id || i}
+                  member={member}
+                  themeColor={themeColor}
+                  index={i}
+                  onClick={setSelectedMember}
+                />
+              ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 italic">
+            No executive members found for this region.
+          </div>
+        )}
+      </section>
+
+      {/* Executive Member */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
           <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
@@ -471,12 +581,7 @@ const ProvinceDetails = () => {
           </div>
         )}
       </section>
-      <TeamMemberModal
-        isOpen={!!selectedMember}
-        member={selectedMember}
-        links={selectedMember?.socialLinks}
-        onClose={() => setSelectedMember(null)}
-      />
+
       {/* College representative */}
       <section className="max-w-7xl mx-auto px-6 py-5">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-4">
@@ -591,91 +696,6 @@ const ProvinceDetails = () => {
               ))}
             </div>
           </div>
-
-          {/* Central Advisors */}
-          <div>
-            <div className="flex flex-col md:flex-row-reverse justify-between items-end mb-8 gap-4 md:text-right">
-              <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
-                Central <span style={{ color: themeColor }}>Advisors</span>
-              </h2>
-              <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-                Strategic Guidance
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {ADVISORS.map((advisor, i) => (
-                <div
-                  onClick={() =>
-                    setSelectedMember({
-                      name: advisor.name,
-                      role: advisor.role,
-                      image: advisor.image,
-                      bio: advisor.quote,
-                      socialLinks: advisor.socialLinks || {},
-                    })
-                  }
-                  key={i}
-                  className="bg-white p-8 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
-                >
-                  <div
-                    className="absolute top-0 left-0 w-full h-1"
-                    style={{ backgroundColor: themeColor }}
-                  />
-                  <div className="flex items-center gap-6 mb-6">
-                    <img
-                      src={advisor.image}
-                      className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110"
-                      alt={advisor.name}
-                    />
-                    <div>
-                      <h4 className="font-black text-primary text-xl leading-tight">
-                        {advisor.name}
-                      </h4>
-                      <p
-                        className="text-[11px] font-black uppercase tracking-widest mt-1.5"
-                        style={{ color: themeColor }}
-                      >
-                        {advisor.role}
-                      </p>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                        {advisor.organization}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-600 italic font-medium leading-relaxed relative z-10">
-                    "{advisor.quote}"
-                  </p>
-                  <div
-                    className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-5 transition-transform duration-700 group-hover:scale-150"
-                    style={{ backgroundColor: themeColor }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* National Leadership */}
-          <div>
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-              <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
-                National <span style={{ color: themeColor }}>Leadership</span>
-              </h2>
-              <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-                Core Members
-              </p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-              {CORE_TEAM.map((member, i) => (
-                <TeamMemberCard
-                  key={i}
-                  member={member}
-                  themeColor={themeColor}
-                  index={i}
-                  onClick={setSelectedMember}
-                />
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -739,6 +759,13 @@ const ProvinceDetails = () => {
           </div>
         )}
       </section>
+
+      <TeamMemberModal
+        isOpen={!!selectedMember}
+        member={selectedMember}
+        links={selectedMember?.socialLinks}
+        onClose={() => setSelectedMember(null)}
+      />
     </div>
   );
 };
