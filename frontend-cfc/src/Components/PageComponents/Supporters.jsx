@@ -58,11 +58,11 @@ function Supporters() {
         ref={carouselRef}
         className="flex gap-10 md:gap-28 max-md:h-14 h-20 mt-12 overflow-hidden"
       >
-        {[...partners, ...partners].map((logo, i) => (
+        {[...partners, ...partners].map((supporter, i) => (
           <img
             key={i}
-            src={logo}
-            alt={`Partner ${i + 1}`}
+            src={supporter.logo}
+            alt={supporter.name || `Partner ${i + 1}`}
             className="h-full object-contain shrink-0"
           />
         ))}
