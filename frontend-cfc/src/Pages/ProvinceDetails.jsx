@@ -40,7 +40,7 @@ const socialIcons = {
 const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
   // Filter social links that exist
   const availableSocials = Object.entries(member.socialLinks || {}).filter(
-    ([_, url]) => url
+    ([_, url]) => url,
   );
 
   return (
@@ -68,7 +68,7 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
           src={
             member.image ||
             `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              member.name
+              member.name,
             )}&background=random&color=fff`
           }
           alt={member.name}
@@ -76,47 +76,47 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
         />
 
         {/* Social Media Icons Overlay */}
-     {availableSocials.length > 0 && (
-  <>
-    {/* Left Column (first 3 icons) */}
-    <div className="absolute top-3 left-3 flex flex-col gap-2 z-20">
-      {availableSocials.slice(0, 3).map(([platform, url], idx) => (
-        <a
-          key={platform}
-          href={url.startsWith("http") ? url : `https://${url}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
+        {availableSocials.length > 0 && (
+          <>
+            {/* Left Column (first 3 icons) */}
+            <div className="absolute top-3 left-3 flex flex-col gap-2 z-20">
+              {availableSocials.slice(0, 3).map(([platform, url], idx) => (
+                <a
+                  key={platform}
+                  href={url.startsWith("http") ? url : `https://${url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
             transform translate-x-[-10px] opacity-0
             group-hover:translate-x-0 group-hover:opacity-100
             transition-all duration-500`}
-          style={{ transitionDelay: `${idx * 75}ms` }}
-        >
-          {socialIcons[platform] || <FiExternalLink />}
-        </a>
-      ))}
-    </div>
+                  style={{ transitionDelay: `${idx * 75}ms` }}
+                >
+                  {socialIcons[platform] || <FiExternalLink />}
+                </a>
+              ))}
+            </div>
 
-    {/* Right Column (next 3 icons) */}
-    <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
-      {availableSocials.slice(3, 6).map(([platform, url], idx) => (
-        <a
-          key={platform}
-          href={url.startsWith("http") ? url : `https://${url}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
+            {/* Right Column (next 3 icons) */}
+            <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
+              {availableSocials.slice(3, 6).map(([platform, url], idx) => (
+                <a
+                  key={platform}
+                  href={url.startsWith("http") ? url : `https://${url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
             transform translate-x-[10px] opacity-0
             group-hover:translate-x-0 group-hover:opacity-100
             transition-all duration-500`}
-          style={{ transitionDelay: `${idx * 75}ms` }}
-        >
-          {socialIcons[platform] || <FiExternalLink />}
-        </a>
-      ))}
-    </div>
-  </>
-)}
+                  style={{ transitionDelay: `${idx * 75}ms` }}
+                >
+                  {socialIcons[platform] || <FiExternalLink />}
+                </a>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Dynamic Themed Overlay */}
         <div
@@ -213,7 +213,11 @@ const ProvinceDetails = () => {
         ]);
 
         const allEvents =
-          eventsRes.status === "fulfilled" ? (eventsRes.value.data.data?.events || eventsRes.value.data.data || []) : [];
+          eventsRes.status === "fulfilled"
+            ? eventsRes.value.data.data?.events ||
+              eventsRes.value.data.data ||
+              []
+            : [];
         const allTeam =
           teamRes.status === "fulfilled" ? teamRes.value.data.data : [];
         const allPublicUsers =
@@ -396,10 +400,10 @@ const ProvinceDetails = () => {
             </div>
             <div>
               <h4 className="font-bold text-primary text-lg">
-                Class Representatives
+                College Representatives
               </h4>
               <p className="text-slate-500 text-sm font-medium">
-                Connecting 15+ premium institutions to our core mission.
+                Connecting 15+ institutions to our core mission.
               </p>
             </div>
           </div>
@@ -422,59 +426,6 @@ const ProvinceDetails = () => {
         </SlideUp>
       </section>
 
-      {/* 4. Strategic Roadmap - Clean & Managed */}
-      {/* <section className="py-12 bg-slate-50 border-y border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-            <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
-              Strategic <span style={{ color: themeColor }}>Roadmap</span>
-            </h2>
-            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-              Milestones & Goals
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {["Awareness", "Skill Building", "Placement"].map((goal, i) => (
-              <div
-                key={i}
-                className="p-8 rounded-[2rem] bg-white border border-slate-200/60 shadow-sm hover:shadow-md transition-all group"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h4 className="text-lg font-black text-primary tracking-tight">{goal}</h4>
-                  <span 
-                    className="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest"
-                    style={{ backgroundColor: `${themeColor}15`, color: themeColor }}
-                  >
-                    Phase 0{i + 1}
-                  </span>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-1000 ease-out"
-                      style={{
-                        width: `${80 - i * 20}%`,
-                        backgroundColor: themeColor,
-                      }}
-                    />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">
-                      Target Reach
-                    </p>
-                    <p className="text-sm font-black text-primary" style={{ color: themeColor }}>
-                      {80 - i * 20}%
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       {/* 5. Team - Dynamic */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
@@ -482,7 +433,7 @@ const ProvinceDetails = () => {
             Executive <span style={{ color: themeColor }}>Panel</span>
           </h2>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-            Executive Board of Members
+            Executive Members
           </p>
         </div>
 
@@ -516,7 +467,7 @@ const ProvinceDetails = () => {
           </div>
         ) : (
           <div className="text-center text-gray-400 italic">
-            No executive board members found for this region.
+            No executive members found for this region.
           </div>
         )}
       </section>
@@ -533,7 +484,7 @@ const ProvinceDetails = () => {
             College <span style={{ color: themeColor }}>Representatives</span>
           </h2>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-            Board of CR
+            CR
           </p>
         </div>
         {loading ? (
@@ -578,7 +529,7 @@ const ProvinceDetails = () => {
             General <span style={{ color: themeColor }}>Member</span>
           </h2>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-            Board of GM
+            GM
           </p>
         </div>
         {loading ? (

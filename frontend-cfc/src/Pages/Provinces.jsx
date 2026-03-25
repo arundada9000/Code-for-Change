@@ -98,7 +98,7 @@ const Provinces = () => {
         image: u.profileImage, // Map profileImage to image
         college: u.education?.collegeName,
         bio: u.bio,
-        type: ["eb"].includes(u.role) ? "executive" : "volunteer", // Categorize for filtering below
+        type: ["eb"].includes(u.role) ? "executive" : "member", // Categorize for filtering below
         socialLinks: {
           linkedin: u.linkedin,
           github: u.github,
@@ -119,13 +119,15 @@ const Provinces = () => {
   // console.log(allProvincialMembers);
 
   const provincialEbCount =
-    allProvincialMembers?.filter((m) => m.role === "eb" || m.type === "executive").length || 0;
+    allProvincialMembers?.filter(
+      (m) => m.role === "eb" || m.type === "executive",
+    ).length || 0;
 
   const provincialCrCount =
     allProvincialMembers?.filter((m) => m.role === "cr").length || 0;
 
   const provincialGmCount =
-    allProvincialMembers?.filter((m) => m.type === "volunteer" || m.role === "gm").length || 0;
+    allProvincialMembers?.filter((m) => m.role === "gm").length || 0;
 
   const currentTeam = {
     advisors: advisorsData,
@@ -370,7 +372,7 @@ const Provinces = () => {
                             {currentTeam.stats.eb}
                           </span>
                           <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
-                            EB Members
+                            EB
                           </span>
                         </div>
                         <div className="w-[1px] bg-white/20 h-10 self-center"></div>
@@ -379,7 +381,7 @@ const Provinces = () => {
                             {currentTeam.stats.cr}
                           </span>
                           <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
-                            CR Members
+                            CR
                           </span>
                         </div>
                         <div className="w-[1px] bg-white/20 h-10 self-center"></div>
@@ -388,7 +390,7 @@ const Provinces = () => {
                             {currentTeam.stats.gm}
                           </span>
                           <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
-                            General Members
+                            GM
                           </span>
                         </div>
                       </div>
