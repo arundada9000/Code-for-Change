@@ -118,17 +118,14 @@ const Provinces = () => {
 
   // console.log(allProvincialMembers);
 
-  const provincialVolunteers =
-    allProvincialMembers?.filter(
-      (m) => m.type === "volunteer" || m.role === "gm",
-    ) || [];
+  const provincialEbCount =
+    allProvincialMembers?.filter((m) => m.role === "eb" || m.type === "executive").length || 0;
 
-  // console.log(provincialVolunteers);
+  const provincialCrCount =
+    allProvincialMembers?.filter((m) => m.role === "cr").length || 0;
 
-  const provincialExecutives =
-    allProvincialMembers?.filter((m) => m.role === "eb") || [];
-
-  // console.log(provincialExecutives);
+  const provincialGmCount =
+    allProvincialMembers?.filter((m) => m.type === "volunteer" || m.role === "gm").length || 0;
 
   const currentTeam = {
     advisors: advisorsData,
@@ -136,11 +133,11 @@ const Provinces = () => {
     alumni: alumniData,
     provincial: allProvincialMembers, // Consolidated list (volunteers + executives)
     stats: {
-      total:
-        (provincialStats && provincialStats[activeTab]) ||
-        allProvincialMembers.length,
-      executives: provincialExecutives.length,
-      volunteers: provincialVolunteers.length,
+      eb: provincialEbCount,
+      cr: provincialCrCount,
+      gm: provincialGmCount,
+      executives: provincialEbCount, // Kept for backward compatibility
+      volunteers: provincialGmCount,
     },
   };
 
@@ -367,22 +364,31 @@ const Provinces = () => {
                       </p>
 
                       {/* Stats Row */}
-                      <div className="flex gap-10 mb-10">
-                        <div className="flex flex-col">
+                      <div className="flex gap-6 mb-10 overflow-x-auto">
+                        <div className="flex flex-col items-center">
                           <span className="text-3xl font-black ">
-                            {currentTeam.stats.executives}
+                            {currentTeam.stats.eb}
                           </span>
                           <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
-                            Executives
+                            EB Members
                           </span>
                         </div>
                         <div className="w-[1px] bg-white/20 h-10 self-center"></div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center">
                           <span className="text-3xl font-black">
-                            {currentTeam.stats.total}+
+                            {currentTeam.stats.cr}
                           </span>
                           <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
-                            Members
+                            CR Members
+                          </span>
+                        </div>
+                        <div className="w-[1px] bg-white/20 h-10 self-center"></div>
+                        <div className="flex flex-col items-center">
+                          <span className="text-3xl font-black">
+                            {currentTeam.stats.gm}
+                          </span>
+                          <span className="text-[10px] uppercase tracking-tighter opacity-60 font-bold">
+                            General Members
                           </span>
                         </div>
                       </div>

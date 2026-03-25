@@ -346,26 +346,26 @@ const ProvinceDetails = () => {
         >
           <StatCard
             icon={<FiUsers />}
-            label="Province Reach"
-            value={`${team.length * 5}+`} // Estimation based on team size
+            label="Executive Board"
+            value={team.filter((m) => m.role === "eb").length.toString()}
+            accent={themeColor}
+          />
+          <StatCard
+            icon={<FiAward />}
+            label="College Reps"
+            value={team.filter((m) => m.role === "cr").length.toString()}
+            accent={themeColor}
+          />
+          <StatCard
+            icon={<FiActivity />}
+            label="General Members"
+            value={team.filter((m) => m.role === "gm").length.toString()}
             accent={themeColor}
           />
           <StatCard
             icon={<FiCalendar />}
             label="Initiatives"
             value={events.length.toString()}
-            accent={themeColor}
-          />
-          <StatCard
-            icon={<FiAward />}
-            label="Active Cycle"
-            value={`${new Date().getFullYear()}/${(new Date().getFullYear() + 1).toString().slice(-2)}`}
-            accent={themeColor}
-          />
-          <StatCard
-            icon={<FiActivity />}
-            label="Core Team"
-            value={team.length.toString()}
             accent={themeColor}
           />
         </SlideUp>
