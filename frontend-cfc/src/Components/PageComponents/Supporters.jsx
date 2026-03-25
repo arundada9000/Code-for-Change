@@ -59,12 +59,19 @@ function Supporters() {
         className="flex gap-10 md:gap-28 max-md:h-14 h-20 mt-12 overflow-hidden"
       >
         {[...partners, ...partners].map((supporter, i) => (
-          <img
+          <a
             key={i}
-            src={supporter.logo}
-            alt={supporter.name || `Partner ${i + 1}`}
-            className="h-full object-contain shrink-0"
-          />
+            href={supporter.link || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0"
+          >
+            <img
+              src={supporter.logo}
+              alt={supporter.name || `Partner ${i + 1}`}
+              className="h-full object-contain"
+            />
+          </a>
         ))}
       </div>
     </section>
