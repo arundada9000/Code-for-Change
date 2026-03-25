@@ -58,14 +58,17 @@ import PrivateRoute from "./Components/Common/PrivateRoute";
 import { Toaster } from "react-hot-toast";
 
 function App() {
+  console.log("Updated to latest");
   useScrollToTop();
   return (
     <>
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="w-10 h-10 border-4 border-slate-100 border-t-emerald-500 rounded-full animate-spin"></div>
-        </div>
-      }>
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="w-10 h-10 border-4 border-slate-100 border-t-emerald-500 rounded-full animate-spin"></div>
+          </div>
+        }
+      >
         <Routes>
           {/* Public routes for normal user*/}
           <Route element={<MainLayout />}>
