@@ -1,38 +1,30 @@
-import React, { useEffect, useRef } from "react";
-import CSIT from "../../assets/CSITAssociation.jpg";
-import eduSanjal from "../../assets/eduSanjal.jpg";
-import esewa from "../../assets/esewa.jpg";
-import Grace from "../../assets/Grace.jpg";
-import HostingSewa from "../../assets/HostingSewa.jpg";
-import leapfrog from "../../assets/leapfrog.jpg";
-import Nabil from "../../assets/Nabil.jpg";
-import Partner1 from "../../assets/partner1.jpg";
-import Texas from "../../assets/Texas.jpg";
-import TU from "../../assets/TU.jpg";
-import HamroPatro from "../../assets/hamropatro.jpg";
-
+import React, { useEffect, useRef, useState } from "react";
+import API from "../../Services/api";
 
 function Supporters() {
-  const partners = [
-    CSIT,
-    eduSanjal,
-    esewa,
-    Grace,
-    HostingSewa,
-    leapfrog,
-    Nabil,
-    Partner1,
-    Texas,
-    TU,
-    HamroPatro,
-  ];
-
+  const [partners, setPartners] = useState([]);
   const carouselRef = useRef(null);
   let animationId;
 
+  // Fetch partners from API
   useEffect(() => {
+    const fetchSupporters = async () => {
+      try {
+        const { data } = await API.get("/supporters");
+        setPartners(data.data || []);
+      } catch (error) {
+        console.error("Error fetching supporters:", error);
+      }
+    };
+    fetchSupporters();
+  }, []);
+
+  useEffect(() => {
+    // Only animate if there are items to animate
+    if (partners.length === 0) return;
+
     const carousel = carouselRef.current;
-    let scrollSpeed = 0.5; 
+    let scrollSpeed = 0.5;
 
     const animate = () => {
       if (carousel) {
@@ -49,7 +41,9 @@ function Supporters() {
     animationId = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(animationId);
-  }, []);
+  }, [partners]);
+
+  if (partners.length === 0) return null;
 
   return (
     <section className="pb-16 overflow-hidden">

@@ -1,38 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FaQuoteRight } from "react-icons/fa";
-import Avatar1 from "../../assets/Avatar1.png";
-import Avatar2 from "../../assets/Avatar2.png";
-
-const testimonials = [
-  {
-    id: 1,
-    text: "Code for Change is not just an organization; it's a platform where IT students transform into industry-ready professionals. Our mission to bridge the gap between academia and industry is driving real change in Nepal.",
-    author: "Sunil Paudyal",
-    role: "President",
-    image: Avatar2,
-  },
-  {
-    id: 2,
-    text: "Being part of the CFC community has been a life-changing experience. From organizing local hackathons to leading provincial chapters, I've seen firsthand how technology empowers the youth.",
-    author: "Bijay Chaudhary",
-    role: "Tech Lead",
-    image: Avatar1,
-  },
-  {
-    id: 3,
-    text: "The collaborative environment at Code for Change is unparalleled. It provided me with the mentorship and resources I needed to develop my technical skills while making a real difference.",
-    author: "Arun Sama",
-    role: "Executive Member",
-    image: Avatar2,
-  },
-  {
-    id: 4,
-    text: "As a student member, I've gained more practical knowledge through CFC workshops than in any classroom. It's the best place to network with like-minded individuals and industry experts.",
-    author: "Ashish G.M",
-    role: "Community Member",
-    image: Avatar1,
-  },
-];
+import API from "../../Services/api";
 
 const CARD_WIDTH = 340;
 const GAP = 20;
@@ -41,6 +9,23 @@ const AUTO_DELAY = 4000;
 
 export default function Testimonial() {
   const trackRef = useRef(null);
+
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const { data } = await API.get("/testimonials");
+        setTestimonials(data.data || []);
+      } catch (error) {
+        console.error("Failed to fetch testimonials", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTestimonials();
+  }, []);
 
   // Determine visible slides based on screen width
   const getVisible = () => {
@@ -64,13 +49,14 @@ export default function Testimonial() {
   const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
+    if (testimonials.length === 0) return;
     setSlides([
       ...testimonials.slice(-visible),
       ...testimonials,
       ...testimonials.slice(0, visible),
     ]);
     setIndex(visible);
-  }, [visible]);
+  }, [visible, testimonials]);
 
   /* Auto slide */
   useEffect(() => {
@@ -111,8 +97,9 @@ export default function Testimonial() {
 
   // Dots now represent each testimonial individually
   const totalDots = testimonials.length;
-  const activeDot =
-    (index - visible + testimonials.length) % testimonials.length;
+  const activeDot = testimonials.length > 0 ? (index - visible + testimonials.length) % testimonials.length : 0;
+
+  if (loading || testimonials.length === 0) return null;
 
   return (
     <section className="py-16 max-w-7xl mx-auto px-4 relative">

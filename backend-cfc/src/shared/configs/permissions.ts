@@ -103,6 +103,18 @@ export const PERMISSIONS = {
   GALLERY_UPDATE: "gallery:update",
   GALLERY_VIEW: "gallery:view",
   GALLERY_DELETE: "gallery:delete",
+
+  // Testimonial Management
+  TESTIMONIAL_CREATE: "testimonial:create",
+  TESTIMONIAL_UPDATE: "testimonial:update",
+  TESTIMONIAL_VIEW: "testimonial:view",
+  TESTIMONIAL_DELETE: "testimonial:delete",
+
+  // Supporter Management
+  SUPPORTER_CREATE: "supporter:create",
+  SUPPORTER_UPDATE: "supporter:update",
+  SUPPORTER_VIEW: "supporter:view",
+  SUPPORTER_DELETE: "supporter:delete",
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;

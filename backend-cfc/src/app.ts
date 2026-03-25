@@ -25,6 +25,8 @@ import certificateRoutes from "./modules/certificates/certificate.route.js";
 import galleryRoutes from "./modules/gallery/gallery.route.js";
 import resourceRoutes from "./modules/resources/resource.route.js";
 import seoRoutes from "./modules/seo/seo.route.js";
+import testimonialRoutes from "./modules/testimonial/testimonial.route.js";
+import supporterRoutes from "./modules/supporter/supporter.route.js";
 
 const app: Application = express();
 
@@ -126,6 +128,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api", galleryRoutes);
 app.use("/api", resourceRoutes);
+app.use("/api", testimonialRoutes);
+app.use("/api", supporterRoutes);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);

@@ -47,6 +47,8 @@ const AdminGallery = lazy(() => import("./Pages/Admin/AdminGallery"));
 const AdminImpacts = lazy(() => import("./Pages/Admin/AdminImpacts"));
 const AdminResources = lazy(() => import("./Pages/Admin/AdminResources"));
 const SajiloDigital = lazy(() => import("./Pages/Admin/SajiloDigital"));
+const AdminTestimonials = lazy(() => import("./Pages/Admin/AdminTestimonials"));
+const AdminSupporters = lazy(() => import("./Pages/Admin/AdminSupporters"));
 import AuthLayout from "./Layout/AuthLayout";
 import Login from "./Pages/Auth/Login";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
@@ -141,6 +143,8 @@ function App() {
               <Route path="internship" element={<Internship />} />
               <Route path="profile" element={<Profile />} />
               <Route path="resource" element={<AdminResources />} />
+              <Route path="testimonials" element={<AdminTestimonials />} />
+              <Route path="supporters" element={<AdminSupporters />} />
               <Route path="sajilo-digital" element={<SajiloDigital />} />
             </Route>
           </Route>

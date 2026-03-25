@@ -22,6 +22,8 @@ export const CLOUDINARY_FOLDERS = {
   CERTIFICATES: 'cfc/certificates',
   GALLERY: 'cfc/gallery',
   INTERNSHIPS: 'cfc/internships',
+  TESTIMONIALS: 'cfc/testimonials',
+  SUPPORTERS: 'cfc/supporters',
 } as const;
 
 /**

@@ -15,6 +15,7 @@ import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { FiUsers } from "react-icons/fi";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { GoBriefcase, GoFileMedia } from "react-icons/go";
+import { FaRegThumbsUp, FaHandshake } from "react-icons/fa";
 import { useState } from "react";
 
 const sideBarItems = [
@@ -31,6 +32,8 @@ const sideBarItems = [
   { title: "Blogs", icon: <FaBlog />, path: "/admin/blog" },
   { title: "Impacts", icon: <FaBullseye />, path: "/admin/impacts" },
   { title: "Gallery", icon: <GoFileMedia />, path: "/admin/gallery" },
+  { title: "Testimonials", icon: <FaRegThumbsUp />, path: "/admin/testimonials" },
+  { title: "Supporters", icon: <FaHandshake />, path: "/admin/supporters" },
   { title: "Jobs", icon: <GoBriefcase />, path: "/admin/internships" },
   { title: "Applications", icon: <FaUserTie />, path: "/admin/internship" },
   { title: "Resources", icon: <FaFolderOpen />, path: "/admin/resource" },
