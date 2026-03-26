@@ -5,7 +5,15 @@ import SEO from "../Components/Common/SEO";
 import API from "../Services/api";
 import { toast } from "react-hot-toast";
 import { GalleryMasonrySkeleton } from "../Components/Loading/Skeleton";
-import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
+import {
+  FadeIn,
+  SlideUp,
+  StaggerContainer,
+  StaggerItem,
+} from "../Components/Common/Animations";
+import { RiCloseFill } from "react-icons/ri";
+import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
+import { FiDownload } from "react-icons/fi";
 
 function Gallery() {
   const [galleryImages, setGalleryImages] = useState([]);
@@ -46,10 +54,10 @@ function Gallery() {
     (e) => {
       e?.stopPropagation();
       setCurrentIndex((prev) =>
-        prev + 1 === filteredImages.length ? 0 : prev + 1
+        prev + 1 === filteredImages.length ? 0 : prev + 1,
       );
     },
-    [filteredImages.length]
+    [filteredImages.length],
   );
 
   // Function to move to previous image
@@ -57,10 +65,10 @@ function Gallery() {
     (e) => {
       e?.stopPropagation();
       setCurrentIndex((prev) =>
-        prev === 0 ? filteredImages.length - 1 : prev - 1
+        prev === 0 ? filteredImages.length - 1 : prev - 1,
       );
     },
-    [filteredImages.length]
+    [filteredImages.length],
   );
 
   // Keyboard navigation
@@ -78,12 +86,17 @@ function Gallery() {
   const selectedImg =
     currentIndex !== null ? filteredImages[currentIndex] : null;
 
+  // handle download
+
   return (
     <div className="bg-white min-h-screen pb-20">
-      <SEO 
+      <SEO
         title="Gallery & Memories"
         description="Browse through the memories of our workshops, hackathons, and community events across Nepal."
-        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Gallery", path: "/gallery" }]}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Gallery", path: "/gallery" },
+        ]}
       />
       <Banner />
       {/* <div className="max-w-7xl mx-auto px-4 mt-8">
@@ -117,12 +130,17 @@ function Gallery() {
           <GalleryMasonrySkeleton count={9} />
         ) : filteredImages.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-gray-500 font-bold text-xl">No memories found.</p>
+            <p className="text-gray-500 font-bold text-xl">
+              No memories found.
+            </p>
           </div>
         ) : (
           <StaggerContainer className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 lg:px-10">
             {filteredImages.map((image, index) => (
-              <StaggerItem key={image._id || image.id} className="break-inside-avoid">
+              <StaggerItem
+                key={image._id || image.id}
+                className="break-inside-avoid"
+              >
                 <div
                   onClick={() => setCurrentIndex(index)}
                   className="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer bg-slate-50 border border-slate-100"
@@ -133,14 +151,16 @@ function Gallery() {
                     className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
-                  
+
                   {/* Visual refinement matching image: glassmorphism hover effect */}
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
                     <div className="bg-white/20 backdrop-blur-xl p-5 rounded-3xl border border-white/30 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-700 ease-out shadow-2xl">
                       <span className="text-white/80 text-[10px] font-black uppercase tracking-widest block mb-1.5 drop-shadow-sm">
                         {image.category}
                       </span>
-                      <h3 className="text-white text-base font-bold truncate drop-shadow-md">{image.title}</h3>
+                      <h3 className="text-white text-base font-bold truncate drop-shadow-md">
+                        {image.title}
+                      </h3>
                     </div>
                   </div>
 
@@ -167,10 +187,14 @@ function Gallery() {
         >
           {/* Close Button */}
           <button
-            className="absolute top-6 right-6 text-white text-4xl cursor-pointer hover:text-blue-400 z-[110]"
+            className="absolute top-6 right-6 group bg-white/20 p-3 rounded-full text-white text-xl cursor-pointer z-110 transition-all ease-in duration-300"
             onClick={() => setCurrentIndex(null)}
           >
-            ×
+            <RiCloseFill className="group-hover:rotate-90 transition-all ease-in duration-300" />
+          </button>
+          {/* Download Button */}
+          <button className="absolute top-6 right-20 group bg-white/20 p-3 rounded-full text-white text-xl cursor-pointer z-110 transition-all ease-in duration-300">
+            <FiDownload />
           </button>
 
           {/* Navigation Buttons */}
@@ -178,14 +202,18 @@ function Gallery() {
             className="absolute left-4 md:left-10 w-12 h-12 flex items-center cursor-pointer justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-all z-[110]"
             onClick={prevImage}
           >
-            <span className="text-2xl">←</span>
+            <span className="text-2xl">
+              <FiChevronLeft />
+            </span>
           </button>
 
           <button
             className="absolute right-4 md:right-10 w-12 h-12 flex items-center cursor-pointer justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-all z-[110]"
             onClick={nextImage}
           >
-            <span className="text-2xl">→</span>
+            <span className="text-2xl">
+              <FiChevronRight />
+            </span>
           </button>
 
           {/* Image Container */}
