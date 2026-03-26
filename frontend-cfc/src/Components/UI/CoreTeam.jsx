@@ -1,5 +1,4 @@
 import React from "react";
-import { CORE_TEAM } from "../../Data/teamData";
 import {
   FaFacebookF,
   FaGithub,
@@ -8,8 +7,12 @@ import {
   FaTwitter,
   FaYoutube,
 } from "react-icons/fa";
+import { FiExternalLink } from "react-icons/fi";
+import useFetch from "../../Hooks/useFetch";
 
 function CoreTeam({ onMemberClick }) {
+  const { data: teamMembers, loading } = useFetch("/team", []);
+
   const socialIcons = {
     linkedin: <FaLinkedinIn />,
     facebook: <FaFacebookF />,
@@ -18,6 +21,26 @@ function CoreTeam({ onMemberClick }) {
     youtube: <FaYoutube />,
     twitter: <FaTwitter />,
   };
+
+  // Filter for Core Team members
+  const coreTeam = teamMembers?.filter((m) => m.type === "Core Team") || [];
+
+  if (loading && coreTeam.length === 0) {
+    return (
+      <section className="py-20 max-w-7xl mx-auto px-6">
+        <div className="animate-pulse flex flex-col gap-8">
+          <div className="h-16 w-1/3 bg-slate-200 rounded-lg" />
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-48 bg-slate-100 rounded-2xl" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (coreTeam.length === 0) return null;
 
   return (
     <>
@@ -36,14 +59,14 @@ function CoreTeam({ onMemberClick }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {CORE_TEAM.map((member, index) => {
+          {coreTeam.map((member, index) => {
             const availableSocials = Object.entries(
               member.socialLinks || {},
             ).filter(([_, url]) => url);
 
             return (
               <div
-                key={index}
+                key={member._id || index}
                 onClick={() => onMemberClick?.(member)}
                 className="shadow-sm rounded-2xl overflow-hidden hover:shadow-xl cursor-pointer"
               >
@@ -67,7 +90,7 @@ function CoreTeam({ onMemberClick }) {
                         {member.name}
                       </h4>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
-                        {member.role}
+                        {member.designation || member.role}
                       </p>
 
                       {member.organization && (

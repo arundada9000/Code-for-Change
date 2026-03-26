@@ -71,10 +71,10 @@ const Provinces = () => {
   const [activeTab, setActiveTab] = useState("Kathmandu");
   const [selectedMember, setSelectedMember] = useState(null);
 
-  // Map static data instead of filtering from API for advisors and core team as requested
-  const advisorsData = ADVISORS;
-  const coreData = CORE_TEAM;
-  const alumniData = ALUMNI;
+  // Map dynamic data from API
+  const advisorsData = apiTeam?.filter((m) => m.type === "Advisor") || [];
+  const coreData = apiTeam?.filter((m) => m.type === "Core Team") || [];
+  const alumniData = ALUMNI; // Keeping Alumni static for now as no DB type added yet
 
   // Refined filtering to check both 'province' (new) and 'region' (old)
   const provincialMembersFromTeam =

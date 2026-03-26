@@ -13,7 +13,7 @@ import { FaSearch, FaFilter, FaStar } from "react-icons/fa";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
 import { provinces } from "./Provinces";
-import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
+import { ALUMNI } from "../Data/teamData";
 import EventCard from "../Components/UI/EventCard";
 import { Pulse } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
@@ -151,6 +151,8 @@ const ProvinceDetails = () => {
   const { provinceName } = useParams();
   const [events, setEvents] = useState([]);
   const [team, setTeam] = useState([]);
+  const [advisors, setAdvisors] = useState([]);
+  const [boardMembers, setBoardMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState(null);
 
@@ -268,9 +270,13 @@ const ProvinceDetails = () => {
             })) || [];
 
         const combinedTeam = [...filteredTeamMembers, ...provincialPublicUsers];
+        const centralAdvisors = allTeam.filter((m) => m.type === "Advisor");
+        const boardMembersData = allTeam.filter((m) => m.type === "Board Member");
 
         setEvents(allEvents);
         setTeam(combinedTeam);
+        setAdvisors(centralAdvisors);
+        setBoardMembers(boardMembersData);
       } catch (error) {
         console.error("Failed to fetch province data", error);
       } finally {
@@ -449,12 +455,13 @@ const ProvinceDetails = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {ADVISORS.map((advisor, i) => (
+          {advisors.map((advisor, i) => (
             <div
               onClick={() =>
                 setSelectedMember({
+                  ...advisor,
                   name: advisor.name,
-                  role: advisor.role,
+                  role: advisor.designation || advisor.role,
                   image: advisor.image,
                   bio: advisor.quote,
                   socialLinks: advisor.socialLinks || {},
@@ -775,28 +782,33 @@ const ProvinceDetails = () => {
               </div>
             )}
 
-            {/* National Alumni (Static) */}
-            <div className="mt-20">
-              <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-                <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight font-serif italic">
-                  National <span style={{ color: themeColor }}>Alumni</span>
-                </h2>
-                <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-                  Static Hall of Fame
-                </p>
+            {/* Board Members Section */}
+            {boardMembers.length > 0 && (
+              <div className="mt-20">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight font-serif italic">
+                    Board <span style={{ color: themeColor }}>Members</span>
+                  </h2>
+                  <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+                    Strategic Leadership
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                  {boardMembers.map((member, i) => (
+                    <TeamMemberCard
+                      key={member._id || i}
+                      member={{
+                        ...member,
+                        position: member.designation || member.position,
+                      }}
+                      themeColor={themeColor}
+                      index={i}
+                      onClick={setSelectedMember}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-                {ALUMNI.map((member, i) => (
-                  <TeamMemberCard
-                    key={i}
-                    member={member}
-                    themeColor={themeColor}
-                    index={i}
-                    onClick={setSelectedMember}
-                  />
-                ))}
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
