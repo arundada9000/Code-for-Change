@@ -6,7 +6,7 @@ import { verifyEmailDomain } from "../../shared/utils/dns.js";
 
 export class NewsletterService {
   async subscribe(email: string): Promise<{ subscriber: INewsletterSubscriber; isNew: boolean }> {
-    // 1. Verify the domain has MX records (domain exists and can receive mail)
+    // 1. Verify the domain has MX records (domain exists and can receive mail) 
     await verifyEmailDomain(email);
 
     // 2. Check for existing subscription
