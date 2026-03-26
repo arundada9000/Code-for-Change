@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaRegTrashAlt, FaFileDownload, FaFileCode } from "react-icons/fa";
-import { MdMarkEmailRead, MdUnsubscribe } from "react-icons/md";
+import { MdOutlineMarkEmailRead , MdUnsubscribe } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
 import API from "../../Services/api";
 import { toast } from "react-hot-toast";
@@ -146,7 +146,7 @@ function AdminNewsletter() {
         </div>
         <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-5 flex items-center gap-4">
           <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center">
-            <MdMarkEmailRead className="text-emerald-600 text-xl" />
+            <MdOutlineMarkEmailRead  className="text-emerald-600 text-xl" />
           </div>
           <div>
             <p className="text-2xl font-black text-slate-900">{activeCount}</p>
@@ -255,7 +255,7 @@ function AdminNewsletter() {
                                   : "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-500 hover:text-white"
                               }`}
                             >
-                              {subscriber.status === "active" ? <MdUnsubscribe /> : <MdMarkEmailRead />}
+                              {subscriber.status === "active" ? <MdUnsubscribe /> : <MdOutlineMarkEmailRead  />}
                             </button>
                           )}
                           {hasPermission("newsletter:delete") && (
