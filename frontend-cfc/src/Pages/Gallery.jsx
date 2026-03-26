@@ -93,20 +93,22 @@ function Gallery() {
       if (!response.ok) throw new Error("Network response was not ok");
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      
+
       const link = document.createElement("a");
       link.href = url;
-      
+
       // Try to extract extension from URL
       const extMatch = imageUrl.match(/\.(jpg|jpeg|png|gif|webp)(?:[\?#]|$)/i);
-      const extension = extMatch ? extMatch[0] : '';
-      
-      link.download = imageName ? `${imageName.replace(/[^a-zA-Z0-9-\s]/g, "").replace(/\s+/g, "_")}${extension}` : `download${extension}`;
-      
+      const extension = extMatch ? extMatch[0] : "";
+
+      link.download = imageName
+        ? `${imageName.replace(/[^a-zA-Z0-9-\s]/g, "").replace(/\s+/g, "_")}${extension}`
+        : `download${extension}`;
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to download image using fetch:", error);
@@ -237,8 +239,10 @@ function Gallery() {
             <RiCloseFill className="group-hover:rotate-90 transition-all ease-in duration-300" />
           </button>
           {/* Download Button */}
-          <button 
-            onClick={() => handleDownload(selectedImg.imageUrl, selectedImg.title)}
+          <button
+            onClick={() =>
+              handleDownload(selectedImg.imageUrl, selectedImg.title)
+            }
             className="absolute top-6 right-20 group bg-white/20 p-3 rounded-full text-white text-xl cursor-pointer z-110 transition-all ease-in duration-300"
           >
             <FiDownload />

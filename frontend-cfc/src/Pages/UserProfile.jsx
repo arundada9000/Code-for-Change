@@ -26,6 +26,7 @@ import {
   FaIdCard,
   FaHistory,
 } from "react-icons/fa";
+
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
 
 // Region color map
@@ -62,7 +63,7 @@ const Field = ({
   regionColor,
 }) => (
   <div>
-    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
+    <label className="block text-xs tracking-wider mb-1.5 ml-1">
       {label}
     </label>
     {isEditing ? (
@@ -77,17 +78,21 @@ const Field = ({
           onChange={handleChange}
           placeholder={placeholder || `Enter ${label.toLowerCase()}`}
           className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 
-                     placeholder:text-slate-300 outline-none
-                     focus:border-[var(--region-color)] focus:shadow-[0_0_0_3px_var(--region-color-light)]
-                     transition-all duration-200"
+          placeholder:text-slate-300 outline-none
+          focus:border-(--region-color) ]
+          transition-all duration-200"
         />
       </div>
     ) : (
       <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[46px] border border-transparent">
-        <Icon size={14} className="flex-shrink-0" style={{ color: regionColor }} />
+        <Icon
+          size={14}
+          className="flex-shrink-0"
+          style={{ color: regionColor }}
+        />
         <span className="text-sm text-slate-700 break-all">
           {formData[name] || (
-            <span className="text-slate-300 italic">Not provided</span>
+            <span className="text-slate-300 ">Not provided</span>
           )}
         </span>
       </div>
@@ -179,14 +184,19 @@ function UserProfile() {
     try {
       // Create a clean payload so invalid legacy data doesn't fail backend Zod URL validation
       const payload = { ...formData };
-      ['website', 'linkedin', 'github', 'facebook'].forEach((field) => {
+      ["website", "linkedin", "github", "facebook"].forEach((field) => {
         let val = payload[field];
-        if (!val || typeof val !== 'string' || val.trim() === '' || val.trim().toLowerCase() === 'n/a') {
+        if (
+          !val ||
+          typeof val !== "string" ||
+          val.trim() === "" ||
+          val.trim().toLowerCase() === "n/a"
+        ) {
           delete payload[field];
         } else {
           val = val.trim();
-          if (!val.startsWith('http://') && !val.startsWith('https://')) {
-            val = 'https://' + val;
+          if (!val.startsWith("http://") && !val.startsWith("https://")) {
+            val = "https://" + val;
           }
           // Only send it to the backend if it's actually a valid URL, otherwise let the backend default/ignore it
           try {
@@ -251,7 +261,7 @@ function UserProfile() {
   const showProfileImage = user.profileImage && !imgError;
 
   return (
-    <div 
+    <div
       className="min-h-screen bg-slate-50 py-6 md:py-10 px-4 sm:px-6"
       style={{
         "--region-color": regionColor,
@@ -278,128 +288,298 @@ function UserProfile() {
 
         {/* ===== PROFILE HEADER CARD ===== */}
         <FadeIn className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          {/* Accent bar */}
-          <div
-            className="h-2"
-            style={{
-              background: `linear-gradient(90deg, ${regionColor}, ${regionColor}88, ${regionColor}44)`,
-            }}
-          />
+          <div className="relative">
+            {/* 1. Banner Background */}
+            <div
+              className="h-32 sm:h-40 w-full opacity-80"
+              style={{
+                background: `linear-gradient(135deg, ${regionColor}40, #e2e8f0)`,
+              }}
+            >
+              <button
+                onClick={() => setIsEditing(true)}
+                className="p-4 sm:hidden bg-blue-300/20 backdrop-blur-md absolute right-4 top-4 text-blue-500 cursor-pointer border-t border-b border-white text-sm font-bold rounded-full hover:border-slate-300 transition-all flex items-center gap-2 shadow-sm"
+              >
+                <FaEdit size={18} />
+                
+              </button>
+            </div>
 
-          <div className="p-6 sm:p-8">
-            <div className="flex flex-col sm:flex-row gap-6">
-              {/* Avatar */}
-              <div className="flex-shrink-0 self-center sm:self-start">
-                <div
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 shadow-md"
-                  style={{ borderColor: `${regionColor}40` }}
-                >
-                  {showProfileImage ? (
-                    <img
-                      src={user.profileImage}
-                      alt={user.name}
-                      className="w-full h-full object-cover"
-                      onError={() => setImgError(true)}
-                    />
-                  ) : (
-                    <div
-                      className="w-full h-full flex items-center justify-center"
-                      style={{ background: `${regionColor}15` }}
-                    >
-                      <FaUser size={36} style={{ color: `${regionColor}80` }} />
+            {/* 2. Content Card */}
+            <div className="px-6 pb-8">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-6 -mt-12 sm:-mt-16">
+                {/* LEFT COLUMN: Avatar + Name + Email Group */}
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                  {/* Avatar */}
+                  <div className="relative shrink-0 mb-4">
+                    <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white">
+                      {showProfileImage ? (
+                        <img
+                          src={user.profileImage}
+                          alt={user.name}
+                          className="w-full h-full object-cover"
+                          onError={() => setImgError(true)}
+                        />
+                      ) : (
+                        <div
+                          className="w-full h-full flex items-center justify-center"
+                          style={{ background: `${regionColor}15` }}
+                        >
+                          <FaUser size={40} style={{ color: regionColor }} />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
 
-              {/* Info */}
-              <div className="flex-1 min-w-0 text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 truncate">
-                  {user.name}
-                </h1>
+                  {/* Name and Verification */}
+                  <div className="flex items-center gap-3 mb-1">
+                    <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                      {user.name}
+                    </h1>
+                    {user.isVerified && (
+                      <FaCheckCircle size={22} className="text-secondary mt-1" />
+                    )}
+                  </div>
 
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-2">
-                  <span
-                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-md uppercase tracking-wide text-white"
-                    style={{ backgroundColor: regionColor }}
-                  >
-                    {user.role}
-                  </span>
-                  {user.province && (
-                    <span
-                      className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-md uppercase tracking-wide border"
-                      style={{ borderColor: regionColor, color: regionColor }}
-                    >
-                      <FaMapMarkerAlt size={10} />
-                      {user.province}
-                    </span>
-                  )}
-                  {user.isVerified && (
-                    <FaCheckCircle
-                      size={16}
-                      className="mt-0.5"
-                      style={{ color: regionColor }}
-                      title="Verified"
-                    />
-                  )}
-                </div>
-
-                <p className="text-sm text-slate-500 mt-2 flex items-center justify-center sm:justify-start gap-1.5">
-                  <FaEnvelope size={12} className="text-slate-400" />
-                  {user.email}
-                </p>
-
-                {user.bio && !isEditing && (
-                  <p className="text-sm text-slate-500 mt-2 max-w-lg leading-relaxed line-clamp-2">
-                    {user.bio}
+                  {/* Email */}
+                  <p className="text-sm text-slate-400 mb-3">
+                    {user.email}
                   </p>
-                )}
-              </div>
 
-              {/* Actions */}
-              <div className="flex flex-row sm:flex-col gap-2 self-center sm:self-start flex-shrink-0">
-                {isEditing ? (
-                  <>
-                    <button
-                      onClick={handleCancelEdit}
-                      disabled={loading}
-                      className="px-4 py-2.5 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl
-                                 hover:bg-slate-200 transition-all flex items-center gap-2"
-                    >
-                      <FaTimes size={12} /> Cancel
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      disabled={loading}
-                      className="px-4 py-2.5 text-white text-sm font-semibold rounded-xl
-                                 transition-all shadow-sm flex items-center gap-2 disabled:opacity-60"
+                  {/* Role/Province Tags */}
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <span
+                      className="px-2.5 py-1 text-[10px] font-bold rounded-full capitalize text-white"
                       style={{ backgroundColor: regionColor }}
                     >
-                      <FaSave size={12} /> {loading ? "Saving..." : "Save"}
+                      {user.role}
+                    </span>
+                    {user.province && (
+                      <span
+                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest border-2"
+                        style={{
+                          borderColor: `${regionColor}20`,
+                          color: regionColor,
+                        }}
+                      >
+                        <FaMapMarkerAlt size={10} />
+                        {user.province}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* RIGHT COLUMN: Isolated Action Button */}
+                <div className="flex items-center gap-2 sm:pb-4">
+                  {isEditing ? (
+                    <>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="p-2.5 bg-slate-100 cursor-pointer text-slate-600 rounded-xl hover:bg-slate-200 transition-all"
+                        title="Cancel"
+                      >
+                        <FaTimes size={16} />
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        disabled={loading}
+                        className="px-6 py-2.5 text-white text-sm cursor-pointer font-bold rounded-xl transition-all shadow-lg flex items-center gap-2 disabled:opacity-50"
+                        style={{ backgroundColor: regionColor }}
+                      >
+                        <FaSave size={14} /> {loading ? "..." : "Save"}
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="px-6 py-2.5 max-sm:hidden bg-white text-secondary cursor-pointer border-2 border-secondary text-sm font-bold rounded-full hover:border-slate-300 transition-all flex items-center gap-2 shadow-sm"
+                    >
+                      <FaEdit size={14} />
+                      <span>Edit Profile</span>
                     </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl
-                               hover:border-slate-300 transition-all flex items-center gap-2"
-                  >
-                    <FaEdit size={12} /> Edit Profile
-                  </button>
-                )}
+                  )}
+                </div>
               </div>
+
+              {/* FULL WIDTH: Bio Section */}
+              {user.bio && !isEditing && (
+                <div className="text-center sm:text-left border-t border-slate-50 pt-6">
+                  <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-3xl mx-auto sm:mx-0">
+                    {user.bio}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </FadeIn>
 
         {/* ===== CONTENT GRID ===== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* LEFT — Form sections */}
-          <SlideUp delay={0.1} className="lg:col-span-8 space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-9 gap-6 items-start">
+          {/* COLUMN 1: LEFT SIDEBAR (Sticky Quick Actions) */}
+          <SlideUp
+            delay={0.1}
+            className="lg:col-span-3 space-y-5 lg:sticky lg:top-20"
+          >
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+              <p className="text-xs font-bold uppercase tracking-wider mb-3">
+                Quick Actions
+              </p>
+              <div className="space-y-2">
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
+                    style={{ backgroundColor: "#01152E" }}
+                  >
+                    <FaShieldAlt size={14} style={{ color: regionColor }} />
+                    Admin Dashboard
+                  </Link>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 w-full px-4 py-3 bg-rose-50 text-rose-600 rounded-xl text-sm font-semibold hover:bg-rose-100 transition-all cursor-pointer"
+                >
+                  <FaSignOutAlt size={14} />
+                  Log Out
+                </button>
+              </div>
+            </div>
+
+            {/* Account Status Badge List */}
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+              <p className="text-xs font-bold uppercase tracking-wider mb-3">
+                Account Status
+              </p>
+              <div className="space-y-3">
+                {[
+                  {
+                    label: "Status",
+                    value: user.isActive ? "Active" : "Inactive",
+                    badge: user.isActive
+                      ? "bg-emerald-50 text-emerald-600"
+                      : "bg-rose-50 text-rose-600",
+                  },
+                  {
+                    label: "Verified",
+                    value: user.isVerified ? "Yes" : "Pending",
+                    badge: user.isVerified
+                      ? "bg-emerald-50 text-emerald-600"
+                      : "bg-amber-50 text-amber-600",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex items-center justify-between"
+                  >
+                    <span className="text-xs text-slate-500">{item.label}</span>
+                    <span
+                      className={`px-2 py-0.5 text-[11px] font-bold rounded-md ${item.badge}`}
+                    >
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Social Links */}
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+              <SectionTitle
+                icon={FaGlobe}
+                title="Social"
+                regionColor={regionColor}
+              />
+              <div className="flex gap-3 mt-4">
+                {[
+                  {
+                    icon: FaLink,
+                    url: formData.website,
+                    color: "#6366f1",
+                    label: "Web",
+                  },
+                  {
+                    icon: FaLinkedinIn,
+                    url: formData.linkedin,
+                    color: "#0077b5",
+                    label: "LinkedIn",
+                  },
+                  {
+                    icon: FaGithub,
+                    url: formData.github,
+                    color: "#181717",
+                    label: "GitHub",
+                  },
+                  {
+                    icon: FaFacebookF,
+                    url: formData.facebook,
+                    color: "#1877f2",
+                    label: "FB",
+                  },
+                ].map((social, index) => (
+                  <button
+                    key={index}
+                    disabled={!social.url}
+                    onClick={() =>
+                      social.url && window.open(social.url, "_blank")
+                    }
+                    className={`p-3 rounded-xl cursor-pointer border flex flex-col items-center gap-1 transition-all ${social.url ? "bg-white border-slate-200 hover:shadow-md" : "bg-slate-50 opacity-40 cursor-not-allowed"}`}
+                  >
+                    <social.icon
+                      size={18}
+                      style={{ color: social.url ? social.color : "#94a3b8" }}
+                    />
+                  </button>
+                ))}
+              </div>
+              {/* Activity Log Card */}
+              <div
+                className="rounded-2xl p-5 mt-5 text-white shadow-sm"
+                style={{
+                  background: regionColor,
+                }}
+              >
+                <p
+                  className="text-xs font-bold uppercase tracking-wider mb-4"
+                  // style={{ color: regionColor }}
+                >
+                Activity
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs text-white uppercase flex items-center gap-1.5">
+                      <FaHistory size={10} /> Last Login
+                    </p>
+                    <p className="text-[10px] text-white/80">
+                      {user.lastLogin
+                        ? new Date(user.lastLogin).toLocaleString()
+                        : "First login"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-white uppercase flex items-center gap-1.5">
+                      <FaCalendarAlt size={10} /> Joined
+                    </p>
+                    <p className="text-[10px] text-white/90">
+                      {user.createdAt
+                        ? new Date(user.createdAt).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SlideUp>
+
+          {/* COLUMN 2: CENTER (Main Content) */}
+          <SlideUp delay={0.2} className="lg:col-span-6 space-y-5">
             {/* Personal Info */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7">
-              <SectionTitle icon={FaUser} title="Personal Information" regionColor={regionColor} />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <SectionTitle
+                icon={FaUser}
+                title="Personal Information"
+                regionColor={regionColor}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                 <Field
                   icon={FaUser}
                   label="Full Name"
@@ -429,9 +609,9 @@ function UserProfile() {
                   regionColor={regionColor}
                 />
 
-                {/* Gender */}
+                {/* Gender Select */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
+                  <label className="block text-xs tracking-wider mb-1.5 ml-1">
                     Gender
                   </label>
                   {isEditing ? (
@@ -443,9 +623,7 @@ function UserProfile() {
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800
-                                   outline-none focus:border-[var(--region-color)] focus:shadow-[0_0_0_3px_var(--region-color-light)]
-                                   transition-all duration-200 appearance-none cursor-pointer"
+                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:border-(--region-color) transition-all appearance-none cursor-pointer"
                       >
                         <option value="">Select Gender</option>
                         <option value="male">Male</option>
@@ -454,70 +632,19 @@ function UserProfile() {
                       </select>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[46px] border border-transparent">
-                      <FaVenusMars
-                        size={14}
-                        className="flex-shrink-0"
-                        style={{ color: regionColor }}
-                      />
+                    <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[46px]">
+                      <FaVenusMars size={14} style={{ color: regionColor }} />
                       <span className="text-sm text-slate-700 capitalize">
-                        {formData.gender || (
-                          <span className="text-slate-300 italic normal-case">
-                            Not provided
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Date of Birth */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
-                    Date of Birth
-                  </label>
-                  {isEditing ? (
-                    <div className="relative">
-                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2">
-                        <FaCalendarAlt size={14} style={{ color: regionColor }} />
-                      </div>
-                      <input
-                        type="date"
-                        name="dateOfBirth"
-                        value={formData.dateOfBirth}
-                        onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800
-                                   outline-none focus:border-[var(--region-color)] focus:shadow-[0_0_0_3px_var(--region-color-light)]
-                                   transition-all duration-200"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[46px] border border-transparent">
-                      <FaCalendarAlt
-                        size={14}
-                        className="flex-shrink-0"
-                        style={{ color: regionColor }}
-                      />
-                      <span className="text-sm text-slate-700">
-                        {formData.dateOfBirth ? (
-                          new Date(formData.dateOfBirth).toLocaleDateString(
-                            "en-US",
-                            { year: "numeric", month: "long", day: "numeric" },
-                          )
-                        ) : (
-                          <span className="text-slate-300 italic">
-                            Not provided
-                          </span>
-                        )}
+                        {formData.gender || "Not provided"}
                       </span>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Bio */}
-              <div className="mt-5">
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
+              {/* Bio Section */}
+              <div className="mt-5 pt-5 border-t border-slate-50">
+                <label className="block text-xs tracking-wider mb-1.5 ml-1">
                   Bio
                 </label>
                 {isEditing ? (
@@ -531,39 +658,36 @@ function UserProfile() {
                       onChange={handleChange}
                       placeholder="Tell us about yourself..."
                       rows={3}
-                      className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800
-                                 placeholder:text-slate-300 outline-none
-                                 focus:border-[var(--region-color)] focus:shadow-[0_0_0_3px_var(--region-color-light)]
-                                 transition-all duration-200 resize-y min-h-[80px]"
+                      className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-[var(--region-color)] transition-all min-h-[80px]"
                     />
                   </div>
                 ) : (
-                  <div className="flex gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[70px] border border-transparent">
+                  <div className="flex gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[70px]">
                     <FaBook
                       size={14}
-                      className="flex-shrink-0 mt-0.5"
+                      className="mt-0.5"
                       style={{ color: regionColor }}
                     />
                     <span className="text-sm text-slate-700 leading-relaxed">
-                      {formData.bio || (
-                        <span className="text-slate-300 italic">
-                          No bio yet. Click Edit to add one.
-                        </span>
-                      )}
+                      {formData.bio || "No bio yet."}
                     </span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Education */}
+            {/* Education Section */}
             {(user.education ||
               ["student", "member", "gm", "eb", "cr", "alumni"].includes(
                 user.role?.toLowerCase(),
               )) && (
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7">
-                <SectionTitle icon={FaGraduationCap} title="Education" regionColor={regionColor} />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <SectionTitle
+                  icon={FaGraduationCap}
+                  title="Education"
+                  regionColor={regionColor}
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <Field
                     icon={FaUniversity}
                     label="College"
@@ -603,8 +727,7 @@ function UserProfile() {
                 </div>
               </div>
             )}
-
-            {/* Social */}
+             {/* Social */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7">
               <SectionTitle icon={FaGlobe} title="Social Links" regionColor={regionColor} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -654,157 +777,7 @@ function UserProfile() {
                 />
               </div>
             </div>
-          </SlideUp>
-
-          {/* RIGHT — Sidebar */}
-          <SlideUp delay={0.2} className="lg:col-span-4 space-y-5">
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-                Quick Actions
-              </p>
-              <div className="space-y-2">
-                {isAdmin && (
-                  <Link
-                    to="/admin"
-                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-                    style={{ backgroundColor: "#01152E" }}
-                  >
-                    <FaShieldAlt size={14} style={{ color: regionColor }} />
-                    Admin Dashboard
-                  </Link>
-                )}
-                {!isEditing && (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all"
-                    style={{
-                      backgroundColor: `${regionColor}10`,
-                      color: regionColor,
-                    }}
-                  >
-                    <FaEdit size={14} />
-                    Edit Profile
-                  </button>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-3 w-full px-4 py-3 bg-rose-50 text-rose-600 rounded-xl text-sm font-semibold
-                             hover:bg-rose-100 transition-all"
-                >
-                  <FaSignOutAlt size={14} />
-                  Log Out
-                </button>
-              </div>
-            </div>
-
-            {/* Account Info */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-                Account
-              </p>
-              <div className="space-y-3">
-                {[
-                  {
-                    label: "Status",
-                    value: user.isActive ? "Active" : "Inactive",
-                    badge: user.isActive
-                      ? "bg-emerald-50 text-emerald-600"
-                      : "bg-rose-50 text-rose-600",
-                  },
-                  {
-                    label: "Verified",
-                    value: user.isVerified ? "Yes" : "Pending",
-                    badge: user.isVerified
-                      ? "bg-emerald-50 text-emerald-600"
-                      : "bg-amber-50 text-amber-600",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between"
-                  >
-                    <span className="text-xs text-slate-500">{item.label}</span>
-                    <span
-                      className={`px-2 py-0.5 text-[11px] font-bold rounded-md ${item.badge}`}
-                    >
-                      {item.value}
-                    </span>
-                  </div>
-                ))}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-500">Role</span>
-                  <span className="text-[11px] font-bold text-slate-600 uppercase">
-                    {user.role}
-                  </span>
-                </div>
-                {user.membership?.membershipId && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-500">Member ID</span>
-                    <span className="text-[11px] font-bold text-slate-600 font-mono">
-                      {user.membership.membershipId}
-                    </span>
-                  </div>
-                )}
-                {user.province && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-500">Region</span>
-                    <span
-                      className="text-[11px] font-bold flex items-center gap-1.5"
-                      style={{ color: regionColor }}
-                    >
-                      <span
-                        className="w-2 h-2 rounded-full inline-block"
-                        style={{ backgroundColor: regionColor }}
-                      />
-                      {user.province}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Activity */}
-            <div
-              className="rounded-2xl p-5 text-white shadow-sm"
-              style={{
-                background: `linear-gradient(135deg, #01152E, ${regionColor}90)`,
-              }}
-            >
-              <p
-                className="text-xs font-bold uppercase tracking-wider mb-3"
-                style={{ color: regionColor }}
-              >
-                Activity
-              </p>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-[11px] text-white/50 uppercase tracking-wider font-semibold flex items-center gap-1.5">
-                    <FaHistory size={10} /> Last Login
-                  </p>
-                  <p className="text-sm font-medium text-white/80 mt-0.5">
-                    {user.lastLogin
-                      ? new Date(user.lastLogin).toLocaleString("en-US", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })
-                      : "First login"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[11px] text-white/50 uppercase tracking-wider font-semibold flex items-center gap-1.5">
-                    <FaCalendarAlt size={10} /> Member Since
-                  </p>
-                  <p className="text-sm font-medium text-white/80 mt-0.5">
-                    {user.createdAt
-                      ? new Date(user.createdAt).toLocaleString("en-US", {
-                          dateStyle: "medium",
-                        })
-                      : "N/A"}
-                  </p>
-                </div>
-              </div>
-            </div>
+          
           </SlideUp>
         </div>
       </div>
