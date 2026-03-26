@@ -18,8 +18,8 @@ export const register = async (data: any) => {
     password: await hashPassword(data.password),
     role: data.role || "gm",
     tenure: data.tenure,
-    isVerified: false,
-    isActive: true,
+    isVerified: typeof data.isVerified === "boolean" ? data.isVerified : false,
+    isActive: typeof data.isActive === "boolean" ? data.isActive : true,
     accountStatus: "pending",
     education: {
       collegeName: data.collegeName,

@@ -247,7 +247,11 @@ export class AdminService {
 
   async createUser(data: any) {
     const { register } = await import("../auth/auth.service.js");
-    return await register(data);
+    return await register({
+      ...data,
+      isVerified: true, // Admins create verified users by default
+      accountStatus: "active"
+    });
   }
 
   async deleteUser(id: string) {
