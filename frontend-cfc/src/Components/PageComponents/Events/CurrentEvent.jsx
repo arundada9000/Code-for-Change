@@ -52,10 +52,13 @@ export default function CurrentEvent({ filterParams = {}, filterBar = null }) {
   }, [apiResponse]);
 
   // Reset page when filters or tab change
+  // Use a stringified version of filterParams to avoid infinite loop from new {} object references on every render
+  const filterParamsString = JSON.stringify(filterParams);
+  
   React.useEffect(() => {
     setAccumulatedEvents([]);
     setPage(1);
-  }, [filterParams, activeTab]);
+  }, [filterParamsString, activeTab]);
 
   const pagination = apiResponse?.pagination || null;
   const eventsToShow = accumulatedEvents;
