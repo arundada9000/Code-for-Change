@@ -31,6 +31,10 @@ import newsletterRoutes from "./modules/newsletter/newsletter.route.js";
 
 const app: Application = express();
 
+// Trust the first proxy (Render, Nginx, etc.) so that req.ip contains
+// the real client IP, which is critical for accurate rate limiting.
+app.set("trust proxy", 1);
+
 // Custom NoSQL Injection Protection for Express 5 (handles query getter)
 const customSanitize = (req: any, res: any, next: any) => {
   const sanitize = (obj: any) => {

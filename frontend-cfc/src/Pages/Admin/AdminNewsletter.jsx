@@ -273,13 +273,15 @@ function AdminNewsletter() {
                         {subscriber.status}
                       </span>
                     </td>
-                    <td className="px-8 py-4 text-sm text-slate-500 font-medium">
+                    <td className="px-8 py-4 text-sm text-slate-500 font-medium whitespace-nowrap">
                       {new Date(
                         subscriber.subscribedAt || subscriber.createdAt,
-                      ).toLocaleDateString("en-US", {
+                      ).toLocaleString("en-US", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
                       })}
                     </td>
                     {(hasPermission("newsletter:update") ||
