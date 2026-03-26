@@ -140,7 +140,7 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
           className="text-[11px] font-semibold uppercase text-(--theme-color) group-hover:text-white  tracking-[0.15em] mt-1.5 opacity-80"
           style={{ "--theme-color": themeColor }}
         >
-          {member.role}
+          {member.position}
         </p>
       </div>
     </motion.div>
