@@ -49,6 +49,7 @@ const AdminResources = lazy(() => import("./Pages/Admin/AdminResources"));
 const SajiloDigital = lazy(() => import("./Pages/Admin/SajiloDigital"));
 const AdminTestimonials = lazy(() => import("./Pages/Admin/AdminTestimonials"));
 const AdminSupporters = lazy(() => import("./Pages/Admin/AdminSupporters"));
+const AdminNewsletter = lazy(() => import("./Pages/Admin/AdminNewsletter"));
 import AuthLayout from "./Layout/AuthLayout";
 import Login from "./Pages/Auth/Login";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
@@ -148,6 +149,7 @@ function App() {
               <Route path="resource" element={<AdminResources />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="supporters" element={<AdminSupporters />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
               <Route path="sajilo-digital" element={<SajiloDigital />} />
             </Route>
           </Route>
