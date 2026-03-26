@@ -16,6 +16,8 @@ import { FiUsers } from "react-icons/fi";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { GoBriefcase, GoFileMedia } from "react-icons/go";
 import { FaRegThumbsUp, FaHandshake } from "react-icons/fa";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaRegEnvelope } from "react-icons/fa";
 import { useState } from "react";
 
 const sideBarItems = [
@@ -37,6 +39,8 @@ const sideBarItems = [
   { title: "Jobs", icon: <GoBriefcase />, path: "/admin/internships" },
   { title: "Applications", icon: <FaUserTie />, path: "/admin/internship" },
   { title: "Resources", icon: <FaFolderOpen />, path: "/admin/resource" },
+  { title: "Newsletter", icon: <HiOutlineMail />, path: "/admin/newsletter" },
+  { title: "Contacts", icon: <FaRegEnvelope />, path: "/admin/contacts" },
 ];
 
 function AdminSidebar() {

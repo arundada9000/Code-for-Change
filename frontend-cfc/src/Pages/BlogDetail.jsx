@@ -7,6 +7,7 @@ import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
+import API from "../Services/api";
 
 function BlogDetail() {
   const { slug: urlSlug } = useParams();
@@ -15,6 +16,32 @@ function BlogDetail() {
   const { data: apiBlog, loading } = useFetch(`/blogs/${idStr}`);
   const { data: allBlogs } = useFetch("/blogs"); // Fetch all for navigation
   const [blog, setBlog] = useState(null);
+
+  // Newsletter sidebar state
+  const [nlEmail, setNlEmail] = useState("");
+  const [nlStatus, setNlStatus] = useState(null); // null | 'loading' | 'success' | 'error'
+  const [nlMessage, setNlMessage] = useState("");
+
+  const handleNewsletterSubscribe = async () => {
+    const trimmed = nlEmail.trim();
+    if (!trimmed) return;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      setNlStatus("error");
+      setNlMessage("Please enter a valid email address.");
+      return;
+    }
+    setNlStatus("loading");
+    try {
+      const res = await API.post("/newsletter/subscribe", { email: trimmed });
+      setNlStatus("success");
+      setNlMessage(res.data?.message || "You're subscribed!");
+      setNlEmail("");
+    } catch (err) {
+      setNlStatus("error");
+      setNlMessage(err.response?.data?.message || "Subscription failed. Try again.");
+    }
+  };
 
   useEffect(() => {
     if (apiBlog) {
@@ -275,14 +302,35 @@ function BlogDetail() {
             <p className="text-sm text-gray-500 mb-4">
               Get the latest {blog.tags[0]} updates delivered to your inbox.
             </p>
-            <input
-              type="email"
-              placeholder="email@example.com"
-              className="w-full px-4 py-3 rounded-full border border-gray-200 mb-3 text-sm focus:outline-none focus:ring focus:ring-primary"
-            />
-            <button className="w-full py-3 bg-primary text-white rounded-full text-sm font-bold hover:bg-transparent hover:text-primary border cursor-pointer transition-colors">
-              Join Now
-            </button>
+            {nlStatus === "success" ? (
+              <div className="text-center py-4">
+                <p className="text-green-600 font-bold text-sm">{nlMessage}</p>
+              </div>
+            ) : (
+              <>
+                <input
+                  type="email"
+                  value={nlEmail}
+                  onChange={(e) => { setNlEmail(e.target.value); setNlStatus(null); }}
+                  onKeyDown={(e) => e.key === "Enter" && handleNewsletterSubscribe()}
+                  disabled={nlStatus === "loading"}
+                  placeholder="email@example.com"
+                  className="w-full px-4 py-3 rounded-full border border-gray-200 mb-2 text-sm focus:outline-none focus:ring focus:ring-primary disabled:opacity-60"
+                />
+                {nlStatus === "error" && (
+                  <p className="text-red-500 text-xs mb-2 px-1">{nlMessage}</p>
+                )}
+                <button
+                  onClick={handleNewsletterSubscribe}
+                  disabled={nlStatus === "loading"}
+                  className="w-full py-3 bg-primary text-white rounded-full text-sm font-bold hover:bg-transparent hover:text-primary border cursor-pointer transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  {nlStatus === "loading" ? (
+                    <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                  ) : "Join Now"}
+                </button>
+              </>
+            )}
           </div>
         </SlideUp>
 

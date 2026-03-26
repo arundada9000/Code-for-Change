@@ -49,6 +49,8 @@ const AdminResources = lazy(() => import("./Pages/Admin/AdminResources"));
 const SajiloDigital = lazy(() => import("./Pages/Admin/SajiloDigital"));
 const AdminTestimonials = lazy(() => import("./Pages/Admin/AdminTestimonials"));
 const AdminSupporters = lazy(() => import("./Pages/Admin/AdminSupporters"));
+const AdminNewsletter = lazy(() => import("./Pages/Admin/AdminNewsletter"));
+const AdminContacts = lazy(() => import("./Pages/Admin/AdminContacts"));
 import AuthLayout from "./Layout/AuthLayout";
 import Login from "./Pages/Auth/Login";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
@@ -58,7 +60,7 @@ import PrivateRoute from "./Components/Common/PrivateRoute";
 import { Toaster } from "react-hot-toast";
 
 function App() {
-  console.log("Updated to latest");
+  console.log("Updated to latest version 1");
   useScrollToTop();
   return (
     <>
@@ -148,6 +150,8 @@ function App() {
               <Route path="resource" element={<AdminResources />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="supporters" element={<AdminSupporters />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
+              <Route path="contacts" element={<AdminContacts />} />
               <Route path="sajilo-digital" element={<SajiloDigital />} />
             </Route>
           </Route>

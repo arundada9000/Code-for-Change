@@ -115,6 +115,11 @@ export const PERMISSIONS = {
   SUPPORTER_UPDATE: "supporter:update",
   SUPPORTER_VIEW: "supporter:view",
   SUPPORTER_DELETE: "supporter:delete",
+
+  // Newsletter Management
+  NEWSLETTER_VIEW: "newsletter:view",
+  NEWSLETTER_UPDATE: "newsletter:update",
+  NEWSLETTER_DELETE: "newsletter:delete",
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;

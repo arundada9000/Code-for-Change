@@ -27,8 +27,13 @@ import resourceRoutes from "./modules/resources/resource.route.js";
 import seoRoutes from "./modules/seo/seo.route.js";
 import testimonialRoutes from "./modules/testimonial/testimonial.route.js";
 import supporterRoutes from "./modules/supporter/supporter.route.js";
+import newsletterRoutes from "./modules/newsletter/newsletter.route.js";
 
 const app: Application = express();
+
+// Trust the first proxy (Render, Nginx, etc.) so that req.ip contains
+// the real client IP, which is critical for accurate rate limiting.
+app.set("trust proxy", 1);
 
 // Custom NoSQL Injection Protection for Express 5 (handles query getter)
 const customSanitize = (req: any, res: any, next: any) => {
@@ -130,6 +135,7 @@ app.use("/api", galleryRoutes);
 app.use("/api", resourceRoutes);
 app.use("/api", testimonialRoutes);
 app.use("/api", supporterRoutes);
+app.use("/api", newsletterRoutes);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);
