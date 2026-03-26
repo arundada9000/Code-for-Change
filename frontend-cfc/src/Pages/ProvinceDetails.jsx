@@ -216,7 +216,9 @@ const ProvinceDetails = () => {
       try {
         const [eventsRes, teamRes, usersRes] = await Promise.allSettled([
           // Use region query param directly — fixes the province/location mismatch bug
-          API.get(`/events?region=${encodeURIComponent(displayName)}&limit=100`),
+          API.get(
+            `/events?region=${encodeURIComponent(displayName)}&limit=100`,
+          ),
           API.get("/team"),
           API.get("/users/public-users"),
         ]);
@@ -252,6 +254,16 @@ const ProvinceDetails = () => {
               role: u.role,
               position: u.executiveDetails?.position || u.role,
               image: u.profileImage,
+              college: u.education?.collegeName,
+              bio: u.bio,
+              type: ["eb"].includes(u.role) ? "executive" : "member",
+              socialLinks: {
+                linkedin: u.linkedin,
+                github: u.github,
+                facebook: u.facebook,
+                twitter: u.twitter,
+                website: u.website,
+              },
               isPublicUser: true,
             })) || [];
 
@@ -762,7 +774,7 @@ const ProvinceDetails = () => {
                 No provincial alumni found for this region.
               </div>
             )}
-            
+
             {/* National Alumni (Static) */}
             <div className="mt-20">
               <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
@@ -812,24 +824,51 @@ const ProvinceDetails = () => {
                   type="text"
                   placeholder="Search events..."
                   value={eventSearch}
-                  onChange={(e) => { setEventSearch(e.target.value); setVisibleCount(6); }}
+                  onChange={(e) => {
+                    setEventSearch(e.target.value);
+                    setVisibleCount(6);
+                  }}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
                 />
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"/></svg>
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </div>
               <select
                 value={eventType}
-                onChange={(e) => { setEventType(e.target.value); setVisibleCount(6); }}
+                onChange={(e) => {
+                  setEventType(e.target.value);
+                  setVisibleCount(6);
+                }}
                 className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all appearance-none cursor-pointer"
               >
                 <option value="">All Types</option>
-                {["hackathon","workshop","webinar","conference","social_impact"].map(t => (
-                  <option key={t} value={t}>{t.replace("_"," ")}</option>
+                {[
+                  "hackathon",
+                  "workshop",
+                  "webinar",
+                  "conference",
+                  "social_impact",
+                ].map((t) => (
+                  <option key={t} value={t}>
+                    {t.replace("_", " ")}
+                  </option>
                 ))}
               </select>
               <select
                 value={eventNational}
-                onChange={(e) => { setEventNational(e.target.value); setVisibleCount(6); }}
+                onChange={(e) => {
+                  setEventNational(e.target.value);
+                  setVisibleCount(6);
+                }}
                 className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all appearance-none cursor-pointer"
               >
                 <option value="">All Scope</option>
@@ -842,35 +881,47 @@ const ProvinceDetails = () => {
 
         {(() => {
           // Client-side filter on already-fetched region events
-          const filtered = events.filter(e => {
-            const matchSearch = !eventSearch || e.title?.toLowerCase().includes(eventSearch.toLowerCase());
+          const filtered = events.filter((e) => {
+            const matchSearch =
+              !eventSearch ||
+              e.title?.toLowerCase().includes(eventSearch.toLowerCase());
             const matchType = !eventType || e.type === eventType;
-            const matchNational = !eventNational || (eventNational === 'national' ? e.isNational : !e.isNational);
+            const matchNational =
+              !eventNational ||
+              (eventNational === "national" ? e.isNational : !e.isNational);
             return matchSearch && matchType && matchNational;
           });
           const visible = filtered.slice(0, visibleCount);
           const hasMore = filtered.length > visibleCount;
 
-          if (loading) return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[0,1,2,3,4,5].map((i) => (
-                <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
-                  <Pulse className="w-full h-48 rounded-none" />
-                  <div className="p-6 space-y-3">
-                    <Pulse className="h-5 w-full rounded" />
-                    <Pulse className="h-4 w-3/4 rounded" />
-                    <div className="flex gap-3 mt-2"><Pulse className="h-4 w-20 rounded" /><Pulse className="h-4 w-20 rounded" /></div>
+          if (loading)
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                  >
+                    <Pulse className="w-full h-48 rounded-none" />
+                    <div className="p-6 space-y-3">
+                      <Pulse className="h-5 w-full rounded" />
+                      <Pulse className="h-4 w-3/4 rounded" />
+                      <div className="flex gap-3 mt-2">
+                        <Pulse className="h-4 w-20 rounded" />
+                        <Pulse className="h-4 w-20 rounded" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          );
+                ))}
+              </div>
+            );
 
-          if (filtered.length === 0) return (
-            <div className="text-center text-gray-400 italic py-12">
-              No events found matching the current filters.
-            </div>
-          );
+          if (filtered.length === 0)
+            return (
+              <div className="text-center text-gray-400 italic py-12">
+                No events found matching the current filters.
+              </div>
+            );
 
           return (
             <>
@@ -880,7 +931,13 @@ const ProvinceDetails = () => {
                     key={event._id || i}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.05 * i, type: "spring", stiffness: 80, damping: 20 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.05 * i,
+                      type: "spring",
+                      stiffness: 80,
+                      damping: 20,
+                    }}
                   >
                     <EventCard event={event} />
                   </motion.div>
@@ -889,7 +946,7 @@ const ProvinceDetails = () => {
               {hasMore && (
                 <div className="flex justify-center mt-10">
                   <button
-                    onClick={() => setVisibleCount(v => v + 6)}
+                    onClick={() => setVisibleCount((v) => v + 6)}
                     className="px-8 py-3 rounded-full font-bold text-sm text-white shadow-lg transition-all hover:scale-105"
                     style={{ backgroundColor: themeColor }}
                   >
