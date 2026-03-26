@@ -87,6 +87,39 @@ function Gallery() {
     currentIndex !== null ? filteredImages[currentIndex] : null;
 
   // handle download
+  const handleDownload = async (imageUrl, imageName) => {
+    try {
+      const response = await fetch(imageUrl);
+      if (!response.ok) throw new Error("Network response was not ok");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement("a");
+      link.href = url;
+      
+      // Try to extract extension from URL
+      const extMatch = imageUrl.match(/\.(jpg|jpeg|png|gif|webp)(?:[\?#]|$)/i);
+      const extension = extMatch ? extMatch[0] : '';
+      
+      link.download = imageName ? `${imageName.replace(/[^a-zA-Z0-9-\s]/g, "").replace(/\s+/g, "_")}${extension}` : `download${extension}`;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to download image using fetch:", error);
+      // Fallback: direct opening/download using a tag
+      const link = document.createElement("a");
+      link.href = imageUrl;
+      link.download = imageName || "download";
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   return (
     <div className="bg-white min-h-screen pb-20">
@@ -154,13 +187,24 @@ function Gallery() {
 
                   {/* Visual refinement matching image: glassmorphism hover effect */}
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-                    <div className="bg-white/20 backdrop-blur-xl p-5 rounded-3xl border border-white/30 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-700 ease-out shadow-2xl">
-                      <span className="text-white/80 text-[10px] font-black uppercase tracking-widest block mb-1.5 drop-shadow-sm">
-                        {image.category}
-                      </span>
-                      <h3 className="text-white text-base font-bold truncate drop-shadow-md">
-                        {image.title}
-                      </h3>
+                    <div className="flex justify-between bg-white/20 backdrop-blur-xl p-5 rounded-3xl border border-white/30 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-700 ease-out shadow-2xl">
+                      <div>
+                        <span className="text-white/80 text-[10px] font-black uppercase tracking-widest block mb-1.5 drop-shadow-sm">
+                          {image.category}
+                        </span>
+                        <h3 className="text-white text-base font-bold truncate drop-shadow-md">
+                          {image.title}
+                        </h3>{" "}
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownload(image.imageUrl, image.title);
+                        }}
+                        className=" bg-white/20 p-3 rounded-full text-white text-xl cursor-pointer z-110 transition-all ease-in duration-300"
+                      >
+                        <FiDownload />
+                      </button>
                     </div>
                   </div>
 
@@ -193,7 +237,10 @@ function Gallery() {
             <RiCloseFill className="group-hover:rotate-90 transition-all ease-in duration-300" />
           </button>
           {/* Download Button */}
-          <button className="absolute top-6 right-20 group bg-white/20 p-3 rounded-full text-white text-xl cursor-pointer z-110 transition-all ease-in duration-300">
+          <button 
+            onClick={() => handleDownload(selectedImg.imageUrl, selectedImg.title)}
+            className="absolute top-6 right-20 group bg-white/20 p-3 rounded-full text-white text-xl cursor-pointer z-110 transition-all ease-in duration-300"
+          >
             <FiDownload />
           </button>
 
