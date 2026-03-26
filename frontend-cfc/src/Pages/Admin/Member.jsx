@@ -517,7 +517,7 @@ function Member() {
 
       {/* 2. Role Filter Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {['all', 'superadmin', 'admin', 'eb', 'cr', 'gm', 'guest'].map((role) => (
+        {['all', 'superadmin', 'admin', 'eb', 'cr', 'gm', 'ippl', 'advisor', 'alumni', 'guest'].map((role) => (
           <button
             key={role}
             onClick={() => setActiveFilter(role)}
@@ -754,6 +754,9 @@ function Member() {
                       <option value="gm">General Member</option>
                       <option value="eb">Executive Board (EB)</option>
                       <option value="cr">Campus Representative (CR)</option>
+                      <option value="ippl">IPPL</option>
+                      <option value="advisor">Advisor</option>
+                      <option value="alumni">Alumni</option>
                       <option value="guest">Guest</option>
                       {(useAuth().user?.role === 'superadmin' || useAuth().user?.role === 'admin') && (
                         <>

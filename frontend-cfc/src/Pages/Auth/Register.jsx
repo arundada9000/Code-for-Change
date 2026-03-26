@@ -38,6 +38,7 @@ function Register() {
     phone: "",
     collegeName: "",
     role: "gm",
+    tenure: "",
     ebBody: "",
     faculty: "",
     semester: "",
@@ -324,7 +325,34 @@ function Register() {
                         <option value="gm">General Member</option>
                         <option value="eb">Executive Board (EB)</option>
                         <option value="cr">Campus Representative (CR)</option>
+                        <option value="ippl">IPPL</option>
+                        <option value="advisor">Advisor</option>
+                        <option value="alumni">Alumni</option>
                         <option value="guest">Guest</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 group">
+                    <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
+                      Tenure
+                    </label>
+                    <div className="relative group mt-1">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                        <FaCalendar />
+                      </div>
+                      <select
+                        name="tenure"
+                        value={form.tenure}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                      >
+                        <option value="">Select Tenure</option>
+                        <option value="2025-2026">2025-2026</option>
+                        <option value="2024-2025">2024-2025</option>
+                        <option value="2023-2024">2023-2024</option>
+                        <option value="2022-2023">2022-2023</option>
                       </select>
                     </div>
                   </div>

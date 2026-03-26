@@ -515,10 +515,10 @@ const ProvinceDetails = () => {
               </div>
             ))}
           </div>
-        ) : team.filter((m) => m.role === "eb").length > 0 ? (
+        ) : team.filter((m) => m.role === "ippl").length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
             {team
-              .filter((m) => m.role === "eb")
+              .filter((m) => m.role === "ippl")
               .map((member, i) => (
                 <TeamMemberCard
                   key={member._id || i}
@@ -531,7 +531,53 @@ const ProvinceDetails = () => {
           </div>
         ) : (
           <div className="text-center text-gray-400 italic">
-            No executive members found for this region.
+            No IPPL members found for this region.
+          </div>
+        )}
+      </section>
+
+      {/* Regional Advisors */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+          <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+            Regional <span style={{ color: themeColor }}>Advisors</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            Advisors
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                style={{ backgroundColor: `${themeColor}20` }}
+              >
+                <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                <Pulse className="h-4 w-24 rounded mx-auto" />
+                <Pulse className="h-3 w-16 rounded mx-auto" />
+              </div>
+            ))}
+          </div>
+        ) : team.filter((m) => m.role === "advisor").length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {team
+              .filter((m) => m.role === "advisor")
+              .map((member, i) => (
+                <TeamMemberCard
+                  key={member._id || i}
+                  member={member}
+                  themeColor={themeColor}
+                  index={i}
+                  onClick={setSelectedMember}
+                />
+              ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 italic">
+            No regional advisors found for this region.
           </div>
         )}
       </section>
@@ -678,22 +724,67 @@ const ProvinceDetails = () => {
           <div>
             <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
               <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
-                National <span style={{ color: themeColor }}>Alumni</span>
+                Provincial <span style={{ color: themeColor }}>Alumni</span>
               </h2>
               <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-                National Alumni Members
+                Regional Alumni Members
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-              {ALUMNI.map((member, i) => (
-                <TeamMemberCard
-                  key={i}
-                  member={member}
-                  themeColor={themeColor}
-                  index={i}
-                  onClick={setSelectedMember}
-                />
-              ))}
+            {loading ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                    style={{ backgroundColor: `${themeColor}20` }}
+                  >
+                    <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                    <Pulse className="h-4 w-24 rounded mx-auto" />
+                    <Pulse className="h-3 w-16 rounded mx-auto" />
+                  </div>
+                ))}
+              </div>
+            ) : team.filter((m) => m.role === "alumni").length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                {team
+                  .filter((m) => m.role === "alumni")
+                  .map((member, i) => (
+                    <TeamMemberCard
+                      key={member._id || i}
+                      member={member}
+                      themeColor={themeColor}
+                      index={i}
+                      onClick={setSelectedMember}
+                    />
+                  ))}
+              </div>
+            ) : (
+              <div className="text-center text-gray-400 italic">
+                No provincial alumni found for this region.
+              </div>
+            )}
+            
+            {/* National Alumni (Static) */}
+            <div className="mt-20">
+              <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+                <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight font-serif italic">
+                  National <span style={{ color: themeColor }}>Alumni</span>
+                </h2>
+                <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+                  Static Hall of Fame
+                </p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                {ALUMNI.map((member, i) => (
+                  <TeamMemberCard
+                    key={i}
+                    member={member}
+                    themeColor={themeColor}
+                    index={i}
+                    onClick={setSelectedMember}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
