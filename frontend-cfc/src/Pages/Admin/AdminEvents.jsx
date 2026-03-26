@@ -86,6 +86,8 @@ function AdminEvents() {
   const { hasPermission } = useAuth();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -164,7 +166,8 @@ function AdminEvents() {
   useEffect(() => {
     // Debounce search
     const timer = setTimeout(() => {
-      fetchEvents();
+      setPage(1);
+      fetchEvents(1);
     }, 500);
     return () => clearTimeout(timer);
   }, [
@@ -176,7 +179,7 @@ function AdminEvents() {
     filterEndDate,
   ]);
 
-  const fetchEvents = async () => {
+  const fetchEvents = async (currentPage = page) => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -186,14 +189,35 @@ function AdminEvents() {
       if (filterProvince) params.append("province", filterProvince);
       if (filterStartDate) params.append("startDate", filterStartDate);
       if (filterEndDate) params.append("endDate", filterEndDate);
+      params.append("limit", "10");
+      params.append("page", String(currentPage));
 
       const { data } = await API.get(`/events?${params.toString()}`);
-      setEvents(data.data?.events || []);
+      const newEvents = data.data?.events || [];
+      const pagination = data.pagination || data.data?.pagination || null;
+
+      if (currentPage === 1) {
+        setEvents(newEvents);
+      } else {
+        setEvents((prev) => [...prev, ...newEvents]);
+      }
+
+      if (pagination && pagination.page < pagination.totalPages) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Failed to fetch events", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchEvents(nextPage);
   };
 
   const handleFile = (file) => {
@@ -395,7 +419,8 @@ function AdminEvents() {
         setEvents([response.data, ...events]);
       }
       setIsModalOpen(false);
-      fetchEvents();
+      setPage(1);
+      fetchEvents(1);
     } catch (error) {
       console.error("Failed to save event", error);
       alert(error.response?.data?.message || "Failed to save event");
@@ -561,7 +586,8 @@ function AdminEvents() {
             }
           }
           toast.success(`Successfully imported ${count} events`);
-          fetchEvents();
+          setPage(1);
+          fetchEvents(1);
         } catch (error) {
           toast.error("Import failed: One or more records are invalid",error);
         }
@@ -736,7 +762,7 @@ function AdminEvents() {
       </div>
 
       {/* Events Content - Responsive Table/Cards */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[600px]">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[600px] flex flex-col">
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full w-full text-left">
@@ -986,6 +1012,19 @@ function AdminEvents() {
             ))
           )}
         </div>
+
+        {/* Load More Button */}
+        {hasMore && (
+          <div className="flex justify-center p-6 border-t border-gray-100 mt-auto">
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="px-6 py-2.5 bg-gray-50 text-gray-700 font-bold text-xs rounded-xl border border-gray-200 hover:bg-gray-100 transition-all shadow-sm flex items-center gap-2"
+            >
+              {loading ? "Loading..." : "Load More Events"}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Modal */}
