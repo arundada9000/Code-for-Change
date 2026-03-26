@@ -1,9 +1,40 @@
+import dns from "dns";
 import { NewsletterSubscriber } from "./newsletter.model.js";
 import { INewsletterSubscriber } from "./newsletter.interface.js";
 import { AppError } from "../../shared/utils/errorHandler.js";
 
+/**
+ * Verifies the email domain has valid MX records.
+ * This confirms the domain is capable of receiving emails.
+ * Uses Node's built-in dns module — no external API needed.
+ */
+async function verifyEmailDomain(email: string): Promise<void> {
+  const domain = email.split("@")[1];
+  try {
+    const mxRecords = await dns.promises.resolveMx(domain);
+    if (!mxRecords || mxRecords.length === 0) {
+      throw new AppError(
+        "The email domain does not appear to accept emails. Please use a real email address.",
+        422
+      );
+    }
+  } catch (err: any) {
+    // If the error is already our AppError, rethrow it
+    if (err.statusCode) throw err;
+    // DNS lookup failed (domain doesn't exist)
+    throw new AppError(
+      "We couldn't verify the email domain. Please use a valid, real email address.",
+      422
+    );
+  }
+}
+
 export class NewsletterService {
   async subscribe(email: string): Promise<{ subscriber: INewsletterSubscriber; isNew: boolean }> {
+    // 1. Verify the domain has MX records (domain exists and can receive mail)
+    await verifyEmailDomain(email);
+
+    // 2. Check for existing subscription
     const existing = await NewsletterSubscriber.findOne({ email });
 
     if (existing) {

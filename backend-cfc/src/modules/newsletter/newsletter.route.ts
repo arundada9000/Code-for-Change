@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { rateLimit } from "express-rate-limit";
 import { NewsletterController } from "./newsletter.controller.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
@@ -9,12 +10,26 @@ import { subscribeSchema, updateSubscriberSchema } from "./newsletter.validation
 const router = Router();
 const newsletterController = new NewsletterController();
 
-// ─── Public Routes ─────────────────────────────────────────────────────────────
-// Rate-limiting for spam prevention is applied at the app level (global /api limiter)
+// ─── Per-IP Rate Limiter for Subscribe ─────────────────────────────────────────
+// Max 5 subscription attempts per IP per 15 minutes to prevent spam/abuse.
+const subscribeRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    status: "error",
+    message: "Too many subscription attempts from this IP. Please try again in 15 minutes.",
+  },
+  keyGenerator: (req) => req.ip || "unknown",
+});
+
+// ─── Public Routes ──────────────────────────────────────────────────────────────
 router.post(
   "/newsletter/subscribe",
-  validate(subscribeSchema),
-  newsletterController.subscribe
+  subscribeRateLimiter,        // Strict per-IP: 5 req / 15 min
+  validate(subscribeSchema),   // Format + disposable email check
+  newsletterController.subscribe // MX record DNS check inside service
 );
 
 // ─── Admin Routes (Protected) ───────────────────────────────────────────────────
