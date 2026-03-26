@@ -66,18 +66,7 @@ export default function CurrentEvent({ filterParams = {}, filterBar = null }) {
     setPage(1);
   };
 
-  if (loading && accumulatedEvents.length === 0)
-    return (
-      <section className="px-5 bg-gradient-to-br from-slate-50 to-white py-8">
-        <div className="max-w-7xl mx-auto">
-          {!isHome && filterBar && (
-            <div className="mb-6">{filterBar}</div>
-          )}
-          <TerminalCardSkeleton count={isHome ? 2 : 6} cols="md:grid-cols-2 lg:grid-cols-3" />
-        </div>
-      </section>
-    );
-  if (!loading && accumulatedEvents.length === 0 && !apiResponse) return null;
+  if (!loading && accumulatedEvents.length === 0 && !apiResponse && isHome) return null;
 
   return (
     <section className={`px-5 bg-gradient-to-br from-slate-50 to-white ${location.pathname === "/events" ? "py-8" : "pt-8"}`}>
@@ -142,7 +131,9 @@ export default function CurrentEvent({ filterParams = {}, filterBar = null }) {
         </div>
 
         {/* Events Grid */}
-        {eventsToShow.length === 0 && !loading ? (
+        {loading && accumulatedEvents.length === 0 ? (
+          <TerminalCardSkeleton count={isHome ? 2 : 6} cols="md:grid-cols-2 lg:grid-cols-3" />
+        ) : eventsToShow.length === 0 && !loading ? (
           <div className="text-center py-20 text-slate-400">
             No {activeTab} events found with the current filters.
           </div>
