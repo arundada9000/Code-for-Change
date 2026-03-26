@@ -118,7 +118,7 @@ function AdminEvents() {
   const [filterStartDate, setFilterStartDate] = useState("");
   const [filterEndDate, setFilterEndDate] = useState("");
 
-  const PROVINCES = [
+  const REGIONS = [
     "Kathmandu",
     "Pokhara",
     "Rupandehi",
@@ -142,12 +142,14 @@ function AdminEvents() {
     fullDescription: "",
     organizer: "Code for Change",
     type: "workshop",
-    province: "",
+    region: "",
     registrationLink: "",
     registrationDeadline: "",
     speakers: [],
     highlights: [],
     benefits: [],
+    contactInfo: [],
+    isNational: false,
     imageFile: null,
     imagePreview: "",
   });
@@ -273,7 +275,7 @@ function AdminEvents() {
         fullDescription: event.fullDescription || "",
         organizer: event.organizer || "Code for Change",
         type: event.type || "workshop",
-        province: event.province || "",
+        region: event.region || "",
         registrationLink: event.registrationLink || "",
         registrationDeadline: event.registrationDeadline
           ? new Date(event.registrationDeadline).toISOString().split("T")[0]
@@ -281,6 +283,8 @@ function AdminEvents() {
         speakers: event.speakers || [],
         highlights: safeParseArr(event.highlights),
         benefits: safeParseArr(event.benefits),
+        contactInfo: event.contactInfo || [],
+        isNational: event.isNational || false,
         imageFile: null,
         imagePreview: event.image || "",
       });
@@ -303,7 +307,9 @@ function AdminEvents() {
         speakers: [],
         highlights: [],
         benefits: [],
-        province: "",
+        contactInfo: [],
+        isNational: false,
+        region: "",
         imageFile: null,
         imagePreview: "",
       });
@@ -345,7 +351,7 @@ function AdminEvents() {
       data.append("fullDescription", formData.fullDescription);
     data.append("organizer", formData.organizer);
     data.append("type", formData.type);
-    if (formData.province) data.append("province", formData.province);
+    if (formData.region) data.append("region", formData.region);
     if (formData.registrationLink)
       data.append("registrationLink", formData.registrationLink);
     if (formData.registrationDeadline)
@@ -356,6 +362,9 @@ function AdminEvents() {
       data.append("highlights", JSON.stringify(formData.highlights));
     if (formData.benefits.length)
       data.append("benefits", JSON.stringify(formData.benefits));
+    if (formData.contactInfo.length)
+      data.append("contactInfo", JSON.stringify(formData.contactInfo));
+    data.append("isNational", String(formData.isNational));
     if (formData.imageFile) {
       data.append("image", formData.imageFile);
     }
@@ -677,8 +686,8 @@ function AdminEvents() {
               value={filterProvince}
               onChange={(e) => setFilterProvince(e.target.value)}
             >
-              <option value="">All Provinces</option>
-              {PROVINCES.map((p) => (
+              <option value="">All Regions</option>
+              {REGIONS.map((p) => (
                 <option key={p} value={p}>
                   {p}
                 </option>
@@ -1180,19 +1189,33 @@ function AdminEvents() {
                       </label>
                       <select
                         className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl outline-none text-sm font-medium focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer shadow-sm"
-                        value={formData.province}
+                        value={formData.region}
                         onChange={(e) =>
-                          setFormData({ ...formData, province: e.target.value })
+                          setFormData({ ...formData, region: e.target.value })
                         }
                       >
-                        <option value="">Select Province</option>
-                        {PROVINCES.map((p) => (
+                        <option value="">Select Region</option>
+                        {REGIONS.map((p) => (
                           <option key={p} value={p}>
                             {p}
                           </option>
                         ))}
                       </select>
                     </div>
+                  </div>
+                  {/* isNational Toggle */}
+                  <div className="flex items-center gap-4 p-4 bg-amber-50 border border-amber-100 rounded-2xl">
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-gray-700 uppercase tracking-widest">National Event</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Enable if this event is held at a national level across CFC regions</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, isNational: !formData.isNational })}
+                      className={`relative w-12 h-6 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-400/50 ${formData.isNational ? 'bg-amber-500' : 'bg-gray-200'}`}
+                    >
+                      <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ${formData.isNational ? 'translate-x-6' : 'translate-x-0'}`} />
+                    </button>
                   </div>
                   <div className="grid grid-cols-1">
                     <InputField
@@ -1282,6 +1305,63 @@ function AdminEvents() {
                         </button>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 delay-250">
+                  <div className="flex items-center gap-4 mb-6">
+                    <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2 shrink-0">
+                      <FaLink className="text-emerald-500" /> Contact Information
+                    </h4>
+                    <div className="h-px bg-gray-200 flex-1"></div>
+                  </div>
+                  <div className="space-y-3">
+                    {formData.contactInfo.map((contact, i) => (
+                      <div key={i} className="flex gap-3 items-center">
+                        <select
+                          className="w-32 px-3 py-2 bg-white border border-gray-200 rounded-xl outline-none text-xs font-bold text-gray-600 focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none shadow-sm"
+                          value={contact.type}
+                          onChange={(e) => {
+                            const updated = [...formData.contactInfo];
+                            updated[i] = { ...updated[i], type: e.target.value };
+                            setFormData({ ...formData, contactInfo: updated });
+                          }}
+                        >
+                          <option value="email">Email</option>
+                          <option value="phone">Phone</option>
+                          <option value="other">Other</option>
+                        </select>
+                        <input
+                          type="text"
+                          placeholder={contact.type === 'email' ? 'email@cfc.org' : contact.type === 'phone' ? '+977-...' : 'Contact value'}
+                          className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-300 font-medium text-sm transition-all shadow-sm"
+                          value={contact.value}
+                          onChange={(e) => {
+                            const updated = [...formData.contactInfo];
+                            updated[i] = { ...updated[i], value: e.target.value };
+                            setFormData({ ...formData, contactInfo: updated });
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = formData.contactInfo.filter((_, idx) => idx !== i);
+                            setFormData({ ...formData, contactInfo: updated });
+                          }}
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
+                        >
+                          <FaTimes size={12} />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, contactInfo: [...formData.contactInfo, { type: 'email', value: '' }] })}
+                      className="flex items-center gap-2 text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors py-1"
+                    >
+                      <FaPlus size={10} /> Add Contact
+                    </button>
                   </div>
                 </div>
 

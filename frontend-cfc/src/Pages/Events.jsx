@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import Banner from '../Components/UI/Banner';
-import Breadcrumbs from '../Components/UI/Breadcrumbs';
 import SEO from '../Components/Common/SEO';
 import CurrentEvent from '../Components/PageComponents/Events/CurrentEvent';
-import Event from '../Components/PageComponents/Events/Event';
-import API from '../Services/api';
+import EventFilter from '../Components/PageComponents/Events/EventFilter';
 
 function Events() {
+  const [queryParams, setQueryParams] = useState({});
+
+  const handleFilterChange = useCallback((newParams) => {
+    setQueryParams(newParams);
+  }, []);
 
   return (
     <div>
-      <SEO 
+      <SEO
         title="Events & Workshops"
         description="Stay updated with upcoming workshops, hackathons, and technical events organized by Code for Change Nepal."
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Events", path: "/events" }]}
       />
       <Banner/>
-      {/* <div className="max-w-7xl mx-auto px-5 mt-8">
-        <Breadcrumbs crumbs={[{ name: "Events", path: "/events" }]} />
-      </div> */}
-      <CurrentEvent/>
-      {/* <Event events={events} loading={loading} /> */}
+      <CurrentEvent filterParams={queryParams} filterBar={<EventFilter onFilterChange={handleFilterChange} />} />
     </div>
-  )
+  );
 }
 
-export default Events
+export default Events;

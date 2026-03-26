@@ -9,6 +9,7 @@ import {
   FiActivity,
   FiGlobe,
 } from "react-icons/fi";
+import { FaSearch, FaFilter, FaStar } from "react-icons/fa";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
 import { provinces } from "./Provinces";
@@ -153,6 +154,12 @@ const ProvinceDetails = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState(null);
 
+  // Events filter + pagination state
+  const [eventSearch, setEventSearch] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventNational, setEventNational] = useState("");
+  const [visibleCount, setVisibleCount] = useState(6);
+
   const displayName = provinceName
     .replace(/-/g, " ")
     .replace(/\b\w/g, (l) => l.toUpperCase());
@@ -208,7 +215,8 @@ const ProvinceDetails = () => {
       setLoading(true);
       try {
         const [eventsRes, teamRes, usersRes] = await Promise.allSettled([
-          API.get("/events"),
+          // Use region query param directly — fixes the province/location mismatch bug
+          API.get(`/events?region=${encodeURIComponent(displayName)}&limit=100`),
           API.get("/team"),
           API.get("/users/public-users"),
         ]);
@@ -224,14 +232,7 @@ const ProvinceDetails = () => {
         const allPublicUsers =
           usersRes.status === "fulfilled" ? usersRes.value.data.data : [];
 
-        // Filter events by province (Assuming backend doesn't filter by province yet, or we need to add 'location' or 'province' field to Event model)
-        // The Event model has 'location' string. We might need to fuzzy match or just show all for now if location isn't structured.
-        // For now, let's filter if location includes province name.
-        const filteredEvents = allEvents.filter((e) =>
-          e.location?.toLowerCase().includes(displayName.toLowerCase()),
-        );
-
-        // Filter team by province (check new field 'province' first, then 'region')
+        // No client-side filtering needed for events — backend already matches by region
         const filteredTeamMembers = allTeam.filter(
           (m) =>
             m.province?.toLowerCase() === displayName.toLowerCase() ||
@@ -240,7 +241,6 @@ const ProvinceDetails = () => {
             m.region === "All",
         );
 
-        // Filter and map public users
         const provincialPublicUsers =
           allPublicUsers
             ?.filter(
@@ -255,10 +255,9 @@ const ProvinceDetails = () => {
               isPublicUser: true,
             })) || [];
 
-        // Combine both sources
         const combinedTeam = [...filteredTeamMembers, ...provincialPublicUsers];
 
-        setEvents(filteredEvents);
+        setEvents(allEvents);
         setTeam(combinedTeam);
       } catch (error) {
         console.error("Failed to fetch province data", error);
@@ -790,65 +789,117 @@ const ProvinceDetails = () => {
         </div>
       </section>
 
-      {/* 6. Gallery - Dynamic Events */}
+      {/* 6. Events Section */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12 border-t">
-        <div className="mb-8 text-center md:text-left">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight line-clamp-1">
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left mb-3">
+            <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
               Events in <span style={{ color: themeColor }}>{displayName}</span>
             </h2>
             <span className="bg-slate-100 px-4 py-2 rounded-full uppercase tracking-widest text-[10px] md:text-xs font-black text-slate-500 whitespace-nowrap">
-              {events.length} {events.length > 1 ? "Events" : "Event"}
+              {events.length} {events.length !== 1 ? "Events" : "Event"}
             </span>
           </div>
-          <p className="text-slate-500 mt-2 text-sm font-medium">
+          <p className="text-slate-500 text-sm font-medium">
             Impactful sessions conducted by this chapter.
           </p>
+
+          {/* Events Filter Bar */}
+          {events.length > 0 && (
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Search events..."
+                  value={eventSearch}
+                  onChange={(e) => { setEventSearch(e.target.value); setVisibleCount(6); }}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                />
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"/></svg>
+              </div>
+              <select
+                value={eventType}
+                onChange={(e) => { setEventType(e.target.value); setVisibleCount(6); }}
+                className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all appearance-none cursor-pointer"
+              >
+                <option value="">All Types</option>
+                {["hackathon","workshop","webinar","conference","social_impact"].map(t => (
+                  <option key={t} value={t}>{t.replace("_"," ")}</option>
+                ))}
+              </select>
+              <select
+                value={eventNational}
+                onChange={(e) => { setEventNational(e.target.value); setVisibleCount(6); }}
+                className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all appearance-none cursor-pointer"
+              >
+                <option value="">All Scope</option>
+                <option value="national">National</option>
+                <option value="local">Local</option>
+              </select>
+            </div>
+          )}
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
-              >
-                <Pulse className="w-full h-48 rounded-none" />
-                <div className="p-6 space-y-3">
-                  <Pulse className="h-5 w-full rounded" />
-                  <Pulse className="h-4 w-3/4 rounded" />
-                  <div className="flex gap-3 mt-2">
-                    <Pulse className="h-4 w-20 rounded" />
-                    <Pulse className="h-4 w-20 rounded" />
+        {(() => {
+          // Client-side filter on already-fetched region events
+          const filtered = events.filter(e => {
+            const matchSearch = !eventSearch || e.title?.toLowerCase().includes(eventSearch.toLowerCase());
+            const matchType = !eventType || e.type === eventType;
+            const matchNational = !eventNational || (eventNational === 'national' ? e.isNational : !e.isNational);
+            return matchSearch && matchType && matchNational;
+          });
+          const visible = filtered.slice(0, visibleCount);
+          const hasMore = filtered.length > visibleCount;
+
+          if (loading) return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[0,1,2,3,4,5].map((i) => (
+                <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+                  <Pulse className="w-full h-48 rounded-none" />
+                  <div className="p-6 space-y-3">
+                    <Pulse className="h-5 w-full rounded" />
+                    <Pulse className="h-4 w-3/4 rounded" />
+                    <div className="flex gap-3 mt-2"><Pulse className="h-4 w-20 rounded" /><Pulse className="h-4 w-20 rounded" /></div>
                   </div>
                 </div>
+              ))}
+            </div>
+          );
+
+          if (filtered.length === 0) return (
+            <div className="text-center text-gray-400 italic py-12">
+              No events found matching the current filters.
+            </div>
+          );
+
+          return (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {visible.map((event, i) => (
+                  <motion.div
+                    key={event._id || i}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.05 * i, type: "spring", stiffness: 80, damping: 20 }}
+                  >
+                    <EventCard event={event} />
+                  </motion.div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : events.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event, i) => (
-              <motion.div
-                key={event._id || i}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.1 * i,
-                  type: "spring",
-                  stiffness: 80,
-                  damping: 20,
-                }}
-              >
-                <EventCard event={event} />
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center text-gray-400 italic">
-            No events found in this region.
-          </div>
-        )}
+              {hasMore && (
+                <div className="flex justify-center mt-10">
+                  <button
+                    onClick={() => setVisibleCount(v => v + 6)}
+                    className="px-8 py-3 rounded-full font-bold text-sm text-white shadow-lg transition-all hover:scale-105"
+                    style={{ backgroundColor: themeColor }}
+                  >
+                    Load More ({filtered.length - visibleCount} remaining)
+                  </button>
+                </div>
+              )}
+            </>
+          );
+        })()}
       </section>
 
       <TeamMemberModal

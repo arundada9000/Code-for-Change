@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaCalendarAlt, FaMapMarkerAlt, FaArrowRight } from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt, FaArrowRight, FaStar } from "react-icons/fa";
 
 const EventCard = ({ event }) => {
   return (
@@ -12,6 +12,7 @@ const EventCard = ({ event }) => {
           alt={event.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
+        {/* Status badge top-right */}
         <div className="absolute top-3 right-3">
           <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-md ${
             event.status === 'Live' ? 'bg-rose-500/90 text-white' : 'bg-secondary/90 text-white'
@@ -19,6 +20,14 @@ const EventCard = ({ event }) => {
             {event.status || 'Published'}
           </span>
         </div>
+        {/* National badge top-left */}
+        {event.isNational && (
+          <div className="absolute top-3 left-3">
+            <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-md bg-amber-500/90 text-white">
+              <FaStar size={8} /> National
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Event Content */}
