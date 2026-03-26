@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Banner from "../Components/UI/Banner";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
@@ -13,6 +13,7 @@ import {
 } from "../Components/Common/Animations";
 
 import API from "../Services/api";
+import { toast } from "react-hot-toast";
 
 function ContactUs() {
   const [formData, setFormData] = useState({
@@ -24,7 +25,16 @@ function ContactUs() {
     phone: "",
   });
 
-  const [status, setStatus] = useState({ type: "", message: "" });
+  const [loading, setLoading] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (cooldown > 0) {
+      timer = setTimeout(() => setCooldown(cooldown - 1), 10000);
+    }
+    return () => clearTimeout(timer);
+  }, [cooldown]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +47,8 @@ function ContactUs() {
   // 3. Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus({ type: "loading", message: "Sending message..." });
+    if (cooldown > 0) return;
+    setLoading(true);
 
     try {
       const response = await API.post("/contacts", {
@@ -48,10 +59,7 @@ function ContactUs() {
       });
 
       if (response.data.status === "success" || response.status === 200) {
-        setStatus({
-          type: "success",
-          message: "Thank you! Your message has been sent.",
-        });
+        toast.success("Thank you! Your message has been sent.");
         setFormData({
           fullName: "",
           email: "",
@@ -60,20 +68,16 @@ function ContactUs() {
           address: "",
           phone: "",
         });
+        setCooldown(60); // 60 seconds cooldown to prevent immediate spam
       }
     } catch (err) {
-      setStatus({
-        type: "error",
-        message:
-          err.response?.data?.message ||
-          "Failed to send message. Please try again.",
-      });
+      toast.error(
+        err.response?.data?.message ||
+        "Failed to send message. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    // Clear message after 5 seconds
-    setTimeout(() => {
-      if (status.type !== "loading") setStatus({ type: "", message: "" });
-    }, 5000);
   };
 
   return (
@@ -161,17 +165,6 @@ function ContactUs() {
           <SlideUp delay={0.2}>
             <section className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {status.message && (
-                  <div
-                    className={`p-4 rounded-xl text-sm font-bold ${
-                      status.type === "success"
-                        ? "bg-green-50 text-green-700"
-                        : "bg-red-50 text-red-700"
-                    }`}
-                  >
-                    {status.message}
-                  </div>
-                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -265,9 +258,19 @@ function ContactUs() {
 
                 <button
                   type="submit"
-                  className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 active:scale-[0.98] transition-all"
+                  disabled={loading || cooldown > 0}
+                  className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 active:scale-[0.98] transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-blue-600"
                 >
-                  Send Message
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      Sending...
+                    </div>
+                  ) : cooldown > 0 ? (
+                    `Please wait ${cooldown}s`
+                  ) : (
+                    "Send Message"
+                  )}
                 </button>
               </form>
             </section>
