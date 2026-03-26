@@ -36,17 +36,22 @@ function AdminNewsletter() {
   }, [filterStatus]);
 
   const handleStatusToggle = async (subscriber) => {
-    const newStatus = subscriber.status === "active" ? "unsubscribed" : "active";
+    const newStatus =
+      subscriber.status === "active" ? "unsubscribed" : "active";
     try {
-      await API.patch(`/newsletter/${subscriber._id || subscriber.id}`, { status: newStatus });
+      await API.patch(`/newsletter/${subscriber._id || subscriber.id}`, {
+        status: newStatus,
+      });
       setSubscribers((prev) =>
         prev.map((s) =>
           (s._id || s.id) === (subscriber._id || subscriber.id)
             ? { ...s, status: newStatus }
-            : s
-        )
+            : s,
+        ),
       );
-      toast.success(`Subscriber ${newStatus === "active" ? "reactivated" : "unsubscribed"}`);
+      toast.success(
+        `Subscriber ${newStatus === "active" ? "reactivated" : "unsubscribed"}`,
+      );
     } catch (error) {
       toast.error("Failed to update subscriber status");
     }
@@ -58,8 +63,8 @@ function AdminNewsletter() {
       await API.delete(`/newsletter/${itemToDelete._id || itemToDelete.id}`);
       setSubscribers((prev) =>
         prev.filter(
-          (s) => (s._id || s.id) !== (itemToDelete._id || itemToDelete.id)
-        )
+          (s) => (s._id || s.id) !== (itemToDelete._id || itemToDelete.id),
+        ),
       );
       toast.success("Subscriber deleted successfully");
       setDeleteModalOpen(false);
@@ -95,7 +100,9 @@ function AdminNewsletter() {
   };
 
   const activeCount = subscribers.filter((s) => s.status === "active").length;
-  const unsubscribedCount = subscribers.filter((s) => s.status === "unsubscribed").length;
+  const unsubscribedCount = subscribers.filter(
+    (s) => s.status === "unsubscribed",
+  ).length;
 
   if (loading && subscribers.length === 0) return <AdminTableSkeleton />;
 
@@ -140,8 +147,12 @@ function AdminNewsletter() {
             <HiOutlineMail className="text-blue-600 text-xl" />
           </div>
           <div>
-            <p className="text-2xl font-black text-slate-900">{subscribers.length}</p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total</p>
+            <p className="text-2xl font-black text-slate-900">
+              {subscribers.length}
+            </p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Total
+            </p>
           </div>
         </div>
         <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-5 flex items-center gap-4">
@@ -150,7 +161,9 @@ function AdminNewsletter() {
           </div>
           <div>
             <p className="text-2xl font-black text-slate-900">{activeCount}</p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Active
+            </p>
           </div>
         </div>
         <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-5 flex items-center gap-4">
@@ -158,8 +171,12 @@ function AdminNewsletter() {
             <MdUnsubscribe className="text-rose-500 text-xl" />
           </div>
           <div>
-            <p className="text-2xl font-black text-slate-900">{unsubscribedCount}</p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Unsubscribed</p>
+            <p className="text-2xl font-black text-slate-900">
+              {unsubscribedCount}
+            </p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Unsubscribed
+            </p>
           </div>
         </div>
       </div>
@@ -184,23 +201,38 @@ function AdminNewsletter() {
       {/* Table */}
       <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-slate-400 font-bold">Loading...</div>
+          <div className="p-10 text-center text-slate-400 font-bold">
+            Loading...
+          </div>
         ) : subscribers.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-20 text-slate-300">
             <HiOutlineMail className="text-6xl mb-4" />
-            <p className="font-black uppercase tracking-widest text-sm">No subscribers found</p>
+            <p className="font-black uppercase tracking-widest text-sm">
+              No subscribers found
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-100">
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">#</th>
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Email</th>
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Subscribed At</th>
-                  {(hasPermission("newsletter:update") || hasPermission("newsletter:delete")) && (
-                    <th className="text-right px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    #
+                  </th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Email
+                  </th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Status
+                  </th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Subscribed At
+                  </th>
+                  {(hasPermission("newsletter:update") ||
+                    hasPermission("newsletter:delete")) && (
+                    <th className="text-right px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Actions
+                    </th>
                   )}
                 </tr>
               </thead>
@@ -210,13 +242,17 @@ function AdminNewsletter() {
                     key={subscriber._id || subscriber.id}
                     className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"
                   >
-                    <td className="px-8 py-4 text-sm font-bold text-slate-400">{index + 1}</td>
+                    <td className="px-8 py-4 text-sm font-bold text-slate-400">
+                      {index + 1}
+                    </td>
                     <td className="px-8 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center shrink-0">
                           <HiOutlineMail className="text-blue-500 text-sm" />
                         </div>
-                        <span className="font-bold text-slate-800 text-sm">{subscriber.email}</span>
+                        <span className="font-bold text-slate-800 text-sm">
+                          {subscriber.email}
+                        </span>
                       </div>
                     </td>
                     <td className="px-8 py-4">
@@ -229,33 +265,46 @@ function AdminNewsletter() {
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full ${
-                            subscriber.status === "active" ? "bg-emerald-500" : "bg-rose-500"
+                            subscriber.status === "active"
+                              ? "bg-emerald-500"
+                              : "bg-rose-500"
                           }`}
                         />
                         {subscriber.status}
                       </span>
                     </td>
                     <td className="px-8 py-4 text-sm text-slate-500 font-medium">
-                      {new Date(subscriber.subscribedAt || subscriber.createdAt).toLocaleDateString("en-US", {
+                      {new Date(
+                        subscriber.subscribedAt || subscriber.createdAt,
+                      ).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
                       })}
                     </td>
-                    {(hasPermission("newsletter:update") || hasPermission("newsletter:delete")) && (
+                    {(hasPermission("newsletter:update") ||
+                      hasPermission("newsletter:delete")) && (
                       <td className="px-8 py-4">
                         <div className="flex items-center justify-end gap-2">
                           {hasPermission("newsletter:update") && (
                             <button
                               onClick={() => handleStatusToggle(subscriber)}
-                              title={subscriber.status === "active" ? "Unsubscribe" : "Reactivate"}
+                              title={
+                                subscriber.status === "active"
+                                  ? "Unsubscribe"
+                                  : "Reactivate"
+                              }
                               className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all border text-sm ${
                                 subscriber.status === "active"
                                   ? "bg-orange-50 text-orange-500 border-orange-100 hover:bg-orange-500 hover:text-white"
                                   : "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-500 hover:text-white"
                               }`}
                             >
-                              {subscriber.status === "active" ? <MdUnsubscribe /> : <MdMarkEmailRead />}
+                              {subscriber.status === "active" ? (
+                                <MdUnsubscribe />
+                              ) : (
+                                <MdMarkEmailRead />
+                              )}
                             </button>
                           )}
                           {hasPermission("newsletter:delete") && (
