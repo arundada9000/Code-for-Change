@@ -40,7 +40,7 @@ function ContactUs() {
     setStatus({ type: "loading", message: "Sending message..." });
 
     try {
-      const response = await API.post("/contact", {
+      const response = await API.post("/contacts", {
         name: formData.fullName,
         email: formData.email,
         subject: formData.subject,
