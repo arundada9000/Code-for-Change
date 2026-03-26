@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { FaRegTrashAlt, FaEye, FaCheckDouble, FaRegEnvelope } from "react-icons/fa";
+import {
+  FaRegTrashAlt,
+  FaEye,
+  FaCheckDouble,
+  FaRegEnvelope,
+} from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
 import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
-import MessageModal from "../../Components/UI/Modal/MessageModal";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 
@@ -22,12 +26,17 @@ function ContactMessageModal({ isOpen, onClose, contact }) {
         <div className="p-8">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h3 className="text-xl font-black text-slate-900">{contact.subject}</h3>
-              <p className="text-sm font-bold text-slate-500 mt-1">From: {contact.name} ({contact.email})</p>
+              <h3 className="text-xl font-black text-slate-900">
+                {contact.subject}
+              </h3>
+              <p className="text-sm font-bold text-slate-500 mt-1">
+                From: {contact.name} ({contact.email})
+              </p>
               <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                Received: {new Date(contact.createdAt).toLocaleString("en-US", {
+                Received:{" "}
+                {new Date(contact.createdAt).toLocaleString("en-US", {
                   dateStyle: "medium",
-                  timeStyle: "short"
+                  timeStyle: "short",
                 })}
               </p>
             </div>
@@ -69,8 +78,9 @@ function AdminContacts() {
       setLoading(true);
       const { data } = await API.get("/contacts");
       let filtered = data.data || [];
-      if (filterStatus === "unread") filtered = filtered.filter(c => !c.isRead);
-      if (filterStatus === "read") filtered = filtered.filter(c => c.isRead);
+      if (filterStatus === "unread")
+        filtered = filtered.filter((c) => !c.isRead);
+      if (filterStatus === "read") filtered = filtered.filter((c) => c.isRead);
       setContacts(filtered);
     } catch (error) {
       console.error("Failed to fetch contacts", error);
@@ -92,8 +102,8 @@ function AdminContacts() {
         prev.map((c) =>
           (c._id || c.id) === (contact._id || contact.id)
             ? { ...c, isRead: true }
-            : c
-        )
+            : c,
+        ),
       );
       toast.success(`Message marked as read`);
     } catch (error) {
@@ -113,7 +123,9 @@ function AdminContacts() {
     try {
       await API.delete(`/contacts/${itemToDelete._id || itemToDelete.id}`);
       setContacts((prev) =>
-        prev.filter((c) => (c._id || c.id) !== (itemToDelete._id || itemToDelete.id))
+        prev.filter(
+          (c) => (c._id || c.id) !== (itemToDelete._id || itemToDelete.id),
+        ),
       );
       toast.success("Message deleted successfully");
       setDeleteModalOpen(false);
@@ -150,7 +162,9 @@ function AdminContacts() {
           </div>
           <div>
             <p className="text-2xl font-black text-slate-900">{totalCount}</p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Total
+            </p>
           </div>
         </div>
         <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-5 flex items-center gap-4">
@@ -159,7 +173,9 @@ function AdminContacts() {
           </div>
           <div>
             <p className="text-2xl font-black text-slate-900">{unreadCount}</p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse text-amber-500">Unread</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse text-amber-500">
+              Unread
+            </p>
           </div>
         </div>
       </div>
@@ -184,23 +200,38 @@ function AdminContacts() {
       {/* Table */}
       <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-slate-400 font-bold">Loading...</div>
+          <div className="p-10 text-center text-slate-400 font-bold">
+            Loading...
+          </div>
         ) : contacts.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-20 text-slate-300">
             <FaRegEnvelope className="text-6xl mb-4" />
-            <p className="font-black uppercase tracking-widest text-sm">No messages found</p>
+            <p className="font-black uppercase tracking-widest text-sm">
+              No messages found
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-100">
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sender</th>
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Subject</th>
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                  {(hasPermission("contact:view") || hasPermission("contact:delete")) && (
-                    <th className="text-right px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Sender
+                  </th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Subject
+                  </th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Status
+                  </th>
+                  <th className="text-left px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Date
+                  </th>
+                  {(hasPermission("contact:view") ||
+                    hasPermission("contact:delete")) && (
+                    <th className="text-right px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Actions
+                    </th>
                   )}
                 </tr>
               </thead>
@@ -212,15 +243,21 @@ function AdminContacts() {
                   >
                     <td className="px-8 py-4">
                       <div className="flex flex-col">
-                        <span className={`text-sm ${!contact.isRead ? "font-black text-slate-900" : "font-bold text-slate-700"}`}>
+                        <span
+                          className={`text-sm ${!contact.isRead ? "font-black text-slate-900" : "font-bold text-slate-700"}`}
+                        >
                           {contact.name}
                         </span>
-                        <span className="text-xs font-semibold text-slate-400">{contact.email}</span>
+                        <span className="text-xs font-semibold text-slate-400">
+                          {contact.email}
+                        </span>
                       </div>
                     </td>
                     <td className="px-8 py-4">
                       <div className="max-w-[200px] lg:max-w-[300px] truncate">
-                        <span className={`text-sm ${!contact.isRead ? "font-bold text-slate-900" : "font-medium text-slate-600"}`}>
+                        <span
+                          className={`text-sm ${!contact.isRead ? "font-bold text-slate-900" : "font-medium text-slate-600"}`}
+                        >
                           {contact.subject}
                         </span>
                       </div>
@@ -249,7 +286,8 @@ function AdminContacts() {
                         minute: "2-digit",
                       })}
                     </td>
-                    {(hasPermission("contact:view") || hasPermission("contact:delete")) && (
+                    {(hasPermission("contact:view") ||
+                      hasPermission("contact:delete")) && (
                       <td className="px-8 py-4">
                         <div className="flex items-center justify-end gap-2">
                           {hasPermission("contact:view") && (
