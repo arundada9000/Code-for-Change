@@ -58,7 +58,12 @@ function ContactUs() {
         message: `${formData.message}\n\nPhone: ${formData.phone}\nAddress: ${formData.address}`,
       });
 
-      if (response.data.status === "success" || response.status === 200) {
+      // Backend returns { success: true } and status 201 for creation
+      if (
+        response.data.success ||
+        response.status === 201 ||
+        response.status === 200
+      ) {
         toast.success("Thank you! Your message has been sent.");
         setFormData({
           fullName: "",
@@ -68,12 +73,12 @@ function ContactUs() {
           address: "",
           phone: "",
         });
-        setCooldown(60); // 60 seconds cooldown to prevent immediate spam
+        setCooldown(600);
       }
     } catch (err) {
       toast.error(
         err.response?.data?.message ||
-        "Failed to send message. Please try again."
+          "Failed to send message. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -165,7 +170,6 @@ function ContactUs() {
           <SlideUp delay={0.2}>
             <section className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100">
               <form onSubmit={handleSubmit} className="space-y-6">
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
