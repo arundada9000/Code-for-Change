@@ -31,7 +31,6 @@ function Certificate() {
   const { hasPermission } = useAuth();
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
@@ -67,6 +66,7 @@ function Certificate() {
   // ── Bulk Generation State ─────────────────────────────────────────────────
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkStep, setBulkStep] = useState(1);
+  const [showBulkPreview, setShowBulkPreview] = useState(false);
   const [bulkSubmitting, setBulkSubmitting] = useState(false);
   const [bulkProgress, setBulkProgress] = useState("");
   const today = new Date().toISOString().split("T")[0];
@@ -192,21 +192,6 @@ function Certificate() {
   const [certToDelete, setCertToDelete] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    recipientName: "",
-    courseName: "",
-    certificateType: "Training",
-    certificateId: "",
-    hours: "135 Hours",
-    regdNo: "64498-066-067",
-    startDate: new Date().toISOString().split("T")[0],
-    endDate: new Date().toISOString().split("T")[0],
-    issueDate: new Date().toISOString().split("T")[0],
-    grade: "Grade A",
-    province: "",
-  });
 
   useEffect(() => {
     fetchCertificates();
@@ -233,58 +218,6 @@ function Certificate() {
     }
   };
 
-  const handleIssue = async (e) => {
-    e.preventDefault();
-    if (submitting) return;
-    setSubmitting(true);
-    const formData = new FormData(e.target);
-    const sanitize = (val) => {
-      if (!val) return undefined;
-      const trimmed = val.toString().trim();
-      return trimmed === "" ? undefined : trimmed;
-    };
-
-    const payload = {
-      recipientName: sanitize(formData.get("recipientName")),
-      recipientEmail: sanitize(formData.get("recipientEmail")),
-      courseName: sanitize(formData.get("courseName")),
-      certificateType: formData.get("certificateType"),
-      certificateId: sanitize(formData.get("certificateId")),
-      startDate: sanitize(formData.get("startDate")),
-      endDate: sanitize(formData.get("endDate")),
-      hours: sanitize(formData.get("hours")),
-      grade: sanitize(formData.get("grade")),
-      province: formData.get("province"),
-      issueDate: formData.get("issueDate") || new Date().toISOString(),
-    };
-
-    try {
-      const { data } = await API.post("/certificates/issue", payload);
-      setCertificates([data.data, ...certificates]);
-      setIsModalOpen(false);
-      setFormData({
-        recipientName: "",
-        courseName: "",
-        certificateType: "Training",
-        certificateId: "",
-        hours: "135 Hours",
-        regdNo: "64498-066-067",
-        startDate: new Date().toISOString().split("T")[0],
-        endDate: new Date().toISOString().split("T")[0],
-        issueDate: new Date().toISOString().split("T")[0],
-        grade: "Grade A",
-        province: "",
-      });
-      toast.success("Certificate issued and registered successfully");
-    } catch (error) {
-      console.error("Issuance Error:", error);
-      toast.error(
-        error.response?.data?.message || "Failed to issue certificate",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
@@ -628,14 +561,7 @@ function Certificate() {
           </div>
           {hasPermission("certificate_issue") && (
             <div className="flex flex-wrap gap-3 flex-1 md:flex-none">
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-primary text-white px-6 py-4 rounded-2xl hover:bg-secondary transition-all shadow-xl shadow-slate-200 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
-              >
-                <FaPlus className="text-lg" />{" "}
-                <span className="hidden sm:inline">Issue Certificate</span>
-                <span className="sm:hidden">Issue New</span>
-              </button>
+
               <button
                 onClick={() => { setBulkStep(1); setIsBulkModalOpen(true); }}
                 className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-secondary text-white px-6 py-4 rounded-2xl hover:bg-primary transition-all shadow-xl shadow-secondary/20 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
@@ -963,278 +889,6 @@ function Certificate() {
         </div>
       </div>
 
-      {/* 4. Issue Certificate Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-primary/60 backdrop-blur-md z-150 flex items-center justify-center p-4">
-          <div className="bg-white max-h-[90vh] overflow-y-scroll rounded-4xl w-full max-w-2xl p-10 shadow-2xl animate-in zoom-in-95 duration-300">
-            <div className="flex justify-between items-center mb-8 border-b border-slate-50 pb-6">
-              <div>
-                <h3 className="text-2xl font-black tracking-tighter text-primary uppercase">
-                  Issue new certificate
-                </h3>
-                <p className="text-[10px] font-black text-secondary uppercase tracking-widest mt-1">
-                  Official Certification Form
-                </p>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="w-12 h-12 flex items-center justify-center cursor-pointer group bg-slate-50 rounded-2xl text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all"
-              >
-                <FaTimes size={20} className="group-hover:rotate-90 transition" />
-              </button>
-            </div>
-
-            <div className="flex gap-4 mb-8 flex-col md:flex-row">
-              <button
-                onClick={() => setShowPreview(false)}
-                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${!showPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400"}`}
-              >
-                Build Data
-              </button>
-              <button
-                onClick={() => setShowPreview(true)}
-                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${showPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400"}`}
-              >
-                Live Preview
-              </button>
-            </div>
-
-            {showPreview ? (
-              <div className="w-full rounded-2xl overflow-hidden border border-slate-100 shadow-xl">
-                <div className="bg-slate-50 border-b border-slate-100 px-4 py-2 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-rose-400"></div>
-                  <div className="w-2 h-2 rounded-full bg-amber-400"></div>
-                  <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
-                  <span className="ml-2 text-[9px] font-black uppercase tracking-widest text-slate-400">Live Certificate Preview</span>
-                </div>
-                <div className="p-2">
-                  <CertificatePreview data={formData} />
-                </div>
-              </div>
-            ) : (
-              <form
-                onSubmit={handleIssue}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
-              >
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Recipient Full Name
-                  </label>
-                  <input
-                    name="recipientName"
-                    required
-                    placeholder="Aarav Sharma"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.recipientName}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        recipientName: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Recipient Email
-                  </label>
-                  <input
-                    name="recipientEmail"
-                    type="email"
-                    required
-                    placeholder="aarav@example.com"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        recipientEmail: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Program / Course Name
-                  </label>
-                  <input
-                    name="courseName"
-                    required
-                    placeholder="Fullstack Web Development Bootcamp"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.courseName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, courseName: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Certificate Type
-                  </label>
-                  <select
-                    name="certificateType"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.certificateType}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        certificateType: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="Training">Training</option>
-                    <option value="Bootcamp">Bootcamp</option>
-                    <option value="Hackathon">Hackathon</option>
-                    <option value="Event">Event</option>
-                    <option value="Internship">Internship</option>
-                    <option value="Workshop">Workshop</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Region
-                  </label>
-                  <select
-                    name="province"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.province}
-                    onChange={(e) =>
-                      setFormData({ ...formData, province: e.target.value })
-                    }
-                  >
-                    <option value="">Select Region</option>
-                    {PROVINCES.map((p) => (
-                      <option key={p} value={p}>
-                        {p}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Custom ID (Optional)
-                  </label>
-                  <input
-                    name="certificateId"
-                    placeholder="Auto-generated if empty"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        certificateId: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-
-                {/* Training/Internship specific fields */}
-                {["Training", "Bootcamp", "Workshop", "Internship"].includes(
-                  formData.certificateType,
-                ) && (
-                    <>
-                      <div
-                        className={
-                          formData.certificateType === "Internship"
-                            ? "md:col-span-2"
-                            : ""
-                        }
-                      >
-                        <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                          Start Date
-                        </label>
-                        <input
-                          name="startDate"
-                          type="date"
-                          className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                          value={formData.startDate}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              startDate: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                      <div
-                        className={
-                          formData.certificateType === "Internship"
-                            ? "md:col-span-2"
-                            : ""
-                        }
-                      >
-                        <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                          End Date
-                        </label>
-                        <input
-                          name="endDate"
-                          type="date"
-                          className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                          value={formData.endDate}
-                          onChange={(e) =>
-                            setFormData({ ...formData, endDate: e.target.value })
-                          }
-                        />
-                      </div>
-                    </>
-                  )}
-
-                {/* Training specific fields */}
-                {["Training", "Bootcamp", "Workshop"].includes(
-                  formData.certificateType,
-                ) && (
-                    <div>
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                        Accredited Hours
-                      </label>
-                      <input
-                        name="hours"
-                        placeholder="e.g. 135 Hours"
-                        className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                        value={formData.hours}
-                        onChange={(e) =>
-                          setFormData({ ...formData, hours: e.target.value })
-                        }
-                      />
-                    </div>
-                  )}
-
-                {/* Grade/Result field (Universal or tailored) */}
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Grade / Result
-                  </label>
-                  <input
-                    name="grade"
-                    placeholder={
-                      ["Event", "Hackathon"].includes(formData.certificateType)
-                        ? "e.g. Winner / Participation"
-                        : "e.g. Grade A"
-                    }
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.grade}
-                    onChange={(e) =>
-                      setFormData({ ...formData, grade: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="md:col-span-2 pt-4">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all ${submitting
-                        ? "bg-slate-400 cursor-not-allowed"
-                        : "bg-primary text-white hover:bg-secondary"
-                      }`}
-                  >
-                    {submitting ? "Registering..." : "Register Certificate"}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* 5. Bulk Issue Modal */}
       {isBulkModalOpen && (
         <div className="fixed inset-0 bg-primary/70 backdrop-blur-md z-[150] flex items-center justify-center p-4">
@@ -1263,8 +917,55 @@ function Certificate() {
             </div>
 
             <div className="px-10 py-8">
+              {/* Preview Toggle Header */}
+              <div className="flex gap-4 mb-8 flex-col md:flex-row border-b border-slate-100 pb-6">
+                <button
+                  onClick={() => setShowBulkPreview(false)}
+                  className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${!showBulkPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400 hover:text-primary"}`}
+                >
+                  Configure Details ({bulkStep === 1 ? "Shared" : "Recipients"})
+                </button>
+                <button
+                  onClick={() => setShowBulkPreview(true)}
+                  className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${showBulkPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400 hover:text-primary"}`}
+                >
+                  Live Preview (First Recipient)
+                </button>
+              </div>
+
+              {/* ── LIVE PREVIEW ── */}
+              {showBulkPreview && (
+                <div className="w-full rounded-2xl overflow-hidden border border-slate-100 shadow-xl mb-6">
+                  <div className="bg-slate-50 border-b border-slate-100 px-4 py-2 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-rose-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    <span className="ml-2 text-[9px] font-black uppercase tracking-widest text-slate-400">Live Certificate Preview</span>
+                  </div>
+                  <div className="p-2">
+                    <CertificatePreview data={{
+                      recipientName: recipients[0]?.recipientName || "Sample Student Name",
+                      courseName: sharedData.courseName || "Event / Course Name",
+                      certificateType: sharedData.certificateType,
+                      certificateId: buildPreviewId(recipients[0] || {}),
+                      hours: sharedData.hours,
+                      startDate: sharedData.startDate,
+                      endDate: sharedData.endDate,
+                      issueDate: sharedData.issueDate || today,
+                      grade: sharedData.grade,
+                      province: sharedData.province,
+                      signatureName: sharedData.signatureName,
+                      signaturePosition: sharedData.signaturePosition,
+                      signatureImage: sharedData.signatureImage,
+                      awardedTo: sharedData.awardedTo,
+                      tokenHash: "preview-only"
+                    }} />
+                  </div>
+                </div>
+              )}
+
               {/* ── STEP 1: Shared Configuration ── */}
-              {bulkStep === 1 && (
+              {!showBulkPreview && bulkStep === 1 && (
                 <div className="space-y-6">
                   {/* Row: Count + Province + Type */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1455,7 +1156,7 @@ function Certificate() {
               )}
 
               {/* ── STEP 2: Recipient Entry ── */}
-              {bulkStep === 2 && (
+              {!showBulkPreview && bulkStep === 2 && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between mb-2">
                     <button onClick={() => setBulkStep(1)} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-all flex items-center gap-2">
