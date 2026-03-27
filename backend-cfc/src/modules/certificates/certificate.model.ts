@@ -34,6 +34,11 @@ const CertificateSchema: Schema = new Schema(
     programId: { type: Schema.Types.ObjectId }, // Flexible link to Event or Internship
     issuedBy: { type: Schema.Types.ObjectId, ref: "users", required: true },
     metadata: { type: Schema.Types.Map, of: Schema.Types.Mixed },
+    // ── Custom Signature Fields ────────────────────────────────
+    signatureName:     { type: String, trim: true },
+    signaturePosition: { type: String, trim: true },
+    signatureImage:    { type: String }, // base64 Data URL
+    awardedTo:         { type: String, trim: true }, // e.g. "Cordially Awarded To"
   },
   {
     timestamps: true,

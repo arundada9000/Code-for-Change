@@ -18,6 +18,11 @@ export const issueCertificateSchema = z.object({
     grade: z.string().trim().nullable().optional(),
     programId: z.string().optional(),
     metadata: z.record(z.string(), z.any()).optional(),
+    // Custom signature fields
+    signatureName:     z.string().trim().optional(),
+    signaturePosition: z.string().trim().optional(),
+    signatureImage:    z.string().optional(),
+    awardedTo:         z.string().trim().optional(),
   }),
 });
 
@@ -43,6 +48,11 @@ export const bulkIssueCertificateSchema = z.object({
       issueDate: z.string().or(z.date()).nullable().optional(),
       // Dynamic template text saved into metadata — allows custom certificate wording
       metadata: z.record(z.string(), z.any()).optional(),
+      // Custom signature fields
+      signatureName:     z.string().trim().optional(),
+      signaturePosition: z.string().trim().optional(),
+      signatureImage:    z.string().optional(),
+      awardedTo:         z.string().trim().optional(),
     }),
     recipients: z.array(recipientSchema).min(1).max(500),
   }),

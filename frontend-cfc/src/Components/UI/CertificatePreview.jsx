@@ -14,7 +14,16 @@ const CertificatePreview = ({ data }) => {
     endDate = "2025-02-26",
     issueDate = new Date().toISOString(),
     tokenHash = "preview-only",
+    signatureName = "",
+    signaturePosition = "",
+    signatureImage = "",
+    awardedTo = "",
   } = data;
+
+  // Fallback defaults for old certificates that don't have these fields
+  const displaySignatureName = signatureName || "Krishna Pokhrel";
+  const displaySignaturePosition = signaturePosition || "Project Lead CFC";
+  const displayAwardedTo = awardedTo || "Cordially Awarded To";
 
   const qrValue = `${window.location.origin}/certificate-verification/${certificateId}`;
 
@@ -146,7 +155,7 @@ const CertificatePreview = ({ data }) => {
         {/* Awarded To */}
         <div className="mb-1 md:mb-6">
           <div className="bg-slate-900 text-white px-4 sm:px-6 md:px-8 py-1 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase italic inline-block">
-            Cordially Awarded To
+            {displayAwardedTo}
           </div>
         </div>
 
@@ -218,11 +227,21 @@ const CertificatePreview = ({ data }) => {
 
         {/* Signature */}
         <div className="text-center w-full sm:w-40 md:w-48">
-          <div className="h-8 sm:h-10 md:h-12 border-b border-slate-200 md:mb-2 italic font-serif text-[8px] sm:text-lg md:text-xl flex items-end justify-center md:pb-1">
-            Balgovind Chaudhary
+          {signatureImage && (
+            <img
+              src={signatureImage}
+              alt="Signature"
+              className="h-8 sm:h-10 md:h-12 object-contain mx-auto mb-1"
+            />
+          )}
+          <div className={`${signatureImage ? '' : 'h-8 sm:h-10 md:h-12'} border-b border-slate-200 md:mb-2 italic font-serif text-[8px] sm:text-lg md:text-xl flex items-end justify-center md:pb-1`}>
+            {!signatureImage && displaySignatureName}
           </div>
           <p className="text-[7px] sm:text-[9px] md:text-[10px] font-bold md:font-black text-slate-900 uppercase md:tracking-widest">
-            Authorised Signatory
+            {displaySignatureName}
+          </p>
+          <p className="text-[6px] sm:text-[8px] md:text-[9px] font-bold text-slate-500 uppercase tracking-widest">
+            {displaySignaturePosition}
           </p>
         </div>
       </div>
