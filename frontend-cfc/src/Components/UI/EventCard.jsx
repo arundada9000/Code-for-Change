@@ -1,6 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaCalendarAlt, FaMapMarkerAlt, FaArrowRight, FaStar } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaArrowRight,
+  FaStar,
+} from "react-icons/fa";
 
 const EventCard = ({ event }) => {
   return (
@@ -8,16 +13,23 @@ const EventCard = ({ event }) => {
       {/* Event Image */}
       <div className="h-48 w-full overflow-hidden relative shrink-0">
         <img
-          src={event.image || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800"}
+          src={
+            event.image ||
+            "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800"
+          }
           alt={event.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
         {/* Status badge top-right */}
         <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-md ${
-            event.status === 'Live' ? 'bg-rose-500/90 text-white' : 'bg-secondary/90 text-white'
-          }`}>
-            {event.status || 'Published'}
+          <span
+            className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-md ${
+              event.status === "Live"
+                ? "bg-rose-500/90 text-white"
+                : "bg-secondary/90 text-white"
+            }`}
+          >
+            {event.status || "Published"}
           </span>
         </div>
         {/* National badge top-left */}
@@ -46,7 +58,7 @@ const EventCard = ({ event }) => {
               })}
             </div>
             <div className="flex items-center gap-2">
-              <FaMapMarkerAlt className="text-blue-500" />
+              <FaMapMarkerAlt className="text-secondary" />
               <span className="truncate">{event.location || "Online"}</span>
             </div>
           </div>
@@ -59,7 +71,11 @@ const EventCard = ({ event }) => {
           to={`/events/${event.slug || event._id || event.id}`}
           className="mt-6 self-start px-6 py-2.5 border-2 border-secondary text-secondary rounded-full hover:bg-secondary hover:text-white transition-all font-bold text-sm flex items-center gap-2 group"
         >
-          Learn More <FaArrowRight className="group-hover:translate-x-1 transition-transform" size={12} />
+          Learn More{" "}
+          <FaArrowRight
+            className="group-hover:translate-x-1 transition-transform"
+            size={12}
+          />
         </Link>
       </div>
     </div>

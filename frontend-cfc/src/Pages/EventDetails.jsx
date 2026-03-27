@@ -206,7 +206,7 @@ function EventDetails() {
             {highlights.length > 0 && (
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
                 <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                  <FaLightbulb className="text-amber-500" /> Event Highlights
+                  <FaLightbulb className="text-secondary" /> Event Highlights
                 </h2>
                 <ul className="space-y-3">
                   {highlights.map((highlight, index) => (
@@ -227,11 +227,11 @@ function EventDetails() {
                 </h2>
                 <ul className="space-y-3">
                   {benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="w-6 h-6 bg-secondary text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <li key={index} className="flex items-center gap-3">
+                      <span className="w-4 h-4 bg-secondary text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
                         {index + 1}
                       </span>
-                      <span className="text-slate-700 font-medium">{benefit}</span>
+                      <span className="text-slate-700 ">{benefit}</span>
                     </li>
                   ))}
                 </ul>
@@ -243,7 +243,7 @@ function EventDetails() {
           <FadeIn delay={0.2} className="space-y-6">
             {/* Registration Card */}
             {isUpcoming && event.registrationLink && (
-              <div className="bg-gradient-to-br from-secondary to-primary rounded-3xl p-8 text-white shadow-xl sticky top-6">
+              <div className="bg-gradient-to-br from-secondary to-primary rounded-3xl p-8 text-white shadow-xl sticky top-20">
                 <h3 className="text-2xl font-black mb-6">Register Now</h3>
                 {registrationOpen ? (
                   <>
@@ -278,8 +278,8 @@ function EventDetails() {
                 <div className="flex items-start gap-4">
                   <FaCalendarAlt className="text-secondary mt-1" />
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date</p>
-                    <p className="text-slate-900 font-medium">
+                    <p className="text-xs font-bold text-primary/60 uppercase">Date</p>
+                    <p className="text-slate-900 font-medium text-base">
                       {new Date(event.date).toLocaleDateString("en-US", {
                         weekday: "long",
                         month: "long",
@@ -296,27 +296,27 @@ function EventDetails() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <FaMapMarkerAlt className="text-blue-500 mt-1" />
+                  <FaMapMarkerAlt className="text-secondary mt-1" />
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Location</p>
-                    <p className="text-slate-900 font-medium">{event.location}</p>
+                    <p className="text-xs font-bold text-primary/60 uppercase">Location</p>
+                    <p className="text-slate-900 capitalize font-medium">{event.location.toLowerCase()}</p>
                   </div>
                 </div>
 
                 {event.venue && (
                   <div className="flex items-start gap-4">
-                    <FaMapPin className="text-purple-500 mt-1" />
+                    <FaMapPin className="text-secondary mt-1" />
                     <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Venue</p>
-                      <p className="text-slate-900 font-medium">{event.venue}</p>
+                      <p className="text-xs font-bold text-primary/60 uppercase">Venue</p>
+                      <p className="text-slate-900 font-medium capitalize">{event.venue}</p>
                     </div>
                   </div>
                 )}
 
                 <div className="flex items-start gap-4">
-                  <FaUserTie className="text-amber-500 mt-1" />
+                  <FaUserTie className="text-secondary mt-1" />
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Organizer</p>
+                    <p className="text-xs font-bold text-primary/60 uppercase">Organizer</p>
                     <p className="text-slate-900 font-medium">{event.organizer}</p>
                   </div>
                 </div>

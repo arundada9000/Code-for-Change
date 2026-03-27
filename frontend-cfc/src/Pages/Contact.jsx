@@ -104,7 +104,7 @@ function ContactUs() {
             <SlideUp>
               <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-6">
                 Let's start a <br />
-                <span className="text-blue-600">Conversation.</span>
+                <span className="text-secondary">Conversation.</span>
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed max-w-md">
                 Have questions about our workshops, events, or how you can get
@@ -168,11 +168,11 @@ function ContactUs() {
 
           {/* Right Side: Controlled Form */}
           <SlideUp delay={0.2}>
-            <section className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100">
+            <section className="bg-white rounded-xl p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Full Name
                     </label>
                     <input
@@ -182,12 +182,14 @@ function ContactUs() {
                       onChange={handleChange} // Event Handler
                       placeholder="Enter name"
                       required
-                      className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                      className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+              outline-none transition"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Email Address
                     </label>
                     <input
@@ -197,11 +199,13 @@ function ContactUs() {
                       onChange={handleChange}
                       placeholder="Enter email"
                       required
-                      className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                      className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+              outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Phone number
                     </label>
                     <input
@@ -211,11 +215,13 @@ function ContactUs() {
                       onChange={handleChange}
                       placeholder="Enter phone number"
                       required
-                      className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                      className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+              outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Address
                     </label>
                     <input
@@ -225,13 +231,15 @@ function ContactUs() {
                       onChange={handleChange}
                       placeholder="Enter address"
                       required
-                      className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                      className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+              outline-none transition"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                  <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                     Subject
                   </label>
                   <input
@@ -241,12 +249,14 @@ function ContactUs() {
                     onChange={handleChange}
                     placeholder="Inquiry about Internships"
                     required
-                    className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                    className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+              outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                  <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                     Your Message
                   </label>
                   <textarea
@@ -256,14 +266,16 @@ function ContactUs() {
                     onChange={handleChange}
                     placeholder="How can we help you?"
                     required
-                    className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none"
+                    className="w-full rounded-xl bg-slate-50 px-4 py-3 border border-gray-200 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+              outline-none transition"
                   ></textarea>
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading || cooldown > 0}
-                  className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 active:scale-[0.98] transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-blue-600"
+                  className="w-full py-5 bg-secondary text-white rounded-full cursor-pointer font-black text-lg shadow-lg shadow-blue-200 hover:bg-secondary/90 hover:-translate-y-1 active:scale-[0.98] transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-secondary"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">

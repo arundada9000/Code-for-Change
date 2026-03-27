@@ -271,7 +271,9 @@ const ProvinceDetails = () => {
 
         const combinedTeam = [...filteredTeamMembers, ...provincialPublicUsers];
         const centralAdvisors = allTeam.filter((m) => m.type === "Advisor");
-        const boardMembersData = allTeam.filter((m) => m.type === "Board Member");
+        const boardMembersData = allTeam.filter(
+          (m) => m.type === "Board Member",
+        );
 
         setEvents(allEvents);
         setTeam(combinedTeam);
@@ -786,7 +788,7 @@ const ProvinceDetails = () => {
             {boardMembers.length > 0 && (
               <div className="mt-20">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight font-serif italic">
+                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight" >
                     Board <span style={{ color: themeColor }}>Members</span>
                   </h2>
                   <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
@@ -820,7 +822,7 @@ const ProvinceDetails = () => {
             <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
               Events in <span style={{ color: themeColor }}>{displayName}</span>
             </h2>
-            <span className="bg-slate-100 px-4 py-2 rounded-full uppercase tracking-widest text-[10px] md:text-xs font-black text-slate-500 whitespace-nowrap">
+            <span className="bg-slate-100 px-4 py-2 rounded-full uppercase text-[10px] md:text-xs font-semibold text-primary/70 whitespace-nowrap">
               {events.length} {events.length !== 1 ? "Events" : "Event"}
             </span>
           </div>
@@ -840,7 +842,7 @@ const ProvinceDetails = () => {
                     setEventSearch(e.target.value);
                     setVisibleCount(6);
                   }}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-400 rounded-full text-sm outline-none focus:ring focus:ring-secondary focus:border-transparent transition-all"
                 />
                 <svg
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"
@@ -860,7 +862,7 @@ const ProvinceDetails = () => {
                   setEventType(e.target.value);
                   setVisibleCount(6);
                 }}
-                className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all appearance-none cursor-pointer"
+                className="px-4 py-3 border border-slate-400 rounded-full text-sm font-medium outline-none focus:ring focus:ring-secondary focus:border-transparent transition-all appearance-none cursor-pointer"
               >
                 <option value="">All Types</option>
                 {[
@@ -881,7 +883,7 @@ const ProvinceDetails = () => {
                   setEventNational(e.target.value);
                   setVisibleCount(6);
                 }}
-                className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all appearance-none cursor-pointer"
+                className="px-4 py-3 border border-slate-400 rounded-full text-sm font-medium outline-none focus:ring focus:ring-secondary focus:border-transparent transition-all appearance-none cursor-pointer"
               >
                 <option value="">All Scope</option>
                 <option value="national">National</option>

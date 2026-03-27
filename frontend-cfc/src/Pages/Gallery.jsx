@@ -151,7 +151,7 @@ function Gallery() {
                 }}
                 className={`px-6 py-2 rounded-full font-bold transition-all ${
                   filter === cat
-                    ? "bg-blue-600 text-white shadow-lg"
+                    ? "bg-secondary text-white shadow-lg"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
@@ -245,7 +245,7 @@ function Gallery() {
             }
             className="absolute top-6 right-20 group bg-white/20 p-3 rounded-full text-white text-xl cursor-pointer z-110 transition-all ease-in duration-300"
           >
-            <FiDownload />
+            <FiDownload className="group-hover:translate-y-0.5 transition-all ease-in duration-200"/>
           </button>
 
           {/* Navigation Buttons */}
@@ -279,7 +279,7 @@ function Gallery() {
             />
 
             <div className="mt-8 text-center text-white">
-              <p className="text-blue-400 text-xs font-black uppercase tracking-[0.2em] mb-2">
+              <p className="text- text-xs font-bold uppercase tracking-[0.2em] mb-2">
                 {selectedImg.category}
               </p>
               <h3 className="text-2xl font-bold mb-2">{selectedImg.title}</h3>

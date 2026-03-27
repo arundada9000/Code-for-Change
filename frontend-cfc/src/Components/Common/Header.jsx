@@ -104,7 +104,7 @@ function Header({ setShowSidebar }) {
                 : "bg-secondary text-white hover:shadow-[0_0_20px_rgba(var(--secondary),0.4)]"
             }`}
           >
-            {user ? "Profile" : "Join Us"}
+            {user ? "Profile" : "Register"}
           </Link>
 
           <button

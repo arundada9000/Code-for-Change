@@ -171,12 +171,7 @@ function CertificateVerification() {
       {/* Conditionally show banner */}
       {!token && <Banner title="Registry Audit Portal Certificate Verification" />}
       
-      {/* {!token && (
-        <div className="max-w-7xl mx-auto px-6 mt-8">
-          <Breadcrumbs crumbs={[{ name: "Verify Certificate", path: "/certificate-verification" }]} />
-        </div>
-      )} */}
-      
+            
       <div className={`max-w-7xl mx-auto px-6 ${token ? 'py-12' : 'py-20'}`}>
         {/* Verification Card - Simplistic & Clean */}
         {(!token || !result || result.status !== 'success') && (
@@ -188,13 +183,13 @@ function CertificateVerification() {
               </p>
             </div>
 
-            <div className="bg-white rounded-[2.5rem] p-4 shadow-xl shadow-slate-200/60 border border-slate-100 flex flex-col md:flex-row gap-3 items-center">
+            <div className="bg-white rounded-full p-2 shadow-xl shadow-slate-200/60 border border-slate-300 flex flex-col md:flex-row gap-3 items-center">
                 <div className="relative flex-1 w-full">
-                    <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
+                    <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-primary/50" />
                     <input 
                       type="text" 
                       placeholder="Enter Certificate No. (e.g., CFC-20260224-XXXXX)" 
-                      className="w-full pl-16 pr-8 py-5 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-[#0076B4]/20 transition-all font-mono text-sm uppercase text-[#01152E] placeholder:text-slate-400"
+                      className="w-full pl-16 pr-8 py-4 bg-slate-200 border-none rounded-full outline-none focus:ring focus:ring-secondary transition-all font-mono text-sm uppercase text-[#01152E] placeholder:text-slate-400"
                       value={searchQuery}
                       onChange={(e) => {
                         // Strict validation: Allow only Alphanumeric and Hyphen
@@ -207,15 +202,15 @@ function CertificateVerification() {
                 <div className="flex gap-3 w-full md:w-auto">
                     <button 
                       onClick={() => handleVerify(searchQuery)}
-                      className="flex-1 md:flex-none bg-[#0076B4] hover:bg-[#005a8b] text-white px-12 py-5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-[#0076B4]/20 active:scale-95"
+                      className="flex-1 md:flex-none bg-[#0076B4] cursor-pointer hover:bg-[#005a8b] text-white px-12 py-4 rounded-full font-bold text-sm transition-all shadow-lg shadow-[#0076B4]/20 active:scale-95"
                     >
                       Verify
                     </button>
                     <button 
                       onClick={initScanner}
-                      className="p-5 bg-slate-100 text-[#01152E] rounded-2xl hover:bg-[#0076B4] hover:text-white transition-all active:scale-95"
+                      className="p-4 bg-slate-200 text-secondary rounded-full cursor-pointer hover:bg-[#0076B4] hover:text-white transition-all active:scale-95"
                     >
-                      <FaQrcode size={22} />
+                      <FaQrcode size={20} />
                     </button>
                 </div>
             </div>

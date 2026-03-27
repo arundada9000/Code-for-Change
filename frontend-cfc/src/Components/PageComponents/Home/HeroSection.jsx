@@ -69,7 +69,7 @@ function HeroSection() {
                         to="/register"
                         className="px-8 py-3 border-4 border-secondary rounded-full text-white bg-secondary hover:bg-secondary/70 hover:text-white transition"
                       >
-                        Join us
+                       Register
                       </Link>
           </div>
         </div>

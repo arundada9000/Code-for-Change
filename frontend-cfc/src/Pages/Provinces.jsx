@@ -437,7 +437,7 @@ const Provinces = () => {
                             onClick={() => {
                               setSelectedMember(member);
                             }}
-                            className="relative shadow-xl rounded-2xl p-3 transition-all duration-500 overflow-hidden hover:shadow-2xl"
+                            className="relative shadow-xl rounded-2xl p-2 md:p-3 transition-all duration-500 overflow-hidden hover:shadow-2xl"
                             style={{
                               borderColor: activeProvince?.colorCode,
                               boxShadow: `0 20px 40px -20px ${activeProvince?.colorCode}70`,
@@ -464,13 +464,13 @@ const Provinces = () => {
                                       }
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className={` w-8 h-8 lg:h-9 lg:w-9 rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white  flex items-center justify-center text-primary 
+                                      className={` w-7 h-7 lg:h-9 lg:w-9 rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white  flex items-center justify-center text-primary 
                                         opacity-100 md:opacity-0 ${
                                           idx < 3
                                             ? "md:-translate-x-12"
                                             : "md:translate-x-12"
                                         }
-                                         group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
+                                         group-hover:opacity-100 max-sm:text-sm group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
                                       style={{
                                         transitionDelay: `${idx * 100}ms`,
                                       }}

@@ -8,6 +8,7 @@ import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
 import API from "../Services/api";
+import { FaChevronLeft } from "react-icons/fa";
 
 function BlogDetail() {
   const { slug: urlSlug } = useParams();
@@ -109,21 +110,9 @@ function BlogDetail() {
         <FadeIn className="max-w-5xl mx-auto px-2 relative">
           <Link
             to="/blog"
-            className="inline-flex items-center text-xs font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 mb-8 px-4 py-2 bg-blue-50 rounded-full transition-all hover:gap-3 group"
+            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-secondary mb-8 px-4 py-2 bg-secondary/15 rounded-full transition-all ease-in duration-200 hover:gap-3 group"
           >
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3.5"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+        <FaChevronLeft className="text-[18px]"/>
             Back to Articles
           </Link>
 
@@ -136,7 +125,7 @@ function BlogDetail() {
                 {tag}
               </span>
             ))}
-            <span className="text-[9px] uppercase tracking-[0.2em] font-black px-4 py-1.5 bg-blue-600 text-white rounded-full">
+            <span className="text-[9px] uppercase tracking-[0.2em] font-black px-4 py-1.5 bg-secondary text-white rounded-full">
               {blog.category}
             </span>
           </div>
@@ -149,7 +138,7 @@ function BlogDetail() {
             {blog.authorDetails?.image ? (
               <img src={blog.authorDetails.image} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-xl" alt={blog.authorDetails.name} />
             ) : (
-              <div className="w-14 h-14 rounded-full bg-linear-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-xl border-2 border-white">
+              <div className="w-14 h-14 rounded-full bg-linear-to-br from-secondary to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-xl border-2 border-white">
                 {blog.authorDetails?.name?.[0] || blog.author?.[0]}
               </div>
             )}
@@ -223,7 +212,7 @@ function BlogDetail() {
             <div
               className="prose prose-slate max-w-none
                 prose-first-letter:text-6xl prose-first-letter:font-black 
-                prose-first-letter:text-blue-600 prose-first-letter:mr-4 
+                prose-first-letter:text-secondary prose-first-letter:mr-4 
                 prose-first-letter:float-left prose-first-letter:leading-[0.7]
                 
                 prose-headings:font-black prose-headings:tracking-tight prose-headings:text-slate-900
@@ -233,7 +222,7 @@ function BlogDetail() {
                 
                 prose-blockquote:italic prose-blockquote:font-bold 
                 prose-blockquote:text-xl prose-blockquote:text-slate-700 
-                prose-blockquote:border-l-4 prose-blockquote:border-blue-600
+                prose-blockquote:border-l-4 prose-blockquote:border-secondary
                 prose-blockquote:bg-slate-50 prose-blockquote:p-8 prose-blockquote:rounded-2xl
                 
                 prose-img:rounded-3xl prose-img:shadow-lg
@@ -347,7 +336,7 @@ function BlogDetail() {
             {[
               {
                 icon: <FaFacebookF />,
-                color: "bg-blue-600 text-white",
+                color: "bg-secondary text-white",
                 label: "Facebook",
               },
               {
@@ -390,7 +379,7 @@ function BlogDetail() {
           >
             {prevBlog && (
               <>
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 mb-4 flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-secondary mb-4 flex items-center gap-2">
                   <svg
                     className="w-4 h-4 transition-transform group-hover:-translate-x-2"
                     fill="none"
@@ -406,7 +395,7 @@ function BlogDetail() {
                   </svg>
                   Previous
                 </span>
-                <h4 className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                <h4 className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-secondary transition-colors">
                   {prevBlog.title}
                 </h4>
                 {/* Subtle Background Number */}
@@ -427,7 +416,7 @@ function BlogDetail() {
           >
             {nextBlog && (
               <>
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-500 mb-4 flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-secondary mb-4 flex items-center gap-2">
                   Next
                   <svg
                     className="w-4 h-4 transition-transform group-hover:translate-x-2"
@@ -459,7 +448,7 @@ function BlogDetail() {
         <div className="py-12 flex justify-center bg-gray-50">
           <Link
             to="/blog"
-            className="px-8 py-3 rounded-full border border-gray-200 text-sm font-bold text-gray-600 hover:bg-white hover:shadow-md transition-all uppercase tracking-widest"
+            className="px-8 py-3 rounded-full border border-gray-200 text-sm font-bold text-gray-600 hover:bg-secondary hover:text-white hover:-translate-y-0.5 duration-200 hover:shadow-md transition-all uppercase tracking-widest"
           >
             Back to all articles
           </Link>

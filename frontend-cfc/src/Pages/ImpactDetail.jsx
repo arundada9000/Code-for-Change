@@ -3,10 +3,12 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import useFetch from "../Hooks/useFetch";
 import SEO from "../Components/Common/SEO";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
-import { FaChevronLeft } from "react-icons/fa";
+import { FaCalendarAlt, FaChevronLeft, FaMapPin } from "react-icons/fa";
 import { ArticleDetailSkeleton } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
-
+import { FaUsers } from "react-icons/fa";
+import { GoProjectSymlink } from "react-icons/go";
+import { GrNotes } from "react-icons/gr";
 
 /**
  * Sub-component: Sidebar Info Card
@@ -23,7 +25,7 @@ const InfoSidebar = ({ location, dates }) => (
         <div className="space-y-8">
           <div className="flex gap-5">
             <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
-              📍
+              <FaMapPin className="text-secondary" />
             </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Location</p>
@@ -33,7 +35,7 @@ const InfoSidebar = ({ location, dates }) => (
 
           <div className="flex gap-5">
             <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
-              📅
+             <FaCalendarAlt className="text-secondary" />
             </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Timeline</p>
@@ -43,7 +45,7 @@ const InfoSidebar = ({ location, dates }) => (
         </div>
       </div>
 
-      <div className="bg-blue-600 rounded-3xl p-8 text-white relative overflow-hidden group">
+      <div className="bg-secondary rounded-3xl p-8 text-white relative overflow-hidden group">
         {/* Abstract background shape */}
         <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
         
@@ -53,7 +55,7 @@ const InfoSidebar = ({ location, dates }) => (
         </p>
         <Link
           to="/donate-us"
-          className="block w-full text-center py-4 rounded-xl bg-white text-blue-600 font-bold hover:bg-blue-50 transition-colors relative z-10 shadow-lg shadow-blue-900/20"
+          className="block w-full text-center py-4 rounded-xl bg-white text-secondary font-bold hover:bg-blue-50 transition-colors relative z-10 shadow-lg shadow-blue-900/20"
         >
           Partner with Us
         </Link>
@@ -140,7 +142,7 @@ function ImpactDetail() {
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary tracking-tightest uppercase leading-none">
               {item.title}
             </h1>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-4">Project Narrative & Impact Report</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-4">Project Narrative & Impact Report</p>
           </div>
           
           <div className="relative rounded-[2rem] overflow-hidden aspect-[21/9] shadow-2xl border border-slate-100">
@@ -152,7 +154,7 @@ function ImpactDetail() {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent opacity-60" />
             <div className="absolute bottom-8 left-8 flex items-center gap-4">
                <div className="px-6 py-3 bg-white/90 backdrop-blur-md rounded-2xl flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                   <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{item.location}</span>
                </div>
             </div>
@@ -168,7 +170,7 @@ function ImpactDetail() {
           <SlideUp delay={0.1} className="lg:col-span-2 space-y-12 lg:space-y-16">
             <section>
               <div className="flex items-center gap-4 mb-8">
-                <div className="h-[2px] w-12 bg-emerald-500"></div>
+                <div className="h-[2px] w-12 bg-secondary"></div>
                 <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">The Story</h2>
               </div>
               <h3 className="text-3xl font-black text-primary mb-8 tracking-tight">Executive Summary</h3>
@@ -180,7 +182,7 @@ function ImpactDetail() {
             {item.metrics && item.metrics.length > 0 && (
               <section className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
                 <div className="flex items-center gap-4 mb-10">
-                  <div className="h-[2px] w-12 bg-blue-600"></div>
+                  <div className="h-[2px] w-12 bg-secondary"></div>
                   <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Impact Report Table</h2>
                 </div>
                 
@@ -196,13 +198,13 @@ function ImpactDetail() {
                       {item.metrics.map((metric, index) => (
                         <tr key={index} className="hover:bg-slate-50/30 transition-colors group">
                           <td className="px-8 py-5 flex items-center gap-4">
-                             <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
-                               {metric.label === 'Participants' ? '👥' : metric.label === 'Projects' ? '🚀' : '📈'}
+                             <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                               {metric.label === 'Participants' ?<FaUsers className="text-secondary" /> : metric.label === 'Projects' ? <GoProjectSymlink className="text-secondary" /> :<GrNotes className="text-secondary"/>}
                              </div>
                              <span className="font-bold text-slate-700 tracking-tight">{metric.label}</span>
                           </td>
                           <td className="px-8 py-5 text-right">
-                             <span className="text-2xl font-black text-blue-600 tabular-nums">
+                             <span className="text-2xl font-black text-secondary tabular-nums">
                                {metric.value}
                              </span>
                           </td>
@@ -222,8 +224,8 @@ function ImpactDetail() {
              {/* Additional Quick Info */}
              <div className="bg-white border text-center border-slate-100 rounded-[2rem] p-8 shadow-sm">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Official Status</p>
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest">
-                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Verified Impact
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-full text-[10px] font-black uppercase tracking-widest">
+                   <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> Verified Impact
                 </div>
              </div>
           </SlideUp>
@@ -234,13 +236,13 @@ function ImpactDetail() {
       <footer className="bg-slate-900 py-20 lg:py-32 px-6 text-white overflow-hidden relative border-t border-slate-800">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <h3 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tightest mb-8 uppercase leading-none">
-            Join the <span className="text-emerald-500">Digital</span> <br/>Revolution.
+            Join the <span className="text-secondary">Digital</span> <br/>Revolution.
           </h3>
           <p className="text-slate-400 text-lg mb-12 max-w-xl mx-auto font-medium">Connect with our network and contribute to the next phase of tech development in Nepal.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link
               to="/our-impact"
-              className="w-full sm:w-auto px-12 py-5 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-emerald-500 hover:text-white transition-all transform hover:-translate-y-1"
+              className="w-full sm:w-auto px-12 py-5 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-secondary hover:text-white transition-all transform hover:-translate-y-1"
             >
               Impact Archive
             </Link>
@@ -253,8 +255,8 @@ function ImpactDetail() {
           </div>
         </div>
         {/* Design Element */}
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] -mr-48 -mb-48" />
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] -ml-48 -mt-48" />
+        <div className="absolute bottom-0 right-0 w-125 h-125 bg-secondary/20 rounded-full blur-[120px] -mr-48 -mb-48" />
+        <div className="absolute top-0 left-0 w-125 h-125 bg-blue-600/5 rounded-full blur-[120px] -ml-48 -mt-48" />
       </footer>
     </article>
   );

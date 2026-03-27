@@ -25,7 +25,7 @@ const TRACKS = [
   "Digital Marketing",
   "Content Writing",
   "Project Management",
-  "Others"
+  "Others",
 ];
 
 function InternshipApplication() {
@@ -101,7 +101,9 @@ function InternshipApplication() {
       toast.success("Application submitted successfully!");
     } catch (error) {
       console.error("Form Submission Error:", error);
-      toast.error(error.response?.data?.message || "Failed to submit application");
+      toast.error(
+        error.response?.data?.message || "Failed to submit application",
+      );
     } finally {
       setLoading(false);
     }
@@ -150,10 +152,14 @@ function InternshipApplication() {
 
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
-      <SEO 
+      <SEO
         title="Internship Application"
         description="Apply for specialized IT internship tracks and accelerate your digital career with Code for Change Nepal."
-        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Internships", path: "/internships" }, { name: "Application", path: "/internship-application" }]}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Internships", path: "/internships" },
+          { name: "Application", path: "/internship-application" },
+        ]}
       />
       <Banner />
       {/* <div className="max-w-6xl mx-auto px-6 mt-8">
@@ -167,7 +173,7 @@ function InternshipApplication() {
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Left Sidebar: Info */}
           <SlideUp className="lg:col-span-1 space-y-6">
-            <div className="bg-linear-to-br from-primary to-indigo-700 text-white p-8 rounded-lg shadow-xl">
+            <div className="bg-secondary text-white p-8 rounded-lg shadow-xl">
               <h3 className="text-2xl font-bold mb-6">Student-Led Growth</h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
@@ -228,7 +234,7 @@ function InternshipApplication() {
                       value={formData.fullName}
                       onChange={handleChange}
                       required
-                      className="w-full px-5 py-4 rounded-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                      className="w-full px-5 py-4 rounded-full bg-slate-50 border border-slate-300  focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -242,7 +248,7 @@ function InternshipApplication() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-5 py-4 rounded-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                      className="w-full px-5 py-4 rounded-full bg-slate-50 border border-slate-300  focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all"
                       placeholder="example@gmail.com"
                     />
                   </div>
@@ -262,7 +268,7 @@ function InternshipApplication() {
                         value={formData.contactNumber}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-5 py-4 rounded-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                        className="w-full pl-12 pr-5 py-4 rounded-full bg-slate-50 border border-slate-300  focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all"
                         placeholder="+977 00000 00000"
                       />
                     </div>
@@ -277,7 +283,7 @@ function InternshipApplication() {
                       value={formData.college}
                       onChange={handleChange}
                       required
-                      className="w-full px-5 py-4 rounded-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                      className="w-full px-5 py-4 rounded-full bg-slate-50 border border-slate-300  focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all"
                       placeholder="Name of your college"
                     />
                   </div>
@@ -293,7 +299,7 @@ function InternshipApplication() {
                     value={formData.track}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all cursor-pointer"
+                    className="w-full px-5 py-4 rounded-full bg-slate-50 border border-slate-300  focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all cursor-pointer"
                   >
                     {TRACKS.map((t) => (
                       <option key={t} value={t}>
@@ -314,7 +320,7 @@ function InternshipApplication() {
                     value={formData.skills}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                    className="w-full px-5 py-4 rounded-full bg-slate-50 border border-slate-300  focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all"
                     placeholder="e.g. React, Python, UI Design"
                   />
                   <p className="text-xs text-slate-400 ml-1">
@@ -333,7 +339,7 @@ function InternshipApplication() {
                     onChange={handleChange}
                     required
                     rows={4}
-                    className="w-full px-6 py-4 rounded-3xl bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all resize-none"
+                    className="w-full px-6 py-4 rounded-3xl bg-slate-50 border border-slate-300 focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all resize-none"
                     placeholder="Tell us why you want to join Code for Change..."
                   />
                 </div>
@@ -380,7 +386,7 @@ function InternshipApplication() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-2 border-2 bg-secondary hover:bg-secondary/70 border-secondary text-white font-medium text-lg rounded-full shadow-xl shadow-secondary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-2 border-2 cursor-pointer bg-secondary hover:bg-secondary/70 border-secondary text-white font-medium text-lg rounded-full shadow-xl shadow-secondary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Sending Application..." : "Send Application"}
                   </button>
