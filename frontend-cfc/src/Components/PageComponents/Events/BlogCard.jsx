@@ -1,16 +1,59 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import blog1 from "../../../assets/BlogImage/js.jpg";
-import useFetch from "../../../Hooks/useFetch";
+import API from "../../../Services/api";
 import { BlogCardListSkeleton } from "../../Loading/Skeleton";
 import { SlideUp, StaggerContainer, StaggerItem } from "../../Common/Animations";
 
 export function BlogCard() {
-  const { data: apiBlogs, loading } = useFetch("/blogs");
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-  const displayBlogs = apiBlogs || [];
+  const fetchBlogs = async (currentPage = page) => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      params.append("limit", "6");
+      params.append("page", String(currentPage));
+      params.append("isPublished", "true");
 
-  if (loading) return (
+      const { data } = await API.get(`/blogs?${params.toString()}`);
+      const newBlogs = data.data?.blogs || [];
+      const pagination = data.pagination || data.data?.pagination || null;
+
+      if (currentPage === 1) {
+        setBlogs(newBlogs);
+      } else {
+        setBlogs((prev) => [...prev, ...newBlogs]);
+      }
+
+      if (pagination && pagination.page < pagination.totalPages) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Failed to fetch blogs", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogs(1);
+  }, []);
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchBlogs(nextPage);
+  };
+
+  const displayBlogs = blogs || [];
+
+  if (loading && displayBlogs.length === 0) return (
     <section className="max-w-7xl mx-auto px-5">
       <div className="mb-12 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Latest Articles</h2>
@@ -123,6 +166,18 @@ export function BlogCard() {
           );
         })}
       </StaggerContainer>
+
+      {hasMore && (
+        <div className="flex justify-center mt-12">
+          <button
+            onClick={loadMore}
+            disabled={loading}
+            className="px-8 py-3 bg-white text-emerald-600 font-bold rounded-2xl border-2 border-emerald-100 hover:bg-emerald-50 hover:border-emerald-200 transition-all shadow-sm disabled:opacity-50"
+          >
+            {loading ? "Loading..." : "Load More Articles"}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

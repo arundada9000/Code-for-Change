@@ -20,18 +20,43 @@ function Gallery() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
   const [currentIndex, setCurrentIndex] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-  const fetchGallery = async () => {
+  const fetchGallery = async (currentPage = page) => {
     try {
       setLoading(true);
-      const { data } = await API.get("/gallery");
-      setGalleryImages(data.data || []);
+      const params = new URLSearchParams();
+      params.append("limit", "15");
+      params.append("page", String(currentPage));
+
+      const { data } = await API.get(`/gallery?${params.toString()}`);
+      const newItems = data.data?.items || [];
+      const pagination = data.pagination || data.data?.pagination || null;
+
+      if (currentPage === 1) {
+        setGalleryImages(newItems);
+      } else {
+        setGalleryImages((prev) => [...prev, ...newItems]);
+      }
+
+      if (pagination && pagination.page < pagination.totalPages) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Failed to fetch gallery", error);
       toast.error("Failed to load gallery images");
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchGallery(nextPage);
   };
 
   useEffect(() => {
@@ -161,7 +186,7 @@ function Gallery() {
           </div>
         </SlideUp>
 
-        {loading ? (
+        {loading && filteredImages.length === 0 ? (
           <GalleryMasonrySkeleton count={9} />
         ) : filteredImages.length === 0 ? (
           <div className="text-center py-20">
@@ -222,6 +247,18 @@ function Gallery() {
               </StaggerItem>
             ))}
           </StaggerContainer>
+        )}
+
+        {hasMore && (
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="px-8 py-3 bg-white text-emerald-600 font-bold rounded-2xl border-2 border-emerald-100 hover:bg-emerald-50 hover:border-emerald-200 transition-all shadow-sm disabled:opacity-50"
+            >
+              {loading ? "Loading..." : "Load More Images"}
+            </button>
+          </div>
         )}
       </main>
 

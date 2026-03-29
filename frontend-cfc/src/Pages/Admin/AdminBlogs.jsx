@@ -79,6 +79,8 @@ function AdminBlogs() {
   const { hasPermission } = useAuth();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBlog, setEditingBlog] = useState(null);
@@ -148,7 +150,8 @@ function AdminBlogs() {
   useEffect(() => {
     // Debounce search
     const timer = setTimeout(() => {
-      fetchBlogs();
+      setPage(1);
+      fetchBlogs(1);
     }, 500);
     return () => clearTimeout(timer);
   }, [
@@ -160,7 +163,7 @@ function AdminBlogs() {
     filterEndDate,
   ]);
 
-  const fetchBlogs = async () => {
+  const fetchBlogs = async (currentPage = page) => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -173,14 +176,35 @@ function AdminBlogs() {
       if (filterProvince) params.append("province", filterProvince);
       if (filterStartDate) params.append("startDate", filterStartDate);
       if (filterEndDate) params.append("endDate", filterEndDate);
+      params.append("limit", "10");
+      params.append("page", String(currentPage));
 
       const { data } = await API.get(`/blogs?${params.toString()}`);
-      setBlogs(data.data || []);
+      const newBlogs = data.data?.blogs || [];
+      const pagination = data.pagination || data.data?.pagination || null;
+
+      if (currentPage === 1) {
+        setBlogs(newBlogs);
+      } else {
+        setBlogs((prev) => [...prev, ...newBlogs]);
+      }
+
+      if (pagination && pagination.page < pagination.totalPages) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Failed to fetch blogs", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchBlogs(nextPage);
   };
 
   // --- Image Handling ---
@@ -370,7 +394,8 @@ function AdminBlogs() {
         setBlogs([response.data, ...blogs]);
       }
       setIsModalOpen(false);
-      fetchBlogs();
+      setPage(1);
+      fetchBlogs(1);
     } catch (error) {
       console.error("Failed to save blog", error);
       alert(error.response?.data?.message || "Failed to save blog");
@@ -669,8 +694,8 @@ function AdminBlogs() {
       </div>
 
       {/* Blog List/Table */}
-      <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
-        {loading ? (
+      <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col min-h-[600px]">
+        {loading && blogs.length === 0 ? (
           <div className="p-10 text-center text-slate-400 font-bold">
             Loading blogs...
           </div>
@@ -943,6 +968,18 @@ function AdminBlogs() {
             ))
           )}
         </div>
+
+        {hasMore && (
+          <div className="flex justify-center p-6 border-t border-slate-100 mt-auto">
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="px-6 py-2.5 bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 hover:bg-slate-100 transition-all shadow-sm flex items-center gap-2"
+            >
+              {loading ? "Loading..." : "Load More Articles"}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* --- BLOG MODAL --- */}

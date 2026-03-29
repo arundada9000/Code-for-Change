@@ -775,7 +775,7 @@ function AdminEvents() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {loading ? (
+              {loading && events.length === 0 ? (
                 <tr>
                   <td colSpan="4" className="p-10 text-center text-gray-400">
                     Loading events...
@@ -907,7 +907,7 @@ function AdminEvents() {
 
         {/* Mobile Card View */}
         <div className="md:hidden p-4 space-y-4">
-          {loading ? (
+          {loading && events.length === 0 ? (
             <div className="p-10 text-center text-gray-400 font-medium">
               Loading events...
             </div>
