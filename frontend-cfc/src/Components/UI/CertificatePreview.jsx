@@ -137,7 +137,6 @@ const CertificatePreview = ({ data, activeProvince }) => {
     return "text-[10px] sm:text-base md:text-lg";
   };
 
-
   return (
     <div
       id="certificate-preview-node"
@@ -153,7 +152,7 @@ const CertificatePreview = ({ data, activeProvince }) => {
         {" "}
         <div className="flex items-center gap-4">
           {" "}
-          <img src={logo} alt="Logo" className="w-10 sm:w-14 md:w-20" />
+          <img src={logo} alt="Logo" className="w-10 sm:w-14 md:w-20" />{" "}
           <div className="border-l-2 border-slate-200 pl-2">
             {" "}
             <h1 className="text-[12px] sm:text-lg md:text-xl font-bold -md:font-black tracking-tight text-slate-800">
@@ -201,10 +200,10 @@ const CertificatePreview = ({ data, activeProvince }) => {
 
         {/* Awarded To */}
         <div className="mb-1 md:mb-6">
-         
           <div
-           style={{ background: activeProvince?.colorCode }}
-          className=" text-white px-4 sm:px-6 md:px-8 py-1 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase italic inline-block">
+            style={{ backgroundColor: activeProvince?.colorCode }}
+            className=" text-white px-4 sm:px-6 md:px-8 py-1 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase italic inline-block"
+          >
             {displayAwardedTo}
           </div>
         </div>

@@ -3,6 +3,7 @@ import {
   FaGithub,
   FaInstagram,
   FaLinkedinIn,
+  FaTiktok,
   FaTwitter,
   FaYoutube,
 } from "react-icons/fa";
@@ -19,6 +20,7 @@ function CoreTeam({ onMemberClick }) {
     github: <FaGithub />,
     youtube: <FaYoutube />,
     twitter: <FaTwitter />,
+    tiktok: <FaTiktok />,
   };
 
   // Filter for Core Team members

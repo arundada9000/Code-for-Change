@@ -15,6 +15,7 @@ import {
   FaGithub,
   FaYoutube,
   FaTwitter,
+  FaTiktok,
 } from "react-icons/fa";
 import {
   FiArrowRight,
@@ -177,6 +178,7 @@ const Provinces = () => {
     youtube: <FaYoutube />,
     twitter: <FaTwitter />,
     website: <FiGlobe />,
+    tiktok: <FaTiktok />,
   };
 
   // console.log(member)
@@ -275,7 +277,7 @@ const Provinces = () => {
         </section>
 
         {/* Core team */}
-        <CoreTeam onMemberClick={(member) => setSelectedMember(member)}/>
+        <CoreTeam onMemberClick={(member) => setSelectedMember(member)} />
 
         <div className="max-w-7xl mx-auto px-6 space-y-20">
           {/* Province Navigation */}
@@ -450,10 +452,10 @@ const Provinces = () => {
                                 .map(([platform, url], idx) => (
                                   <div
                                     key={platform}
-                                    className={`absolute z-20 ${idx < 3 ? "left-2 md:left-5" : "right-2 md:right-5"}
+                                    className={`absolute z-20 ${idx < 4 ? "left-2 md:left-5" : "right-2 md:right-5"}
                                      [--icon-gap:2.2rem] md:[--icon-gap:2.65rem] [--top-starting:0.5rem] md:[--top-starting:1rem]`}
                                     style={{
-                                      top: `calc(var(--top-starting) + ${idx % 3} * var(--icon-gap))`,
+                                      top: `calc(var(--top-starting) + ${idx % 4} * var(--icon-gap))`,
                                     }}
                                   >
                                     <a
@@ -466,7 +468,7 @@ const Provinces = () => {
                                       rel="noopener noreferrer"
                                       className={` w-7 h-7 lg:h-9 lg:w-9 rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white  flex items-center justify-center text-primary 
                                         opacity-100 md:opacity-0 ${
-                                          idx < 3
+                                          idx < 4
                                             ? "md:-translate-x-12"
                                             : "md:translate-x-12"
                                         }

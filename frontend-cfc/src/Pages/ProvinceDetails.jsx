@@ -9,7 +9,7 @@ import {
   FiActivity,
   FiGlobe,
 } from "react-icons/fi";
-import { FaSearch, FaFilter, FaStar } from "react-icons/fa";
+import { FaSearch, FaFilter, FaStar, FaTiktok } from "react-icons/fa";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
 import { provinces } from "./Provinces";
@@ -36,6 +36,7 @@ const socialIcons = {
   youtube: <FaYoutube />,
   twitter: <FaTwitter />,
   website: <FiGlobe />,
+  tiktok: <FaTiktok />,
 };
 
 const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
@@ -82,7 +83,7 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
           <>
             {/* Left Column (first 3 icons) */}
             <div className="absolute top-3 left-5 md:right-3 flex flex-col gap-2 z-20">
-              {availableSocials.slice(0, 3).map(([platform, url], idx) => (
+              {availableSocials.slice(0, 4).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
@@ -101,7 +102,7 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
 
             {/* Right Column (next 3 icons) */}
             <div className="absolute top-3 right-5 md:right-3 flex flex-col gap-2 z-20">
-              {availableSocials.slice(3, 6).map(([platform, url], idx) => (
+              {availableSocials.slice(4, 7).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
@@ -245,6 +246,8 @@ const ProvinceDetails = () => {
             m.region === "All",
         );
 
+        // console.log(allPublicUsers);
+
         const provincialPublicUsers =
           allPublicUsers
             ?.filter(
@@ -275,6 +278,8 @@ const ProvinceDetails = () => {
           (m) => m.type === "Board Member",
         );
 
+        // console.log(centralAdvisors);
+
         setEvents(allEvents);
         setTeam(combinedTeam);
         setAdvisors(centralAdvisors);
@@ -289,7 +294,9 @@ const ProvinceDetails = () => {
     fetchData();
   }, [displayName]);
 
+  console.log(advisors);
 
+  // Filter social links that exist
 
   // Generate Person JSON-LD for team members (helps Google index members without individual pages)
   const teamJsonLd =
@@ -459,55 +466,76 @@ const ProvinceDetails = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {advisors.map((advisor, i) => (
-            <div
-              onClick={() =>
-                setSelectedMember({
-                  ...advisor,
-                  name: advisor.name,
-                  role: advisor.designation || advisor.role,
-                  image: advisor.image,
-                  bio: advisor.quote,
-                  socialLinks: advisor.socialLinks || {},
-                })
-              }
-              key={i}
-              className="bg-white p-8 rounded-3xl cursor-pointer border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
-            >
+          {advisors.map((advisor, i) => {
+            const availableSocials = Object.entries(
+              advisor.socialLinks || {},
+            ).filter(([_, url]) => !!url);
+            return (
               <div
-                className="absolute top-0 left-0 w-full h-1"
-                style={{ backgroundColor: themeColor }}
-              />
-              <div className="flex items-center gap-6 mb-6">
-                <img
-                  src={advisor.image}
-                  className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110"
-                  alt={advisor.name}
+                onClick={() =>
+                  setSelectedMember({
+                    ...advisor,
+                    name: advisor.name,
+                    role: advisor.designation || advisor.role,
+                    image: advisor.image,
+                    bio: advisor.quote,
+                    socialLinks: advisor.socialLinks || {},
+                  })
+                }
+                key={i}
+                className="bg-white p-8 rounded-3xl cursor-pointer border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
+              >
+                <div
+                  className="absolute top-0 left-0 w-full h-1"
+                  style={{ backgroundColor: themeColor }}
                 />
-                <div>
-                  <h4 className=" text-primary text-xl leading-tight">
-                    {advisor.name}
-                  </h4>
-                  <p
-                    className="text-[11px] mt-1.5"
-                    style={{ color: themeColor }}
-                  >
-                    {advisor.role}
-                  </p>
-                  <p className="text-[10px]  text-slate-400  mt-1">
-                    {advisor.organization}
-                  </p>
+                <div className="flex items-center gap-6 mb-6">
+                  <img
+                    src={advisor.image}
+                    className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110"
+                    alt={advisor.name}
+                  />
+                  <div>
+                    <h4 className=" text-primary text-xl leading-tight">
+                      {advisor.name}
+                    </h4>
+                    <p
+                      className="text-[11px] mt-1.5"
+                      style={{ color: themeColor }}
+                    >
+                      {advisor.designation}
+                    </p>
+                    <p className="text-[10px]  text-slate-400  mt-1">
+                      {advisor.organization}
+                    </p>
+                  </div>
                 </div>
+                {/* Social Links - Positioned at bottom */}
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {availableSocials.map(([platform, url], idx) => (
+                    <a
+                      key={platform}
+                      href={url.startsWith("http") ? url : `https://${url}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-all duration-300 hover:scale-110 hover:bg-primary hover:text-white group-hover:translate-y-0 translate-y-2 opacity-100"
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        transitionDelay: `${idx * 50}ms`,
+                      }}
+                    >
+                      {socialIcons[platform] || <FiExternalLink size={12} />}
+                    </a>
+                  ))}
+                </div>
+                <div
+                  className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-5 transition-transform duration-700 group-hover:scale-150"
+                  style={{ backgroundColor: themeColor }}
+                />
               </div>
-              <p className="text-sm text-slate-600  font-medium leading-relaxed relative z-10">
-                "{advisor.quote}"
-              </p>
-              <div
-                className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-5 transition-transform duration-700 group-hover:scale-150"
-                style={{ backgroundColor: themeColor }}
-              />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -790,7 +818,7 @@ const ProvinceDetails = () => {
             {boardMembers.length > 0 && (
               <div className="mt-20">
                 <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
-                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight" >
+                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
                     Board <span style={{ color: themeColor }}>Members</span>
                   </h2>
                   <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
