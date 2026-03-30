@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import blog1 from "../../../assets/BlogImage/js.jpg";
 import API from "../../../Services/api";
 import { BlogCardListSkeleton } from "../../Loading/Skeleton";
 import { SlideUp, StaggerContainer, StaggerItem } from "../../Common/Animations";
@@ -79,10 +78,10 @@ export function BlogCard() {
       <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {displayBlogs.map((blog) => {
           // Mapper for backend to frontend fields
-          const id = blog._id || blog.id;
-          const slug = blog.slug || blog.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-          const coverImage = blog.image || blog.coverImage;
-          const date = blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : blog.date;
+          const id = blog._id || blog.id || Math.random().toString();
+          const slug = blog.slug || (blog.title ? blog.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') : 'untitled');
+          const coverImage = blog.image || blog.coverImage || '';
+          const date = blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : (blog.date || '');
 
           return (
             <StaggerItem key={id} className="h-full">

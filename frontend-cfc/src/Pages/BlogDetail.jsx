@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
 import DOMPurify from "dompurify";
 import useFetch from "../Hooks/useFetch";
 import SEO from "../Components/Common/SEO";
@@ -11,7 +11,7 @@ import API from "../Services/api";
 import { FaChevronLeft } from "react-icons/fa";
 
 function BlogDetail() {
-  const { slug: urlSlug } = useParams();
+  const { slug: urlSlug = "" } = useParams();
   const [idStr, ...slugParts] = urlSlug.split("-");
 
   const { data: apiBlog, loading } = useFetch(`/blogs/${idStr}`);
@@ -46,13 +46,14 @@ function BlogDetail() {
 
   useEffect(() => {
     if (apiBlog) {
-      // Map backend to frontend
+      // Map backend to frontend, handling possible nested { blog: {...} } structure
+      const actualBlog = apiBlog.blog || apiBlog;
       setBlog({
-        ...apiBlog,
-        coverImage: apiBlog.image,
-        date: apiBlog.publishedAt || apiBlog.createdAt,
-        readTime: apiBlog.readTime || "5 min read",
-        tags: apiBlog.tags || []
+        ...actualBlog,
+        coverImage: actualBlog.image || actualBlog.coverImage || '',
+        date: actualBlog.publishedAt || actualBlog.createdAt || new Date(),
+        readTime: actualBlog.readTime || "5 min read",
+        tags: actualBlog.tags || []
       });
     }
   }, [apiBlog]);
@@ -67,10 +68,10 @@ function BlogDetail() {
     );
 
   // Find "Next Post" for the bottom navigation
-  const blogList = allBlogs || [];
+  const blogList = Array.isArray(allBlogs) ? allBlogs : (allBlogs?.blogs || []);
   const currentIndex = blogList.findIndex((b) => (b._id || b.id) === (blog._id || blog.id));
-  const nextBlog = blogList[currentIndex + 1] || blogList[0];
-  const prevBlog = blogList[currentIndex - 1] || blogList[blogList.length - 1];
+  const nextBlog = blogList[currentIndex + 1] || blogList[0] || null;
+  const prevBlog = blogList[currentIndex - 1] || blogList[blogList.length - 1] || null;
 
   const breadcrumbs = [
     { name: "Home", path: "/" },
@@ -91,11 +92,28 @@ function BlogDetail() {
     }]
   };
 
+  // Share handler — opens native share dialogs
+  const shareArticle = (platform) => {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(blog.title);
+    const links = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}`,
+      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
+    };
+    if (links[platform]) {
+      window.open(links[platform], "_blank", "noopener,noreferrer,width=620,height=450");
+    } else {
+      // Fallback: copy URL to clipboard (e.g. Instagram)
+      navigator.clipboard?.writeText(window.location.href).catch(() => {});
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen">
       <SEO
-        title={blog.title}
-        description={blog.content?.replace(/<[^>]*>/g, '').substring(0, 160)}
+        title={blog.title || "Blog Single"}
+        description={(blog.content || "").replace(/<[^>]*>/g, '').substring(0, 160)}
         image={blog.coverImage}
         type="article"
         breadcrumbs={breadcrumbs}
@@ -117,7 +135,7 @@ function BlogDetail() {
           </Link>
 
           <div className="flex flex-wrap gap-2 mb-8">
-            {blog.tags.map((tag) => (
+            {(blog.tags || []).map((tag) => (
               <span
                 key={tag}
                 className="text-[9px] uppercase tracking-[0.2em] font-black px-4 py-1.5 bg-slate-900 text-white rounded-full"
@@ -125,13 +143,15 @@ function BlogDetail() {
                 {tag}
               </span>
             ))}
-            <span className="text-[9px] uppercase tracking-[0.2em] font-black px-4 py-1.5 bg-secondary text-white rounded-full">
-              {blog.category}
-            </span>
+            {blog.category && (
+              <span className="text-[9px] uppercase tracking-[0.2em] font-black px-4 py-1.5 bg-secondary text-white rounded-full">
+                {blog.category}
+              </span>
+            )}
           </div>
 
           <h1 className="text-4xl md:text-5xl font-black text-slate-900 leading-[1.1] mb-10 tracking-tight">
-            {blog.title}
+            {blog.title || "Untitled Article"}
           </h1>
 
           <div className="flex items-center gap-6 p-1 pr-8 w-fit bg-slate-50/50 rounded-full border border-slate-100/50 backdrop-blur-sm">
@@ -161,7 +181,7 @@ function BlogDetail() {
       </div> */}
 
       {/* 3. Main Content Layout */}
-      <main className="max-w-7xl mx-auto px-5 py-20 grid grid-cols-1 lg:grid-cols-12 gap-20">
+      <main className="max-w-7xl mx-auto px-5 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Floating/Sticky Share Bar */}
         <SlideUp delay={0.1} className="lg:col-span-1">
           <div
@@ -174,12 +194,14 @@ function BlogDetail() {
             </p>
 
             {[
-              { icon: <FaFacebookF />, hover: "hover:bg-[#1877F2]", color: "text-[#1877F2]" },
-              { icon: <FaLinkedinIn />, hover: "hover:bg-[#0A66C2]", color: "text-[#0A66C2]" },
-              { icon: <FaTwitter />, hover: "hover:bg-black", color: "text-black" },
+              { icon: <FaFacebookF />, hover: "hover:bg-[#1877F2]", color: "text-[#1877F2]", platform: "facebook" },
+              { icon: <FaLinkedinIn />, hover: "hover:bg-[#0A66C2]", color: "text-[#0A66C2]", platform: "linkedin" },
+              { icon: <FaTwitter />, hover: "hover:bg-black", color: "text-black", platform: "twitter" },
             ].map((social, idx) => (
               <button
                 key={idx}
+                onClick={() => shareArticle(social.platform)}
+                title={`Share on ${social.platform}`}
                 className={`w-12 h-12 rounded-2xl border border-slate-100 flex items-center justify-center bg-white shadow-sm hover:text-white transition-all duration-500 hover:-translate-y-1 ${social.hover}`}
               >
                 <span className="text-lg">{social.icon}</span>
@@ -191,7 +213,7 @@ function BlogDetail() {
         {/* Article Body */}
         <SlideUp delay={0.2} className="lg:col-span-8">
           {/* 1. Immersive Media Section */}
-          <div className="relative mb-20">
+          <div className="relative mb-8">
             <div className="absolute -inset-4 bg-blue-100 rounded-[3rem] blur-2xl opacity-30 -z-10"></div>
             <figure className="relative">
               <div className="overflow-hidden rounded-[2.5rem] shadow-2xl bg-slate-100 border border-slate-100">
@@ -210,29 +232,29 @@ function BlogDetail() {
 
           <div className="relative">
             <div
-              className="prose prose-slate max-w-none
+              className="prose prose-lg prose-slate max-w-none
                 prose-first-letter:text-6xl prose-first-letter:font-black 
                 prose-first-letter:text-secondary prose-first-letter:mr-4 
                 prose-first-letter:float-left prose-first-letter:leading-[0.7]
                 
                 prose-headings:font-black prose-headings:tracking-tight prose-headings:text-slate-900
-                prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
+                prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4
                 
-                prose-p:text-slate-600 prose-p:leading-relaxed prose-p:mb-8 text-base md:text-lg
+                prose-p:text-slate-600 prose-p:leading-relaxed prose-p:mb-5
                 
                 prose-blockquote:italic prose-blockquote:font-bold 
                 prose-blockquote:text-xl prose-blockquote:text-slate-700 
                 prose-blockquote:border-l-4 prose-blockquote:border-secondary
-                prose-blockquote:bg-slate-50 prose-blockquote:p-8 prose-blockquote:rounded-2xl
+                prose-blockquote:bg-slate-50 prose-blockquote:p-6 prose-blockquote:rounded-2xl
                 
                 prose-img:rounded-3xl prose-img:shadow-lg
                 
                 prose-strong:text-slate-950 prose-strong:font-black"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content) }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content || "") }}
             />
 
             {/* Simple Brand Author Card */}
-            <div className="mt-20 p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex flex-col md:flex-row items-center gap-8 group">
+            <div className="mt-10 p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex flex-col md:flex-row items-center gap-6 group">
               <div className="relative shrink-0">
                 {blog.authorDetails?.image ? (
                   <img src={blog.authorDetails.image} className="w-20 h-20 rounded-2xl object-cover transition-all duration-500" alt={blog.authorDetails?.name || "Author"} />
@@ -243,8 +265,8 @@ function BlogDetail() {
                 )}
               </div>
 
-              <div className="flex-1 text-center md:text-left">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+              <div className="flex-1 min-w-0 text-center md:text-left">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-2">
                   <div>
                     <h4 className="text-xl font-black text-slate-900">
                       {blog.authorDetails?.name || blog.author}
@@ -254,13 +276,14 @@ function BlogDetail() {
                     </p>
                   </div>
 
-                  {/* Minimal Social Links */}
-                  <div className="flex justify-center md:justify-end gap-3">
+                  {/* Minimal Social Links — includes TikTok */}
+                  <div className="flex flex-wrap justify-center md:justify-end gap-2">
                     {[
-                      { id: 'linkedin', icon: <FaLinkedinIn size={12} />, color: 'hover:text-[#0A66C2]' },
-                      { id: 'facebook', icon: <FaFacebookF size={12} />, color: 'hover:text-[#1877F2]' },
-                      { id: 'instagram', icon: <FaInstagram size={12} />, color: 'hover:text-[#ee2a7b]' },
-                      { id: 'youtube', icon: <FaYoutube size={12} />, color: 'hover:text-[#FF0000]' },
+                      { id: 'linkedin',  icon: <FaLinkedinIn size={13} />, color: 'hover:text-[#0A66C2]' },
+                      { id: 'facebook',  icon: <FaFacebookF  size={13} />, color: 'hover:text-[#1877F2]' },
+                      { id: 'instagram', icon: <FaInstagram  size={13} />, color: 'hover:text-[#ee2a7b]' },
+                      { id: 'youtube',   icon: <FaYoutube    size={13} />, color: 'hover:text-[#FF0000]' },
+                      { id: 'tiktok',    icon: <FaTiktok     size={13} />, color: 'hover:text-black'     },
                     ].map((social) => (
                       blog.authorDetails?.[social.id] && (
                         <a
@@ -268,6 +291,7 @@ function BlogDetail() {
                           href={blog.authorDetails[social.id].startsWith('http') ? blog.authorDetails[social.id] : `https://${blog.authorDetails[social.id]}`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          title={social.id}
                           className={`w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg transition-all ${social.color} hover:bg-white hover:shadow-sm`}
                         >
                           {social.icon}
@@ -276,7 +300,7 @@ function BlogDetail() {
                     ))}
                   </div>
                 </div>
-                <p className="text-slate-500 text-sm leading-relaxed max-w-2xl font-medium line-clamp-2">
+                <p className="text-slate-500 text-sm leading-relaxed font-medium">
                   {blog.authorDetails?.bio || `A dedicated ${blog.authorDetails?.role || 'contributor'} exploring ${blog.category} through professional insights and storytelling.`}
                 </p>
               </div>
@@ -289,7 +313,7 @@ function BlogDetail() {
           <div className="sticky top-32 p-6 bg-gray-50 rounded-lg border border-gray-100">
             <h4 className="font-bold text-gray-900 mb-2">Subscribe to News</h4>
             <p className="text-sm text-gray-500 mb-4">
-              Get the latest {blog.tags[0]} updates delivered to your inbox.
+              Get the latest updates delivered to your inbox.
             </p>
             {nlStatus === "success" ? (
               <div className="text-center py-4">
@@ -338,26 +362,31 @@ function BlogDetail() {
                 icon: <FaFacebookF />,
                 color: "bg-secondary text-white",
                 label: "Facebook",
+                platform: "facebook",
               },
               {
                 icon: <FaLinkedinIn />,
                 color: "bg-[#0177b5] text-white",
                 label: "LinkedIn",
+                platform: "linkedin",
               },
               {
                 icon: <FaTwitter />,
                 color: "bg-black text-white",
                 label: "Twitter",
+                platform: "twitter",
               },
               {
                 icon: <FaInstagram />,
                 color:
                   "bg-linear-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white",
-                label: "Instagram",
+                label: "Instagram (copy link)",
+                platform: "instagram",
               },
             ].map((social, idx) => (
               <button
                 key={idx}
+                onClick={() => shareArticle(social.platform)}
                 aria-label={`Share on ${social.label}`}
                 className={`w-12 h-12 lg:w-11 lg:h-11 cursor-pointer rounded-full border border-gray-100 lg:border-gray-200 flex items-center justify-center duration-300 ${social.color}`}
               >
