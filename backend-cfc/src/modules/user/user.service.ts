@@ -199,10 +199,12 @@ export const updateUser = async (
     if (typeof data.phone === "string") updatePayload.phone = data.phone;
     if (typeof data.tenure === "string") updatePayload.tenure = data.tenure;
     if (typeof data.twitter === "string") updatePayload.twitter = data.twitter;
-    if (typeof data.instagram === "string") updatePayload.instagram = data.instagram;
+    if (typeof data.instagram === "string")
+      updatePayload.instagram = data.instagram;
     if (typeof data.tiktok === "string") updatePayload.tiktok = data.tiktok;
     if (typeof data.youtube === "string") updatePayload.youtube = data.youtube;
-    if (typeof data.isVerified === "boolean") updatePayload.isVerified = data.isVerified;
+    if (typeof data.isVerified === "boolean")
+      updatePayload.isVerified = data.isVerified;
 
     // Helper to parse potential JSON string
     const parseNested = (val: any) => {
@@ -460,7 +462,7 @@ export const getPublicUsers = async (filters: { province?: string } = {}) => {
   // Only return safe, non-sensitive fields
   return await UserTable.find(query)
     .select(
-      "name role province profileImage education.collegeName executiveDetails bio facebook github website linkedin",
+      "name role province profileImage education.collegeName executiveDetails bio facebook github website linkedin twitter instagram tiktok youtube",
     )
     .sort({ createdAt: -1 });
 };

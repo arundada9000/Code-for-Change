@@ -26,6 +26,7 @@ import {
   FaLinkedinIn,
   FaTwitter,
   FaYoutube,
+  FaTiktok,
 } from "react-icons/fa";
 
 const socialIcons = {
@@ -36,6 +37,7 @@ const socialIcons = {
   youtube: <FaYoutube />,
   twitter: <FaTwitter />,
   website: <FiGlobe />,
+  tiktok: <FaTiktok />,
 };
 
 const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
@@ -82,7 +84,7 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
           <>
             {/* Left Column (first 3 icons) */}
             <div className="absolute top-3 left-5 md:right-3 flex flex-col gap-2 z-20">
-              {availableSocials.slice(0, 3).map(([platform, url], idx) => (
+              {availableSocials.slice(0, 4).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
@@ -101,7 +103,7 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
 
             {/* Right Column (next 3 icons) */}
             <div className="absolute top-3 right-5 md:right-3 flex flex-col gap-2 z-20">
-              {availableSocials.slice(3, 6).map(([platform, url], idx) => (
+              {availableSocials.slice(4, 8).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
@@ -265,6 +267,9 @@ const ProvinceDetails = () => {
                 facebook: u.facebook,
                 twitter: u.twitter,
                 website: u.website,
+                instagram: u.instagram,
+                youtube: u.youtube,
+                tiktok: u.tiktok,
               },
               isPublicUser: true,
             })) || [];
@@ -288,8 +293,6 @@ const ProvinceDetails = () => {
 
     fetchData();
   }, [displayName]);
-
-
 
   // Generate Person JSON-LD for team members (helps Google index members without individual pages)
   const teamJsonLd =
@@ -790,7 +793,7 @@ const ProvinceDetails = () => {
             {boardMembers.length > 0 && (
               <div className="mt-20">
                 <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
-                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight" >
+                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
                     Board <span style={{ color: themeColor }}>Members</span>
                   </h2>
                   <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">

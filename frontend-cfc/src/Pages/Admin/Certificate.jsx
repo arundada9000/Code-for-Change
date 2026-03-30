@@ -63,6 +63,10 @@ function Certificate() {
     Hackathon: { header: "Participation", subHeader: "CERTIFICATE", tagline: "for active participation and achievement in", primaryDetail: "during the grand event of" },
   };
 
+  // ── Modal UI Styling Classes ──
+  const labelClass = "block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5 ml-1";
+  const inputClass = "w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary focus:bg-white transition-all shadow-sm placeholder:text-slate-400";
+
   // ── Bulk Generation State ─────────────────────────────────────────────────
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkStep, setBulkStep] = useState(1);
@@ -704,8 +708,8 @@ function Certificate() {
                     <td className="px-8 py-6">
                       <div
                         className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.1em] ${cert.status === "Valid"
-                            ? "text-secondary"
-                            : "text-rose-500"
+                          ? "text-secondary"
+                          : "text-rose-500"
                           }`}
                       >
                         <FaCheckCircle /> {cert.status}
@@ -753,8 +757,8 @@ function Certificate() {
                                         handleUpdateStatus(cert._id, status)
                                       }
                                       className={`flex-1 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all border ${cert.status === status
-                                          ? "bg-primary text-white border-primary"
-                                          : "bg-white text-slate-400 border-slate-200 hover:border-primary hover:text-primary"
+                                        ? "bg-primary text-white border-primary"
+                                        : "bg-white text-slate-400 border-slate-200 hover:border-primary hover:text-primary"
                                         }`}
                                     >
                                       {status.charAt(0)}
@@ -872,8 +876,8 @@ function Certificate() {
                 <div className="flex justify-between items-center pt-1">
                   <span
                     className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${cert.status === "Valid"
-                        ? "bg-emerald-100 text-secondary"
-                        : "bg-rose-100 text-rose-700"
+                      ? "bg-emerald-100 text-secondary"
+                      : "bg-rose-100 text-rose-700"
                       }`}
                   >
                     <FaCheckCircle /> {cert.status}
@@ -968,20 +972,20 @@ function Certificate() {
               {!showBulkPreview && bulkStep === 1 && (
                 <div className="space-y-6">
                   {/* Row: Count + Province + Type */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="label-xs">No. of Certificates</label>
+                      <label className={labelClass}>No. of Certificates</label>
                       <input
                         type="number" min="1" max="500"
-                        className="input-field mt-1"
+                        className={inputClass}
                         value={recipientCount}
                         onChange={e => setRecipientCount(Math.max(1, Math.min(500, Number(e.target.value))))}
                       />
                     </div>
                     <div>
-                      <label className="label-xs">Province <span className="text-rose-400">*</span></label>
+                      <label className={labelClass}>Province <span className="text-rose-400">*</span></label>
                       <select
-                        className="input-field mt-1"
+                        className={inputClass}
                         value={sharedData.province}
                         onChange={e => setSharedData(p => ({ ...p, province: e.target.value }))}
                       >
@@ -990,8 +994,8 @@ function Certificate() {
                       </select>
                     </div>
                     <div>
-                      <label className="label-xs">Certificate Type</label>
-                      <select className="input-field mt-1" value={sharedData.certificateType} onChange={e => handleTypeChange(e.target.value)}>
+                      <label className={labelClass}>Certificate Type</label>
+                      <select className={inputClass} value={sharedData.certificateType} onChange={e => handleTypeChange(e.target.value)}>
                         {["Training", "Bootcamp", "Hackathon", "Event", "Internship", "Workshop"].map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </div>
@@ -999,44 +1003,44 @@ function Certificate() {
 
                   {/* Course Name */}
                   <div>
-                    <label className="label-xs">Event / Course Name <span className="text-rose-400">*</span></label>
-                    <input className="input-field mt-1" placeholder="e.g. Code for Change Kathmandu Hackathon 2026" value={sharedData.courseName} onChange={e => setSharedData(p => ({ ...p, courseName: e.target.value }))} />
+                    <label className={labelClass}>Event / Course Name <span className="text-rose-400">*</span></label>
+                    <input className={inputClass} placeholder="e.g. Code for Change Kathmandu Hackathon 2026" value={sharedData.courseName} onChange={e => setSharedData(p => ({ ...p, courseName: e.target.value }))} />
                   </div>
 
                   {/* Dates Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="label-xs">Start Date</label>
-                      <input type="date" className="input-field mt-1" value={sharedData.startDate} onChange={e => setSharedData(p => ({ ...p, startDate: e.target.value }))} />
+                      <label className={labelClass}>Start Date</label>
+                      <input type="date" className={inputClass} value={sharedData.startDate} onChange={e => setSharedData(p => ({ ...p, startDate: e.target.value }))} />
                     </div>
                     <div>
-                      <label className="label-xs">End Date</label>
-                      <input type="date" className="input-field mt-1" value={sharedData.endDate} onChange={e => setSharedData(p => ({ ...p, endDate: e.target.value }))} />
+                      <label className={labelClass}>End Date</label>
+                      <input type="date" className={inputClass} value={sharedData.endDate} onChange={e => setSharedData(p => ({ ...p, endDate: e.target.value }))} />
                     </div>
                     <div>
-                      <label className="label-xs">Issue Date</label>
-                      <input type="date" className="input-field mt-1" value={sharedData.issueDate} onChange={e => setSharedData(p => ({ ...p, issueDate: e.target.value }))} />
+                      <label className={labelClass}>Issue Date</label>
+                      <input type="date" className={inputClass} value={sharedData.issueDate} onChange={e => setSharedData(p => ({ ...p, issueDate: e.target.value }))} />
                     </div>
                   </div>
 
                   {/* Hours + Grade */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="label-xs">Accredited Hours <span className="text-slate-400 font-bold">(optional)</span></label>
-                      <input className="input-field mt-1" placeholder="e.g. 48 Hours" value={sharedData.hours} onChange={e => setSharedData(p => ({ ...p, hours: e.target.value }))} />
+                      <label className={labelClass}>Accredited Hours <span className="text-slate-400 font-bold">(optional)</span></label>
+                      <input className={inputClass} placeholder="e.g. 48 Hours" value={sharedData.hours} onChange={e => setSharedData(p => ({ ...p, hours: e.target.value }))} />
                     </div>
                     <div>
-                      <label className="label-xs">Achievement / Grade <span className="text-slate-400 font-bold">(optional)</span></label>
-                      <input className="input-field mt-1" placeholder="e.g. Winner, Participation, Mentorship" value={sharedData.grade} onChange={e => setSharedData(p => ({ ...p, grade: e.target.value }))} />
+                      <label className={labelClass}>Achievement / Grade <span className="text-slate-400 font-bold">(optional)</span></label>
+                      <input className={inputClass} placeholder="e.g. Winner, Participation, Mentorship" value={sharedData.grade} onChange={e => setSharedData(p => ({ ...p, grade: e.target.value }))} />
                     </div>
                   </div>
 
                   {/* Dynamic Template Text */}
                   <div className="bg-slate-50/80 border border-slate-100 rounded-3xl p-6">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
-                      🎨 Certificate Display Text — Pre-filled from type, fully editable
+                      Certificate Display Text — Pre-filled from type, fully editable
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {[
                         { key: "header", label: "Main Header" },
                         { key: "subHeader", label: "Sub-Header" },
@@ -1044,9 +1048,9 @@ function Certificate() {
                         { key: "primaryDetail", label: "Primary Detail (before course)" },
                       ].map(({ key, label }) => (
                         <div key={key}>
-                          <label className="label-xs">{label}</label>
+                          <label className={labelClass}>{label}</label>
                           <input
-                            className="input-field mt-1"
+                            className={inputClass}
                             value={sharedData.template?.[key] ?? ""}
                             onChange={e => setSharedData(p => ({ ...p, template: { ...p.template, [key]: e.target.value } }))}
                           />
@@ -1058,14 +1062,14 @@ function Certificate() {
                   {/* ── Signature & Award Customisation ── */}
                   <div className="bg-slate-50/80 border border-slate-100 rounded-3xl p-6">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
-                      ✍️ Signatory & Award Label — defaults to Krishna Pokhrel / Project Lead CFC
+                      Signatory & Award Label — defaults to Krishna Pokhrel / Project Lead CFC
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Award Label */}
                       <div className="md:col-span-2">
-                        <label className="label-xs">Award Label <span className="text-slate-400 font-bold">(default: Cordially Awarded To)</span></label>
+                        <label className={labelClass}>Award Label <span className="text-slate-400 font-bold">(default: Cordially Awarded To)</span></label>
                         <input
-                          className="input-field mt-1"
+                          className={inputClass}
                           placeholder="e.g. Proudly Presented To"
                           value={sharedData.awardedTo}
                           onChange={e => setSharedData(p => ({ ...p, awardedTo: e.target.value }))}
@@ -1073,9 +1077,9 @@ function Certificate() {
                       </div>
                       {/* Signature Name */}
                       <div>
-                        <label className="label-xs">Signatory Name</label>
+                        <label className={labelClass}>Signatory Name</label>
                         <input
-                          className="input-field mt-1"
+                          className={inputClass}
                           placeholder="e.g. Krishna Pokhrel"
                           value={sharedData.signatureName}
                           onChange={e => setSharedData(p => ({ ...p, signatureName: e.target.value }))}
@@ -1083,9 +1087,9 @@ function Certificate() {
                       </div>
                       {/* Signature Position */}
                       <div>
-                        <label className="label-xs">Signatory Position</label>
+                        <label className={labelClass}>Signatory Position</label>
                         <input
-                          className="input-field mt-1"
+                          className={inputClass}
                           placeholder="e.g. Project Lead CFC"
                           value={sharedData.signaturePosition}
                           onChange={e => setSharedData(p => ({ ...p, signaturePosition: e.target.value }))}
@@ -1093,7 +1097,7 @@ function Certificate() {
                       </div>
                       {/* Signature Image Upload */}
                       <div className="md:col-span-2">
-                        <label className="label-xs">Signature Image <span className="text-slate-400 font-bold">(optional – PNG/JPG with transparent background recommended)</span></label>
+                        <label className={labelClass}>Signature Image <span className="text-slate-400 font-bold">(optional – PNG/JPG with transparent background recommended)</span></label>
                         <div className="mt-1 relative">
                           <input
                             type="file"
@@ -1183,7 +1187,7 @@ function Certificate() {
                         <div className="col-span-1 text-[10px] font-black text-slate-400 text-center">{i + 1}</div>
                         <div className="col-span-12 md:col-span-3">
                           <input
-                            className="input-field w-full"
+                            className={inputClass}
                             placeholder="Full Name"
                             value={r.recipientName}
                             onChange={e => {
@@ -1195,7 +1199,7 @@ function Certificate() {
                         </div>
                         <div className="col-span-12 md:col-span-2">
                           <input
-                            className="input-field w-full"
+                            className={inputClass}
                             placeholder="Email"
                             type="email"
                             value={r.recipientEmail}
@@ -1208,7 +1212,7 @@ function Certificate() {
                         </div>
                         <div className="col-span-6 md:col-span-2">
                           <input
-                            className="input-field w-full font-mono uppercase"
+                            className={`${inputClass} font-mono uppercase`}
                             placeholder="e.g. E"
                             maxLength={4}
                             value={r.prefix1}
@@ -1221,7 +1225,7 @@ function Certificate() {
                         </div>
                         <div className="col-span-6 md:col-span-2">
                           <input
-                            className="input-field w-full font-mono uppercase"
+                            className={`${inputClass} font-mono uppercase`}
                             placeholder="e.g. LE"
                             maxLength={4}
                             value={r.prefix2}
