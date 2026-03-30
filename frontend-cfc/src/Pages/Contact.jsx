@@ -138,9 +138,11 @@ function ContactUs() {
                     <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
                       Email Us
                     </h4>
-                    <p className="text-slate-600 font-medium">
-                      codeforchangeofficial@gmail.com
-                    </p>
+                    <a href="mailto:codeforchangeofficial@gmail.com">
+                      <p className="text-slate-600 font-medium cursor-pointer hover:underline">
+                        codeforchangeofficial@gmail.com
+                      </p>
+                    </a>
                   </div>
                 </div>
               </StaggerItem>
@@ -154,12 +156,17 @@ function ContactUs() {
                     <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
                       Call Us
                     </h4>
-                    <p className="text-slate-600 font-medium">
-                      +977- 9867712888
-                    </p>
-                    <p className="text-slate-600 font-medium">
-                      +977- 9847527533
-                    </p>
+
+                    <a href="tel:  +9779867712888">
+                      <p className="text-slate-600 font-medium">
+                        +977- 9867712888
+                      </p>
+                    </a>
+                    <a href="tel: +9779847527533">
+                      <p className="text-slate-600 font-medium">
+                        +977-9847527533
+                      </p>
+                    </a>
                   </div>
                 </div>
               </StaggerItem>
@@ -200,8 +207,8 @@ function ContactUs() {
                       placeholder="Enter email"
                       required
                       className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
-               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
-              outline-none transition"
+                      focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+                      outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
