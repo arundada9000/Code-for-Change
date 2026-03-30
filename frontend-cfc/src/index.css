@@ -5,10 +5,18 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --primary: 1 21 46;
-  /* #01152E */
-  --secondary: 0 118 180;
-  /* #0076B4 */
+  --primary: 1 21 46;        /* #01152E */
+  --secondary: 0 118 180;   /* #0076B4 */
+
+  --kathmandu: 202 22 58;   /* #CA163A */
+  --pokhara: 242 202 80;    /* #F2CA50 */
+  --rupandehi: 136 6 150;   /* #880696 */
+  --dang: 108 117 125;      /* #6C757D */
+  --birgunj: 0 161 85;      /* #00A155 */
+  --farwest: 255 145 76;    /* #FF914C */
+  --koshi: 239 123 151;     /* #EF7B97 */
+  --chitwan: 150 74 1;      /* #964A01 */
+  --karnali: 187 215 4;     /* #BBD704 */
 }
 
 html {

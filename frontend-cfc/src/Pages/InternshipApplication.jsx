@@ -391,7 +391,7 @@ function InternshipApplication() {
                     {loading ? "Sending Application..." : "Send Application"}
                   </button>
                   <p className="text-center text-[10px] text-slate-400 mt-5 uppercase tracking-widest font-bold">
-                    Safe & Secure Application Process
+                   Make sure to send valid information
                   </p>
                 </div>
               </div>
