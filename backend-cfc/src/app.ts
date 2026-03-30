@@ -40,7 +40,7 @@ app.set("trust proxy", 1);
 const customSanitize = (req: any, res: any, next: any) => {
   // Strip MongoDB operator keys ($where, $gt, etc.) recursively
   const stripOperators = (obj: any): void => {
-    if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
       for (const key of Object.keys(obj)) {
         if (/^\$/.test(key)) {
           delete obj[key];
@@ -55,14 +55,14 @@ const customSanitize = (req: any, res: any, next: any) => {
 
   // Strip HTML tags from string values to prevent XSS persistence
   const stripHtml = (obj: any): any => {
-    if (typeof obj === 'string') {
+    if (typeof obj === "string") {
       return obj
-        .replace(/<script[\s\S]*?<\/script>/gi, '') // remove script blocks
-        .replace(/<[^>]+>/g, '')                     // remove all HTML tags
-        .replace(/javascript:/gi, '')                 // remove js: protocol
-        .replace(/on\w+\s*=/gi, '');                  // remove event handlers
+        .replace(/<script[\s\S]*?<\/script>/gi, "") // remove script blocks
+        .replace(/<[^>]+>/g, "") // remove all HTML tags
+        .replace(/javascript:/gi, "") // remove js: protocol
+        .replace(/on\w+\s*=/gi, ""); // remove event handlers
     }
-    if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
       const clean: any = {};
       for (const key of Object.keys(obj)) {
         clean[key] = stripHtml(obj[key]);
@@ -84,7 +84,7 @@ const customSanitize = (req: any, res: any, next: any) => {
     try {
       stripOperators(req.query);
     } catch (e) {
-      console.error('Sanitization error on query:', e);
+      console.error("Sanitization error on query:", e);
     }
   }
   next();
@@ -101,6 +101,7 @@ app.use(
       "http://localhost:3000",
       "https://code-for-change-nepal.onrender.com",
       "https://codeforchangenepal.vercel.app",
+      "https://codeforchange.sajilodigital.com.np",
     ].filter(Boolean) as string[],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -134,7 +135,8 @@ app.use("/api", limiter);
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5,
-  message: "Too many login attempts. Please wait 15 minutes before trying again.",
+  message:
+    "Too many login attempts. Please wait 15 minutes before trying again.",
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -145,7 +147,8 @@ app.use("/api/auth/verify-otp", authLimiter);
 const registrationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 3,
-  message: "Too many registration attempts from this IP. Please try again in an hour.",
+  message:
+    "Too many registration attempts from this IP. Please try again in an hour.",
   standardHeaders: true,
   legacyHeaders: false,
 });
