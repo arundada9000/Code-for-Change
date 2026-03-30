@@ -17,6 +17,10 @@ import {
   FaLinkedinIn,
   FaGithub,
   FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaTiktok,
+  FaYoutube,
   FaSignOutAlt,
   FaCheckCircle,
   FaVenusMars,
@@ -137,6 +141,11 @@ function UserProfile() {
     linkedin: "",
     github: "",
     facebook: "",
+    twitter: "",
+    instagram: "",
+    tiktok: "",
+    youtube: "",
+    secondaryEmail: "",
   });
 
   useEffect(() => {
@@ -158,6 +167,11 @@ function UserProfile() {
         linkedin: user.linkedin || "",
         github: user.github || "",
         facebook: user.facebook || "",
+        twitter: user.twitter || "",
+        instagram: user.instagram || "",
+        tiktok: user.tiktok || "",
+        youtube: user.youtube || "",
+        secondaryEmail: user.secondaryEmail || "",
       });
       setImgError(false);
     }
@@ -182,9 +196,10 @@ function UserProfile() {
     setLoading(true);
     setMessage({ type: "", text: "" });
     try {
-      // Create a clean payload so invalid legacy data doesn't fail backend Zod URL validation
+      // Sanitize and validate all social link URLs before submitting
       const payload = { ...formData };
-      ["website", "linkedin", "github", "facebook"].forEach((field) => {
+      const socialFields = ["website", "linkedin", "github", "facebook", "twitter", "instagram", "tiktok", "youtube"];
+      socialFields.forEach((field) => {
         let val = payload[field];
         if (
           !val ||
@@ -192,18 +207,17 @@ function UserProfile() {
           val.trim() === "" ||
           val.trim().toLowerCase() === "n/a"
         ) {
-          delete payload[field];
+          payload[field] = ""; // send empty string to explicitly clear the field
         } else {
           val = val.trim();
           if (!val.startsWith("http://") && !val.startsWith("https://")) {
             val = "https://" + val;
           }
-          // Only send it to the backend if it's actually a valid URL, otherwise let the backend default/ignore it
           try {
             new URL(val);
             payload[field] = val;
           } catch {
-            delete payload[field]; // Ignore bad legacy data silently instead of blocking the whole profile save
+            payload[field] = ""; // invalid URL — clear it silently
           }
         }
       });
@@ -254,6 +268,11 @@ function UserProfile() {
       linkedin: user.linkedin || "",
       github: user.github || "",
       facebook: user.facebook || "",
+      twitter: user.twitter || "",
+      instagram: user.instagram || "",
+      tiktok: user.tiktok || "",
+      youtube: user.youtube || "",
+      secondaryEmail: user.secondaryEmail || "",
     });
     setIsEditing(false);
   };
@@ -467,6 +486,11 @@ function UserProfile() {
                       ? "bg-emerald-50 text-emerald-600"
                       : "bg-amber-50 text-amber-600",
                   },
+                  ...(user.tenure ? [{
+                    label: "Tenure",
+                    value: user.tenure,
+                    badge: "bg-blue-50 text-blue-600",
+                  }] : []),
                 ].map((item) => (
                   <div
                     key={item.label}
@@ -489,32 +513,16 @@ function UserProfile() {
                 title="Social"
                 regionColor={regionColor}
               />
-              <div className="flex gap-3 mt-4">
+              <div className="flex flex-wrap gap-3 mt-4">
                 {[
-                  {
-                    icon: FaLink,
-                    url: formData.website,
-                    color: "#6366f1",
-                    label: "Web",
-                  },
-                  {
-                    icon: FaLinkedinIn,
-                    url: formData.linkedin,
-                    color: "#0077b5",
-                    label: "LinkedIn",
-                  },
-                  {
-                    icon: FaGithub,
-                    url: formData.github,
-                    color: "#181717",
-                    label: "GitHub",
-                  },
-                  {
-                    icon: FaFacebookF,
-                    url: formData.facebook,
-                    color: "#1877f2",
-                    label: "FB",
-                  },
+                  { icon: FaLink, url: formData.website, color: "#6366f1", label: "Web" },
+                  { icon: FaLinkedinIn, url: formData.linkedin, color: "#0077b5", label: "LinkedIn" },
+                  { icon: FaGithub, url: formData.github, color: "#181717", label: "GitHub" },
+                  { icon: FaFacebookF, url: formData.facebook, color: "#1877f2", label: "FB" },
+                  { icon: FaTwitter, url: formData.twitter, color: "#1DA1F2", label: "X" },
+                  { icon: FaInstagram, url: formData.instagram, color: "#E1306C", label: "IG" },
+                  { icon: FaTiktok, url: formData.tiktok, color: "#000000", label: "TikTok" },
+                  { icon: FaYoutube, url: formData.youtube, color: "#FF0000", label: "YT" },
                 ].map((social, index) => (
                   <button
                     key={index}
@@ -594,6 +602,17 @@ function UserProfile() {
                   label="Phone"
                   name="phone"
                   type="tel"
+                  isEditing={isEditing}
+                  formData={formData}
+                  handleChange={handleChange}
+                  regionColor={regionColor}
+                />
+                <Field
+                  icon={FaEnvelope}
+                  label="Secondary Email"
+                  name="secondaryEmail"
+                  type="email"
+                  placeholder="Alternative email (optional)"
                   isEditing={isEditing}
                   formData={formData}
                   handleChange={handleChange}
@@ -731,50 +750,14 @@ function UserProfile() {
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7">
               <SectionTitle icon={FaGlobe} title="Social Links" regionColor={regionColor} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Field
-                  icon={FaLink}
-                  label="Website"
-                  name="website"
-                  type="url"
-                  placeholder="https://..."
-                  isEditing={isEditing}
-                  formData={formData}
-                  handleChange={handleChange}
-                  regionColor={regionColor}
-                />
-                <Field
-                  icon={FaLinkedinIn}
-                  label="LinkedIn"
-                  name="linkedin"
-                  type="url"
-                  placeholder="https://linkedin.com/in/..."
-                  isEditing={isEditing}
-                  formData={formData}
-                  handleChange={handleChange}
-                  regionColor={regionColor}
-                />
-                <Field
-                  icon={FaGithub}
-                  label="GitHub"
-                  name="github"
-                  type="url"
-                  placeholder="https://github.com/..."
-                  isEditing={isEditing}
-                  formData={formData}
-                  handleChange={handleChange}
-                  regionColor={regionColor}
-                />
-                <Field
-                  icon={FaFacebookF}
-                  label="Facebook"
-                  name="facebook"
-                  type="url"
-                  placeholder="https://facebook.com/..."
-                  isEditing={isEditing}
-                  formData={formData}
-                  handleChange={handleChange}
-                  regionColor={regionColor}
-                />
+                <Field icon={FaLink} label="Website" name="website" type="url" placeholder="https://..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
+                <Field icon={FaLinkedinIn} label="LinkedIn" name="linkedin" type="url" placeholder="https://linkedin.com/in/..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
+                <Field icon={FaGithub} label="GitHub" name="github" type="url" placeholder="https://github.com/..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
+                <Field icon={FaFacebookF} label="Facebook" name="facebook" type="url" placeholder="https://facebook.com/..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
+                <Field icon={FaTwitter} label="Twitter / X" name="twitter" type="url" placeholder="https://twitter.com/..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
+                <Field icon={FaInstagram} label="Instagram" name="instagram" type="url" placeholder="https://instagram.com/..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
+                <Field icon={FaTiktok} label="TikTok" name="tiktok" type="url" placeholder="https://tiktok.com/@..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
+                <Field icon={FaYoutube} label="YouTube" name="youtube" type="url" placeholder="https://youtube.com/@..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
               </div>
             </div>
           

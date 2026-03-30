@@ -168,7 +168,9 @@ export class AdminService {
       case "contacts":
         return await Contact.find().sort({ createdAt: -1 });
       case "users":
-        return await User.find().sort({ createdAt: -1 });
+        return await User.find().select(
+          "-password -otp -otpExpiry -otpLastSentAt -otpAttempts -otpVerified -failedLoginAttempts -lockUntil -resetPasswordToken -resetPasswordExpiry"
+        ).sort({ createdAt: -1 });
       default:
         return [];
     }
@@ -178,69 +180,100 @@ export class AdminService {
     const user = await User.findById(id);
     if (!user) throw new Error("User not found");
 
-    // 0️⃣ Superadmin selection protection (cannot be modified by others)
+    // 0️⃣ Superadmin protection
     if (user.email === "sajhilodigital@gmail.com" || user.role === 'superadmin') {
       if (currentUser?.email !== "sajhilodigital@gmail.com") {
         throw new Error("Superadmin accounts can only be modified by the primary system owner.");
       }
     }
 
-    // Update basic user fields
-    if (data.name) user.name = data.name;
-    if (data.email) user.email = data.email;
-    if (data.phone) user.phone = data.phone;
-    if (data.address) user.address = data.address;
-    if (data.bio) user.bio = data.bio;
-    
-    // Role update with permission sync and hierarchy check
+    // 1️⃣ Basic profile fields
+    if (data.name !== undefined) user.name = data.name;
+    if (data.email !== undefined) user.email = data.email;
+    if (data.phone !== undefined) user.phone = data.phone;
+    if (data.secondaryEmail !== undefined) user.secondaryEmail = data.secondaryEmail;
+    if (data.address !== undefined) user.address = data.address;
+    if (data.bio !== undefined) user.bio = data.bio;
+    if (data.gender !== undefined) user.gender = data.gender;
+    if (data.dateOfBirth !== undefined) user.dateOfBirth = data.dateOfBirth;
+    if (data.province !== undefined) user.province = data.province;
+    if (data.tenure !== undefined) user.tenure = data.tenure;
+    if (data.profileImage !== undefined) user.profileImage = data.profileImage;
+
+    // 2️⃣ Social links
+    if (data.linkedin !== undefined) user.linkedin = data.linkedin;
+    if (data.github !== undefined) user.github = data.github;
+    if (data.website !== undefined) user.website = data.website;
+    if (data.facebook !== undefined) user.facebook = data.facebook;
+    if (data.twitter !== undefined) user.twitter = data.twitter;
+    if (data.instagram !== undefined) user.instagram = data.instagram;
+    if (data.tiktok !== undefined) user.tiktok = data.tiktok;
+    if (data.youtube !== undefined) user.youtube = data.youtube;
+
+    // 3️⃣ Role update with permission sync and hierarchy check
     if (data.role) {
       const { ROLE_PERMISSIONS, ROLES } = await import("../../shared/configs/permissions.js");
-      
-      // Hierarchy Check: Tech Lead cannot promote to Admin or Super Admin
+
       if (currentUser?.role === 'tech-lead') {
         if ([ROLES.ADMIN, ROLES.SUPER_ADMIN].includes(data.role as any)) {
           throw new Error("Tech Leads are not authorized to assign Admin or Super Admin roles.");
         }
-        // Cannot modify existing higher roles
         if ([ROLES.ADMIN, ROLES.SUPER_ADMIN].includes(user.role as any)) {
           throw new Error("Tech Leads cannot modify Admin or Super Admin accounts.");
         }
       }
 
       user.role = data.role;
-      // Sync permissions when role changes
       user.permissions = ROLE_PERMISSIONS[data.role as keyof typeof ROLE_PERMISSIONS] || [];
     }
 
-    if (data.status) user.isActive = data.status === "Active";
+    // 4️⃣ Status & verification
+    if (data.status !== undefined) user.isActive = data.status === "Active";
+    if (typeof data.isActive === "boolean") user.isActive = data.isActive;
     if (typeof data.isVerified === "boolean") user.isVerified = data.isVerified;
 
-    // Update nested objects if data is provided
-    if (data.code || data.membershipStatus) {
+    // 5️⃣ Membership
+    if (data.membership || data.code || data.membershipStatus) {
       user.membership = {
         ...user.membership,
-        membershipId: data.code || user.membership?.membershipId,
-        membershipStatus: data.membershipStatus || user.membership?.membershipStatus || "active",
+        membershipId: data.membership?.membershipId ?? data.code ?? user.membership?.membershipId,
+        membershipStatus: data.membership?.membershipStatus ?? data.membershipStatus ?? user.membership?.membershipStatus ?? "active",
+        joinedAt: user.membership?.joinedAt ?? new Date(),
       };
     }
 
-    if (data.collegeName || data.faculty || data.semester || data.university) {
+    // 6️⃣ Education
+    if (data.education || data.collegeName || data.faculty || data.semester || data.university || data.graduationYear) {
       user.education = {
         ...user.education,
-        collegeName: data.collegeName || user.education?.collegeName,
-        university: data.university || user.education?.university,
-        faculty: data.faculty || user.education?.faculty,
-        semester: data.semester || user.education?.semester,
+        ...(data.education?.collegeName !== undefined && { collegeName: data.education.collegeName }),
+        ...(data.collegeName !== undefined && { collegeName: data.collegeName }),
+        ...(data.education?.university !== undefined && { university: data.education.university }),
+        ...(data.university !== undefined && { university: data.university }),
+        ...(data.education?.faculty !== undefined && { faculty: data.education.faculty }),
+        ...(data.faculty !== undefined && { faculty: data.faculty }),
+        ...(data.education?.semester !== undefined && { semester: data.education.semester }),
+        ...(data.semester !== undefined && { semester: data.semester }),
+        ...(data.education?.graduationYear !== undefined && { graduationYear: data.education.graduationYear }),
+        ...(data.graduationYear !== undefined && { graduationYear: data.graduationYear }),
       };
     }
 
-    if (data.ebBody) {
+    // 7️⃣ Executive details
+    if (data.ebBody || data.executiveDetails || data.department || data.termStart || data.termEnd) {
       user.executiveDetails = {
         ...user.executiveDetails,
-        position: data.ebBody || user.executiveDetails?.position,
+        ...(data.ebBody !== undefined && { position: data.ebBody }),
+        ...(data.executiveDetails?.position !== undefined && { position: data.executiveDetails.position }),
+        ...(data.department !== undefined && { department: data.department }),
+        ...(data.executiveDetails?.department !== undefined && { department: data.executiveDetails.department }),
+        ...(data.termStart !== undefined && { termStart: data.termStart }),
+        ...(data.executiveDetails?.termStart !== undefined && { termStart: data.executiveDetails.termStart }),
+        ...(data.termEnd !== undefined && { termEnd: data.termEnd }),
+        ...(data.executiveDetails?.termEnd !== undefined && { termEnd: data.executiveDetails.termEnd }),
       };
     }
-    
+
     await user.save();
     return user;
   }

@@ -111,15 +111,30 @@ export const getUsers = async (
     _id: user._id.toString(),
     name: user.name,
     email: user.email,
+    secondaryEmail: user.secondaryEmail,
     role: user.role,
     permissions: user.permissions,
     isVerified: user.isVerified,
     isActive: user.isActive,
+    accountStatus: user.accountStatus,
     profileImage: user.profileImage,
     province: user.province,
+    address: user.address,
+    bio: user.bio,
+    gender: user.gender,
+    dateOfBirth: user.dateOfBirth,
+    phone: user.phone,
+    website: user.website,
+    linkedin: user.linkedin,
+    github: user.github,
+    facebook: user.facebook,
+    twitter: user.twitter,
+    instagram: user.instagram,
+    tiktok: user.tiktok,
+    youtube: user.youtube,
     executiveDetails: user.executiveDetails,
     membership: user.membership,
-    bio: user.bio,
+    education: user.education,
     tenure: user.tenure,
     createdAt: user.createdAt,
   }));
@@ -187,6 +202,7 @@ export const updateUser = async (
     if (typeof data.instagram === "string") updatePayload.instagram = data.instagram;
     if (typeof data.tiktok === "string") updatePayload.tiktok = data.tiktok;
     if (typeof data.youtube === "string") updatePayload.youtube = data.youtube;
+    if (typeof data.isVerified === "boolean") updatePayload.isVerified = data.isVerified;
 
     // Helper to parse potential JSON string
     const parseNested = (val: any) => {

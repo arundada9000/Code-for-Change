@@ -96,9 +96,9 @@ function AdminUsers() {
     address: "",
     province: "",
     dateOfBirth: "",
-    region: "",
     bio: "",
     role: "gm",
+    tenure: "",
     status: "Active",
     gender: "",
     code: "",
@@ -114,8 +114,12 @@ function AdminUsers() {
     termEnd: "",
     linkedin: "",
     github: "",
-    facebook: "",
     website: "",
+    facebook: "",
+    twitter: "",
+    instagram: "",
+    tiktok: "",
+    youtube: "",
     profileImage: null,
     profileImagePreview: "",
   });
@@ -171,9 +175,9 @@ function AdminUsers() {
         address: user.address || "",
         province: user.province || "",
         dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : "",
-        region: user.region || "",
         bio: user.bio || "",
         role: user.role || "gm",
+        tenure: user.tenure || "",
         status: user.isActive ? "Active" : "Inactive",
         gender: user.gender || "",
         code: user.membership?.membershipId || "",
@@ -189,20 +193,24 @@ function AdminUsers() {
         termEnd: user.executiveDetails?.termEnd ? new Date(user.executiveDetails.termEnd).toISOString().split('T')[0] : "",
         linkedin: user.linkedin || "",
         github: user.github || "",
-        facebook: user.facebook || "",
         website: user.website || "",
+        facebook: user.facebook || "",
+        twitter: user.twitter || "",
+        instagram: user.instagram || "",
+        tiktok: user.tiktok || "",
+        youtube: user.youtube || "",
         profileImage: null,
         profileImagePreview: user.profileImage || "",
       });
     } else {
       setEditingUser(null);
       setFormData({
-        name: "", email: "", password: "", phone: "", address: "", province: "", dateOfBirth: "", region: "", bio: "",
-        role: "gm", status: "Active", gender: "",
+        name: "", email: "", secondaryEmail: "", password: "", phone: "", address: "", province: "", dateOfBirth: "", bio: "",
+        role: "gm", tenure: "", status: "Active", gender: "",
         code: "", membershipStatus: "active",
         collegeName: "", university: "", faculty: "", semester: "", graduationYear: "",
         ebBody: "", department: "", termStart: "", termEnd: "",
-        linkedin: "", github: "", facebook: "", website: "",
+        linkedin: "", github: "", website: "", facebook: "", twitter: "", instagram: "", tiktok: "", youtube: "",
         profileImage: null, profileImagePreview: "",
       });
     }
@@ -241,19 +249,24 @@ function AdminUsers() {
       const payload = {
         name: formData.name,
         email: formData.email,
+        secondaryEmail: formData.secondaryEmail,
         phone: formData.phone,
         address: formData.address,
         province: formData.province,
         dateOfBirth: formData.dateOfBirth,
-        region: formData.region,
         bio: formData.bio,
         role: formData.role,
+        tenure: formData.tenure,
         gender: formData.gender,
         isActive: formData.status === "Active",
         linkedin: formData.linkedin,
         github: formData.github,
-        facebook: formData.facebook,
         website: formData.website,
+        facebook: formData.facebook,
+        twitter: formData.twitter,
+        instagram: formData.instagram,
+        tiktok: formData.tiktok,
+        youtube: formData.youtube,
         membership: {
           membershipId: formData.code,
           membershipStatus: formData.membershipStatus,
@@ -439,7 +452,7 @@ function AdminUsers() {
               name: row.Name || row.name,
               email: row.Email || row.email,
               phone: row.Phone || row.phone,
-              role: row.Role || row.role || "student",
+              role: row.Role || row.role || "gm",
               isActive: row.Status === 'Active' || row.isActive === 'true',
               password: `CFC@${Math.floor(1000 + Math.random() * 9000)}`
             };
@@ -998,7 +1011,7 @@ function AdminUsers() {
                         <option value="LB Karnali">LB Karnali</option>
                       </select>
                     </div>
-                    <ModalInput label="District/Region" value={formData.region} onChange={(e) => setFormData({ ...formData, region: e.target.value })} />
+
                   </div>
 
                   <div className="mt-6">
@@ -1053,6 +1066,9 @@ function AdminUsers() {
                         <option value="eb">Executive Board (EB)</option>
                         <option value="cr">CR</option>
                         <option value="gm">General Member</option>
+                        <option value="ippl">IPPL</option>
+                        <option value="advisor">Advisor</option>
+                        <option value="alumni">Alumni</option>
                         <option value="guest">Guest</option>
                       </select>
                     </div>
@@ -1112,6 +1128,20 @@ function AdminUsers() {
                         </select>
                       </div>
                     </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Tenure</label>
+                      <select
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all cursor-pointer"
+                        value={formData.tenure}
+                        onChange={(e) => setFormData({ ...formData, tenure: e.target.value })}
+                      >
+                        <option value="">Select Tenure</option>
+                        <option value="2025-2026">2025-2026</option>
+                        <option value="2024-2025">2024-2025</option>
+                        <option value="2023-2024">2023-2024</option>
+                        <option value="2022-2023">2022-2023</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
@@ -1126,6 +1156,10 @@ function AdminUsers() {
                     <ModalInput label="GitHub Handle" value={formData.github} onChange={(e) => setFormData({ ...formData, github: e.target.value })} />
                     <ModalInput label="Facebook URL" value={formData.facebook} onChange={(e) => setFormData({ ...formData, facebook: e.target.value })} />
                     <ModalInput label="Portfolio Website" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} />
+                    <ModalInput label="Twitter / X" value={formData.twitter} onChange={(e) => setFormData({ ...formData, twitter: e.target.value })} />
+                    <ModalInput label="Instagram" value={formData.instagram} onChange={(e) => setFormData({ ...formData, instagram: e.target.value })} />
+                    <ModalInput label="TikTok" value={formData.tiktok} onChange={(e) => setFormData({ ...formData, tiktok: e.target.value })} />
+                    <ModalInput label="YouTube" value={formData.youtube} onChange={(e) => setFormData({ ...formData, youtube: e.target.value })} />
                   </div>
                 </div>
 
