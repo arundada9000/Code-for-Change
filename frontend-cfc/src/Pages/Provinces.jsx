@@ -250,7 +250,7 @@ const Provinces = () => {
                         Impact
                       </p>
                       <p className="text-lg font-black text-slate-900 leading-none">
-                        Nepal Wide
+                        Nation Wide
                       </p>
                     </div>
                   </div>

@@ -289,6 +289,8 @@ const ProvinceDetails = () => {
     fetchData();
   }, [displayName]);
 
+
+
   // Generate Person JSON-LD for team members (helps Google index members without individual pages)
   const teamJsonLd =
     team.length > 0
@@ -558,7 +560,7 @@ const ProvinceDetails = () => {
 
       {/* Regional Advisors */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
           <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
             Regional <span style={{ color: themeColor }}>Advisors</span>
           </h2>
@@ -604,9 +606,9 @@ const ProvinceDetails = () => {
 
       {/* Executive Member */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
           <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
-            Executive <span style={{ color: themeColor }}>Panel</span>
+            Executive <span style={{ color: themeColor }}>Body</span>
           </h2>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
             Executive Members
@@ -742,7 +744,7 @@ const ProvinceDetails = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
           {/* National Alumni */}
           <div>
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+            <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
               <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
                 Provincial <span style={{ color: themeColor }}>Alumni</span>
               </h2>
@@ -787,7 +789,7 @@ const ProvinceDetails = () => {
             {/* Board Members Section */}
             {boardMembers.length > 0 && (
               <div className="mt-20">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+                <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
                   <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight" >
                     Board <span style={{ color: themeColor }}>Members</span>
                   </h2>

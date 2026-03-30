@@ -238,7 +238,7 @@ function Gallery() {
                   {/* Always visible title if requested, but let's stick to clean hover for now as per "arrangement" */}
                   {image.isFeatured && (
                     <div className="absolute top-4 right-4 z-10">
-                      <div className="bg-emerald-500 text-white text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+                      <div className="bg-secondary text-white text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
                         Featured
                       </div>
                     </div>
@@ -254,9 +254,9 @@ function Gallery() {
             <button
               onClick={loadMore}
               disabled={loading}
-              className="px-8 py-3 bg-white text-emerald-600 font-bold rounded-2xl border-2 border-emerald-100 hover:bg-emerald-50 hover:border-emerald-200 transition-all shadow-sm disabled:opacity-50"
+             className="px-8 py-4 bg-secondary cursor-pointer rounded-full text-white hover:bg-secondary/90 hover:scale-105 transition-all font-bold shadow-lg shadow-secondary/20"
             >
-              {loading ? "Loading..." : "Load More Images"}
+              {loading ? "Loading..." : "View More Images"}
             </button>
           </div>
         )}

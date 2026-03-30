@@ -222,12 +222,12 @@ function ImpactDetail() {
              <InfoSidebar location={item.location} dates={item.dates} />
              
              {/* Additional Quick Info */}
-             <div className="bg-white border text-center border-slate-100 rounded-[2rem] p-8 shadow-sm">
+             {/* <div className="bg-white border text-center border-slate-100 rounded-[2rem] p-8 shadow-sm">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Official Status</p>
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-full text-[10px] font-black uppercase tracking-widest">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-full text-xs font-medium ">
                    <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> Verified Impact
                 </div>
-             </div>
+             </div> */}
           </SlideUp>
         </div>
       </main>
@@ -244,7 +244,7 @@ function ImpactDetail() {
               to="/our-impact"
               className="w-full sm:w-auto px-12 py-5 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-secondary hover:text-white transition-all transform hover:-translate-y-1"
             >
-              Impact Archive
+              All Impact
             </Link>
             <Link
               to="/contact-us"

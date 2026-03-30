@@ -13,7 +13,7 @@ import useFetch from "../../../Hooks/useFetch";
 
 const TeamMemberCard = ({ member, type }) => {
   const accentColor =
-    type === "alumni" ? "#D97706" : type === "advisor" ? "#059669" : "#0076B4";
+    type === "alumni" ? "#0076B4" : type === "advisor" ? "#0076B4" : "#0076B4";
   const socialIcons = {
     linkedin: <FaLinkedinIn />,
     facebook: <FaFacebookF />,
@@ -28,7 +28,7 @@ const TeamMemberCard = ({ member, type }) => {
   );
 
   return (
-    <div className="group relative">
+    <div className="group relative overflow-hidden">
       <div
         className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5] mb-6 transition-all duration-500 group-hover:-translate-y-2 border-b-4"
         style={{
