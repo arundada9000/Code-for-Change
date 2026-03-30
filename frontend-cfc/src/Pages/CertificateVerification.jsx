@@ -55,7 +55,9 @@ function CertificateVerification() {
     }
   };
 
+  // Extract region from the data
   const region = result?.data?.province;
+
 
   const initScanner = () => {
     setShowScanner(true);
@@ -174,8 +176,10 @@ function CertificateVerification() {
 
   // find province color
   const activeProvince = provinces.find(
-    (p) => p.name.toLowerCase() === region?.toLowerCase(),
+    (p) =>
+       p.name.toLowerCase() === region?.toLowerCase(),
   );
+  
 
   return (
     <div className="min-h-screen bg-slate-50/30">
@@ -192,10 +196,10 @@ function CertificateVerification() {
         <Banner title="Registry Audit Portal Certificate Verification" />
       )}
 
-      <div className={`max-w-7xl mx-auto px-6 ${token ? "py-12" : "py-20"}`}>
+      <div className={`max-w-7xl mx-auto px-6 ${token ? "py-12" : "py-16"}`}>
         {/* Verification Card - Simplistic & Clean */}
         {(!token || !result || result.status !== "success") && (
-          <SlideUp delay={0.1} className="max-w-4xl mx-auto mb-20">
+          <SlideUp delay={0.1} className="max-w-4xl mx-auto">
             <div className="text-center mb-10">
               <h2 className="text-4xl font-black text-[#01152E] tracking-tight mb-3">
                 Certificate Verification
@@ -208,7 +212,7 @@ function CertificateVerification() {
               </p>
             </div>
 
-            <div className="bg-white rounded-full p-2 shadow-xl shadow-slate-200/60 border border-slate-300 flex flex-col md:flex-row gap-3 items-center">
+            <div className="bg-white rounded-2xl md:rounded-full p-2 shadow-xl shadow-slate-200/60 border border-slate-300 flex flex-col md:flex-row gap-3 items-center">
               <div className="relative flex-1 w-full">
                 <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-primary/50" />
                 <input
@@ -304,7 +308,7 @@ function CertificateVerification() {
 
         {/* Results Section */}
         {result && (
-          <SlideUp className="duration-700">
+          <SlideUp className="duration-700 mt-12">
             {result.status === "success" ? (
               <div className="space-y-10">
                 {/* Sleek Integrated Status Bar */}
@@ -420,7 +424,7 @@ function CertificateVerification() {
 
         {/* Support Strip - Simplified */}
         {(!token || !result) && (
-          <div className="mt-32 pt-16 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+          <div className="mt-12 md:mt-32 pt-16 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
             <div className="flex items-start gap-6 group">
               <div className="p-4 bg-slate-50 text-[#01152E] rounded-2xl group-hover:bg-[#0076B4] group-hover:text-white transition-colors duration-300 shrink-0">
                 <FaShieldAlt size={22} />

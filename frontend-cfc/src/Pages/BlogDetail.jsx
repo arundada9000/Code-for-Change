@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTwitter,
+  FaYoutube,
+  FaTiktok,
+} from "react-icons/fa";
 import DOMPurify from "dompurify";
 import useFetch from "../Hooks/useFetch";
 import SEO from "../Components/Common/SEO";
@@ -40,7 +47,9 @@ function BlogDetail() {
       setNlEmail("");
     } catch (err) {
       setNlStatus("error");
-      setNlMessage(err.response?.data?.message || "Subscription failed. Try again.");
+      setNlMessage(
+        err.response?.data?.message || "Subscription failed. Try again.",
+      );
     }
   };
 
@@ -50,10 +59,10 @@ function BlogDetail() {
       const actualBlog = apiBlog.blog || apiBlog;
       setBlog({
         ...actualBlog,
-        coverImage: actualBlog.image || actualBlog.coverImage || '',
+        coverImage: actualBlog.image || actualBlog.coverImage || "",
         date: actualBlog.publishedAt || actualBlog.createdAt || new Date(),
         readTime: actualBlog.readTime || "5 min read",
-        tags: actualBlog.tags || []
+        tags: actualBlog.tags || [],
       });
     }
   }, [apiBlog]);
@@ -68,28 +77,33 @@ function BlogDetail() {
     );
 
   // Find "Next Post" for the bottom navigation
-  const blogList = Array.isArray(allBlogs) ? allBlogs : (allBlogs?.blogs || []);
-  const currentIndex = blogList.findIndex((b) => (b._id || b.id) === (blog._id || blog.id));
+  const blogList = Array.isArray(allBlogs) ? allBlogs : allBlogs?.blogs || [];
+  const currentIndex = blogList.findIndex(
+    (b) => (b._id || b.id) === (blog._id || blog.id),
+  );
   const nextBlog = blogList[currentIndex + 1] || blogList[0] || null;
-  const prevBlog = blogList[currentIndex - 1] || blogList[blogList.length - 1] || null;
+  const prevBlog =
+    blogList[currentIndex - 1] || blogList[blogList.length - 1] || null;
 
   const breadcrumbs = [
     { name: "Home", path: "/" },
     { name: "Articles", path: "/blog" },
-    { name: blog.title, path: `/blog/${blog.slug}` }
+    { name: blog.title, path: `/blog/${blog.slug}` },
   ];
 
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": blog.title,
-    "image": [blog.coverImage],
-    "datePublished": blog.date,
-    "author": [{
-      "@type": "Person",
-      "name": blog.authorDetails?.name || blog.author,
-      "url": window.location.origin
-    }]
+    headline: blog.title,
+    image: [blog.coverImage],
+    datePublished: blog.date,
+    author: [
+      {
+        "@type": "Person",
+        name: blog.authorDetails?.name || blog.author,
+        url: window.location.origin,
+      },
+    ],
   };
 
   // Share handler — opens native share dialogs
@@ -102,7 +116,11 @@ function BlogDetail() {
       twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
     };
     if (links[platform]) {
-      window.open(links[platform], "_blank", "noopener,noreferrer,width=620,height=450");
+      window.open(
+        links[platform],
+        "_blank",
+        "noopener,noreferrer,width=620,height=450",
+      );
     } else {
       // Fallback: copy URL to clipboard (e.g. Instagram)
       navigator.clipboard?.writeText(window.location.href).catch(() => {});
@@ -113,7 +131,9 @@ function BlogDetail() {
     <div className="bg-white min-h-screen">
       <SEO
         title={blog.title || "Blog Single"}
-        description={(blog.content || "").replace(/<[^>]*>/g, '').substring(0, 160)}
+        description={(blog.content || "")
+          .replace(/<[^>]*>/g, "")
+          .substring(0, 160)}
         image={blog.coverImage}
         type="article"
         breadcrumbs={breadcrumbs}
@@ -130,7 +150,7 @@ function BlogDetail() {
             to="/blog"
             className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-secondary mb-8 px-4 py-2 bg-secondary/15 rounded-full transition-all ease-in duration-200 hover:gap-3 group"
           >
-        <FaChevronLeft className="text-[18px]"/>
+            <FaChevronLeft className="text-[18px]" />
             Back to Articles
           </Link>
 
@@ -156,7 +176,11 @@ function BlogDetail() {
 
           <div className="flex items-center gap-6 p-1 pr-8 w-fit bg-slate-50/50 rounded-full border border-slate-100/50 backdrop-blur-sm">
             {blog.authorDetails?.image ? (
-              <img src={blog.authorDetails.image} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-xl" alt={blog.authorDetails.name} />
+              <img
+                src={blog.authorDetails.image}
+                className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-xl"
+                alt={blog.authorDetails.name}
+              />
             ) : (
               <div className="w-14 h-14 rounded-full bg-linear-to-br from-secondary to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-xl border-2 border-white">
                 {blog.authorDetails?.name?.[0] || blog.author?.[0]}
@@ -167,7 +191,8 @@ function BlogDetail() {
                 {blog.authorDetails?.name || blog.author}
               </p>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                {blog.authorDetails?.role || "Publisher"} • {new Date(blog.date).toDateString()}
+                {blog.authorDetails?.role || "Publisher"} •{" "}
+                {new Date(blog.date).toDateString()}
               </p>
             </div>
           </div>
@@ -194,9 +219,24 @@ function BlogDetail() {
             </p>
 
             {[
-              { icon: <FaFacebookF />, hover: "hover:bg-[#1877F2]", color: "text-[#1877F2]", platform: "facebook" },
-              { icon: <FaLinkedinIn />, hover: "hover:bg-[#0A66C2]", color: "text-[#0A66C2]", platform: "linkedin" },
-              { icon: <FaTwitter />, hover: "hover:bg-black", color: "text-black", platform: "twitter" },
+              {
+                icon: <FaFacebookF />,
+                hover: "hover:bg-[#1877F2]",
+                color: "text-[#1877F2]",
+                platform: "facebook",
+              },
+              {
+                icon: <FaLinkedinIn />,
+                hover: "hover:bg-[#0A66C2]",
+                color: "text-[#0A66C2]",
+                platform: "linkedin",
+              },
+              {
+                icon: <FaTwitter />,
+                hover: "hover:bg-black",
+                color: "text-black",
+                platform: "twitter",
+              },
             ].map((social, idx) => (
               <button
                 key={idx}
@@ -250,14 +290,20 @@ function BlogDetail() {
                 prose-img:rounded-3xl prose-img:shadow-lg
                 
                 prose-strong:text-slate-950 prose-strong:font-black"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content || "") }}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(blog.content || ""),
+              }}
             />
 
             {/* Simple Brand Author Card */}
             <div className="mt-10 p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex flex-col md:flex-row items-center gap-6 group">
               <div className="relative shrink-0">
                 {blog.authorDetails?.image ? (
-                  <img src={blog.authorDetails.image} className="w-20 h-20 rounded-2xl object-cover transition-all duration-500" alt={blog.authorDetails?.name || "Author"} />
+                  <img
+                    src={blog.authorDetails.image}
+                    className="w-20 h-20 rounded-2xl object-cover transition-all duration-500"
+                    alt={blog.authorDetails?.name || "Author"}
+                  />
                 ) : (
                   <div className="w-20 h-20 rounded-2xl bg-slate-900 flex items-center justify-center text-white text-2xl font-black">
                     {blog.authorDetails?.name?.[0] || blog.author?.[0]}
@@ -279,29 +325,55 @@ function BlogDetail() {
                   {/* Minimal Social Links — includes TikTok */}
                   <div className="flex flex-wrap justify-center md:justify-end gap-2">
                     {[
-                      { id: 'linkedin',  icon: <FaLinkedinIn size={13} />, color: 'hover:text-[#0A66C2]' },
-                      { id: 'facebook',  icon: <FaFacebookF  size={13} />, color: 'hover:text-[#1877F2]' },
-                      { id: 'instagram', icon: <FaInstagram  size={13} />, color: 'hover:text-[#ee2a7b]' },
-                      { id: 'youtube',   icon: <FaYoutube    size={13} />, color: 'hover:text-[#FF0000]' },
-                      { id: 'tiktok',    icon: <FaTiktok     size={13} />, color: 'hover:text-black'     },
-                    ].map((social) => (
-                      blog.authorDetails?.[social.id] && (
-                        <a
-                          key={social.id}
-                          href={blog.authorDetails[social.id].startsWith('http') ? blog.authorDetails[social.id] : `https://${blog.authorDetails[social.id]}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={social.id}
-                          className={`w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg transition-all ${social.color} hover:bg-white hover:shadow-sm`}
-                        >
-                          {social.icon}
-                        </a>
-                      )
-                    ))}
+                      {
+                        id: "linkedin",
+                        icon: <FaLinkedinIn size={13} />,
+                        color: "hover:text-[#0A66C2]",
+                      },
+                      {
+                        id: "facebook",
+                        icon: <FaFacebookF size={13} />,
+                        color: "hover:text-[#1877F2]",
+                      },
+                      {
+                        id: "instagram",
+                        icon: <FaInstagram size={13} />,
+                        color: "hover:text-[#ee2a7b]",
+                      },
+                      {
+                        id: "youtube",
+                        icon: <FaYoutube size={13} />,
+                        color: "hover:text-[#FF0000]",
+                      },
+                      {
+                        id: "tiktok",
+                        icon: <FaTiktok size={13} />,
+                        color: "hover:text-black",
+                      },
+                    ].map(
+                      (social) =>
+                        blog.authorDetails?.[social.id] && (
+                          <a
+                            key={social.id}
+                            href={
+                              blog.authorDetails[social.id].startsWith("http")
+                                ? blog.authorDetails[social.id]
+                                : `https://${blog.authorDetails[social.id]}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={social.id}
+                            className={`w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg transition-all ${social.color} hover:bg-white hover:shadow-sm`}
+                          >
+                            {social.icon}
+                          </a>
+                        ),
+                    )}
                   </div>
                 </div>
                 <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                  {blog.authorDetails?.bio || `A dedicated ${blog.authorDetails?.role || 'contributor'} exploring ${blog.category} through professional insights and storytelling.`}
+                  {blog.authorDetails?.bio ||
+                    `A dedicated ${blog.authorDetails?.role || "contributor"} exploring ${blog.category} through professional insights and storytelling.`}
                 </p>
               </div>
             </div>
@@ -324,8 +396,13 @@ function BlogDetail() {
                 <input
                   type="email"
                   value={nlEmail}
-                  onChange={(e) => { setNlEmail(e.target.value); setNlStatus(null); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleNewsletterSubscribe()}
+                  onChange={(e) => {
+                    setNlEmail(e.target.value);
+                    setNlStatus(null);
+                  }}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handleNewsletterSubscribe()
+                  }
                   disabled={nlStatus === "loading"}
                   placeholder="email@example.com"
                   className="w-full px-4 py-3 rounded-full border border-gray-200 mb-2 text-sm focus:outline-none focus:ring focus:ring-primary disabled:opacity-60"
@@ -340,7 +417,9 @@ function BlogDetail() {
                 >
                   {nlStatus === "loading" ? (
                     <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                  ) : "Join Now"}
+                  ) : (
+                    "Join Now"
+                  )}
                 </button>
               </>
             )}
@@ -348,7 +427,10 @@ function BlogDetail() {
         </SlideUp>
 
         {/* Share in medium device */}
-        <SlideUp delay={0.1} className="p-6 bg-gray-50 rounded-lg border border-gray-100 lg:hidden">
+        <SlideUp
+          delay={0.1}
+          className="p-6 bg-gray-50 rounded-lg border border-gray-100 lg:hidden"
+        >
           <p className="text-base font-black text-gray-400 uppercase tracking-[0.2em] mb-4">
             Share
           </p>
@@ -403,8 +485,9 @@ function BlogDetail() {
           {/* Previous Post */}
           <Link
             to={prevBlog ? `/blog/${prevBlog.slug}` : "#"}
-            className={`group relative p-10 md:p-16 flex flex-col items-start justify-center transition-all duration-500 overflow-hidden border-b md:border-b-0 md:border-r border-gray-100 ${!prevBlog ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
-              }`}
+            className={`group relative p-10 md:p-16 flex flex-col items-start justify-center transition-all duration-500 overflow-hidden border-b md:border-b-0 md:border-r border-gray-100 ${
+              !prevBlog ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+            }`}
           >
             {prevBlog && (
               <>
@@ -438,10 +521,11 @@ function BlogDetail() {
           {/* Next Post */}
           <Link
             to={nextBlog ? `/blog/${nextBlog.slug}` : "#"}
-            className={`group relative p-10 md:p-16 flex flex-col items-end text-right justify-center transition-all duration-500 overflow-hidden ${!nextBlog
+            className={`group relative p-10 md:p-16 flex flex-col items-end text-right justify-center transition-all duration-500 overflow-hidden ${
+              !nextBlog
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-gray-950 hover:text-white"
-              }`}
+            }`}
           >
             {nextBlog && (
               <>

@@ -28,9 +28,9 @@ const TeamMemberCard = ({ member, type }) => {
   );
 
   return (
-    <div className="group relative overflow-hidden">
+    <div className="group relative">
       <div
-        className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5] mb-6 transition-all duration-500 group-hover:-translate-y-2 border-b-4"
+        className="relative overflow-hidden rounded-3xl aspect-4/5 mb-6 transition-all duration-500 group-hover:-translate-y-2 border-b-4"
         style={{
           backgroundColor: `${accentColor}05`,
           borderColor: accentColor,
@@ -95,7 +95,8 @@ const TeamSection = () => {
 
   const coreTeam = teamMembers?.filter((m) => m.type === "Core Team") || [];
   const advisors = teamMembers?.filter((m) => m.type === "Advisor") || [];
-  const boardMembers = teamMembers?.filter((m) => m.type === "Board Member") || [];
+  const boardMembers =
+    teamMembers?.filter((m) => m.type === "Board Member") || [];
 
   if (loading && teamMembers?.length === 0) {
     return (
