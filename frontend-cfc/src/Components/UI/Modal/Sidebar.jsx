@@ -58,7 +58,7 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
           },
           user
             ? { title: "My Profile", path: "/profile" }
-            : { title: "Join Us", path: "/join-us" },
+            : { title: "Register", path: "/register" },
         ].map((val, i) => (
           <Link
             key={i}

@@ -279,10 +279,10 @@ const Provinces = () => {
         {/* Core team */}
         <CoreTeam onMemberClick={(member) => setSelectedMember(member)} />
 
-        <div className="max-w-7xl mx-auto px-6 space-y-20">
+        <div className="max-w-7xl mx-auto space-y-20">
           {/* Province Navigation */}
           <section className="pb-16 px-4 max-w-7xl mx-auto">
-            <section className="pb-16 px-4 max-w-7xl mx-auto">
+            <section className="pb-16 max-w-7xl mx-auto">
               <ProvinceDropdown
                 provinces={provinces}
                 activeTab={activeTab}
@@ -453,7 +453,7 @@ const Provinces = () => {
                                   <div
                                     key={platform}
                                     className={`absolute z-20 ${idx < 4 ? "left-2 md:left-5" : "right-2 md:right-5"}
-                                     [--icon-gap:2.2rem] md:[--icon-gap:2.65rem] [--top-starting:0.5rem] md:[--top-starting:1rem]`}
+                                     [--icon-gap:2rem] md:[--icon-gap:2.65rem] [--top-starting:0.5rem] md:[--top-starting:1rem]`}
                                     style={{
                                       top: `calc(var(--top-starting) + ${idx % 4} * var(--icon-gap))`,
                                     }}
@@ -497,7 +497,7 @@ const Provinces = () => {
                                   style={{
                                     backgroundColor: activeProvince?.colorCode,
                                   }}
-                                  className="py-4 px-3 md:px-4"
+                                  className="py-2.5 sm:py-4 px-3 md:px-4"
                                 >
                                   <p className="transition-colors flex text-white gap-2 items-baseline tracking-tight">
                                     <span className="capitalize text-[10px] sm:text-sm">

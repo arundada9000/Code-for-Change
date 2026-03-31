@@ -243,11 +243,11 @@ function EventDetails() {
           <FadeIn delay={0.2} className="space-y-6">
             {/* Registration Card */}
             {isUpcoming && event.registrationLink && (
-              <div className="bg-gradient-to-br from-secondary to-primary rounded-3xl p-8 text-white shadow-xl sticky top-20">
+              <div className="bg-gradient-to-br from-secondary to-primary rounded-3xl p-8 text-white shadow-md md:sticky top-20">
                 <h3 className="text-2xl font-black mb-6">Register Now</h3>
                 {registrationOpen ? (
                   <>
-                    <p className="mb-6 text-secondary/10">
+                    <p className="mb-6">
                       Secure your spot for this amazing event!
                     </p>
                     <a

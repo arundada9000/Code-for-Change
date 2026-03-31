@@ -64,7 +64,7 @@ function CoreTeam({ onMemberClick }) {
             const availableSocials = Object.entries(
               member.socialLinks || {},
             ).filter(([_, url]) => url);
-            console.log(availableSocials);
+            // console.log(availableSocials);
             return (
               <div
                 key={member._id || index}

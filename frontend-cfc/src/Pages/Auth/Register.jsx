@@ -217,7 +217,7 @@ function Register() {
             </p>
           </Link>
 
-          <div className="bg-white rounded-[2.5rem] shadow-xl shadow-secondary/5 border border-secondary/10 p-8 md:p-12">
+          <div className="bg-white rounded-3xl shadow-xl shadow-secondary/5 border border-secondary/10 p-8 md:p-12">
             {error && (
               <div className="mb-8 bg-red-50 border border-red-100 text-red-600 px-6 py-4 rounded-2xl text-xs font-bold text-center animate-in fade-in zoom-in duration-300">
                 {error}
@@ -228,7 +228,7 @@ function Register() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                 {/* Personal Info Section */}
                 <div className="space-y-6">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                  <h3 className="text-base font-bold text-gray-400 uppercase flex items-center gap-2 mb-4">
                     <FaUser className="text-secondary" /> Basic Information
                   </h3>
 
@@ -274,7 +274,7 @@ function Register() {
 
                 {/* Academic/CFC Info Section */}
                 <div className="space-y-6">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                  <h3 className="text-base font-bold text-gray-400 uppercase flex items-center gap-2 mb-4">
                     <FaUniversity className="text-secondary" /> Association
                     Details
                   </h3>
@@ -308,7 +308,7 @@ function Register() {
                   />
 
                   <div className="space-y-2 group">
-                    <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
+                    <label className="text-base font-medium group-focus-within:text-secondary">
                       I am joining as
                     </label>
                     <div className="relative group mt-1">
@@ -320,7 +320,7 @@ function Register() {
                         value={form.role}
                         onChange={handleChange}
                         required
-                        className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                        className="w-full pl-14 pr-6 py-4 border border-secondary/50 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                       >
                         <option value="gm">General Member</option>
                         <option value="eb">Executive Board (EB)</option>
@@ -334,7 +334,7 @@ function Register() {
                   </div>
 
                   <div className="space-y-2 group">
-                    <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
+                    <label className="text-base font-medium group-focus-within:text-secondary">
                       Tenure
                     </label>
                     <div className="relative group mt-1">
@@ -346,7 +346,7 @@ function Register() {
                         value={form.tenure}
                         onChange={handleChange}
                         required
-                        className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                        className="w-full pl-14 pr-6 py-4 border border-secondary/50 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                       >
                         <option value="">Select Tenure</option>
                         <option value="2025-2026">2025-2026</option>
@@ -359,7 +359,7 @@ function Register() {
 
                   {form.role === "eb" && (
                     <div className="space-y-2 group">
-                      <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
+                      <label className="text-base font-medium group-focus-within:text-secondary">
                         EB Position
                       </label>
                       <div className="relative group mt-1">
@@ -371,7 +371,7 @@ function Register() {
                           value={form.ebBody}
                           onChange={handleChange}
                           required
-                          className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                          className="w-full pl-14 pr-6 py-4 border border-secondary/50 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                         >
                           <option value="">Select Position</option>
                           <option value="tech-lead">Tech Lead</option>
@@ -396,7 +396,7 @@ function Register() {
                   )}
 
                   <div className="space-y-2 group">
-                    <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
+                    <label className="text-base font-medium group-focus-within:text-secondary">
                       Region
                     </label>
                     <div className="relative group mt-1">
@@ -408,7 +408,7 @@ function Register() {
                         value={form.province}
                         onChange={handleChange}
                         required
-                        className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
+                        className="w-full pl-14 pr-6 py-4 border border-secondary/50 rounded-full outline-none focus:bg-white focus:border-secondary transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs"
                       >
                         <option value="">Select Region</option>
                         {[
@@ -431,7 +431,7 @@ function Register() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ">
+                    <label className="text-base font-medium group-focus-within:text-secondary">
                       Profile Picture
                     </label>
                     <div className="relative group mt-1">
@@ -441,11 +441,11 @@ function Register() {
                         hidden
                         onChange={handleFileChange}
                         accept="image/*"
-                        className="bg-none border border-secondary/20"
+                        className="bg-none border border-secondary/50"
                       />
                       <label
                         htmlFor="profilePic"
-                        className="w-full flex items-center gap-4 pl-6 pr-6 py-4 border border-secondary/20 rounded-full cursor-pointer hover:bg-white hover:border-secondary/20 transition-all font-medium text-gray-400"
+                        className="w-full flex items-center gap-4 pl-6 pr-6 py-4 border border-secondary/50 rounded-full cursor-pointer hover:bg-white hover:border-secondary/50 transition-all font-medium text-gray-400"
                       >
                         <FaCamera className="text-gray-300 group-hover:text-secondary" />
                         <span className="text-xs truncate">
@@ -460,14 +460,14 @@ function Register() {
 
                 {/* Professional & Additional Info Section */}
                 <div className="space-y-6 md:col-span-2 pt-6 border-t border-secondary/50">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                  <h3 className="text-base font-bold text-gray-400 uppercase flex items-center gap-2 mb-4">
                     <FaInfoCircle className="text-secondary" /> Additional
                     Details & Links (Optional)
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                     {/* Gender Select */}
                     <div className="space-y-2 group">
-                      <label className="text-xs font-bold group-focus-within:text-secondary text-gray-400 uppercase tracking-widest">
+                      <label className="text-base font-medium group-focus-within:text-secondary">
                         Gender (Optional)
                       </label>
                       <div className="relative group mt-2">
@@ -478,7 +478,7 @@ function Register() {
                           name="gender"
                           value={form.gender}
                           onChange={handleChange}
-                          className="w-full pl-14 pr-6 py-4 border border-secondary/20 rounded-full outline-none focus:bg-white focus:border-secondary/20 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs focus:ring focus:ring-secondary"
+                          className="w-full pl-14 pr-6 py-4 border border-secondary/50 rounded-full outline-none focus:bg-white focus:border-secondary/50 transition-all font-medium text-gray-600 appearance-none cursor-pointer text-xs focus:ring focus:ring-secondary"
                         >
                           <option value="">Select Gender</option>
                           <option value="male">Male</option>
@@ -539,7 +539,7 @@ function Register() {
                     />
 
                     <div className="space-y-2 md:col-span-2 group">
-                      <label className="text-xs font-bold text-gray-400 group-focus-within:text-secondary uppercase tracking-widest">
+                      <label className="text-base font-medium group-focus-within:text-secondary">
                         Short Bio (Optional)
                       </label>
                       <div className="relative group mt-1">
@@ -548,7 +548,7 @@ function Register() {
                           name="bio"
                           placeholder="Tell us a little about yourself (max 1000 characters)..."
                           maxLength="1000"
-                          className="w-full rounded-2xl pl-16 pr-8 py-4 border border-secondary/20 rounded-3x cursor-pointer outline-none focus:bg-white focus:ring focus:ring-secondary focus:border-secondary/20 font-medium transition-all text-sm resize-none"
+                          className="w-full rounded-2xl pl-16 pr-8 py-4 border border-secondary/50 rounded-3x cursor-pointer outline-none focus:bg-white focus:ring focus:ring-secondary focus:border-secondary/50 font-medium transition-all text-sm resize-none"
                           value={form.bio}
                           onChange={handleChange}
                           rows="7"
@@ -632,7 +632,7 @@ const InputField = ({
   required = false,
 }) => (
   <div className="group">
-    <label className="text-xs group-focus-within:text-secondary font-bold text-slate-400 uppercase tracking-widest ">
+    <label className=" group-focus-within:text-secondary font-medium text-base ">
       {label}
     </label>
     <div className="relative group mt-1">
@@ -642,7 +642,7 @@ const InputField = ({
         name={name}
         required={required}
         placeholder={placeholder}
-        className="w-full pl-16 pr-8 py-4  border cursor-pointer border-secondary/20 rounded-full outline-none focus:bg-white focus:ring focus:ring-secondary  font-medium transition-all text-sm"
+        className="w-full pl-16 pr-8 py-4  border cursor-pointer border-secondary/50 rounded-full outline-none focus:bg-white focus:ring focus:ring-secondary  font-medium transition-all text-sm"
         value={value}
         onChange={onChange}
       />

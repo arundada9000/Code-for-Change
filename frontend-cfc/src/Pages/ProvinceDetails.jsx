@@ -298,7 +298,7 @@ const ProvinceDetails = () => {
     fetchData();
   }, [displayName]);
 
-  console.log(advisors);
+  // console.log(advisors);
 
   // Filter social links that exist
 
