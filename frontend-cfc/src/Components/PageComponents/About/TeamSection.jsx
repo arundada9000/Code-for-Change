@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ALUMNI } from "../../../Data/teamData";
 import {
   FaFacebookF,
@@ -10,8 +10,9 @@ import {
 } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import useFetch from "../../../Hooks/useFetch";
+import TeamMemberModal from "../../UI/Modal/TeamMemberModal";
 
-const TeamMemberCard = ({ member, type }) => {
+const TeamMemberCard = ({ member, type, onSelect }) => {
   const accentColor =
     type === "alumni" ? "#0076B4" : type === "advisor" ? "#0076B4" : "#0076B4";
   const socialIcons = {
@@ -28,22 +29,22 @@ const TeamMemberCard = ({ member, type }) => {
   );
 
   return (
-    <div className="group relative">
+    <div onClick={() => onSelect?.(member)} className="group relative">
       <div
-        className="relative overflow-hidden rounded-3xl aspect-4/5 mb-6 transition-all duration-500 group-hover:-translate-y-2 border-b-4"
+        className="relative overflow-hidden cursor-pointer rounded-3xl aspect-4/5 mb-6 transition-all duration-500 group-hover:-translate-y-2 border-b-4"
         style={{
           backgroundColor: `${accentColor}05`,
           borderColor: accentColor,
           boxShadow: `0 15px 35px -15px ${accentColor}20`,
         }}
-      >
+       >
         <img
           src={member.image}
           alt={member.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6"
+          className="absolute inset-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6"
           style={{
             background: `linear-gradient(to top, ${accentColor}55, transparent)`,
           }}
@@ -56,7 +57,7 @@ const TeamMemberCard = ({ member, type }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-11 h-11 rounded-2xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
-              opacity-0 -translate-x-12 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg"
+              md:opacity-0 md:-translate-x-12 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg"
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
                 {socialIcons[platform] || <FiExternalLink />}
@@ -92,6 +93,7 @@ const TeamMemberCard = ({ member, type }) => {
 
 const TeamSection = () => {
   const { data: teamMembers, loading } = useFetch("/team", []);
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const coreTeam = teamMembers?.filter((m) => m.type === "Core Team") || [];
   const advisors = teamMembers?.filter((m) => m.type === "Advisor") || [];
@@ -150,9 +152,16 @@ const TeamSection = () => {
                     key={member._id || index}
                     member={member}
                     type={section.type}
+                    onSelect={setSelectedMember}
                   />
                 ))}
               </div>
+              <TeamMemberModal
+                isOpen={!!selectedMember}
+                member={selectedMember}
+                links={selectedMember?.socialLinks}
+                onClose={() => setSelectedMember(null)}
+              />
             </section>
           ),
       )}

@@ -76,15 +76,17 @@ function Header({ setShowSidebar }) {
                       className="absolute left-0 top-full pt-4 w-56"
                     >
                       <div className="bg-primary border border-white/10 shadow-xl rounded-2xl p-2">
-                        {item.subMenu.map((sub) => (
-                          <Link
-                            key={sub.path}
-                            to={sub.path}
-                            className="block px-4 py-2.5 text-sm text-white/90 hover:bg-white/10 rounded-xl transition-colors"
-                          >
-                            {sub.title}
-                          </Link>
-                        ))}
+                        {item.subMenu
+                          .filter((sub) => !sub.requiresAuth || user)
+                          .map((sub) => (
+                            <Link
+                              key={sub.path}
+                              to={sub.path}
+                              className="block px-4 py-2.5 text-sm text-white/90 hover:bg-white/10 rounded-xl transition-colors"
+                            >
+                              {sub.title}
+                            </Link>
+                          ))}
                       </div>
                     </motion.div>
                   )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaCalendarAlt,
   FaMapMarkerAlt,
@@ -8,8 +8,10 @@ import {
 } from "react-icons/fa";
 
 const EventCard = ({ event }) => {
+  const navigate = useNavigate()
   return (
-    <div className="bg-white rounded-2xl shadow-sm overflow-hidden group hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 border border-slate-100 flex flex-col h-full">
+    <div
+    onClick={()=>navigate(`/events/${event.slug || event._id || event.id}`)} className="bg-white cursor-pointer rounded-2xl shadow-sm overflow-hidden group hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 border border-slate-100 flex flex-col h-full">
       {/* Event Image */}
       <div className="h-48 w-full overflow-hidden relative shrink-0">
         <img

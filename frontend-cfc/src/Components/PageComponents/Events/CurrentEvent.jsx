@@ -7,7 +7,7 @@ import {
   FaExternalLinkAlt,
   FaStar,
 } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useFetch from "../../../Hooks/useFetch";
 import { TerminalCardSkeleton } from "../../Loading/Skeleton";
 import {
@@ -21,6 +21,7 @@ export default function CurrentEvent({ filterParams = {}, filterBar = null }) {
   const [page, setPage] = useState(1);
   const [accumulatedEvents, setAccumulatedEvents] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === "/";
 
   const limit = isHome ? 3 : 9;
@@ -153,7 +154,9 @@ export default function CurrentEvent({ filterParams = {}, filterBar = null }) {
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {eventsToShow.map((event) => (
               <StaggerItem key={event._id || event.id}>
-                <div className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 h-full flex flex-col">
+                <div
+                onClick={()=>navigate(`/events/${event.slug || event._id || event.id}`)}
+                 className="group bg-white rounded-3xl overflow-hidden border border-slate-100 cursor-pointer hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 h-full flex flex-col">
                   {/* Image */}
                   <div className="relative h-56 overflow-hidden bg-slate-100">
                     <img

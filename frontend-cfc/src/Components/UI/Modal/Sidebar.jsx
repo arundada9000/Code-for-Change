@@ -35,6 +35,7 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
           {
             title: "Careers",
             path: "/internships",
+            requiresAuth : true,
           },
           {
             title: "Certificate Verification",
@@ -59,7 +60,7 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
           user
             ? { title: "My Profile", path: "/profile" }
             : { title: "Register", path: "/register" },
-        ].map((val, i) => (
+        ].filter((sub) => !sub.requiresAuth || user).map((val, i) => (
           <Link
             key={i}
             to={val.path}

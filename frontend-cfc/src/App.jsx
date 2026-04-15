@@ -80,7 +80,7 @@ function App() {
             <Route path="/about" element={<About />}></Route>
             <Route path="/events" element={<Events />}></Route>
             <Route path="/our-impact" element={<OurImpact />}></Route>
-            <Route path="/blog" element={<Blog />}></Route>
+            <Route path="/creative" element={<Blog />}></Route>
             <Route
               path="/certificate-verification/:token?"
               element={<CertificateVerification />}
@@ -105,7 +105,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/join-us" element={<JoinUs />} />
             <Route path="/events/:eventSlug" element={<EventDetails />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
+            <Route path="/creative/:slug" element={<BlogDetail />} />
             <Route
               path="/provinces/:provinceName"
               element={<ProvinceDetails />}

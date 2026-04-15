@@ -174,7 +174,7 @@ function Gallery() {
                   setFilter(cat);
                   setCurrentIndex(null);
                 }}
-                className={`px-6 py-2 rounded-full font-bold transition-all ${
+                className={`px-6 py-2 rounded-full font-bold transition-all cursor-pointer ${
                   filter === cat
                     ? "bg-secondary text-white shadow-lg"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
