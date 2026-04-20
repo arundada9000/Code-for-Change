@@ -1,11 +1,21 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Banner from "../Components/UI/Banner";
-import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
 import { BlogCard } from "../Components/PageComponents/Events/BlogCard";
 
 function Blog() {
-  const creativeItems = ["Blog", "Walkthrough", "Periodicals"];
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const creativeItems = [
+    { label: "Blog", path: "/creative" },
+    { label: "Walkthrough", path: "/creative/walkthrough" },
+    { label: "Periodicals", path: "/creative/periodicals" },
+  ];
+
+  const currentPath = location.pathname;
+
   return (
     <div>
       <SEO
@@ -13,18 +23,31 @@ function Blog() {
         description="Explore articles, stories, and technical insights from the Code for Change Nepal community."
         breadcrumbs={[
           { name: "Home", path: "/" },
-          { name: "Articles", path: "/blog" },
+          { name: "Creative", path: "/creative" },
         ]}
       />
       <Banner />
-      {/* <div className="max-w-7xl mx-auto px-5 mt-8">
-        <Breadcrumbs crumbs={[{ name: "Articles", path: "/blog" }]} />
-      </div> */}
       <div className="max-w-7xl mx-auto pt-16">
         <div className="flex flex-wrap justify-center gap-4">
-          {creativeItems.map((item) => (
-            <button key={item} className="px-6 py-2 rounded-full font-bold transition-all cursor-pointer bg-gray-100 text-gray-600 hover:bg-gray-200">{item}</button>
-          ))}
+          {creativeItems.map((item) => {
+            const isActive =
+              item.path === "/creative"
+                ? currentPath === "/creative"
+                : currentPath.startsWith(item.path);
+            return (
+              <button
+                key={item.label}
+                onClick={() => navigate(item.path)}
+                className={`px-6 py-2 rounded-full font-bold transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-secondary text-white shadow-lg shadow-secondary/25 scale-105"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div className="py-16">

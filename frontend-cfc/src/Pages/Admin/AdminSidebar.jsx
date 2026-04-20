@@ -9,6 +9,7 @@ import {
   FaRocket,
   FaUserTie,
   FaFolderOpen,
+  FaFileAlt,
 } from "react-icons/fa";
 import { BiDonateHeart, BiCalendarEvent } from "react-icons/bi";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
@@ -32,6 +33,8 @@ const sideBarItems = [
   },
   { title: "Donations", icon: <BiDonateHeart />, path: "/admin/donation" },
   { title: "Blogs", icon: <FaBlog />, path: "/admin/blog" },
+  { title: "Walkthroughs", icon: <FaBook />, path: "/admin/walkthroughs" },
+  { title: "Periodicals", icon: <FaFileAlt />, path: "/admin/periodicals" },
   { title: "Impacts", icon: <FaBullseye />, path: "/admin/impacts" },
   { title: "Gallery", icon: <GoFileMedia />, path: "/admin/gallery" },
   { title: "Testimonials", icon: <FaRegThumbsUp />, path: "/admin/testimonials" },

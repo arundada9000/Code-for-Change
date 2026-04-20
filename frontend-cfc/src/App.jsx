@@ -17,6 +17,9 @@ import Resources from "./Pages/Resources";
 import EventDetails from "./Pages/EventDetails";
 import Blog from "./Pages/Blog";
 import BlogDetail from "./Pages/BlogDetail";
+import WalkthroughList from "./Pages/WalkthroughList";
+import WalkthroughDetail from "./Pages/WalkthroughDetail";
+import Periodicals from "./Pages/Periodicals";
 import ProvinceDetails from "./Pages/ProvinceDetails";
 import ImpactDetail from "./Pages/ImpactDetail";
 import Gallery from "./Pages/Gallery";
@@ -33,6 +36,8 @@ import AdminLayout from "./Layout/AdminLayout";
 const Dashboard = lazy(() => import("./Pages/Admin/Dashboard"));
 const AdminEvents = lazy(() => import("./Pages/Admin/AdminEvents"));
 const AdminBlogs = lazy(() => import("./Pages/Admin/AdminBlogs"));
+const AdminWalkthroughs = lazy(() => import("./Pages/Admin/AdminWalkthroughs"));
+const AdminPeriodicals = lazy(() => import("./Pages/Admin/AdminPeriodicals"));
 const AdminDonations = lazy(() => import("./Pages/Admin/AdminDonations"));
 const AdminUsers = lazy(() => import("./Pages/Admin/AdminUsers"));
 const AdminInternships = lazy(() => import("./Pages/Admin/AdminInternships"));
@@ -106,6 +111,9 @@ function App() {
             <Route path="/join-us" element={<JoinUs />} />
             <Route path="/events/:eventSlug" element={<EventDetails />} />
             <Route path="/creative/:slug" element={<BlogDetail />} />
+            <Route path="/creative/walkthrough" element={<WalkthroughList />} />
+            <Route path="/creative/walkthrough/:slug" element={<WalkthroughDetail />} />
+            <Route path="/creative/periodicals" element={<Periodicals />} />
             <Route
               path="/provinces/:provinceName"
               element={<ProvinceDetails />}
@@ -138,6 +146,8 @@ function App() {
               <Route path="event/:id" element={<AdminEventDetail />} />
               <Route path="blog" element={<AdminBlogs />} />
               <Route path="blog/:id" element={<AdminBlogDetail />} />
+              <Route path="walkthroughs" element={<AdminWalkthroughs />} />
+              <Route path="periodicals" element={<AdminPeriodicals />} />
               <Route path="gallery" element={<AdminGallery />} />
               <Route path="donation" element={<AdminDonations />} />
               <Route path="impacts" element={<AdminImpacts />} />

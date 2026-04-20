@@ -123,6 +123,18 @@ export const PERMISSIONS = {
   NEWSLETTER_VIEW: "newsletter:view",
   NEWSLETTER_UPDATE: "newsletter:update",
   NEWSLETTER_DELETE: "newsletter:delete",
+
+  // Periodical Management
+  PERIODICAL_CREATE: "periodical:create",
+  PERIODICAL_UPDATE: "periodical:update",
+  PERIODICAL_VIEW: "periodical:view",
+  PERIODICAL_DELETE: "periodical:delete",
+
+  // Walkthrough Management
+  WALKTHROUGH_CREATE: "walkthrough:create",
+  WALKTHROUGH_UPDATE: "walkthrough:update",
+  WALKTHROUGH_VIEW: "walkthrough:view",
+  WALKTHROUGH_DELETE: "walkthrough:delete",
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;
@@ -148,6 +160,8 @@ const EB_PERMISSIONS: PermissionValue[] = [
   PERMISSIONS.CERTIFICATE_ISSUE,
   PERMISSIONS.CERTIFICATE_UPDATE,
   PERMISSIONS.CERTIFICATE_VIEW,
+  PERMISSIONS.PERIODICAL_VIEW,
+  PERMISSIONS.WALKTHROUGH_VIEW,
 ];
 
 export const ROLE_PERMISSIONS: Record<RoleValue, PermissionValue[]> = {

@@ -64,7 +64,7 @@ export const validateMongoId =
     (req: Request, res: Response, next: NextFunction) => {
       const id = req.params[paramName];
 
-      if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      if (!id || !mongoose.Types.ObjectId.isValid(id as string)) {
         return res.status(400).json({
           success: false,
           message: `Invalid MongoDB ObjectId in parameter "${paramName}"`,

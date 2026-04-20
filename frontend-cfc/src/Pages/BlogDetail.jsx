@@ -87,8 +87,8 @@ function BlogDetail() {
 
   const breadcrumbs = [
     { name: "Home", path: "/" },
-    { name: "Articles", path: "/blog" },
-    { name: blog.title, path: `/blog/${blog.slug}` },
+    { name: "Articles", path: "/creative" },
+    { name: blog.title, path: `/creative/${blog.slug}` },
   ];
 
   const articleJsonLd = {
@@ -147,7 +147,7 @@ function BlogDetail() {
 
         <FadeIn className="max-w-5xl mx-auto px-2 relative">
           <Link
-            to="/blog"
+            to="/creative"
             className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-secondary mb-8 px-4 py-2 bg-secondary/15 rounded-full transition-all ease-in duration-200 hover:gap-3 group"
           >
             <FaChevronLeft className="text-[18px]" />
@@ -484,7 +484,7 @@ function BlogDetail() {
         <div className="grid md:grid-cols-2">
           {/* Previous Post */}
           <Link
-            to={prevBlog ? `/blog/${prevBlog.slug}` : "#"}
+            to={prevBlog ? `/creative/${prevBlog.slug}` : "#"}
             className={`group relative p-10 md:p-16 flex flex-col items-start justify-center transition-all duration-500 overflow-hidden border-b md:border-b-0 md:border-r border-gray-100 ${
               !prevBlog ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
             }`}
@@ -520,7 +520,7 @@ function BlogDetail() {
 
           {/* Next Post */}
           <Link
-            to={nextBlog ? `/blog/${nextBlog.slug}` : "#"}
+            to={nextBlog ? `/creative/${nextBlog.slug}` : "#"}
             className={`group relative p-10 md:p-16 flex flex-col items-end text-right justify-center transition-all duration-500 overflow-hidden ${
               !nextBlog
                 ? "opacity-50 cursor-not-allowed"
@@ -560,7 +560,7 @@ function BlogDetail() {
         {/* Final "Back to List" link */}
         <div className="py-12 flex justify-center bg-gray-50">
           <Link
-            to="/blog"
+            to="/creative"
             className="px-8 py-3 rounded-full border border-gray-200 text-sm font-bold text-gray-600 hover:bg-secondary hover:text-white hover:-translate-y-0.5 duration-200 hover:shadow-md transition-all uppercase tracking-widest"
           >
             Back to all articles
