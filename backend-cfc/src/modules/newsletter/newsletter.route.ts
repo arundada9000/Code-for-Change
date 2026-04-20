@@ -25,7 +25,6 @@ const subscribeRateLimiter = rateLimit({
     message:
       "Too many subscription attempts from this IP. Please try again in 15 minutes.",
   },
-  keyGenerator: (req) => req.ip || "unknown",
 });
 
 // ─── Public Routes ──────────────────────────────────────────────────────────────

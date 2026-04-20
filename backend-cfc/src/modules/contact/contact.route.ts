@@ -21,7 +21,6 @@ const contactRateLimiter = rateLimit({
     status: "error",
     message: "You have submitted too many messages. Please try again later.",
   },
-  keyGenerator: (req) => req.ip || "unknown",
 });
 
 router.get("/contacts", authenticate, requireAnyPermission(PERMISSIONS.CONTACT_VIEW), contactController.getAllContacts);

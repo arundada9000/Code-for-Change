@@ -3,7 +3,7 @@ import { ENV } from "../shared/configs/env.js";
 
 const databaseLoader = async (): Promise<void> => {
   try {
-    const connection = await mongoose.connect(ENV.MONGO_URI);
+    const connection = await mongoose.connect(ENV.MONGO_URI, { family: 4 });
     console.log(`✅ Database connected: ${connection.connection.host}`);
   } catch (error) {
     console.error("❌ Database connection failed:", error);
