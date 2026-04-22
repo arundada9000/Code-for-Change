@@ -9,6 +9,7 @@ import {
   FaRocket,
   FaUserTie,
   FaFolderOpen,
+  FaFileAlt,
 } from "react-icons/fa";
 import { BiDonateHeart, BiCalendarEvent } from "react-icons/bi";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
@@ -16,6 +17,8 @@ import { FiUsers } from "react-icons/fi";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { GoBriefcase, GoFileMedia } from "react-icons/go";
 import { FaRegThumbsUp, FaHandshake } from "react-icons/fa";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaRegEnvelope } from "react-icons/fa";
 import { useState } from "react";
 
 const sideBarItems = [
@@ -30,6 +33,8 @@ const sideBarItems = [
   },
   { title: "Donations", icon: <BiDonateHeart />, path: "/admin/donation" },
   { title: "Blogs", icon: <FaBlog />, path: "/admin/blog" },
+  { title: "Walkthroughs", icon: <FaBook />, path: "/admin/walkthroughs" },
+  { title: "Periodicals", icon: <FaFileAlt />, path: "/admin/periodicals" },
   { title: "Impacts", icon: <FaBullseye />, path: "/admin/impacts" },
   { title: "Gallery", icon: <GoFileMedia />, path: "/admin/gallery" },
   { title: "Testimonials", icon: <FaRegThumbsUp />, path: "/admin/testimonials" },
@@ -37,6 +42,9 @@ const sideBarItems = [
   { title: "Jobs", icon: <GoBriefcase />, path: "/admin/internships" },
   { title: "Applications", icon: <FaUserTie />, path: "/admin/internship" },
   { title: "Resources", icon: <FaFolderOpen />, path: "/admin/resource" },
+  { title: "Newsletter", icon: <HiOutlineMail />, path: "/admin/newsletter" },
+  { title: "Contacts", icon: <FaRegEnvelope />, path: "/admin/contacts" },
+  { title: "National Team", icon: <FaUserTie />, path: "/admin/national-team" },
 ];
 
 function AdminSidebar() {

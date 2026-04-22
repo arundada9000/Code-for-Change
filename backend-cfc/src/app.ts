@@ -27,30 +27,64 @@ import resourceRoutes from "./modules/resources/resource.route.js";
 import seoRoutes from "./modules/seo/seo.route.js";
 import testimonialRoutes from "./modules/testimonial/testimonial.route.js";
 import supporterRoutes from "./modules/supporter/supporter.route.js";
+import newsletterRoutes from "./modules/newsletter/newsletter.route.js";
+import teamRoutes from "./modules/team/team.route.js";
+import periodicalRoutes from "./modules/periodicals/periodical.route.js";
+import walkthroughRoutes from "./modules/walkthroughs/walkthrough.route.js";
 
 const app: Application = express();
 
-// Custom NoSQL Injection Protection for Express 5 (handles query getter)
+// Trust the first proxy (Render, Nginx, etc.) so that req.ip contains
+// the real client IP, which is critical for accurate rate limiting.
+app.set("trust proxy", 1);
+
+// Custom NoSQL Injection Protection + XSS sanitizer for Express 5
 const customSanitize = (req: any, res: any, next: any) => {
-  const sanitize = (obj: any) => {
-    if (obj instanceof Object) {
-      for (const key in obj) {
+  // Strip MongoDB operator keys ($where, $gt, etc.) recursively
+  const stripOperators = (obj: any): void => {
+    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
+      for (const key of Object.keys(obj)) {
         if (/^\$/.test(key)) {
           delete obj[key];
         } else {
-          sanitize(obj[key]);
+          stripOperators(obj[key]);
         }
       }
+    } else if (Array.isArray(obj)) {
+      obj.forEach(stripOperators);
     }
   };
-  if (req.body) sanitize(req.body);
-  if (req.params) sanitize(req.params);
+
+  // Strip HTML tags from string values to prevent XSS persistence
+  const stripHtml = (obj: any): any => {
+    if (typeof obj === "string") {
+      return obj
+        .replace(/<script[\s\S]*?<\/script>/gi, "") // remove script blocks
+        .replace(/<[^>]+>/g, "") // remove all HTML tags
+        .replace(/javascript:/gi, "") // remove js: protocol
+        .replace(/on\w+\s*=/gi, ""); // remove event handlers
+    }
+    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
+      const clean: any = {};
+      for (const key of Object.keys(obj)) {
+        clean[key] = stripHtml(obj[key]);
+      }
+      return clean;
+    }
+    if (Array.isArray(obj)) {
+      return obj.map(stripHtml);
+    }
+    return obj;
+  };
+
+  if (req.body) {
+    stripOperators(req.body);
+    req.body = stripHtml(req.body);
+  }
+  if (req.params) stripOperators(req.params);
   if (req.query) {
-    // In Express 5, req.query is a getter.
-    // We sanitize the object returned by the getter if it's mutable,
-    // or we skip if it's already safe.
     try {
-      sanitize(req.query);
+      stripOperators(req.query);
     } catch (e) {
       console.error("Sanitization error on query:", e);
     }
@@ -69,14 +103,15 @@ app.use(
       "http://localhost:3000",
       "https://code-for-change-nepal.onrender.com",
       "https://codeforchangenepal.vercel.app",
+      "https://codeforchange.sajilodigital.com.np",
     ].filter(Boolean) as string[],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   }),
 );
-app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(customSanitize);
 app.use(cookieParser());
 app.use(hpp());
@@ -88,19 +123,49 @@ if (ENV.NODE_ENV === "development") {
 }
 
 // Rate Limiting
+// Global limiter — broad protection across all API endpoints
 const limiter = rateLimit({
   max: 1000,
-  windowMs: 60 * 60 * 1000,
+  windowMs: 60 * 60 * 1000, // 1 hour
   message: "Too many requests from this IP, please try again in an hour!",
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use("/api", limiter);
+
+// Auth limiter — strict: 5 login attempts per 15 minutes (brute force protection)
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: "Too many login attempts, please try again after 15 minutes",
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  message:
+    "Too many login attempts. Please wait 15 minutes before trying again.",
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/verify-otp", authLimiter);
+
+// Registration limiter — 3 registrations per hour per IP
+const registrationLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3,
+  message:
+    "Too many registration attempts from this IP. Please try again in an hour.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/auth/register", registrationLimiter);
+
+// Password reset / OTP limiter — 5 requests per hour per IP
+const passwordResetLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  message: "Too many password reset requests. Please try again in an hour.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/auth/forget-password", passwordResetLimiter);
+app.use("/api/auth/resend-otp", passwordResetLimiter);
 
 // SEO Routes (Sitemap and Robots.txt)
 app.use("/", seoRoutes);
@@ -130,6 +195,10 @@ app.use("/api", galleryRoutes);
 app.use("/api", resourceRoutes);
 app.use("/api", testimonialRoutes);
 app.use("/api", supporterRoutes);
+app.use("/api", newsletterRoutes);
+app.use("/api/team", teamRoutes);
+app.use("/api", periodicalRoutes);
+app.use("/api", walkthroughRoutes);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);

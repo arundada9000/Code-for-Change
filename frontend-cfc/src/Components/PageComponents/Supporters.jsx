@@ -61,7 +61,7 @@ function Supporters() {
         {[...partners, ...partners].map((supporter, i) => (
           <a
             key={i}
-            href={supporter.website || "#"}
+            href={supporter.url || "#"}
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0"

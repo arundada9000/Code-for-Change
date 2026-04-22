@@ -73,7 +73,9 @@ export class EventController {
       speakers: parseJsonField(req.body.speakers),
       highlights: parseJsonField(req.body.highlights),
       benefits: parseJsonField(req.body.benefits),
+      contactInfo: parseJsonField(req.body.contactInfo),
       isCompleted: req.body.isCompleted === 'true' || req.body.isCompleted === true,
+      isNational: req.body.isNational === 'true' || req.body.isNational === true,
     };
 
     const event = await eventService.createEvent(eventData);
@@ -126,8 +128,12 @@ export class EventController {
     if (updateData.speakers) updateData.speakers = parseJsonField(updateData.speakers);
     if (updateData.highlights) updateData.highlights = parseJsonField(updateData.highlights);
     if (updateData.benefits) updateData.benefits = parseJsonField(updateData.benefits);
+    if (updateData.contactInfo) updateData.contactInfo = parseJsonField(updateData.contactInfo);
     if (updateData.isCompleted !== undefined) {
       updateData.isCompleted = updateData.isCompleted === 'true' || updateData.isCompleted === true;
+    }
+    if (updateData.isNational !== undefined) {
+      updateData.isNational = updateData.isNational === 'true' || updateData.isNational === true;
     }
 
     const event = await eventService.updateEvent(req.params.id, updateData);

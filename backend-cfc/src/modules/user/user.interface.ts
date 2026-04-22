@@ -169,6 +169,7 @@ export interface IUpdateUserInput {
   phone?: string;
   tenure?: string;
   isActive?: boolean;
+  isVerified?: boolean;
   province?: string;
   profileImage?: string;
   address?: string;

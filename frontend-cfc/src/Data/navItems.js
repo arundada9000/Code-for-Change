@@ -20,8 +20,8 @@ export const navItems = [
     path: "/our-impact",
   },
   {
-    title: "Blog",
-    path: "/blog",
+    title: "Creative",
+    path: "/creative",
   },
   {
     title: "Donate",
@@ -34,6 +34,7 @@ export const navItems = [
       {
         title: "Careers",
         path: "/internships",
+        requiresAuth: true,
       },
       {
         title: "Certificate Verification",

@@ -154,6 +154,9 @@ function UserDetail() {
         <InfoCard title="Association Details" icon={FaIdCard}>
           <DataItem label="Membership ID" value={user.membership?.membershipId} icon={FaIdCard} />
           <DataItem label="Membership Status" value={user.membership?.membershipStatus} icon={FaCheckCircle} />
+          <DataItem label="Joined At" value={user.membership?.joinedAt ? new Date(user.membership.joinedAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : null} icon={FaCalendarAlt} />
+          <DataItem label="Tenure" value={user.tenure} icon={FaCalendarAlt} />
+          <DataItem label="Account Status" value={user.accountStatus} />
           <DataItem label="Gender" value={user.gender} />
           <DataItem label="Date of Birth" value={user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString() : null} icon={FaCalendarAlt} />
         </InfoCard>
@@ -180,9 +183,9 @@ function UserDetail() {
         {/* Contact Info */}
         <InfoCard title="Communication & Location" icon={FaEnvelope}>
           <DataItem label="Primary Email" value={user.email} icon={FaEnvelope} />
+          {user.secondaryEmail && <DataItem label="Secondary Email" value={user.secondaryEmail} icon={FaEnvelope} />}
           <DataItem label="Phone Number" value={user.phone} icon={FaPhone} />
           <DataItem label="Region" value={user.province} icon={FaMapMarkerAlt} />
-          <DataItem label="Region" value={user.region} />
           <DataItem label="Current Address" value={user.address} />
         </InfoCard>
 
@@ -192,6 +195,10 @@ function UserDetail() {
           <DataItem label="GitHub" value={user.github} />
           <DataItem label="Facebook" value={user.facebook} />
           <DataItem label="Website" value={user.website} />
+          {user.twitter && <DataItem label="Twitter / X" value={user.twitter} />}
+          {user.instagram && <DataItem label="Instagram" value={user.instagram} />}
+          {user.tiktok && <DataItem label="TikTok" value={user.tiktok} />}
+          {user.youtube && <DataItem label="YouTube" value={user.youtube} />}
         </InfoCard>
       </div>
 

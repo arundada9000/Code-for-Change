@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { FaFacebookF } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
@@ -6,9 +7,39 @@ import { FaLinkedinIn } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 import { navItems } from "../../Data/navItems";
+import API from "../../Services/api";
 
 function Footer() {
   const importantLinks = navItems.filter((item) => !["More"].includes(item.title))
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState(null); // null | 'loading' | 'success' | 'error'
+  const [message, setMessage] = useState("");
+
+  const handleSubscribe = async () => {
+    const trimmed = email.trim();
+    if (!trimmed) return;
+    // Basic email format check on the client
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      setStatus("error");
+      setMessage("Please enter a valid email address.");
+      return;
+    }
+    setStatus("loading");
+    try {
+      const res = await API.post("/newsletter/subscribe", { email: trimmed });
+      setStatus("success");
+      setMessage(res.data?.message || "You're subscribed!");
+      setEmail("");
+    } catch (err) {
+      setStatus("error");
+      setMessage(err.response?.data?.message || "Subscription failed. Try again.");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSubscribe();
+  };
   const socialMediaItems = [
     {
       icon: <FaFacebookF />,
@@ -100,13 +131,38 @@ function Footer() {
           </div>
           <div>
             <h3 className="text-white text-lg">Newsletter</h3>
-            <div className="flex relative flex-col mt-10 text-white ">
-              <input
-                type="email"
-                className="py-3 px-4 border border-secondary rounded focus:ring focus:ring-secondary outline-none "
-                placeholder="Enter your email"
-              />
-              <FiSend className="text-secondary text-xl absolute right-3 top-1/2 -translate-y-1/2" />
+            <p className="text-white/70 text-sm mt-2">Stay updated on our latest events and opportunities.</p>
+            <div className="flex flex-col mt-6 gap-3 text-white">
+              <div className="flex relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setStatus(null); }}
+                  onKeyDown={handleKeyDown}
+                  disabled={status === "loading" || status === "success"}
+                  className="w-full py-3 px-4 pr-12 border border-secondary rounded bg-transparent focus:ring focus:ring-secondary outline-none disabled:opacity-60"
+                  placeholder="Enter your email"
+                  aria-label="Newsletter email subscription"
+                />
+                <button
+                  onClick={handleSubscribe}
+                  disabled={status === "loading" || status === "success"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-xl hover:text-white transition disabled:opacity-50 cursor-pointer"
+                  aria-label="Subscribe to newsletter"
+                >
+                  {status === "loading" ? (
+                    <span className="animate-spin inline-block w-5 h-5 border-2 border-secondary border-t-transparent rounded-full" />
+                  ) : (
+                    <FiSend />
+                  )}
+                </button>
+              </div>
+              {status === "success" && (
+                <p className="text-green-400 text-xs font-medium">{message}</p>
+              )}
+              {status === "error" && (
+                <p className="text-red-400 text-xs font-medium">{message}</p>
+              )}
             </div>
           </div>
         </div>

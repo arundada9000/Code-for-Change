@@ -16,6 +16,11 @@ export interface ISpeaker {
   linkedin?: string;
 }
 
+export interface IContactInfo {
+  type: 'email' | 'phone' | 'other';
+  value: string;
+}
+
 export interface IEvent extends Document {
   title: string;
   description: string;
@@ -25,7 +30,7 @@ export interface IEvent extends Document {
   startDate?: Date;
   endDate?: Date;
   location: string;
-  province?: string;
+  region?: string;
   venue?: string;
   image: string;
   registrationLink?: string;
@@ -37,7 +42,9 @@ export interface IEvent extends Document {
   speakers?: ISpeaker[];
   highlights?: string[];
   benefits?: string[];
+  contactInfo?: IContactInfo[];
   isCompleted: boolean;
+  isNational: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

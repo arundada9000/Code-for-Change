@@ -7,6 +7,9 @@ export const ROLES = {
   EB: "eb",
   CR: "cr",
   GM: "gm",
+  IPPL: "ippl",
+  ADVISOR: "advisor",
+  ALUMNI: "alumni",
   GUEST: "guest",
 } as const;
 
@@ -115,6 +118,23 @@ export const PERMISSIONS = {
   SUPPORTER_UPDATE: "supporter:update",
   SUPPORTER_VIEW: "supporter:view",
   SUPPORTER_DELETE: "supporter:delete",
+
+  // Newsletter Management
+  NEWSLETTER_VIEW: "newsletter:view",
+  NEWSLETTER_UPDATE: "newsletter:update",
+  NEWSLETTER_DELETE: "newsletter:delete",
+
+  // Periodical Management
+  PERIODICAL_CREATE: "periodical:create",
+  PERIODICAL_UPDATE: "periodical:update",
+  PERIODICAL_VIEW: "periodical:view",
+  PERIODICAL_DELETE: "periodical:delete",
+
+  // Walkthrough Management
+  WALKTHROUGH_CREATE: "walkthrough:create",
+  WALKTHROUGH_UPDATE: "walkthrough:update",
+  WALKTHROUGH_VIEW: "walkthrough:view",
+  WALKTHROUGH_DELETE: "walkthrough:delete",
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;
@@ -140,6 +160,8 @@ const EB_PERMISSIONS: PermissionValue[] = [
   PERMISSIONS.CERTIFICATE_ISSUE,
   PERMISSIONS.CERTIFICATE_UPDATE,
   PERMISSIONS.CERTIFICATE_VIEW,
+  PERMISSIONS.PERIODICAL_VIEW,
+  PERMISSIONS.WALKTHROUGH_VIEW,
 ];
 
 export const ROLE_PERMISSIONS: Record<RoleValue, PermissionValue[]> = {
@@ -157,6 +179,36 @@ export const ROLE_PERMISSIONS: Record<RoleValue, PermissionValue[]> = {
     PERMISSIONS.PROFILE_UPDATE,
   ],
   [ROLES.GM]: [
+    PERMISSIONS.MEMBER_VIEW,
+    PERMISSIONS.EVENT_VIEW,
+    PERMISSIONS.BLOG_VIEW,
+    PERMISSIONS.IMPACT_VIEW,
+    PERMISSIONS.GALLERY_VIEW,
+    PERMISSIONS.INTERNSHIP_VIEW,
+    PERMISSIONS.CERTIFICATE_VIEW,
+    PERMISSIONS.PROFILE_UPDATE,
+  ],
+  [ROLES.IPPL]: [
+    PERMISSIONS.MEMBER_VIEW,
+    PERMISSIONS.EVENT_VIEW,
+    PERMISSIONS.BLOG_VIEW,
+    PERMISSIONS.IMPACT_VIEW,
+    PERMISSIONS.GALLERY_VIEW,
+    PERMISSIONS.INTERNSHIP_VIEW,
+    PERMISSIONS.CERTIFICATE_VIEW,
+    PERMISSIONS.PROFILE_UPDATE,
+  ],
+  [ROLES.ADVISOR]: [
+    PERMISSIONS.MEMBER_VIEW,
+    PERMISSIONS.EVENT_VIEW,
+    PERMISSIONS.BLOG_VIEW,
+    PERMISSIONS.IMPACT_VIEW,
+    PERMISSIONS.GALLERY_VIEW,
+    PERMISSIONS.INTERNSHIP_VIEW,
+    PERMISSIONS.CERTIFICATE_VIEW,
+    PERMISSIONS.PROFILE_UPDATE,
+  ],
+  [ROLES.ALUMNI]: [
     PERMISSIONS.MEMBER_VIEW,
     PERMISSIONS.EVENT_VIEW,
     PERMISSIONS.BLOG_VIEW,

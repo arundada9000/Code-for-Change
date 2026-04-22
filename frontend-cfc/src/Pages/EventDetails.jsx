@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   FaCalendarAlt, FaMapMarkerAlt, FaMapPin, FaUserTie, FaLightbulb,
-  FaGift, FaExternalLinkAlt, FaClock, FaArrowLeft, FaLinkedin
+  FaGift, FaExternalLinkAlt, FaArrowLeft, FaLinkedin,
+  FaStar, FaEnvelope, FaPhone, FaInfoCircle
 } from "react-icons/fa";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
@@ -130,7 +131,7 @@ function EventDetails() {
             <Link to="/events" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 font-medium">
               <FaArrowLeft /> Back to Events
             </Link>
-            <div className="flex gap-3 mb-4">
+            <div className="flex flex-wrap gap-3 mb-4">
               <span className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest backdrop-blur-md ${event.status === 'Live' ? 'bg-rose-500/90 text-white' :
                   isUpcoming ? 'bg-secondary/90 text-white' :
                     'bg-slate-800/90 text-white'
@@ -140,6 +141,11 @@ function EventDetails() {
               <span className="px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest bg-white/20 text-white backdrop-blur-md">
                 {event.type}
               </span>
+              {event.isNational && (
+                <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest bg-amber-500/90 text-white backdrop-blur-md">
+                  <FaStar size={10} /> National Event
+                </span>
+              )}
             </div>
             <h1 className="text-5xl md:text-6xl font-black text-white mb-4">{event.title}</h1>
             <p className="text-xl text-white/90 max-w-3xl">{event.description}</p>
@@ -200,7 +206,7 @@ function EventDetails() {
             {highlights.length > 0 && (
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
                 <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                  <FaLightbulb className="text-amber-500" /> Event Highlights
+                  <FaLightbulb className="text-secondary" /> Event Highlights
                 </h2>
                 <ul className="space-y-3">
                   {highlights.map((highlight, index) => (
@@ -221,11 +227,11 @@ function EventDetails() {
                 </h2>
                 <ul className="space-y-3">
                   {benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="w-6 h-6 bg-secondary text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <li key={index} className="flex items-center gap-3">
+                      <span className="w-4 h-4 bg-secondary text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
                         {index + 1}
                       </span>
-                      <span className="text-slate-700 font-medium">{benefit}</span>
+                      <span className="text-slate-700 ">{benefit}</span>
                     </li>
                   ))}
                 </ul>
@@ -237,11 +243,11 @@ function EventDetails() {
           <FadeIn delay={0.2} className="space-y-6">
             {/* Registration Card */}
             {isUpcoming && event.registrationLink && (
-              <div className="bg-gradient-to-br from-secondary to-primary rounded-3xl p-8 text-white shadow-xl sticky top-6">
+              <div className="bg-gradient-to-br from-secondary to-primary rounded-3xl p-8 text-white shadow-md md:sticky top-20">
                 <h3 className="text-2xl font-black mb-6">Register Now</h3>
                 {registrationOpen ? (
                   <>
-                    <p className="mb-6 text-secondary/10">
+                    <p className="mb-6">
                       Secure your spot for this amazing event!
                     </p>
                     <a
@@ -272,8 +278,8 @@ function EventDetails() {
                 <div className="flex items-start gap-4">
                   <FaCalendarAlt className="text-secondary mt-1" />
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date</p>
-                    <p className="text-slate-900 font-medium">
+                    <p className="text-xs font-bold text-primary/60 uppercase">Date</p>
+                    <p className="text-slate-900 font-medium text-base">
                       {new Date(event.date).toLocaleDateString("en-US", {
                         weekday: "long",
                         month: "long",
@@ -290,32 +296,57 @@ function EventDetails() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <FaMapMarkerAlt className="text-blue-500 mt-1" />
+                  <FaMapMarkerAlt className="text-secondary mt-1" />
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Location</p>
-                    <p className="text-slate-900 font-medium">{event.location}</p>
+                    <p className="text-xs font-bold text-primary/60 uppercase">Location</p>
+                    <p className="text-slate-900 capitalize font-medium">{event.location.toLowerCase()}</p>
                   </div>
                 </div>
 
                 {event.venue && (
                   <div className="flex items-start gap-4">
-                    <FaMapPin className="text-purple-500 mt-1" />
+                    <FaMapPin className="text-secondary mt-1" />
                     <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Venue</p>
-                      <p className="text-slate-900 font-medium">{event.venue}</p>
+                      <p className="text-xs font-bold text-primary/60 uppercase">Venue</p>
+                      <p className="text-slate-900 font-medium capitalize">{event.venue}</p>
                     </div>
                   </div>
                 )}
 
                 <div className="flex items-start gap-4">
-                  <FaUserTie className="text-amber-500 mt-1" />
+                  <FaUserTie className="text-secondary mt-1" />
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Organizer</p>
+                    <p className="text-xs font-bold text-primary/60 uppercase">Organizer</p>
                     <p className="text-slate-900 font-medium">{event.organizer}</p>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Contact Information */}
+            {event.contactInfo && event.contactInfo.length > 0 && (
+              <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <FaInfoCircle className="text-secondary" /> Contact
+                </h3>
+                <div className="space-y-3">
+                  {event.contactInfo.map((c, i) => (
+                    <a
+                      key={i}
+                      href={c.type === 'email' ? `mailto:${c.value}` : c.type === 'phone' ? `tel:${c.value}` : c.value}
+                      target={c.type === 'other' ? '_blank' : undefined}
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl hover:bg-secondary/5 transition-all group"
+                    >
+                      <span className="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center text-secondary shrink-0 group-hover:bg-secondary group-hover:text-white transition-all">
+                        {c.type === 'email' ? <FaEnvelope size={12} /> : c.type === 'phone' ? <FaPhone size={12} /> : <FaInfoCircle size={12} />}
+                      </span>
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-secondary transition-colors truncate">{c.value}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Share Card */}
             <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">

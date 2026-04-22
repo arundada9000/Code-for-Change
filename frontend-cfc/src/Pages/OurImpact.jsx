@@ -73,7 +73,7 @@ export function OurImpact() {
                        <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> {item.location || "National"}
                     </span>
                     <span className="flex items-center gap-2">
-                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> {item.dates}
+                       <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span> {item.dates}
                     </span>
                   </div>
                   <p className="text-slate-500 text-sm lg:text-base leading-relaxed mb-8 line-clamp-2 font-medium">
@@ -94,7 +94,7 @@ export function OurImpact() {
       <section className="bg-white py-16 lg:py-24 border-t border-slate-50">
         <div className="max-w-5xl mx-auto px-6">
           <SlideUp className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tightest uppercase mb-2">Our <span className="text-blue-600">Activities</span></h2>
+            <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tightest uppercase mb-2">Our <span className="text-secondary">Activities</span></h2>
             <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Archived impact reports & webinars</p>
           </SlideUp>
 
@@ -109,8 +109,8 @@ export function OurImpact() {
                   >
                     <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                      <h4 className="text-xl lg:text-2xl font-black text-primary group-hover:text-blue-600 transition-colors tracking-tight">
+                      <span className="w-2 h-2 rounded-full bg-secondary"></span>
+                      <h4 className="text-xl lg:text-2xl font-black text-primary group-hover:text-secondary transition-colors tracking-tight">
                         {item.title}
                       </h4>
                     </div>
@@ -120,7 +120,7 @@ export function OurImpact() {
                       <span className="px-3 py-1 bg-slate-100 rounded-lg">{item.dates}</span>
                     </div>
                   </div>
-                  <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all transform group-hover:rotate-45">
+                  <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-blue-400 group-hover:bg-secondary group-hover:text-white transition-all transform group-hover:rotate-45">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7-7 7" />
                     </svg>

@@ -9,6 +9,25 @@
   /* #01152E */
   --secondary: 0 118 180;
   /* #0076B4 */
+
+  --kathmandu: 202 22 58;
+  /* #CA163A */
+  --pokhara: 242 202 80;
+  /* #F2CA50 */
+  --rupandehi: 136 6 150;
+  /* #880696 */
+  --dang: 108 117 125;
+  /* #6C757D */
+  --birgunj: 0 161 85;
+  /* #00A155 */
+  --farwest: 255 145 76;
+  /* #FF914C */
+  --koshi: 239 123 151;
+  /* #EF7B97 */
+  --chitwan: 150 74 1;
+  /* #964A01 */
+  --lbkarnali: 187 215 4;
+  /* #BBD704 */
 }
 
 html {
@@ -19,17 +38,20 @@ html,
 body {
   font-family: "Roboto";
 }
+
 @layer utilities {
   @keyframes modal-in {
     from {
       opacity: 0;
       transform: scale(0.95) translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: scale(1) translateY(0);
     }
   }
+
   .animate-modal-in {
     animation: modal-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
@@ -39,6 +61,7 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -47,13 +70,16 @@ body {
 *::-webkit-scrollbar {
   width: 6px;
 }
+
 *::-webkit-scrollbar-track {
   background: #0076b4;
 }
+
 *::-webkit-scrollbar-thumb {
   background: #0076b4;
   border-radius: 10px;
 }
+
 *::-webkit-scrollbar-thumb:hover {
   background: #cbd5e1;
 }
@@ -68,7 +94,8 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #0076b4; /* gray-400 */
+  background-color: #0076b4;
+  /* gray-400 */
   border-radius: 9999px;
 }
 
@@ -93,19 +120,17 @@ body {
 
 .branch-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 9999px;
-  background-image: linear-gradient(
-    to bottom,
-    #ca163a,
-    #f2ca50,
-    #880696,
-    #6c757d,
-    #00a155,
-    #ff914c,
-    #ef7b97,
-    #964a01,
-    #bbd704,
-    #0076b4
-  );
+  background-image: linear-gradient(to bottom,
+      #ca163a,
+      #f2ca50,
+      #880696,
+      #6c757d,
+      #00a155,
+      #ff914c,
+      #ef7b97,
+      #964a01,
+      #bbd704,
+      #0076b4);
   background-size: 100% 300%;
   background-position: top;
 }

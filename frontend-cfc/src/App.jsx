@@ -17,6 +17,9 @@ import Resources from "./Pages/Resources";
 import EventDetails from "./Pages/EventDetails";
 import Blog from "./Pages/Blog";
 import BlogDetail from "./Pages/BlogDetail";
+import WalkthroughList from "./Pages/WalkthroughList";
+import WalkthroughDetail from "./Pages/WalkthroughDetail";
+import Periodicals from "./Pages/Periodicals";
 import ProvinceDetails from "./Pages/ProvinceDetails";
 import ImpactDetail from "./Pages/ImpactDetail";
 import Gallery from "./Pages/Gallery";
@@ -33,6 +36,8 @@ import AdminLayout from "./Layout/AdminLayout";
 const Dashboard = lazy(() => import("./Pages/Admin/Dashboard"));
 const AdminEvents = lazy(() => import("./Pages/Admin/AdminEvents"));
 const AdminBlogs = lazy(() => import("./Pages/Admin/AdminBlogs"));
+const AdminWalkthroughs = lazy(() => import("./Pages/Admin/AdminWalkthroughs"));
+const AdminPeriodicals = lazy(() => import("./Pages/Admin/AdminPeriodicals"));
 const AdminDonations = lazy(() => import("./Pages/Admin/AdminDonations"));
 const AdminUsers = lazy(() => import("./Pages/Admin/AdminUsers"));
 const AdminInternships = lazy(() => import("./Pages/Admin/AdminInternships"));
@@ -49,6 +54,9 @@ const AdminResources = lazy(() => import("./Pages/Admin/AdminResources"));
 const SajiloDigital = lazy(() => import("./Pages/Admin/SajiloDigital"));
 const AdminTestimonials = lazy(() => import("./Pages/Admin/AdminTestimonials"));
 const AdminSupporters = lazy(() => import("./Pages/Admin/AdminSupporters"));
+const AdminNewsletter = lazy(() => import("./Pages/Admin/AdminNewsletter"));
+const AdminContacts = lazy(() => import("./Pages/Admin/AdminContacts"));
+const AdminTeam = lazy(() => import("./Pages/Admin/AdminTeam"));
 import AuthLayout from "./Layout/AuthLayout";
 import Login from "./Pages/Auth/Login";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
@@ -58,14 +66,17 @@ import PrivateRoute from "./Components/Common/PrivateRoute";
 import { Toaster } from "react-hot-toast";
 
 function App() {
+  console.log("Updated to latest version 1");
   useScrollToTop();
   return (
     <>
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="w-10 h-10 border-4 border-slate-100 border-t-emerald-500 rounded-full animate-spin"></div>
-        </div>
-      }>
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="w-10 h-10 border-4 border-slate-100 border-t-emerald-500 rounded-full animate-spin"></div>
+          </div>
+        }
+      >
         <Routes>
           {/* Public routes for normal user*/}
           <Route element={<MainLayout />}>
@@ -74,7 +85,7 @@ function App() {
             <Route path="/about" element={<About />}></Route>
             <Route path="/events" element={<Events />}></Route>
             <Route path="/our-impact" element={<OurImpact />}></Route>
-            <Route path="/blog" element={<Blog />}></Route>
+            <Route path="/creative" element={<Blog />}></Route>
             <Route
               path="/certificate-verification/:token?"
               element={<CertificateVerification />}
@@ -99,7 +110,10 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/join-us" element={<JoinUs />} />
             <Route path="/events/:eventSlug" element={<EventDetails />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
+            <Route path="/creative/:slug" element={<BlogDetail />} />
+            <Route path="/creative/walkthrough" element={<WalkthroughList />} />
+            <Route path="/creative/walkthrough/:slug" element={<WalkthroughDetail />} />
+            <Route path="/creative/periodicals" element={<Periodicals />} />
             <Route
               path="/provinces/:provinceName"
               element={<ProvinceDetails />}
@@ -132,6 +146,8 @@ function App() {
               <Route path="event/:id" element={<AdminEventDetail />} />
               <Route path="blog" element={<AdminBlogs />} />
               <Route path="blog/:id" element={<AdminBlogDetail />} />
+              <Route path="walkthroughs" element={<AdminWalkthroughs />} />
+              <Route path="periodicals" element={<AdminPeriodicals />} />
               <Route path="gallery" element={<AdminGallery />} />
               <Route path="donation" element={<AdminDonations />} />
               <Route path="impacts" element={<AdminImpacts />} />
@@ -145,6 +161,9 @@ function App() {
               <Route path="resource" element={<AdminResources />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="supporters" element={<AdminSupporters />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
+              <Route path="contacts" element={<AdminContacts />} />
+              <Route path="national-team" element={<AdminTeam />} />
               <Route path="sajilo-digital" element={<SajiloDigital />} />
             </Route>
           </Route>

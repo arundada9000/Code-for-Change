@@ -31,7 +31,6 @@ function Certificate() {
   const { hasPermission } = useAuth();
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
@@ -56,17 +55,22 @@ function Certificate() {
 
   // Template defaults per certificate type — pre-fills the dynamic text fields
   const TEMPLATE_DEFAULTS = {
-    Training:  { header: "Certificate",    subHeader: "OF ACHIEVEMENT",   tagline: "on successfully completing",                   primaryDetail: "professional" },
-    Bootcamp:  { header: "Certificate",    subHeader: "OF ACHIEVEMENT",   tagline: "on successfully completing",                   primaryDetail: "professional" },
-    Workshop:  { header: "Certificate",    subHeader: "OF ACHIEVEMENT",   tagline: "on successfully completing",                   primaryDetail: "professional" },
-    Internship:{ header: "Experience",     subHeader: "CREDENTIAL",       tagline: "has successfully completed an internship in",   primaryDetail: "as a Trainee / Intern in" },
-    Event:     { header: "Participation",  subHeader: "CERTIFICATE",      tagline: "for active participation and achievement in",  primaryDetail: "during the grand event of" },
-    Hackathon: { header: "Participation",  subHeader: "CERTIFICATE",      tagline: "for active participation and achievement in",  primaryDetail: "during the grand event of" },
+    Training: { header: "Certificate", subHeader: "OF ACHIEVEMENT", tagline: "on successfully completing", primaryDetail: "professional" },
+    Bootcamp: { header: "Certificate", subHeader: "OF ACHIEVEMENT", tagline: "on successfully completing", primaryDetail: "professional" },
+    Workshop: { header: "Certificate", subHeader: "OF ACHIEVEMENT", tagline: "on successfully completing", primaryDetail: "professional" },
+    Internship: { header: "Experience", subHeader: "CREDENTIAL", tagline: "has successfully completed an internship in", primaryDetail: "as a Trainee / Intern in" },
+    Event: { header: "Participation", subHeader: "CERTIFICATE", tagline: "for active participation and achievement in", primaryDetail: "during the grand event of" },
+    Hackathon: { header: "Participation", subHeader: "CERTIFICATE", tagline: "for active participation and achievement in", primaryDetail: "during the grand event of" },
   };
+
+  // ── Modal UI Styling Classes ──
+  const labelClass = "block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5 ml-1";
+  const inputClass = "w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary focus:bg-white transition-all shadow-sm placeholder:text-slate-400";
 
   // ── Bulk Generation State ─────────────────────────────────────────────────
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkStep, setBulkStep] = useState(1);
+  const [showBulkPreview, setShowBulkPreview] = useState(false);
   const [bulkSubmitting, setBulkSubmitting] = useState(false);
   const [bulkProgress, setBulkProgress] = useState("");
   const today = new Date().toISOString().split("T")[0];
@@ -77,6 +81,11 @@ function Certificate() {
     startDate: today, endDate: today, hours: "", grade: "",
     issueDate: today,
     template: { ...TEMPLATE_DEFAULTS["Event"] },
+    // Custom signature / award fields
+    signatureName: "",
+    signaturePosition: "",
+    signatureImage: "",
+    awardedTo: "",
   };
   const [sharedData, setSharedData] = useState(defaultBulkShared);
   const [recipientCount, setRecipientCount] = useState(5);
@@ -133,6 +142,11 @@ function Certificate() {
           grade: sharedData.grade || null,
           issueDate: sharedData.issueDate,
           metadata: { template: sharedData.template },
+          // Custom signature / award fields
+          signatureName: sharedData.signatureName || undefined,
+          signaturePosition: sharedData.signaturePosition || undefined,
+          signatureImage: sharedData.signatureImage || undefined,
+          awardedTo: sharedData.awardedTo || undefined,
         },
         recipients: validRecipients.map(r => ({
           recipientName: r.recipientName.trim(),
@@ -182,21 +196,6 @@ function Certificate() {
   const [certToDelete, setCertToDelete] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    recipientName: "",
-    courseName: "",
-    certificateType: "Training",
-    certificateId: "",
-    hours: "135 Hours",
-    regdNo: "64498-066-067",
-    startDate: new Date().toISOString().split("T")[0],
-    endDate: new Date().toISOString().split("T")[0],
-    issueDate: new Date().toISOString().split("T")[0],
-    grade: "Grade A",
-    province: "",
-  });
 
   useEffect(() => {
     fetchCertificates();
@@ -223,58 +222,6 @@ function Certificate() {
     }
   };
 
-  const handleIssue = async (e) => {
-    e.preventDefault();
-    if (submitting) return;
-    setSubmitting(true);
-    const formData = new FormData(e.target);
-    const sanitize = (val) => {
-      if (!val) return undefined;
-      const trimmed = val.toString().trim();
-      return trimmed === "" ? undefined : trimmed;
-    };
-
-    const payload = {
-      recipientName: sanitize(formData.get("recipientName")),
-      recipientEmail: sanitize(formData.get("recipientEmail")),
-      courseName: sanitize(formData.get("courseName")),
-      certificateType: formData.get("certificateType"),
-      certificateId: sanitize(formData.get("certificateId")),
-      startDate: sanitize(formData.get("startDate")),
-      endDate: sanitize(formData.get("endDate")),
-      hours: sanitize(formData.get("hours")),
-      grade: sanitize(formData.get("grade")),
-      province: formData.get("province"),
-      issueDate: formData.get("issueDate") || new Date().toISOString(),
-    };
-
-    try {
-      const { data } = await API.post("/certificates/issue", payload);
-      setCertificates([data.data, ...certificates]);
-      setIsModalOpen(false);
-      setFormData({
-        recipientName: "",
-        courseName: "",
-        certificateType: "Training",
-        certificateId: "",
-        hours: "135 Hours",
-        regdNo: "64498-066-067",
-        startDate: new Date().toISOString().split("T")[0],
-        endDate: new Date().toISOString().split("T")[0],
-        issueDate: new Date().toISOString().split("T")[0],
-        grade: "Grade A",
-        province: "",
-      });
-      toast.success("Certificate issued and registered successfully");
-    } catch (error) {
-      console.error("Issuance Error:", error);
-      toast.error(
-        error.response?.data?.message || "Failed to issue certificate",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
@@ -444,11 +391,12 @@ function Certificate() {
     doc.text(config.subHeader, pageWidth / 2, 72, { align: "center" });
 
     // 6. Awarded To Pill
+    const awardedToText = (cert.awardedTo || "Cordially Awarded To").toUpperCase();
     doc.setFillColor(15, 23, 42);
     doc.roundedRect(pageWidth / 2 - 40, 80, 80, 10, 5, 5, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
-    doc.text("CORDIALLY AWARDED TO", pageWidth / 2, 86.5, { align: "center" });
+    doc.text(awardedToText, pageWidth / 2, 86.5, { align: "center" });
 
     // 7. Recipient Name
     doc.setTextColor(15, 23, 42);
@@ -561,16 +509,21 @@ function Certificate() {
     doc.text("9001:2015", pageWidth / 2, 180, { align: "center" });
 
     // Signatory
+    const sigName = cert.signatureName || "Krishna Pokhrel";
+    const sigPosition = cert.signaturePosition || "Project Lead CFC";
     doc.setTextColor(15, 23, 42);
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.text("AUTHORISED SIGNATORY", 240, 182, { align: "right" });
+    doc.text(sigName.toUpperCase(), 240, 182, { align: "right" });
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text(sigPosition.toUpperCase(), 240, 187, { align: "right" });
     doc.setDrawColor(203, 213, 225);
     doc.line(190, 178, 240, 178);
     doc.setFont("times", "italic");
     doc.setFontSize(22);
     doc.setTextColor(30, 41, 59);
-    doc.text("Bal Gobind Chaudhary", 215, 175, { align: "center" });
+    doc.text(sigName, 215, 175, { align: "center" });
 
     doc.save(`Certificate_${cert.certificateId}_${cert.recipientName}.pdf`);
     toast.success("High-Fidelity Certificate Exported");
@@ -612,14 +565,7 @@ function Certificate() {
           </div>
           {hasPermission("certificate_issue") && (
             <div className="flex flex-wrap gap-3 flex-1 md:flex-none">
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-primary text-white px-6 py-4 rounded-2xl hover:bg-secondary transition-all shadow-xl shadow-slate-200 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
-              >
-                <FaPlus className="text-lg" />{" "}
-                <span className="hidden sm:inline">Issue Certificate</span>
-                <span className="sm:hidden">Issue New</span>
-              </button>
+
               <button
                 onClick={() => { setBulkStep(1); setIsBulkModalOpen(true); }}
                 className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-secondary text-white px-6 py-4 rounded-2xl hover:bg-primary transition-all shadow-xl shadow-secondary/20 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
@@ -761,11 +707,10 @@ function Certificate() {
                     </td>
                     <td className="px-8 py-6">
                       <div
-                        className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.1em] ${
-                          cert.status === "Valid"
-                            ? "text-secondary"
-                            : "text-rose-500"
-                        }`}
+                        className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.1em] ${cert.status === "Valid"
+                          ? "text-secondary"
+                          : "text-rose-500"
+                          }`}
                       >
                         <FaCheckCircle /> {cert.status}
                       </div>
@@ -811,11 +756,10 @@ function Certificate() {
                                       onClick={() =>
                                         handleUpdateStatus(cert._id, status)
                                       }
-                                      className={`flex-1 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all border ${
-                                        cert.status === status
-                                          ? "bg-primary text-white border-primary"
-                                          : "bg-white text-slate-400 border-slate-200 hover:border-primary hover:text-primary"
-                                      }`}
+                                      className={`flex-1 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all border ${cert.status === status
+                                        ? "bg-primary text-white border-primary"
+                                        : "bg-white text-slate-400 border-slate-200 hover:border-primary hover:text-primary"
+                                        }`}
                                     >
                                       {status.charAt(0)}
                                     </button>
@@ -931,11 +875,10 @@ function Certificate() {
 
                 <div className="flex justify-between items-center pt-1">
                   <span
-                    className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${
-                      cert.status === "Valid"
-                        ? "bg-emerald-100 text-secondary"
-                        : "bg-rose-100 text-rose-700"
-                    }`}
+                    className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${cert.status === "Valid"
+                      ? "bg-emerald-100 text-secondary"
+                      : "bg-rose-100 text-rose-700"
+                      }`}
                   >
                     <FaCheckCircle /> {cert.status}
                   </span>
@@ -949,271 +892,6 @@ function Certificate() {
           )}
         </div>
       </div>
-
-      {/* 4. Issue Certificate Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-primary/60 backdrop-blur-md z-150 flex items-center justify-center p-4">
-          <div className="bg-white max-h-[90vh] overflow-y-scroll rounded-4xl w-full max-w-2xl p-10 shadow-2xl animate-in zoom-in-95 duration-300">
-            <div className="flex justify-between items-center mb-8 border-b border-slate-50 pb-6">
-              <div>
-                <h3 className="text-2xl font-black tracking-tighter text-primary uppercase">
-                  Issue new certificate
-                </h3>
-                <p className="text-[10px] font-black text-secondary uppercase tracking-widest mt-1">
-                  Official Certification Form
-                </p>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="w-12 h-12 flex items-center justify-center cursor-pointer group bg-slate-50 rounded-2xl text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all"
-              >
-                <FaTimes size={20} className="group-hover:rotate-90 transition"/>
-              </button>
-            </div>
-
-            <div className="flex gap-4 mb-8 flex-col md:flex-row">
-              <button
-                onClick={() => setShowPreview(false)}
-                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${!showPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400"}`}
-              >
-                Build Data
-              </button>
-              <button
-                onClick={() => setShowPreview(true)}
-                className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${showPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400"}`}
-              >
-                Live Preview
-              </button>
-            </div>
-
-            {showPreview ? (
-              <div className="scale-[0.35] md:scale-[0.6] origin-top -mb-40 md:-mb-40 border border-slate-100 rounded-2xl overflow-hidden shadow-2xl shadow-slate-200">
-                <CertificatePreview data={formData} />
-              </div>
-            ) : (
-              <form
-                onSubmit={handleIssue}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
-              >
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Recipient Full Name
-                  </label>
-                  <input
-                    name="recipientName"
-                    required
-                    placeholder="Aarav Sharma"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.recipientName}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        recipientName: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Recipient Email
-                  </label>
-                  <input
-                    name="recipientEmail"
-                    type="email"
-                    required
-                    placeholder="aarav@example.com"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        recipientEmail: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Program / Course Name
-                  </label>
-                  <input
-                    name="courseName"
-                    required
-                    placeholder="Fullstack Web Development Bootcamp"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.courseName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, courseName: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Certificate Type
-                  </label>
-                  <select
-                    name="certificateType"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.certificateType}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        certificateType: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="Training">Training</option>
-                    <option value="Bootcamp">Bootcamp</option>
-                    <option value="Hackathon">Hackathon</option>
-                    <option value="Event">Event</option>
-                    <option value="Internship">Internship</option>
-                    <option value="Workshop">Workshop</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Region
-                  </label>
-                  <select
-                    name="province"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.province}
-                    onChange={(e) =>
-                      setFormData({ ...formData, province: e.target.value })
-                    }
-                  >
-                    <option value="">Select Region</option>
-                    {PROVINCES.map((p) => (
-                      <option key={p} value={p}>
-                        {p}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Custom ID (Optional)
-                  </label>
-                  <input
-                    name="certificateId"
-                    placeholder="Auto-generated if empty"
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        certificateId: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-
-                {/* Training/Internship specific fields */}
-                {["Training", "Bootcamp", "Workshop", "Internship"].includes(
-                  formData.certificateType,
-                ) && (
-                  <>
-                    <div
-                      className={
-                        formData.certificateType === "Internship"
-                          ? "md:col-span-2"
-                          : ""
-                      }
-                    >
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                        Start Date
-                      </label>
-                      <input
-                        name="startDate"
-                        type="date"
-                        className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                        value={formData.startDate}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            startDate: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div
-                      className={
-                        formData.certificateType === "Internship"
-                          ? "md:col-span-2"
-                          : ""
-                      }
-                    >
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                        End Date
-                      </label>
-                      <input
-                        name="endDate"
-                        type="date"
-                        className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                        value={formData.endDate}
-                        onChange={(e) =>
-                          setFormData({ ...formData, endDate: e.target.value })
-                        }
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* Training specific fields */}
-                {["Training", "Bootcamp", "Workshop"].includes(
-                  formData.certificateType,
-                ) && (
-                  <div>
-                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                      Accredited Hours
-                    </label>
-                    <input
-                      name="hours"
-                      placeholder="e.g. 135 Hours"
-                      className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                      value={formData.hours}
-                      onChange={(e) =>
-                        setFormData({ ...formData, hours: e.target.value })
-                      }
-                    />
-                  </div>
-                )}
-
-                {/* Grade/Result field (Universal or tailored) */}
-                <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
-                    Grade / Result
-                  </label>
-                  <input
-                    name="grade"
-                    placeholder={
-                      ["Event", "Hackathon"].includes(formData.certificateType)
-                        ? "e.g. Winner / Participation"
-                        : "e.g. Grade A"
-                    }
-                    className="w-full p-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-secondary/30 focus:bg-white font-bold transition-all mt-1"
-                    value={formData.grade}
-                    onChange={(e) =>
-                      setFormData({ ...formData, grade: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="md:col-span-2 pt-4">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all ${
-                      submitting
-                        ? "bg-slate-400 cursor-not-allowed"
-                        : "bg-primary text-white hover:bg-secondary"
-                    }`}
-                  >
-                    {submitting ? "Registering..." : "Register Certificate"}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* 5. Bulk Issue Modal */}
       {isBulkModalOpen && (
@@ -1243,24 +921,71 @@ function Certificate() {
             </div>
 
             <div className="px-10 py-8">
+              {/* Preview Toggle Header */}
+              <div className="flex gap-4 mb-8 flex-col md:flex-row border-b border-slate-100 pb-6">
+                <button
+                  onClick={() => setShowBulkPreview(false)}
+                  className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${!showBulkPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400 hover:text-primary"}`}
+                >
+                  Configure Details ({bulkStep === 1 ? "Shared" : "Recipients"})
+                </button>
+                <button
+                  onClick={() => setShowBulkPreview(true)}
+                  className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${showBulkPreview ? "bg-primary text-white" : "bg-slate-50 text-slate-400 hover:text-primary"}`}
+                >
+                  Live Preview (First Recipient)
+                </button>
+              </div>
+
+              {/* ── LIVE PREVIEW ── */}
+              {showBulkPreview && (
+                <div className="w-full rounded-2xl overflow-hidden border border-slate-100 shadow-xl mb-6">
+                  <div className="bg-slate-50 border-b border-slate-100 px-4 py-2 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-rose-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    <span className="ml-2 text-[9px] font-black uppercase tracking-widest text-slate-400">Live Certificate Preview</span>
+                  </div>
+                  <div className="p-2">
+                    <CertificatePreview data={{
+                      recipientName: recipients[0]?.recipientName || "Sample Student Name",
+                      courseName: sharedData.courseName || "Event / Course Name",
+                      certificateType: sharedData.certificateType,
+                      certificateId: buildPreviewId(recipients[0] || {}),
+                      hours: sharedData.hours,
+                      startDate: sharedData.startDate,
+                      endDate: sharedData.endDate,
+                      issueDate: sharedData.issueDate || today,
+                      grade: sharedData.grade,
+                      province: sharedData.province,
+                      signatureName: sharedData.signatureName,
+                      signaturePosition: sharedData.signaturePosition,
+                      signatureImage: sharedData.signatureImage,
+                      awardedTo: sharedData.awardedTo,
+                      tokenHash: "preview-only"
+                    }} />
+                  </div>
+                </div>
+              )}
+
               {/* ── STEP 1: Shared Configuration ── */}
-              {bulkStep === 1 && (
+              {!showBulkPreview && bulkStep === 1 && (
                 <div className="space-y-6">
                   {/* Row: Count + Province + Type */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="label-xs">No. of Certificates</label>
+                      <label className={labelClass}>No. of Certificates</label>
                       <input
                         type="number" min="1" max="500"
-                        className="input-field mt-1"
+                        className={inputClass}
                         value={recipientCount}
                         onChange={e => setRecipientCount(Math.max(1, Math.min(500, Number(e.target.value))))}
                       />
                     </div>
                     <div>
-                      <label className="label-xs">Province <span className="text-rose-400">*</span></label>
+                      <label className={labelClass}>Province <span className="text-rose-400">*</span></label>
                       <select
-                        className="input-field mt-1"
+                        className={inputClass}
                         value={sharedData.province}
                         onChange={e => setSharedData(p => ({ ...p, province: e.target.value }))}
                       >
@@ -1269,53 +994,53 @@ function Certificate() {
                       </select>
                     </div>
                     <div>
-                      <label className="label-xs">Certificate Type</label>
-                      <select className="input-field mt-1" value={sharedData.certificateType} onChange={e => handleTypeChange(e.target.value)}>
-                        {["Training","Bootcamp","Hackathon","Event","Internship","Workshop"].map(t => <option key={t} value={t}>{t}</option>)}
+                      <label className={labelClass}>Certificate Type</label>
+                      <select className={inputClass} value={sharedData.certificateType} onChange={e => handleTypeChange(e.target.value)}>
+                        {["Training", "Bootcamp", "Hackathon", "Event", "Internship", "Workshop"].map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </div>
                   </div>
 
                   {/* Course Name */}
                   <div>
-                    <label className="label-xs">Event / Course Name <span className="text-rose-400">*</span></label>
-                    <input className="input-field mt-1" placeholder="e.g. Code for Change Kathmandu Hackathon 2026" value={sharedData.courseName} onChange={e => setSharedData(p => ({ ...p, courseName: e.target.value }))} />
+                    <label className={labelClass}>Event / Course Name <span className="text-rose-400">*</span></label>
+                    <input className={inputClass} placeholder="e.g. Code for Change Kathmandu Hackathon 2026" value={sharedData.courseName} onChange={e => setSharedData(p => ({ ...p, courseName: e.target.value }))} />
                   </div>
 
                   {/* Dates Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="label-xs">Start Date</label>
-                      <input type="date" className="input-field mt-1" value={sharedData.startDate} onChange={e => setSharedData(p => ({ ...p, startDate: e.target.value }))} />
+                      <label className={labelClass}>Start Date</label>
+                      <input type="date" className={inputClass} value={sharedData.startDate} onChange={e => setSharedData(p => ({ ...p, startDate: e.target.value }))} />
                     </div>
                     <div>
-                      <label className="label-xs">End Date</label>
-                      <input type="date" className="input-field mt-1" value={sharedData.endDate} onChange={e => setSharedData(p => ({ ...p, endDate: e.target.value }))} />
+                      <label className={labelClass}>End Date</label>
+                      <input type="date" className={inputClass} value={sharedData.endDate} onChange={e => setSharedData(p => ({ ...p, endDate: e.target.value }))} />
                     </div>
                     <div>
-                      <label className="label-xs">Issue Date</label>
-                      <input type="date" className="input-field mt-1" value={sharedData.issueDate} onChange={e => setSharedData(p => ({ ...p, issueDate: e.target.value }))} />
+                      <label className={labelClass}>Issue Date</label>
+                      <input type="date" className={inputClass} value={sharedData.issueDate} onChange={e => setSharedData(p => ({ ...p, issueDate: e.target.value }))} />
                     </div>
                   </div>
 
                   {/* Hours + Grade */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="label-xs">Accredited Hours <span className="text-slate-400 font-bold">(optional)</span></label>
-                      <input className="input-field mt-1" placeholder="e.g. 48 Hours" value={sharedData.hours} onChange={e => setSharedData(p => ({ ...p, hours: e.target.value }))} />
+                      <label className={labelClass}>Accredited Hours <span className="text-slate-400 font-bold">(optional)</span></label>
+                      <input className={inputClass} placeholder="e.g. 48 Hours" value={sharedData.hours} onChange={e => setSharedData(p => ({ ...p, hours: e.target.value }))} />
                     </div>
                     <div>
-                      <label className="label-xs">Achievement / Grade <span className="text-slate-400 font-bold">(optional)</span></label>
-                      <input className="input-field mt-1" placeholder="e.g. Winner, Participation, Mentorship" value={sharedData.grade} onChange={e => setSharedData(p => ({ ...p, grade: e.target.value }))} />
+                      <label className={labelClass}>Achievement / Grade <span className="text-slate-400 font-bold">(optional)</span></label>
+                      <input className={inputClass} placeholder="e.g. Winner, Participation, Mentorship" value={sharedData.grade} onChange={e => setSharedData(p => ({ ...p, grade: e.target.value }))} />
                     </div>
                   </div>
 
                   {/* Dynamic Template Text */}
                   <div className="bg-slate-50/80 border border-slate-100 rounded-3xl p-6">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
-                      🎨 Certificate Display Text — Pre-filled from type, fully editable
+                      Certificate Display Text — Pre-filled from type, fully editable
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {[
                         { key: "header", label: "Main Header" },
                         { key: "subHeader", label: "Sub-Header" },
@@ -1323,14 +1048,97 @@ function Certificate() {
                         { key: "primaryDetail", label: "Primary Detail (before course)" },
                       ].map(({ key, label }) => (
                         <div key={key}>
-                          <label className="label-xs">{label}</label>
+                          <label className={labelClass}>{label}</label>
                           <input
-                            className="input-field mt-1"
+                            className={inputClass}
                             value={sharedData.template?.[key] ?? ""}
                             onChange={e => setSharedData(p => ({ ...p, template: { ...p.template, [key]: e.target.value } }))}
                           />
                         </div>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* ── Signature & Award Customisation ── */}
+                  <div className="bg-slate-50/80 border border-slate-100 rounded-3xl p-6">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
+                      Signatory & Award Label — defaults to Krishna Pokhrel / Project Lead CFC
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Award Label */}
+                      <div className="md:col-span-2">
+                        <label className={labelClass}>Award Label <span className="text-slate-400 font-bold">(default: Cordially Awarded To)</span></label>
+                        <input
+                          className={inputClass}
+                          placeholder="e.g. Proudly Presented To"
+                          value={sharedData.awardedTo}
+                          onChange={e => setSharedData(p => ({ ...p, awardedTo: e.target.value }))}
+                        />
+                      </div>
+                      {/* Signature Name */}
+                      <div>
+                        <label className={labelClass}>Signatory Name</label>
+                        <input
+                          className={inputClass}
+                          placeholder="e.g. Krishna Pokhrel"
+                          value={sharedData.signatureName}
+                          onChange={e => setSharedData(p => ({ ...p, signatureName: e.target.value }))}
+                        />
+                      </div>
+                      {/* Signature Position */}
+                      <div>
+                        <label className={labelClass}>Signatory Position</label>
+                        <input
+                          className={inputClass}
+                          placeholder="e.g. Project Lead CFC"
+                          value={sharedData.signaturePosition}
+                          onChange={e => setSharedData(p => ({ ...p, signaturePosition: e.target.value }))}
+                        />
+                      </div>
+                      {/* Signature Image Upload */}
+                      <div className="md:col-span-2">
+                        <label className={labelClass}>Signature Image <span className="text-slate-400 font-bold">(optional – PNG/JPG with transparent background recommended)</span></label>
+                        <div className="mt-1 relative">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            id="sig-img-upload"
+                            onChange={e => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              const reader = new FileReader();
+                              reader.onloadend = () => setSharedData(p => ({ ...p, signatureImage: reader.result }));
+                              reader.readAsDataURL(file);
+                            }}
+                          />
+                          <label
+                            htmlFor="sig-img-upload"
+                            className="flex items-center gap-3 cursor-pointer w-full p-4 bg-white border-2 border-dashed border-slate-200 rounded-2xl hover:border-secondary transition-all group"
+                          >
+                            {sharedData.signatureImage ? (
+                              <>
+                                <img src={sharedData.signatureImage} alt="Signature preview" className="h-10 object-contain" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Signature Loaded ✓ — Click to replace</span>
+                              </>
+                            ) : (
+                              <>
+                                <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all">
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-secondary transition-all">Click to upload signature image</span>
+                              </>
+                            )}
+                            {sharedData.signatureImage && (
+                              <button
+                                type="button"
+                                onClick={e => { e.preventDefault(); e.stopPropagation(); setSharedData(p => ({ ...p, signatureImage: "" })); }}
+                                className="ml-auto text-rose-400 hover:text-rose-600 text-[10px] font-black uppercase tracking-widest"
+                              >✕ Remove</button>
+                            )}
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -1352,7 +1160,7 @@ function Certificate() {
               )}
 
               {/* ── STEP 2: Recipient Entry ── */}
-              {bulkStep === 2 && (
+              {!showBulkPreview && bulkStep === 2 && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between mb-2">
                     <button onClick={() => setBulkStep(1)} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-all flex items-center gap-2">
@@ -1379,7 +1187,7 @@ function Certificate() {
                         <div className="col-span-1 text-[10px] font-black text-slate-400 text-center">{i + 1}</div>
                         <div className="col-span-12 md:col-span-3">
                           <input
-                            className="input-field w-full"
+                            className={inputClass}
                             placeholder="Full Name"
                             value={r.recipientName}
                             onChange={e => {
@@ -1391,7 +1199,7 @@ function Certificate() {
                         </div>
                         <div className="col-span-12 md:col-span-2">
                           <input
-                            className="input-field w-full"
+                            className={inputClass}
                             placeholder="Email"
                             type="email"
                             value={r.recipientEmail}
@@ -1404,7 +1212,7 @@ function Certificate() {
                         </div>
                         <div className="col-span-6 md:col-span-2">
                           <input
-                            className="input-field w-full font-mono uppercase"
+                            className={`${inputClass} font-mono uppercase`}
                             placeholder="e.g. E"
                             maxLength={4}
                             value={r.prefix1}
@@ -1417,7 +1225,7 @@ function Certificate() {
                         </div>
                         <div className="col-span-6 md:col-span-2">
                           <input
-                            className="input-field w-full font-mono uppercase"
+                            className={`${inputClass} font-mono uppercase`}
                             placeholder="e.g. LE"
                             maxLength={4}
                             value={r.prefix2}
@@ -1468,63 +1276,93 @@ function Certificate() {
 
       {/* 6. Fullscreen Preview Modal */}
       {isPreviewOpen && (
-        <div className="fixed inset-0 bg-primary/98 backdrop-blur-2xl z-[200] flex flex-col items-center justify-center p-4 md:p-12 overflow-hidden">
-          {/* Top Navigation Bar */}
-          <div className="w-full max-w-7xl flex flex-col md:flex-row items-center justify-between mb-4 md:mb-8 animate-in slide-in-from-top-4 duration-500 gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-secondary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-secondary/20">
-                <FaShieldAlt size={20} className="md:text-2xl" />
+        <div className="fixed inset-0 bg-[#01152E]/95 backdrop-blur-2xl z-[200] flex flex-col overflow-hidden">
+
+          {/* Top Bar */}
+          <div className="shrink-0 flex items-center justify-between px-4 md:px-8 py-4 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-secondary rounded-xl flex items-center justify-center text-white shadow-lg shadow-secondary/30">
+                <FaShieldAlt size={16} />
               </div>
               <div>
-                <h3 className="text-white font-black uppercase italic tracking-tighter text-lg md:text-xl leading-none">
-                  Certificate Preview
-                </h3>
-                <p className="text-emerald-400 text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] mt-1">
-                  Official Record: {previewData?.certificateId}
-                </p>
+                <h3 className="text-white font-black uppercase italic tracking-tighter text-base leading-none">Certificate Preview</h3>
+                <p className="text-emerald-400 text-[9px] font-black uppercase tracking-[0.25em] mt-0.5">{previewData?.certificateId}</p>
               </div>
             </div>
-
-            <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="flex items-center gap-2">
               <button
-                onClick={() => {
-                  window.print();
-                }}
-                className="flex-1 md:flex-none flex items-center justify-center gap-2 md:gap-3 bg-white/10 text-white px-4 md:px-8 py-3 md:py-4 rounded-2xl font-black text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-white/20 transition-all border border-white/10"
+                onClick={() => generatePDF(previewData)}
+                className="hidden sm:flex items-center gap-2 bg-white/10 hover:bg-secondary text-white px-5 py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all border border-white/10"
               >
-                <FaExternalLinkAlt />{" "}
-                <span className="hidden md:inline">Open </span>Print
-                <span className="hidden md:inline"> Dialogue</span>
+                <FaDownload size={12} /> Export PDF
               </button>
               <button
                 onClick={() => setIsPreviewOpen(false)}
-                className="w-12 h-12 flex items-center justify-center bg-white/10 rounded-xl text-white hover:bg-rose-500 transition-all border border-white/10 shrink-0"
+                className="w-10 h-10 flex items-center justify-center bg-white/10 rounded-xl text-white hover:bg-rose-500 transition-all border border-white/10"
               >
-                <FaTimes size={20} />
+                <FaTimes size={18} />
               </button>
             </div>
           </div>
 
-          {/* Certificate Container with Scaling */}
-          <div className="flex-1 w-full max-w-6xl flex items-center justify-center animate-in zoom-in-95 duration-500 overflow-auto custom-scrollbar p-2">
-            <div className="w-full h-fit flex items-center justify-center p-0 md:p-4">
-              {/* Scale wrapper for mobile */}
-              <div className="w-full max-w-5xl shadow-[0_0_100px_rgba(0,0,0,0.8)] border-[1px] border-white/10 rounded-sm scale-50 md:scale-100 origin-center md:origin-top transition-transform duration-300">
-                <CertificatePreview
-                  data={{
-                    ...previewData,
-                    tokenHash: previewData?.tokenHash || "preview-only",
-                  }}
-                />
+          {/* Main Content: Sidebar + Certificate */}
+          <div className="flex-1 flex flex-col lg:flex-row gap-0 overflow-hidden">
+
+            {/* Certificate Render Area */}
+            <div className="flex-1 overflow-auto flex items-start justify-center p-4 md:p-8">
+              <div className="w-full max-w-4xl animate-in zoom-in-95 duration-500">
+                {/* Browser chrome bar */}
+                <div className="bg-slate-800 rounded-t-2xl px-4 py-2.5 flex items-center gap-2 border border-white/10 border-b-0">
+                  <div className="w-2.5 h-2.5 rounded-full bg-rose-500 opacity-70"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400 opacity-70"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 opacity-70"></div>
+                  <div className="flex-1 mx-4 bg-slate-700 rounded-lg py-1 px-3 text-[9px] font-mono text-slate-400 text-center truncate">
+                    codeforchangenepal.com/certificate-verification/{previewData?.certificateId}
+                  </div>
+                </div>
+                {/* Certificate */}
+                <div className="bg-white rounded-b-2xl overflow-hidden shadow-[0_0_80px_rgba(0,118,180,0.3)] border border-white/20 border-t-0">
+                  <CertificatePreview
+                    data={{
+                      ...previewData,
+                      tokenHash: previewData?.tokenHash || "preview-only",
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Bottom Context Bar */}
-          <div className="mt-4 md:mt-8 text-center animate-in slide-in-from-bottom-4 duration-500 hidden md:block">
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em]">
-              Global Accreditation • ISO 9001:2015 Verified
-            </p>
+            {/* Right Sidebar — Details */}
+            <div className="shrink-0 w-full lg:w-72 bg-white/5 border-t lg:border-t-0 lg:border-l border-white/10 p-5 overflow-y-auto">
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-4">Certificate Details</p>
+              <div className="space-y-3">
+                {[
+                  { label: "Recipient", value: previewData?.recipientName },
+                  { label: "Program", value: previewData?.courseName },
+                  { label: "Type", value: previewData?.certificateType },
+                  { label: "Province", value: previewData?.province || "N/A" },
+                  { label: "Status", value: previewData?.status },
+                  { label: "Issue Date", value: previewData?.issueDate ? new Date(previewData.issueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "N/A" },
+                  { label: "Signatory", value: previewData?.signatureName || "Krishna Pokhrel" },
+                  { label: "Position", value: previewData?.signaturePosition || "Project Lead CFC" },
+                ].map(({ label, value }) => (
+                  <div key={label} className="bg-white/5 rounded-xl p-3 border border-white/10">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-0.5">{label}</p>
+                    <p className="text-white text-xs font-bold truncate">{value || "—"}</p>
+                  </div>
+                ))}
+              </div>
+              {/* Mobile PDF button */}
+              <button
+                onClick={() => generatePDF(previewData)}
+                className="sm:hidden mt-4 w-full flex items-center justify-center gap-2 bg-secondary text-white px-5 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all"
+              >
+                <FaDownload size={12} /> Export PDF
+              </button>
+              <p className="text-center text-[8px] font-black uppercase tracking-widest text-slate-600 mt-6">
+                Code for Change Nepal
+              </p>
+            </div>
           </div>
         </div>
       )}

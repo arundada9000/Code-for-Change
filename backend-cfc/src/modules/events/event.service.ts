@@ -15,11 +15,12 @@ export class EventService {
     const {
       search,
       type,
-      province,
+      region,
       startDate,
       endDate,
       sort,
       status,
+      isNational,
       page = 1,
       limit = 10,
       ...otherFilters
@@ -44,12 +45,16 @@ export class EventService {
       ];
     }
 
-    if (province && province !== "all") {
-      query.province = province;
+    if (region && region !== "all") {
+      query.region = region;
     }
 
     if (type) {
       query.type = type;
+    }
+
+    if (isNational !== undefined && isNational !== '') {
+      query.isNational = isNational === 'true' || isNational === true;
     }
 
     if (startDate || endDate) {
@@ -57,6 +62,7 @@ export class EventService {
       if (startDate) query.date.$gte = new Date(startDate);
       if (endDate) query.date.$lte = new Date(endDate);
     }
+
 
     // Determine if we can use cache (only for no-filter requests)
     const isCacheable = Object.keys(query).length === 0;

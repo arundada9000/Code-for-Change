@@ -7,8 +7,8 @@ const CACHE_KEY = "blogs:all";
 const CACHE_TTL = 3600;
 
 export class BlogService {
-  async getAllBlogs(queryParams: any = {}): Promise<IBlog[]> {
-    const { search, category, author, province, startDate, endDate, ...otherFilters } = queryParams;
+  async getAllBlogs(queryParams: any = {}): Promise<{ blogs: IBlog[], pagination: any }> {
+    const { search, category, author, province, startDate, endDate, page = 1, limit = 10, ...otherFilters } = queryParams;
 
     // Build query
     const query: any = { ...otherFilters };
@@ -54,15 +54,32 @@ export class BlogService {
     }
 
     try {
-      const blogs = await Blog.find(query).sort({ createdAt: -1 });
+      const parsedPage = parseInt(page as string, 10) || 1;
+      const parsedLimit = parseInt(limit as string, 10) || 10;
+      const skip = (parsedPage - 1) * parsedLimit;
+
+      const [blogs, total] = await Promise.all([
+        Blog.find(query).sort({ createdAt: -1 }).skip(skip).limit(parsedLimit),
+        Blog.countDocuments(query)
+      ]);
+
+      const result = {
+        blogs,
+        pagination: {
+          total,
+          page: parsedPage,
+          limit: parsedLimit,
+          totalPages: Math.ceil(total / parsedLimit)
+        }
+      };
       
       if (isCacheable) {
-        redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(blogs)).catch((err:any) => {
+        redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(result)).catch((err:any) => {
              console.warn("Redis cache set failed:", err);
         });
       }
       
-      return blogs;
+      return result;
     } catch (error) {
       throw new AppError("Failed to fetch blogs", 500);
     }

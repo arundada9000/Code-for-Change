@@ -9,10 +9,11 @@ import {
   FiActivity,
   FiGlobe,
 } from "react-icons/fi";
+import { FaSearch, FaFilter, FaStar } from "react-icons/fa";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
 import { provinces } from "./Provinces";
-import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
+import { ALUMNI } from "../Data/teamData";
 import EventCard from "../Components/UI/EventCard";
 import { Pulse } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
@@ -25,6 +26,7 @@ import {
   FaLinkedinIn,
   FaTwitter,
   FaYoutube,
+  FaTiktok,
 } from "react-icons/fa";
 
 const socialIcons = {
@@ -35,6 +37,7 @@ const socialIcons = {
   youtube: <FaYoutube />,
   twitter: <FaTwitter />,
   website: <FiGlobe />,
+  tiktok: <FaTiktok />,
 };
 
 const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
@@ -55,10 +58,11 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
         stiffness: 80,
         damping: 20,
       }}
-      className="group relative cursor-pointer p-4 backdrop-blur rounded-3xl"
+      style={{ "--theme-color": themeColor }}
+      className={`group relative hover:shadow-xl hover:-translate-y-2 transition-all ease-in duration-300 cursor-pointer hover:bg-(--theme-color)`}
     >
       <div
-        className="relative overflow-hidden rounded-2xl aspect-4/5 mb-4 transition-all duration-500"
+        className="relative overflow-hidden w-full h-60 mb-2 transition-all duration-500"
         style={{
           border: `1px solid ${themeColor}20`,
           boxShadow: `0 10px 30px -15px ${themeColor}30`,
@@ -79,17 +83,17 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
         {availableSocials.length > 0 && (
           <>
             {/* Left Column (first 3 icons) */}
-            <div className="absolute top-3 left-3 flex flex-col gap-2 z-20">
-              {availableSocials.slice(0, 3).map(([platform, url], idx) => (
+            <div className="absolute top-3 left-5 md:right-3 flex flex-col gap-2 z-20">
+              {availableSocials.slice(0, 4).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
-            transform translate-x-[-10px] opacity-0
-            group-hover:translate-x-0 group-hover:opacity-100
-            transition-all duration-500`}
+                  className={`w-7 h-7 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white text-primary shadow-md
+                  transform translate-x-[-10px] md:opacity-0
+                  group-hover:translate-x-0 md:group-hover:opacity-100
+                  transition-all duration-500`}
                   style={{ transitionDelay: `${idx * 75}ms` }}
                 >
                   {socialIcons[platform] || <FiExternalLink />}
@@ -98,17 +102,17 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
             </div>
 
             {/* Right Column (next 3 icons) */}
-            <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
-              {availableSocials.slice(3, 6).map(([platform, url], idx) => (
+            <div className="absolute top-3 right-5 md:right-3 flex flex-col gap-2 z-20">
+              {availableSocials.slice(4, 8).map(([platform, url], idx) => (
                 <a
                   key={platform}
                   href={url.startsWith("http") ? url : `https://${url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 text-primary shadow-md
-            transform translate-x-[10px] opacity-0
-            group-hover:translate-x-0 group-hover:opacity-100
-            transition-all duration-500`}
+                  className={`w-7 h-7 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white text-primary shadow-md
+                  transform translate-x-[10px] md:opacity-0
+                  group-hover:translate-x-0 md:group-hover:opacity-100
+                  transition-all duration-500`}
                   style={{ transitionDelay: `${idx * 75}ms` }}
                 >
                   {socialIcons[platform] || <FiExternalLink />}
@@ -122,23 +126,23 @@ const TeamMemberCard = ({ member, themeColor, index = 0, onClick }) => {
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6"
           style={{
-            background: `linear-gradient(to top, ${themeColor}55, transparent)`,
+            background: `linear-gradient(to top, ${themeColor}30, transparent)`,
           }}
         ></div>
       </div>
 
-      <div className="text-center">
+      <div className="text-center  pb-2">
         <h4
-          className="font-bold tracking-tight text-primary text-base group-hover:text-primary transition-colors"
-          style={{ color: themeColor }}
+          className="font-bold tracking-tight text-(--theme-color) text-base group-hover:text-white transition-colors"
+          style={{ "--theme-color": themeColor }}
         >
           {member.name}
         </h4>
         <p
-          className="text-[11px] font-black uppercase tracking-[0.15em] mt-1.5 opacity-80"
-          style={{ color: themeColor }}
+          className="text-[11px] font-semibold uppercase text-(--theme-color) group-hover:text-white  tracking-[0.15em] mt-1.5 opacity-80"
+          style={{ "--theme-color": themeColor }}
         >
-          {member.role}
+          {member.position}
         </p>
       </div>
     </motion.div>
@@ -149,8 +153,16 @@ const ProvinceDetails = () => {
   const { provinceName } = useParams();
   const [events, setEvents] = useState([]);
   const [team, setTeam] = useState([]);
+  const [advisors, setAdvisors] = useState([]);
+  const [boardMembers, setBoardMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState(null);
+
+  // Events filter + pagination state
+  const [eventSearch, setEventSearch] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventNational, setEventNational] = useState("");
+  const [visibleCount, setVisibleCount] = useState(6);
 
   const displayName = provinceName
     .replace(/-/g, " ")
@@ -207,7 +219,10 @@ const ProvinceDetails = () => {
       setLoading(true);
       try {
         const [eventsRes, teamRes, usersRes] = await Promise.allSettled([
-          API.get("/events"),
+          // Use region query param directly — fixes the province/location mismatch bug
+          API.get(
+            `/events?region=${encodeURIComponent(displayName)}&limit=100`,
+          ),
           API.get("/team"),
           API.get("/users/public-users"),
         ]);
@@ -223,14 +238,7 @@ const ProvinceDetails = () => {
         const allPublicUsers =
           usersRes.status === "fulfilled" ? usersRes.value.data.data : [];
 
-        // Filter events by province (Assuming backend doesn't filter by province yet, or we need to add 'location' or 'province' field to Event model)
-        // The Event model has 'location' string. We might need to fuzzy match or just show all for now if location isn't structured.
-        // For now, let's filter if location includes province name.
-        const filteredEvents = allEvents.filter((e) =>
-          e.location?.toLowerCase().includes(displayName.toLowerCase()),
-        );
-
-        // Filter team by province (check new field 'province' first, then 'region')
+        // No client-side filtering needed for events — backend already matches by region
         const filteredTeamMembers = allTeam.filter(
           (m) =>
             m.province?.toLowerCase() === displayName.toLowerCase() ||
@@ -239,7 +247,8 @@ const ProvinceDetails = () => {
             m.region === "All",
         );
 
-        // Filter and map public users
+        // console.log(allPublicUsers);
+
         const provincialPublicUsers =
           allPublicUsers
             ?.filter(
@@ -251,14 +260,34 @@ const ProvinceDetails = () => {
               role: u.role,
               position: u.executiveDetails?.position || u.role,
               image: u.profileImage,
+              college: u.education?.collegeName,
+              bio: u.bio,
+              type: ["eb"].includes(u.role) ? "executive" : "member",
+              socialLinks: {
+                linkedin: u.linkedin,
+                github: u.github,
+                facebook: u.facebook,
+                twitter: u.twitter,
+                website: u.website,
+                instagram: u.instagram,
+                youtube: u.youtube,
+                tiktok: u.tiktok,
+              },
               isPublicUser: true,
             })) || [];
 
-        // Combine both sources
         const combinedTeam = [...filteredTeamMembers, ...provincialPublicUsers];
+        const centralAdvisors = allTeam.filter((m) => m.type === "Advisor");
+        const boardMembersData = allTeam.filter(
+          (m) => m.type === "Board Member",
+        );
 
-        setEvents(filteredEvents);
+        // console.log(centralAdvisors);
+
+        setEvents(allEvents);
         setTeam(combinedTeam);
+        setAdvisors(centralAdvisors);
+        setBoardMembers(boardMembersData);
       } catch (error) {
         console.error("Failed to fetch province data", error);
       } finally {
@@ -268,6 +297,10 @@ const ProvinceDetails = () => {
 
     fetchData();
   }, [displayName]);
+
+  // console.log(advisors);
+
+  // Filter social links that exist
 
   // Generate Person JSON-LD for team members (helps Google index members without individual pages)
   const teamJsonLd =
@@ -426,11 +459,188 @@ const ProvinceDetails = () => {
         </SlideUp>
       </section>
 
-      {/* 5. Team - Dynamic */}
+      {/* Central Advisors */}
+      <div className="max-w-7xl mx-auto pb-14 md:py-14 px-6">
+        <div className="flex justify-between mb-8 gap-4">
+          <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
+            Central <span style={{ color: themeColor }}>Advisors</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            Strategic Guidance
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          {advisors.map((advisor, i) => {
+            const availableSocials = Object.entries(
+              advisor.socialLinks || {},
+            ).filter(([_, url]) => !!url);
+            return (
+              <div
+                onClick={() =>
+                  setSelectedMember({
+                    ...advisor,
+                    name: advisor.name,
+                    role: advisor.designation || advisor.role,
+                    image: advisor.image,
+                    bio: advisor.quote,
+                    socialLinks: advisor.socialLinks || {},
+                  })
+                }
+                key={i}
+                className="bg-white p-8 rounded-3xl cursor-pointer border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
+              >
+                <div
+                  className="absolute top-0 left-0 w-full h-1"
+                  style={{ backgroundColor: themeColor }}
+                />
+                <div className="flex items-center gap-6 mb-6">
+                  <img
+                    src={advisor.image}
+                    className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110"
+                    alt={advisor.name}
+                  />
+                  <div>
+                    <h4 className=" text-primary text-xl leading-tight">
+                      {advisor.name}
+                    </h4>
+                    <p
+                      className="text-[11px] mt-1.5"
+                      style={{ color: themeColor }}
+                    >
+                      {advisor.designation}
+                    </p>
+                    <p className="text-[10px]  text-slate-400  mt-1">
+                      {advisor.organization}
+                    </p>
+                  </div>
+                </div>
+                {/* Social Links - Positioned at bottom */}
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {availableSocials.map(([platform, url], idx) => (
+                    <a
+                      key={platform}
+                      href={url.startsWith("http") ? url : `https://${url}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-all duration-300 hover:scale-110 hover:bg-primary hover:text-white group-hover:translate-y-0 translate-y-2 opacity-100"
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        transitionDelay: `${idx * 50}ms`,
+                      }}
+                    >
+                      {socialIcons[platform] || <FiExternalLink size={12} />}
+                    </a>
+                  ))}
+                </div>
+                <div
+                  className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-5 transition-transform duration-700 group-hover:scale-150"
+                  style={{ backgroundColor: themeColor }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Immediate past project lead (IPPL pannel) */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
           <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
-            Executive <span style={{ color: themeColor }}>Panel</span>
+            Immediate Past{" "}
+            <span style={{ color: themeColor }}>Project Lead</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            IPPL Panel
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                style={{ backgroundColor: `${themeColor}20` }}
+              >
+                <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                <Pulse className="h-4 w-24 rounded mx-auto" />
+                <Pulse className="h-3 w-16 rounded mx-auto" />
+              </div>
+            ))}
+          </div>
+        ) : team.filter((m) => m.role === "ippl").length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {team
+              .filter((m) => m.role === "ippl")
+              .map((member, i) => (
+                <TeamMemberCard
+                  key={member._id || i}
+                  member={member}
+                  themeColor={themeColor}
+                  index={i}
+                  onClick={setSelectedMember}
+                />
+              ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 italic">
+            No IPPL members found for this region.
+          </div>
+        )}
+      </section>
+
+      {/* Regional Advisors */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
+        <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
+          <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+            Regional <span style={{ color: themeColor }}>Advisors</span>
+          </h2>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+            Advisors
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                style={{ backgroundColor: `${themeColor}20` }}
+              >
+                <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                <Pulse className="h-4 w-24 rounded mx-auto" />
+                <Pulse className="h-3 w-16 rounded mx-auto" />
+              </div>
+            ))}
+          </div>
+        ) : team.filter((m) => m.role === "advisor").length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+            {team
+              .filter((m) => m.role === "advisor")
+              .map((member, i) => (
+                <TeamMemberCard
+                  key={member._id || i}
+                  member={member}
+                  themeColor={themeColor}
+                  index={i}
+                  onClick={setSelectedMember}
+                />
+              ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 italic">
+            No regional advisors found for this region.
+          </div>
+        )}
+      </section>
+
+      {/* Executive Member */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
+        <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
+          <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+            Executive <span style={{ color: themeColor }}>Body</span>
           </h2>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
             Executive Members
@@ -471,12 +681,7 @@ const ProvinceDetails = () => {
           </div>
         )}
       </section>
-      <TeamMemberModal
-        isOpen={!!selectedMember}
-        member={selectedMember}
-        links={selectedMember?.socialLinks}
-        onClose={() => setSelectedMember(null)}
-      />
+
       {/* College representative */}
       <section className="max-w-7xl mx-auto px-6 py-5">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-4">
@@ -571,174 +776,243 @@ const ProvinceDetails = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
           {/* National Alumni */}
           <div>
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+            <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
               <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
-                National <span style={{ color: themeColor }}>Alumni</span>
+                Provincial <span style={{ color: themeColor }}>Alumni</span>
               </h2>
               <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-                National Alumni Members
+                Regional Alumni Members
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-              {ALUMNI.map((member, i) => (
-                <TeamMemberCard
-                  key={i}
-                  member={member}
-                  themeColor={themeColor}
-                  index={i}
-                  onClick={setSelectedMember}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Central Advisors */}
-          <div>
-            <div className="flex flex-col md:flex-row-reverse justify-between items-end mb-8 gap-4 md:text-right">
-              <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
-                Central <span style={{ color: themeColor }}>Advisors</span>
-              </h2>
-              <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-                Strategic Guidance
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {ADVISORS.map((advisor, i) => (
-                <div
-                  onClick={() =>
-                    setSelectedMember({
-                      name: advisor.name,
-                      role: advisor.role,
-                      image: advisor.image,
-                      bio: advisor.quote,
-                      socialLinks: advisor.socialLinks || {},
-                    })
-                  }
-                  key={i}
-                  className="bg-white p-8 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all group relative overflow-hidden"
-                >
+            {loading ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                {[0, 1, 2, 3].map((i) => (
                   <div
-                    className="absolute top-0 left-0 w-full h-1"
-                    style={{ backgroundColor: themeColor }}
-                  />
-                  <div className="flex items-center gap-6 mb-6">
-                    <img
-                      src={advisor.image}
-                      className="w-20 h-20 rounded-2xl object-cover transition-all duration-500 shadow-md transform group-hover:scale-110"
-                      alt={advisor.name}
+                    key={i}
+                    className="flex flex-col items-center gap-3 p-4 rounded-3xl"
+                    style={{ backgroundColor: `${themeColor}20` }}
+                  >
+                    <Pulse className="w-full aspect-4/5 rounded-2xl" />
+                    <Pulse className="h-4 w-24 rounded mx-auto" />
+                    <Pulse className="h-3 w-16 rounded mx-auto" />
+                  </div>
+                ))}
+              </div>
+            ) : team.filter((m) => m.role === "alumni").length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                {team
+                  .filter((m) => m.role === "alumni")
+                  .map((member, i) => (
+                    <TeamMemberCard
+                      key={member._id || i}
+                      member={member}
+                      themeColor={themeColor}
+                      index={i}
+                      onClick={setSelectedMember}
                     />
-                    <div>
-                      <h4 className="font-black text-primary text-xl leading-tight">
-                        {advisor.name}
-                      </h4>
-                      <p
-                        className="text-[11px] font-black uppercase tracking-widest mt-1.5"
-                        style={{ color: themeColor }}
-                      >
-                        {advisor.role}
-                      </p>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                        {advisor.organization}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-600 italic font-medium leading-relaxed relative z-10">
-                    "{advisor.quote}"
+                  ))}
+              </div>
+            ) : (
+              <div className="text-center text-gray-400 italic">
+                No provincial alumni found for this region.
+              </div>
+            )}
+
+            {/* Board Members Section */}
+            {boardMembers.length > 0 && (
+              <div className="mt-20">
+                <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
+                  <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
+                    Board <span style={{ color: themeColor }}>Members</span>
+                  </h2>
+                  <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
+                    Strategic Leadership
                   </p>
-                  <div
-                    className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-5 transition-transform duration-700 group-hover:scale-150"
-                    style={{ backgroundColor: themeColor }}
-                  />
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* National Leadership */}
-          <div>
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-              <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
-                National <span style={{ color: themeColor }}>Leadership</span>
-              </h2>
-              <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">
-                Core Members
-              </p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-              {CORE_TEAM.map((member, i) => (
-                <TeamMemberCard
-                  key={i}
-                  member={member}
-                  themeColor={themeColor}
-                  index={i}
-                  onClick={setSelectedMember}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Gallery - Dynamic Events */}
-      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12 border-t">
-        <div className="mb-8 text-center md:text-left">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight line-clamp-1">
-              Events in <span style={{ color: themeColor }}>{displayName}</span>
-            </h2>
-            <span className="bg-slate-100 px-4 py-2 rounded-full uppercase tracking-widest text-[10px] md:text-xs font-black text-slate-500 whitespace-nowrap">
-              {events.length} {events.length > 1 ? "Events" : "Event"}
-            </span>
-          </div>
-          <p className="text-slate-500 mt-2 text-sm font-medium">
-            Impactful sessions conducted by this chapter.
-          </p>
-        </div>
-
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
-              >
-                <Pulse className="w-full h-48 rounded-none" />
-                <div className="p-6 space-y-3">
-                  <Pulse className="h-5 w-full rounded" />
-                  <Pulse className="h-4 w-3/4 rounded" />
-                  <div className="flex gap-3 mt-2">
-                    <Pulse className="h-4 w-20 rounded" />
-                    <Pulse className="h-4 w-20 rounded" />
-                  </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                  {boardMembers.map((member, i) => (
+                    <TeamMemberCard
+                      key={member._id || i}
+                      member={{
+                        ...member,
+                        position: member.designation || member.position,
+                      }}
+                      themeColor={themeColor}
+                      index={i}
+                      onClick={setSelectedMember}
+                    />
+                  ))}
                 </div>
               </div>
-            ))}
+            )}
           </div>
-        ) : events.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event, i) => (
-              <motion.div
-                key={event._id || i}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.1 * i,
-                  type: "spring",
-                  stiffness: 80,
-                  damping: 20,
-                }}
-              >
-                <EventCard event={event} />
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center text-gray-400 italic">
-            No events found in this region.
-          </div>
-        )}
+        </div>
       </section>
+
+      {/* 6. Events Section */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12 border-t">
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left mb-3">
+            <h2 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
+              Events in <span style={{ color: themeColor }}>{displayName}</span>
+            </h2>
+            <span className="bg-slate-100 px-4 py-2 rounded-full uppercase text-[10px] md:text-xs font-semibold text-primary/70 whitespace-nowrap">
+              {events.length} {events.length !== 1 ? "Events" : "Event"}
+            </span>
+          </div>
+          <p className="text-slate-500 text-sm font-medium">
+            Impactful sessions conducted by this chapter.
+          </p>
+
+          {/* Events Filter Bar */}
+          {events.length > 0 && (
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Search events..."
+                  value={eventSearch}
+                  onChange={(e) => {
+                    setEventSearch(e.target.value);
+                    setVisibleCount(6);
+                  }}
+                  className="w-full pl-10 pr-4 py-3 border border-slate-400 rounded-full text-sm outline-none focus:ring focus:ring-secondary focus:border-transparent transition-all"
+                />
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <select
+                value={eventType}
+                onChange={(e) => {
+                  setEventType(e.target.value);
+                  setVisibleCount(6);
+                }}
+                className="px-4 py-3 border border-slate-400 rounded-full text-sm font-medium outline-none focus:ring focus:ring-secondary focus:border-transparent transition-all appearance-none cursor-pointer"
+              >
+                <option value="">All Types</option>
+                {[
+                  "hackathon",
+                  "workshop",
+                  "webinar",
+                  "conference",
+                  "social_impact",
+                ].map((t) => (
+                  <option key={t} value={t}>
+                    {t.replace("_", " ")}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={eventNational}
+                onChange={(e) => {
+                  setEventNational(e.target.value);
+                  setVisibleCount(6);
+                }}
+                className="px-4 py-3 border border-slate-400 rounded-full text-sm font-medium outline-none focus:ring focus:ring-secondary focus:border-transparent transition-all appearance-none cursor-pointer"
+              >
+                <option value="">All Scope</option>
+                <option value="national">National</option>
+                <option value="local">Local</option>
+              </select>
+            </div>
+          )}
+        </div>
+
+        {(() => {
+          // Client-side filter on already-fetched region events
+          const filtered = events.filter((e) => {
+            const matchSearch =
+              !eventSearch ||
+              e.title?.toLowerCase().includes(eventSearch.toLowerCase());
+            const matchType = !eventType || e.type === eventType;
+            const matchNational =
+              !eventNational ||
+              (eventNational === "national" ? e.isNational : !e.isNational);
+            return matchSearch && matchType && matchNational;
+          });
+          const visible = filtered.slice(0, visibleCount);
+          const hasMore = filtered.length > visibleCount;
+
+          if (loading)
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                  >
+                    <Pulse className="w-full h-48 rounded-none" />
+                    <div className="p-6 space-y-3">
+                      <Pulse className="h-5 w-full rounded" />
+                      <Pulse className="h-4 w-3/4 rounded" />
+                      <div className="flex gap-3 mt-2">
+                        <Pulse className="h-4 w-20 rounded" />
+                        <Pulse className="h-4 w-20 rounded" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+
+          if (filtered.length === 0)
+            return (
+              <div className="text-center text-gray-400 italic py-12">
+                No events found matching the current filters.
+              </div>
+            );
+
+          return (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {visible.map((event, i) => (
+                  <motion.div
+                    key={event._id || i}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.05 * i,
+                      type: "spring",
+                      stiffness: 80,
+                      damping: 20,
+                    }}
+                  >
+                    <EventCard event={event} />
+                  </motion.div>
+                ))}
+              </div>
+              {hasMore && (
+                <div className="flex justify-center mt-10">
+                  <button
+                    onClick={() => setVisibleCount((v) => v + 6)}
+                    className="px-8 py-3 rounded-full font-bold text-sm text-white shadow-lg transition-all hover:scale-105"
+                    style={{ backgroundColor: themeColor }}
+                  >
+                    Load More ({filtered.length - visibleCount} remaining)
+                  </button>
+                </div>
+              )}
+            </>
+          );
+        })()}
+      </section>
+
+      <TeamMemberModal
+        isOpen={!!selectedMember}
+        member={selectedMember}
+        links={selectedMember?.socialLinks}
+        onClose={() => setSelectedMember(null)}
+      />
     </div>
   );
 };

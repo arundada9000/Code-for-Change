@@ -27,7 +27,7 @@ const FilterSelect = React.memo(({ label, options, value, onChange }) => (
             key={opt}
             onClick={() => onChange(opt === value ? 'all' : opt)}
             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${value === opt
-              ? 'bg-white text-emerald-600 shadow-sm border border-gray-200'
+              ? 'bg-white text-secondary shadow-sm border border-gray-200'
               : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
               }`}
           >
@@ -37,7 +37,7 @@ const FilterSelect = React.memo(({ label, options, value, onChange }) => (
         <button
           onClick={() => onChange('all')}
           className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${value === 'all'
-            ? 'bg-white text-emerald-600 shadow-sm border border-gray-200'
+            ? 'bg-white text-secondary shadow-sm border border-gray-200'
             : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
             }`}
         >
@@ -68,7 +68,7 @@ const ModalInput = React.memo(({ label, value, onChange, type = "text", required
     <input
       type={type}
       required={required}
-      className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-medium text-sm transition-all"
+      className="w-full px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-secondary/5 focus:border-emerald-200 font-medium text-sm transition-all"
       value={value}
       onChange={onChange}
     />
@@ -96,9 +96,9 @@ function AdminUsers() {
     address: "",
     province: "",
     dateOfBirth: "",
-    region: "",
     bio: "",
     role: "gm",
+    tenure: "",
     status: "Active",
     gender: "",
     code: "",
@@ -114,8 +114,12 @@ function AdminUsers() {
     termEnd: "",
     linkedin: "",
     github: "",
-    facebook: "",
     website: "",
+    facebook: "",
+    twitter: "",
+    instagram: "",
+    tiktok: "",
+    youtube: "",
     profileImage: null,
     profileImagePreview: "",
   });
@@ -171,9 +175,9 @@ function AdminUsers() {
         address: user.address || "",
         province: user.province || "",
         dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : "",
-        region: user.region || "",
         bio: user.bio || "",
         role: user.role || "gm",
+        tenure: user.tenure || "",
         status: user.isActive ? "Active" : "Inactive",
         gender: user.gender || "",
         code: user.membership?.membershipId || "",
@@ -189,20 +193,24 @@ function AdminUsers() {
         termEnd: user.executiveDetails?.termEnd ? new Date(user.executiveDetails.termEnd).toISOString().split('T')[0] : "",
         linkedin: user.linkedin || "",
         github: user.github || "",
-        facebook: user.facebook || "",
         website: user.website || "",
+        facebook: user.facebook || "",
+        twitter: user.twitter || "",
+        instagram: user.instagram || "",
+        tiktok: user.tiktok || "",
+        youtube: user.youtube || "",
         profileImage: null,
         profileImagePreview: user.profileImage || "",
       });
     } else {
       setEditingUser(null);
       setFormData({
-        name: "", email: "", password: "", phone: "", address: "", province: "", dateOfBirth: "", region: "", bio: "",
-        role: "gm", status: "Active", gender: "",
+        name: "", email: "", secondaryEmail: "", password: "", phone: "", address: "", province: "", dateOfBirth: "", bio: "",
+        role: "gm", tenure: "", status: "Active", gender: "",
         code: "", membershipStatus: "active",
         collegeName: "", university: "", faculty: "", semester: "", graduationYear: "",
         ebBody: "", department: "", termStart: "", termEnd: "",
-        linkedin: "", github: "", facebook: "", website: "",
+        linkedin: "", github: "", website: "", facebook: "", twitter: "", instagram: "", tiktok: "", youtube: "",
         profileImage: null, profileImagePreview: "",
       });
     }
@@ -241,19 +249,24 @@ function AdminUsers() {
       const payload = {
         name: formData.name,
         email: formData.email,
+        secondaryEmail: formData.secondaryEmail,
         phone: formData.phone,
         address: formData.address,
         province: formData.province,
         dateOfBirth: formData.dateOfBirth,
-        region: formData.region,
         bio: formData.bio,
         role: formData.role,
+        tenure: formData.tenure,
         gender: formData.gender,
         isActive: formData.status === "Active",
         linkedin: formData.linkedin,
         github: formData.github,
-        facebook: formData.facebook,
         website: formData.website,
+        facebook: formData.facebook,
+        twitter: formData.twitter,
+        instagram: formData.instagram,
+        tiktok: formData.tiktok,
+        youtube: formData.youtube,
         membership: {
           membershipId: formData.code,
           membershipStatus: formData.membershipStatus,
@@ -439,7 +452,7 @@ function AdminUsers() {
               name: row.Name || row.name,
               email: row.Email || row.email,
               phone: row.Phone || row.phone,
-              role: row.Role || row.role || "student",
+              role: row.Role || row.role || "gm",
               isActive: row.Status === 'Active' || row.isActive === 'true',
               password: `CFC@${Math.floor(1000 + Math.random() * 9000)}`
             };
@@ -498,20 +511,20 @@ function AdminUsers() {
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {hasPermission('user_create') && (
-            <label className="flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-5 py-3 rounded-xl hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all shadow-sm font-bold text-[11px] uppercase tracking-widest cursor-pointer group flex-1 md:flex-none">
-              <FaDownload className="text-emerald-500 group-hover:bounce" /> <span className="hidden sm:inline">Import CSV</span><span className="sm:hidden">Import</span>
+            <label className="flex items-center group justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-5 py-3 rounded-xl hover:bg-secondary  hover:text-white transition-all shadow-sm font-bold text-[11px] uppercase tracking-widest cursor-pointer group flex-1 md:flex-none">
+              <FaDownload className="text-secondary group-hover:text-white group-hover:bounce" /> <span className="hidden sm:inline">Import CSV</span><span className="sm:hidden">Import</span>
               <input type="file" accept=".csv" className="hidden" onChange={handleImport} />
             </label>
           )}
 
           <div className="relative group/export flex-1 md:flex-none">
-            <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-5 py-3 rounded-xl hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all shadow-sm font-bold text-[11px] uppercase tracking-widest">
-              <FaFileCsv className="text-lg text-emerald-500" /> <span className="hidden sm:inline">Export</span>
+            <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-5 py-3 rounded-xl  hover:bg-secondary  hover:text-white cursor-pointer group transition-all shadow-sm font-bold text-[11px] uppercase tracking-widest">
+              <FaFileCsv className="text-lg text-secondary group-hover:text-white" /> <span className="hidden sm:inline">Export</span>
             </button>
             <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-50 py-2 overflow-hidden">
               {hasPermission('user_export_csv') && (
                 <button onClick={exportToCSV} className="w-full px-6 py-3 text-left flex items-center gap-3 text-xs font-bold text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all border-b border-gray-50">
-                  <FaFileCsv className="text-emerald-500" /> CSV Schema
+                  <FaFileCsv className="text-secondary" /> CSV Schema
                 </button>
               )}
               {hasPermission('user_export_pdf') && (
@@ -530,7 +543,7 @@ function AdminUsers() {
           {hasPermission('user_create') && (
             <button
               onClick={() => handleOpenModal()}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition-all shadow-md shadow-emerald-200 font-bold text-[11px] uppercase tracking-widest whitespace-nowrap"
+              className="flex-1 md:flex-none flex cursor-pointer items-center justify-center gap-2 bg-secondary text-white px-6 py-3 rounded-xl transition-all shadow-sm hover:shadow-md shadow-secondary/20 font-bold text-[11px] uppercase tracking-widest whitespace-nowrap"
             >
               <FaUserPlus className="text-lg" /> <span className="hidden sm:inline">New Member</span><span className="sm:hidden">Add</span>
             </button>
@@ -546,7 +559,7 @@ function AdminUsers() {
             <input
               type="text"
               placeholder="Search by name, email, phone, ID, or college..."
-              className="w-full pl-12 pr-6 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 focus:bg-white outline-none font-medium text-sm transition-all text-gray-900"
+              className="w-full pl-12 pr-6 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 focus:bg-white outline-none font-medium text-sm transition-all text-gray-900"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -628,8 +641,8 @@ function AdminUsers() {
                 key={role}
                 onClick={() => setActiveRole(role)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${activeRole === role
-                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
-                  : 'bg-white text-gray-500 border-gray-200 hover:text-emerald-600 hover:border-emerald-200'
+                  ? 'bg-secondary text-white border-secondary shadow-sm'
+                  : 'bg-white text-gray-500 border-gray-200 hover:text-secondary hover:border-emerald-200'
                   }`}
               >
                 {role}
@@ -666,7 +679,7 @@ function AdminUsers() {
                           className="w-12 h-12 rounded-xl object-cover border border-gray-200 shadow-sm transition-transform group-hover:scale-105"
                         />
                         {user.isVerified && (
-                          <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
+                          <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-secondary rounded-full border-2 border-white flex items-center justify-center">
                             <FaCheckCircle className="text-white text-[8px]" />
                           </div>
                         )}
@@ -676,7 +689,7 @@ function AdminUsers() {
                         <div className="text-xs text-gray-500 font-medium">{user.email?.toLowerCase()}</div>
                         <div className="flex items-center gap-4 mt-1.5">
                           <div className="text-[11px] text-gray-400 font-semibold flex items-center gap-1">
-                            <FaClock size={10} className="text-emerald-500" /> {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                            <FaClock size={10} className="text-secondary" /> {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                           </div>
                         </div>
                       </div>
@@ -687,7 +700,7 @@ function AdminUsers() {
                       <div className="space-y-0.5">
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Member ID</p>
                         <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700">
-                          <FaIdCard className="text-emerald-500" /> {user.membership?.membershipId || 'N/A'}
+                          <FaIdCard className="text-secondary" /> {user.membership?.membershipId || 'N/A'}
                         </span>
                       </div>
                       <div className="space-y-0.5">
@@ -740,7 +753,7 @@ function AdminUsers() {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === user._id ? null : user._id);
                       }}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 bg-white hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-all duration-300"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 bg-white hover:bg-emerald-50 hover:text-secondary hover:border-emerald-200 transition-all duration-300"
                     >
                       <BsThreeDotsVertical size={14} />
                     </button>
@@ -753,7 +766,7 @@ function AdminUsers() {
                           onClick={() => { navigate(`/admin/user/${user._id}`); setOpenMenuId(null); }}
                           className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-wider"
                         >
-                          <BsEye className="text-emerald-500" /> View Detail
+                          <BsEye className="text-secondary" /> View Detail
                         </button>
                         <div className="h-[1px] bg-gray-50 my-1 mx-4"></div>
                         {hasPermission('user_update') && (
@@ -768,7 +781,7 @@ function AdminUsers() {
                               onClick={() => { handleToggleVerification(user); setOpenMenuId(null); }}
                               className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-wider"
                             >
-                              <FaCheckCircle className={user.isVerified ? "text-rose-500" : "text-emerald-500"} /> {user.isVerified ? "Unverify Member" : "Verify Member"}
+                              <FaCheckCircle className={user.isVerified ? "text-rose-500" : "text-secondary"} /> {user.isVerified ? "Unverify Member" : "Verify Member"}
                             </button>
                             <div className="h-[1px] bg-gray-50 my-1 mx-4"></div>
                           </>
@@ -876,7 +889,7 @@ function AdminUsers() {
                   {editingUser ? "Update Member" : "Enroll New Member"}
                 </h3>
                 <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                   System Directory Update
                 </p>
               </div>
@@ -904,7 +917,7 @@ function AdminUsers() {
                     <div className="space-y-3 shrink-0">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Member Avatar</label>
                       <div className="relative group/avatar cursor-pointer">
-                        <div className="w-32 h-32 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden transition-all group-hover/avatar:border-emerald-500 group-hover/avatar:bg-emerald-50 shadow-inner">
+                        <div className="w-32 h-32 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden transition-all group-hover/avatar:border-secondary group-hover/avatar:bg-emerald-50 shadow-inner">
                           {formData.profileImagePreview ? (
                             <img src={formData.profileImagePreview} className="w-full h-full object-cover" alt="Profile" />
                           ) : (
@@ -964,7 +977,7 @@ function AdminUsers() {
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Gender</label>
                       <select
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
                         value={formData.gender}
                         onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                         required
@@ -981,7 +994,7 @@ function AdminUsers() {
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Region</label>
                       <select
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
                         value={formData.province}
                         onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                         required
@@ -998,13 +1011,13 @@ function AdminUsers() {
                         <option value="LB Karnali">LB Karnali</option>
                       </select>
                     </div>
-                    <ModalInput label="District/Region" value={formData.region} onChange={(e) => setFormData({ ...formData, region: e.target.value })} />
+
                   </div>
 
                   <div className="mt-6">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">Professional Bio</label>
                     <textarea
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all resize-none h-32 text-sm font-medium leading-relaxed text-gray-900"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all resize-none h-32 text-sm font-medium leading-relaxed text-gray-900"
                       placeholder="Brief summary of expertise and background..."
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -1039,7 +1052,7 @@ function AdminUsers() {
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">System Access Role</label>
                       <select
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
                         value={formData.role}
                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                       >
@@ -1053,6 +1066,9 @@ function AdminUsers() {
                         <option value="eb">Executive Board (EB)</option>
                         <option value="cr">CR</option>
                         <option value="gm">General Member</option>
+                        <option value="ippl">IPPL</option>
+                        <option value="advisor">Advisor</option>
+                        <option value="alumni">Alumni</option>
                         <option value="guest">Guest</option>
                       </select>
                     </div>
@@ -1060,7 +1076,7 @@ function AdminUsers() {
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">EB Position</label>
                         <select
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all appearance-none cursor-pointer"
                           value={formData.ebBody}
                           onChange={(e) => setFormData({ ...formData, ebBody: e.target.value })}
                           required
@@ -1084,7 +1100,7 @@ function AdminUsers() {
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Directory Status</label>
                       <select
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all cursor-pointer"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all cursor-pointer"
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                       >
@@ -1102,7 +1118,7 @@ function AdminUsers() {
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">ID Status</label>
                         <select
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all cursor-pointer"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all cursor-pointer"
                           value={formData.membershipStatus}
                           onChange={(e) => setFormData({ ...formData, membershipStatus: e.target.value })}
                         >
@@ -1111,6 +1127,20 @@ function AdminUsers() {
                           <option value="revoked">Revoked</option>
                         </select>
                       </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 block">Tenure</label>
+                      <select
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 transition-all cursor-pointer"
+                        value={formData.tenure}
+                        onChange={(e) => setFormData({ ...formData, tenure: e.target.value })}
+                      >
+                        <option value="">Select Tenure</option>
+                        <option value="2025-2026">2025-2026</option>
+                        <option value="2024-2025">2024-2025</option>
+                        <option value="2023-2024">2023-2024</option>
+                        <option value="2022-2023">2022-2023</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1126,6 +1156,10 @@ function AdminUsers() {
                     <ModalInput label="GitHub Handle" value={formData.github} onChange={(e) => setFormData({ ...formData, github: e.target.value })} />
                     <ModalInput label="Facebook URL" value={formData.facebook} onChange={(e) => setFormData({ ...formData, facebook: e.target.value })} />
                     <ModalInput label="Portfolio Website" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} />
+                    <ModalInput label="Twitter / X" value={formData.twitter} onChange={(e) => setFormData({ ...formData, twitter: e.target.value })} />
+                    <ModalInput label="Instagram" value={formData.instagram} onChange={(e) => setFormData({ ...formData, instagram: e.target.value })} />
+                    <ModalInput label="TikTok" value={formData.tiktok} onChange={(e) => setFormData({ ...formData, tiktok: e.target.value })} />
+                    <ModalInput label="YouTube" value={formData.youtube} onChange={(e) => setFormData({ ...formData, youtube: e.target.value })} />
                   </div>
                 </div>
 
@@ -1142,7 +1176,7 @@ function AdminUsers() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 shadow-md shadow-emerald-200 transition-all focus:ring-4 focus:ring-emerald-500/20 flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-secondary text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 shadow-md shadow-emerald-200 transition-all focus:ring-4 focus:ring-secondary/20 flex items-center justify-center gap-2"
                 >
                   <FaCheckCircle className="text-sm" />
                   {editingUser ? "Save Updates" : "Enroll Member"}

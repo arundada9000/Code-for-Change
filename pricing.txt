@@ -1,0 +1,94 @@
+LANDING PAGE PACKAGES (DETAILED)  
+
+---
+
+1. BASIC LANDING PAGE
+
+---
+
+WHAT’S INCLUDED:
+
+* Single-page layout (Home only)
+* Sections: Hero, About, Services, Contact
+* Fully responsive (mobile + desktop)
+* Clean and modern UI (simple custom or template-based)
+* Basic navigation (scroll-based)
+* Contact form (Email integration or simple API)
+* Basic SEO (title, meta description)
+
+PRICING:
+NPR 15,000 – 20,000
+
+WHY THIS PRICING:
+
+* Minimal design complexity
+* No advanced animations or backend logic
+* Focus is on providing a simple online presence
+
+---
+
+2. STANDARD LANDING PAGE (RECOMMENDED)
+
+---
+
+WHAT’S INCLUDED:
+
+* Everything in Basic, plus:
+* Custom UI/UX design (not template-based)
+* Smooth animations (hover effects, transitions)
+* Advanced sections:
+
+  * Testimonials
+  * Call-to-action (CTA)
+  * FAQ / Features
+* Optimized performance (fast loading)
+* Enhanced SEO (Open Graph, structured tags)
+* Form with validation (optional backend integration)
+* Deployment (Vercel or hosting setup)
+* Cross-browser compatibility
+
+PRICING:
+NPR 25,000 – 40,000
+
+WHY THIS PRICING:
+
+* Requires approximately 20–40 hours of work
+* Includes both design and development effort
+* Animations and responsiveness increase complexity
+* Built for business growth and better conversions (leads/sales)
+
+---
+
+## BASIC VS STANDARD
+
+Design:
+Basic → Simple / Template
+Standard → Custom UI/UX
+
+Animations:
+Basic → Minimal
+Standard → Smooth and modern
+
+Sections:
+Basic → Limited
+Standard → Advanced sections included
+
+SEO:
+Basic → Basic setup
+Standard → Optimized
+
+Performance:
+Basic → Standard
+Standard → Optimized
+
+Goal:
+Basic → Online presence
+Standard → Conversion (leads/sales)
+
+---
+
+Deployment cost is not included , it is all working cost.
+
+"We offer two options depending on your goal — a basic version for online presence and a standard version designed to convert visitors into customers."
+
+By Sajilo Digital Pvt. Ltd

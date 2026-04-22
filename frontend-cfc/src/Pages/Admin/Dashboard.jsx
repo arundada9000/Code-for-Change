@@ -86,18 +86,18 @@ function Dashboard() {
         <div className="space-y-2 md:space-y-4">
           <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 truncate">{title}</span>
-            <span className={`flex items-center w-fit px-1.5 py-0.5 rounded-full text-[8px] md:text-[10px] font-bold ${trend.percentage >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+            <span className={`flex items-center w-fit px-1.5 py-0.5 rounded-full text-[8px] md:text-[10px] font-bold ${trend.percentage >= 0 ? 'bg-secondary/10 text-secondary' : 'bg-rose-50 text-rose-600'}`}>
               {trend.percentage > 0 ? <HiTrendingUp /> : <HiTrendingDown />} {Math.abs(trend.percentage)}%
             </span>
           </div>
           <div className="flex items-baseline gap-1 md:gap-2">
             <h3 className="text-3xl font-extrabold text-gray-900 tracking-tight">{value}</h3>
             {trend.today > 0 && (
-              <span className="hidden md:inline text-xs font-bold text-emerald-600">+{trend.today} today</span>
+              <span className="hidden md:inline text-xs font-bold text-secondary">+{trend.today} today</span>
             )}
           </div>
         </div>
-        <div className={`p-3 rounded-2xl bg-gray-50 text-gray-600 shadow-inner group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-all duration-300`}>
+        <div className={`p-3 rounded-2xl bg-gray-50 text-gray-600 shadow-inner group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-300`}>
           <Icon size={20} />
         </div>
       </div>
@@ -146,21 +146,21 @@ function Dashboard() {
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Overview Dashboard</h2>
-            <div className="animate-pulse w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500"></div>
+            <div className="animate-pulse w-2 h-2 rounded-full bg-secondary shadow-sm shadow-secondary"></div>
           </div>
-          <p className="text-gray-500 font-medium">Monitor active metrics for <span className="text-emerald-600 font-bold">Code for Change</span>.</p>
+          <p className="text-gray-500 font-medium">Monitor active metrics for <span className="text-secondary font-bold">Code for Change</span>.</p>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="relative group" ref={searchRef}>
-            <input
+            {/* <input
               type="text"
               placeholder="Search users, events, blogs..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/5 transition-all w-full md:w-80 shadow-sm font-bold text-sm"
+              className="pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-secondary/100/5 transition-all w-full md:w-80 shadow-sm font-bold text-sm"
             />
-            <FaSearch className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${searching ? 'text-emerald-500 animate-pulse' : 'text-slate-300 group-focus-within:text-emerald-500'}`} />
+            <FaSearch className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${searching ? 'text-secondary animate-pulse' : 'text-slate-300 group-focus-within:text-secondary/100'}`} /> */}
 
             {/* Search Results Dropdown */}
             {searchResults && (
@@ -179,7 +179,7 @@ function Dashboard() {
                             setSearchResults(null);
                             setSearchQuery('');
                           }}
-                          className="flex items-center gap-3 p-3 hover:bg-emerald-50 rounded-xl transition-all cursor-pointer group"
+                          className="flex items-center gap-3 p-3 hover:bg-secondary/10 rounded-xl transition-all cursor-pointer group"
                         >
                           <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs ring-4 ring-transparent group-hover:ring-emerald-100 transition-all">
                             {u.name[0]}
@@ -205,9 +205,9 @@ function Dashboard() {
                             setSearchResults(null);
                             setSearchQuery('');
                           }}
-                          className="flex items-center gap-3 p-3 hover:bg-emerald-50 rounded-xl transition-all cursor-pointer group"
+                          className="flex items-center gap-3 p-3 hover:bg-secondary/10 rounded-xl transition-all cursor-pointer group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                          <div className="w-8 h-8 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center font-bold text-xs">
                             <FaCalendarAlt size={12} />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -233,7 +233,7 @@ function Dashboard() {
                             setSearchResults(null);
                             setSearchQuery('');
                           }}
-                          className="flex items-center gap-3 p-3 hover:bg-emerald-50 rounded-xl transition-all cursor-pointer group"
+                          className="flex items-center gap-3 p-3 hover:bg-secondary/10 rounded-xl transition-all cursor-pointer group"
                         >
                           <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-xs">
                             <FaBlog size={12} />
@@ -259,11 +259,11 @@ function Dashboard() {
           <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className={`p-4 bg-white border border-slate-100 rounded-2xl transition-all relative group ${showNotifications ? 'ring-4 ring-emerald-500/10 text-emerald-600 shadow-lg' : 'text-slate-400 hover:text-emerald-600 hover:shadow-xl'}`}
+              className={`p-4 bg-secondary border rounded-full transition-all shadow cursor-pointer relative group ${showNotifications ? 'ring ring-secondary/10 text-white shadow-lg' : 'text-white hover:text-secondary hover:bg-white hover:shadow-xl'}`}
             >
               <FaRegBell size={20} />
               {stats.recent.reminders.length > 0 && (
-                <span className="absolute top-3 right-3 w-3 h-3 bg-rose-500 border-4 border-white rounded-full"></span>
+                <span className="absolute top-3 right-3 w-2 h-2 bg-rose-500 rounded-full"></span>
               )}
             </button>
 
@@ -275,7 +275,7 @@ function Dashboard() {
                     <h4 className="text-lg font-black text-slate-900 tracking-tight">Upcoming Events</h4>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Notification Center</p>
                   </div>
-                  <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest">
+                  <div className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-[10px] font-black uppercase tracking-widest">
                     {stats.recent.reminders.length} New
                   </div>
                 </div>
@@ -292,18 +292,18 @@ function Dashboard() {
                         className="group flex gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all cursor-pointer border border-transparent hover:border-slate-100"
                       >
                         <div className="relative">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xs ${index === 0 ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' :
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xs ${index === 0 ? 'bg-secondary text-white shadow-lg shadow-emerald-200' :
                             index === 1 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' :
                               'bg-slate-100 text-slate-500'
                             }`}>
                             {index + 1}
                           </div>
-                          {index === 0 && <span className="absolute -top-1 -right-1 flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>}
+                          {index === 0 && <span className="absolute -top-1 -right-1 flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-secondary/100"></span></span>}
                         </div>
                         <div className="flex-1 space-y-1">
                           <div className="flex items-center justify-between">
-                            <p className="text-sm font-black text-slate-900 group-hover:text-emerald-600 transition-colors truncate max-w-[180px]">{event.title}</p>
-                            <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest whitespace-nowrap">
+                            <p className="text-sm font-black text-slate-900 group-hover:text-secondary transition-colors truncate max-w-[180px]">{event.title}</p>
+                            <p className="text-[10px] font-black text-secondary uppercase tracking-widest whitespace-nowrap">
                               {new Date(event.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                             </p>
                           </div>
@@ -325,7 +325,7 @@ function Dashboard() {
                 <div className="p-6 bg-slate-50/50 grid grid-cols-2 gap-4">
                   <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Live Users</p>
-                    <p className="text-lg font-black text-emerald-600">{stats.counts.onlineUsers}</p>
+                    <p className="text-lg font-black text-secondary">{stats.counts.onlineUsers}</p>
                   </div>
                   <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Unread Msg</p>
@@ -341,11 +341,11 @@ function Dashboard() {
       {/* 2. Luxe Stats Grid - Compact Mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard title="Users" value={stats.counts.users} trend={stats.trends.users} icon={FaUsers} color="from-blue-600 to-indigo-600" link="/admin/user" />
-        <StatCard title="Events" value={stats.counts.events} trend={stats.trends.events} icon={FaCalendarAlt} color="from-emerald-600 to-teal-600" link="/admin/event" />
+        <StatCard title="Events" value={stats.counts.events} trend={stats.trends.events} icon={FaCalendarAlt} color="from-secondary to-teal-600" link="/admin/event" />
         <StatCard title="Blogs" value={stats.counts.blogs} trend={stats.trends.blogs} icon={FaBlog} color="from-amber-600 to-orange-600" link="/admin/blog" />
         <StatCard title="Donations" value={stats.counts.donations} trend={stats.trends.donations} icon={FaDonation} color="from-indigo-600 to-violet-600" link="/admin/donation" />
         <StatCard title="Certificates" value={stats.counts.certificates} trend={stats.trends.certificates} icon={FaCert} color="from-cyan-600 to-blue-600" link="/admin/certificate" />
-        <StatCard title="Internships" value={stats.counts.internships} trend={stats.trends.internships} icon={FaIntern} color="from-teal-600 to-emerald-600" link="/admin/internships" />
+        <StatCard title="Internships" value={stats.counts.internships} trend={stats.trends.internships} icon={FaIntern} color="from-teal-600 to-secondary" link="/admin/internships" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -360,7 +360,7 @@ function Dashboard() {
               </div>
               <div className="flex gap-2">
                 {['6M', '1Y', 'ALL'].map(t => (
-                  <button key={t} className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${t === '6M' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-gray-50 hover:bg-gray-100 text-gray-500'}`}>
+                  <button key={t} className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${t === '6M' ? 'bg-secondary text-white shadow-sm' : 'bg-gray-50 hover:bg-gray-100 text-gray-500'}`}>
                     {t}
                   </button>
                 ))}
@@ -370,57 +370,12 @@ function Dashboard() {
           </section>
 
           {/* Event Pipeline / Tasks */}
-          {/* 1. Dynamic Premium Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pb-4 md:pb-0">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter italic">Admin Dashboard</h2>
-                <div className="animate-pulse w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
-              </div>
-              <p className="text-sm md:text-base text-slate-500 font-medium tracking-wide">Main control panel for <span className="text-emerald-600 font-bold">Code for Change</span>.</p>
-            </div>
-
-            <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className="relative group w-full md:w-auto" ref={searchRef}>
-                <input
-                  type="text"
-                  placeholder="Search users, events, blogs..."
-                  value={searchQuery}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className="pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/5 transition-all w-full md:w-80 shadow-sm font-bold text-sm"
-                />
-                <FaSearch className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${searching ? 'text-emerald-500 animate-pulse' : 'text-slate-300 group-focus-within:text-emerald-500'}`} />
-
-                {/* Search Results Dropdown remains same */}
-                {searchResults && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-50 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="max-h-[400px] overflow-y-auto p-2 space-y-4">
-                      {/* ... results content ... */}
-                      {/* (Keep existing logic for results, assuming it fits here or just leave it since I'm targeting lines 151-428 and I shouldn't delete inner content if possible, but replace allows block replacement. 
-                      I need to be careful not to delete the search results logic if I replace the whole block.
-                      I'll try to replace chunks to avoid deleting the large search results block.)
-                  */}
-                      {/* I will break this into smaller chunks to avoid deleting logic */}
-                    </div>
-                  </div>
-                )}
-              </div>
-              {/* Notification Button */}
-              <div className="relative" ref={notificationRef}>
-                {/* ... */}
-              </div>
-            </div>
-          </div>
-
-          {/* ... keeping logic ... */}
-
-          {/* Event Pipeline / Tasks */}
           <section className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <h3 className="text-lg font-extrabold text-gray-900">Recent Events</h3>
               <button
                 onClick={() => navigate('/admin/event')}
-                className="p-2.5 bg-white hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 rounded-xl text-gray-400 hover:text-emerald-600 transition-all shadow-sm"
+                className="p-2.5 bg-white hover:bg-secondary/10 border border-gray-200 hover:border-emerald-200 rounded-xl text-gray-400 hover:text-secondary transition-all shadow-sm"
               >
                 <FaPlus size={14} />
               </button>
@@ -443,19 +398,19 @@ function Dashboard() {
                       <td className="px-8 py-5 font-bold text-gray-900">{event.title}</td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-2 text-gray-500 font-medium">
-                          <FaClock size={12} className="text-emerald-500" />
+                          <FaClock size={12} className="text-secondary/100" />
                           {new Date(event.startDate || event.date).toLocaleDateString()}
                         </div>
                       </td>
                       <td className="px-8 py-5 text-center">
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block ${event.status === 'Published' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/50' : 'bg-gray-100 text-gray-600 ring-1 ring-gray-200/50'}`}>
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block ${event.status === 'Published' ? 'bg-secondary/10 text-emerald-700 ring-1 ring-emerald-200/50' : 'bg-gray-100 text-gray-600 ring-1 ring-gray-200/50'}`}>
                           {event.status || 'DRAFT'}
                         </span>
                       </td>
                       <td className="px-8 py-5 text-right">
                         <button
                           onClick={() => navigate(`/admin/event/${event._id}`)}
-                          className="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 group-hover:border-emerald-200 transition-all duration-300"
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary group-hover:border-emerald-200 transition-all duration-300"
                         >
                           <FaArrowRight size={12} />
                         </button>
@@ -475,7 +430,7 @@ function Dashboard() {
                   className="bg-white border-b border-slate-50 py-3 flex items-center justify-between active:bg-slate-50 transition-colors last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${event.status === 'Published' ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
+                    <div className={`w-2 h-2 rounded-full ${event.status === 'Published' ? 'bg-secondary/100' : 'bg-slate-300'}`}></div>
                     <div className="space-y-0.5">
                       <p className="font-bold text-slate-900 text-xs line-clamp-1">{event.title}</p>
                       <p className="text-[10px] text-slate-400 font-medium">
@@ -493,7 +448,7 @@ function Dashboard() {
         {/* 4. Activity Feed & Persistence Sidebar */}
         <div className="lg:col-span-4 space-y-6">
           <section className="bg-gray-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-lg border border-gray-800">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/100/10 blur-[80px] pointer-events-none"></div>
             <div className="relative space-y-8">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-extrabold">Who's Online</h3>
@@ -510,12 +465,12 @@ function Dashboard() {
                     className="flex items-center justify-between group/item cursor-pointer"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center font-black text-emerald-500 text-sm group-hover/item:bg-emerald-600 group-hover/item:text-white transition-all duration-300">
+                      <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center font-black text-secondary/100 text-sm group-hover/item:bg-secondary group-hover/item:text-white transition-all duration-300">
                         {user.name[0]}
                       </div>
                       <div>
-                        <p className="text-sm font-black tracking-tight group-hover/item:text-emerald-400 transition-colors">{user.name}</p>
-                        <p className="text-[10px] text-emerald-500/60 font-bold uppercase tracking-wider">Online Now</p>
+                        <p className="text-sm font-black tracking-tight group-hover/item:text-secondary transition-colors">{user.name}</p>
+                        <p className="text-[10px] text-secondary/100/60 font-bold uppercase tracking-wider">Online Now</p>
                       </div>
                     </div>
                   </div>
@@ -560,7 +515,7 @@ function Dashboard() {
               {stats.recent.activities.map((log) => {
                 const getActionColor = (action) => {
                   switch (action?.toUpperCase()) {
-                    case 'CREATE': return 'bg-emerald-500 shadow-emerald-200 border-emerald-100';
+                    case 'CREATE': return 'bg-secondary/100 shadow-emerald-200 border-emerald-100';
                     case 'UPDATE': return 'bg-blue-500 shadow-blue-200 border-blue-100';
                     case 'DELETE': return 'bg-rose-500 shadow-rose-200 border-rose-100';
                     case 'LOGIN': return 'bg-indigo-500 shadow-indigo-200 border-indigo-100';
@@ -585,7 +540,7 @@ function Dashboard() {
                     <div className="space-y-1">
                       <p className="text-sm font-medium text-gray-600 leading-snug group-hover/log:text-gray-900 transition-colors">
                         <span className={`font-bold ${log.action?.toUpperCase() === 'DELETE' ? 'text-rose-600' :
-                            log.action?.toUpperCase() === 'CREATE' ? 'text-emerald-600' :
+                            log.action?.toUpperCase() === 'CREATE' ? 'text-secondary' :
                               log.action?.toUpperCase() === 'UPDATE' ? 'text-blue-600' : 'text-indigo-600'
                           }`}>{log.userName}</span> {log.details}
                       </p>
@@ -607,10 +562,10 @@ function Dashboard() {
           </section>
 
           {/* Event Reminders Section */}
-          <section className="bg-emerald-50 rounded-3xl border border-emerald-100 p-8 space-y-6 shadow-sm">
+          <section className="bg-secondary/10 rounded-3xl border border-emerald-100 p-8 space-y-6 shadow-sm">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-extrabold text-emerald-900 flex items-center gap-2">
-                <FaCalendarAlt className="text-emerald-600" />
+                <FaCalendarAlt className="text-secondary" />
                 Coming Up
               </h3>
               <span className="px-3 py-1 bg-emerald-200/50 text-emerald-800 text-[10px] font-black rounded-full uppercase">Next 48h</span>

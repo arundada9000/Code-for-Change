@@ -80,7 +80,7 @@ function AdminLayout() {
                 Admin Panel
               </h1>
               <p className="text-[10px] font-medium text-gray-500 mt-1">
-                Main control panel for <span className="text-emerald-600 font-bold">Code for Change</span>
+                Main control panel for <span className="text-secondary font-bold">Code for Change</span>
               </p>
             </div>
           </div>

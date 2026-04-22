@@ -79,6 +79,7 @@ function Member() {
     socialLinks: {
       linkedin: "",
       github: "",
+      website: "",
       twitter: "",
       facebook: "",
       instagram: "",
@@ -124,6 +125,7 @@ function Member() {
         socialLinks: {
           linkedin: m?.linkedin || "",
           github: m?.github || "",
+          website: m?.website || "",
           twitter: m?.twitter || "",
           facebook: m?.facebook || "",
           instagram: m?.instagram || "",
@@ -161,6 +163,7 @@ function Member() {
         socialLinks: {
           linkedin: member.socialLinks?.linkedin || "",
           github: member.socialLinks?.github || "",
+          website: member.socialLinks?.website || "",
           twitter: member.socialLinks?.twitter || "",
           facebook: member.socialLinks?.facebook || "",
           instagram: member.socialLinks?.instagram || "",
@@ -188,6 +191,7 @@ function Member() {
         socialLinks: {
           linkedin: "",
           github: "",
+          website: "",
           twitter: "",
           facebook: "",
           instagram: "",
@@ -418,7 +422,8 @@ function Member() {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
-    const newStatus = member.status === "Verified" ? "Pending" : "Verified";
+    const newIsVerified = member.status !== "Verified";
+    const newStatus = newIsVerified ? "Verified" : "Pending";
 
     // Optimistic update
     setMembers(members.map(m =>
@@ -426,10 +431,12 @@ function Member() {
     ));
 
     try {
-      // API call to update status
-      await API.patch(`/admin/users/${id}`, { status: newStatus });
+      // API call: send isVerified boolean — matches backend field
+      await API.patch(`/admin/users/${id}`, { isVerified: newIsVerified });
+      toast.success(`Member ${newIsVerified ? 'verified' : 'unverified'} successfully`);
     } catch (error) {
-      console.error("Failed to update status", error);
+      console.error("Failed to update verification status", error);
+      toast.error("Failed to update verification status");
       // Revert if failed
       setMembers(members.map(m =>
         m.id === id ? { ...m, status: member.status } : m
@@ -517,7 +524,7 @@ function Member() {
 
       {/* 2. Role Filter Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {['all', 'superadmin', 'admin', 'eb', 'cr', 'gm', 'guest'].map((role) => (
+        {['all', 'superadmin', 'admin', 'eb', 'cr', 'gm', 'ippl', 'advisor', 'alumni', 'guest'].map((role) => (
           <button
             key={role}
             onClick={() => setActiveFilter(role)}
@@ -754,6 +761,9 @@ function Member() {
                       <option value="gm">General Member</option>
                       <option value="eb">Executive Board (EB)</option>
                       <option value="cr">Campus Representative (CR)</option>
+                      <option value="ippl">IPPL</option>
+                      <option value="advisor">Advisor</option>
+                      <option value="alumni">Alumni</option>
                       <option value="guest">Guest</option>
                       {(useAuth().user?.role === 'superadmin' || useAuth().user?.role === 'admin') && (
                         <>
@@ -886,7 +896,7 @@ function Member() {
               <div className="space-y-4 pt-8 border-t border-slate-100">
                 <h4 className="text-xs font-black uppercase tracking-[0.2em] text-slate-900 border-l-4 border-emerald-500 pl-4">Digital Identity</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {['linkedin', 'github', 'facebook', 'instagram', 'tiktok', 'youtube'].map((social) => (
+                  {['linkedin', 'github', 'website', 'facebook', 'instagram', 'tiktok', 'youtube'].map((social) => (
                     <div key={social}>
                       <label className="block text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1 capitalize">{social}</label>
                       <input

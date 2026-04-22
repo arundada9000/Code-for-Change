@@ -42,6 +42,8 @@ function AdminGallery() {
   const { hasPermission } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -71,14 +73,29 @@ function AdminGallery() {
     province: "",
   });
 
-  const fetchGallery = async () => {
+  const fetchGallery = async (currentPage = page) => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
       if (filterProvince !== "all") params.append("province", filterProvince);
+      params.append("limit", "12");
+      params.append("page", String(currentPage));
 
       const { data } = await API.get(`/gallery?${params.toString()}`);
-      setItems(data.data || []);
+      const newItems = data.data?.items || [];
+      const pagination = data.pagination || data.data?.pagination || null;
+
+      if (currentPage === 1) {
+        setItems(newItems);
+      } else {
+        setItems((prev) => [...prev, ...newItems]);
+      }
+
+      if (pagination && pagination.page < pagination.totalPages) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Failed to fetch gallery", error);
     } finally {
@@ -86,8 +103,15 @@ function AdminGallery() {
     }
   };
 
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchGallery(nextPage);
+  };
+
   useEffect(() => {
-    fetchGallery();
+    setPage(1);
+    fetchGallery(1);
   }, [filterProvince]);
 
   const handleFile = (file) => {
@@ -192,7 +216,8 @@ function AdminGallery() {
         toast.success("Image added to gallery!");
       }
       setIsModalOpen(false);
-      fetchGallery();
+      setPage(1);
+      fetchGallery(1);
     } catch (error) {
       console.error("Failed to save gallery item", error);
       toast.error(error.response?.data?.message || "Failed to save image");
@@ -236,8 +261,8 @@ function AdminGallery() {
         )}
       </div>
 
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[600px]">
-        {loading ? (
+      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[600px] flex flex-col">
+        {loading && items.length === 0 ? (
           <div className="p-10 text-center text-slate-400 font-bold">
             Loading gallery items...
           </div>
@@ -246,7 +271,8 @@ function AdminGallery() {
             No gallery items found.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-8">
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-8">
             {items.map((item) => (
               <div
                 key={item._id || item.id}
@@ -290,6 +316,19 @@ function AdminGallery() {
               </div>
             ))}
           </div>
+
+          {hasMore && (
+            <div className="flex justify-center p-6 border-t border-slate-100 mt-auto">
+              <button
+                onClick={loadMore}
+                disabled={loading}
+                className="px-6 py-2.5 bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 hover:bg-slate-100 transition-all shadow-sm flex items-center gap-2"
+              >
+                {loading ? "Loading..." : "Load More Images"}
+              </button>
+            </div>
+          )}
+        </>
         )}
       </div>
 

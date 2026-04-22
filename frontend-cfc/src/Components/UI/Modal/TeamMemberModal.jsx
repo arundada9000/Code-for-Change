@@ -8,6 +8,8 @@ import {
   FaInstagram,
   FaTwitter,
   FaFacebookF,
+  FaYoutube,
+  FaTiktok,
 } from "react-icons/fa";
 import { FiGlobe } from "react-icons/fi";
 
@@ -19,6 +21,8 @@ const SOCIAL_CONFIG = {
   instagram: { icon: <FaInstagram /> },
   facebook: { icon: <FaFacebookF /> },
   website: { icon: <FiGlobe /> },
+  youtube: { icon: <FaYoutube /> },
+  tiktok: { icon: <FaTiktok /> },
 };
 
 export default function TeamMemberModal({ isOpen, onClose, member, links }) {
@@ -79,13 +83,11 @@ export default function TeamMemberModal({ isOpen, onClose, member, links }) {
             {member.role?.replace("-", " ") || "Team Member"}.
           </p>
 
-          <p className="text-white/80 mb-6">
-            {member.bio || "Focused on building meaningful impact."}
-          </p>
+          <p className="text-white/80 mb-6">{member.bio}</p>
 
           {/* Social Section */}
           {socialEntries.length > 0 && (
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-2 overflow-auto">
               {socialEntries.map(([key, config]) => {
                 const value = socialLinks[key];
 

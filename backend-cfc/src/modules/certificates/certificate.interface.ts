@@ -36,6 +36,11 @@ export interface ICertificate extends Document {
   programId?: Types.ObjectId; // Link to Event or Internship
   issuedBy: Types.ObjectId; // Admin/User who issued it
   metadata?: Record<string, any>;
+  // ── Custom Signature Fields ──────────────────────────────────────
+  signatureName?: string;     // e.g. "Krishna Pokhrel"
+  signaturePosition?: string; // e.g. "Project Lead CFC"
+  signatureImage?: string;    // Base64 data URL of signature image
+  awardedTo?: string;         // e.g. "Cordially Awarded To" (customizable)
   createdAt: Date;
   updatedAt: Date;
 }

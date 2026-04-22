@@ -16,9 +16,18 @@ export const register = async (data: any) => {
     email: data.email,
     phone: data.phone,
     password: await hashPassword(data.password),
-    role: "gm",
-    isVerified: false,
-    isActive: true,
+    role: data.role || "gm",
+    tenure: data.tenure,
+    bio: data.bio,
+    gender: data.gender,
+    dateOfBirth: data.dateOfBirth,
+    address: data.address,
+    linkedin: data.linkedin,
+    github: data.github,
+    facebook: data.facebook,
+    website: data.website,
+    isVerified: typeof data.isVerified === "boolean" ? data.isVerified : false,
+    isActive: typeof data.isActive === "boolean" ? data.isActive : true,
     accountStatus: "pending",
     education: {
       collegeName: data.collegeName,
@@ -55,8 +64,10 @@ export const getMe = async (userId: string) => {
     id: user._id.toString(),
     name: user.name,
     email: user.email,
+    secondaryEmail: user.secondaryEmail,
     phone: user.phone,
     role: user.role,
+    tenure: user.tenure,
     isVerified: user.isVerified,
     isActive: user.isActive,
     accountStatus: user.accountStatus,
@@ -77,6 +88,10 @@ export const getMe = async (userId: string) => {
     linkedin: user.linkedin,
     github: user.github,
     facebook: user.facebook,
+    twitter: user.twitter,
+    instagram: user.instagram,
+    tiktok: user.tiktok,
+    youtube: user.youtube,
   };
 };
 
@@ -162,22 +177,33 @@ export const loginUser = async (
     id: user._id.toString(),
     name: user.name,
     email: user.email,
+    secondaryEmail: user.secondaryEmail,
+    phone: user.phone,
     role: user.role,
+    tenure: user.tenure,
     isVerified: user.isVerified,
     isActive: user.isActive,
+    accountStatus: user.accountStatus,
+    permissions: user.permissions,
     education: user.education,
     membership: user.membership,
     executiveDetails: user.executiveDetails,
-    phone: user.phone,
     bio: user.bio,
     address: user.address,
     gender: user.gender,
     dateOfBirth: user.dateOfBirth,
     profileImage: user.profileImage,
+    province: user.province,
     website: user.website,
     linkedin: user.linkedin,
     github: user.github,
     facebook: user.facebook,
+    twitter: user.twitter,
+    instagram: user.instagram,
+    tiktok: user.tiktok,
+    youtube: user.youtube,
+    lastLogin: user.lastLogin,
+    createdAt: (user as any).createdAt,
   };
 
   return {
@@ -301,36 +327,50 @@ export const resetPassword = async (email: string, resetToken: string, newPasswo
 
 export const updateProfile = async (userId: string, data: any) => {
   const user = await UserTable.findById(userId);
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error('User not found');
 
-  // Basic info updates
-  if (data.name) user.name = data.name;
-  if (data.phone) user.phone = data.phone;
+  // Use !== undefined so users can explicitly clear a field by sending empty string
+  if (data.name !== undefined) user.name = data.name;
+  if (data.phone !== undefined) user.phone = data.phone;
+  if (data.bio !== undefined) user.bio = data.bio;
+  if (data.address !== undefined) user.address = data.address;
+  if (data.gender !== undefined) user.gender = data.gender;
+  if (data.dateOfBirth !== undefined) user.dateOfBirth = data.dateOfBirth;
+
+  // Social links — allow clearing
+  if (data.website !== undefined) user.website = data.website;
+  if (data.linkedin !== undefined) user.linkedin = data.linkedin;
+  if (data.github !== undefined) user.github = data.github;
+  if (data.facebook !== undefined) user.facebook = data.facebook;
+  if (data.twitter !== undefined) user.twitter = data.twitter;
+  if (data.instagram !== undefined) user.instagram = data.instagram;
+  if (data.tiktok !== undefined) user.tiktok = data.tiktok;
+  if (data.youtube !== undefined) user.youtube = data.youtube;
+
+  // Profile images
   if (data.profileImage) user.profileImage = data.profileImage;
   if (data.coverImage) user.coverImage = data.coverImage;
-  if (data.bio) user.bio = data.bio;
-  if (data.website) user.website = data.website;
-  if (data.linkedin) user.linkedin = data.linkedin;
-  if (data.github) user.github = data.github;
-  if (data.facebook) user.facebook = data.facebook;
-  if (data.address) user.address = data.address;
-  if (data.dateOfBirth) user.dateOfBirth = data.dateOfBirth;
-  if (data.gender) user.gender = data.gender;
 
-  // Education updates
-  if (data.collegeName || data.university || data.faculty || data.semester || data.graduationYear) {
+  // Education — merge nested, allow field clearing
+  if (
+    data.collegeName !== undefined ||
+    data.university !== undefined ||
+    data.faculty !== undefined ||
+    data.semester !== undefined ||
+    data.graduationYear !== undefined
+  ) {
     user.education = {
       ...user.education,
-      collegeName: data.collegeName || user.education?.collegeName,
-      university: data.university || user.education?.university,
-      faculty: data.faculty || user.education?.faculty,
-      semester: data.semester || user.education?.semester,
-      graduationYear: data.graduationYear || user.education?.graduationYear,
+      ...(data.collegeName !== undefined && { collegeName: data.collegeName }),
+      ...(data.university !== undefined && { university: data.university }),
+      ...(data.faculty !== undefined && { faculty: data.faculty }),
+      ...(data.semester !== undefined && { semester: data.semester }),
+      ...(data.graduationYear !== undefined && { graduationYear: data.graduationYear }),
     };
   }
 
-  // Note: executiveDetails, role, and permissions are NOT updatable by users
-  // Those can only be changed by admin via the admin user management endpoints
+  // Note: role, permissions, tenure, province, executiveDetails are admin-only fields
+  // Users cannot change these through the profile update endpoint
 
   await user.save();
   return user;

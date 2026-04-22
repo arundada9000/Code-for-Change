@@ -3,6 +3,7 @@ import DonationImg from "../../../assets/Donate.png";
 import { useNavigate } from "react-router-dom";
 import API from "../../../Services/api";
 import { FadeIn, SlideUp } from "../../Common/Animations";
+import { FaUnlockAlt } from "react-icons/fa";
 
 function DonateSection() {
   const [formData, setFormData] = useState({
@@ -167,7 +168,7 @@ function DonateSection() {
               <form onSubmit={handleSubmit} className="space-y-7">
             {/* NAME */}
             <div>
-              <label htmlFor="name" className="block text-sm text-slate-400 uppercase tracking-widest placeholder:text-slate-400 font-bold mb-2">
+              <label htmlFor="name" className="block text-sm text-gray-600 capitalize tracking-widest placeholder:text-slate-400 font-medium mb-2">
                 Full Name
               </label>
               <input
@@ -178,7 +179,7 @@ function DonateSection() {
                 onChange={handleChange}
                 placeholder="Code for Change"
                 className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
-               focus:ring-1 focus:ring-primary/30 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
               outline-none transition"
               />
               {errors.name && (
@@ -188,7 +189,7 @@ function DonateSection() {
 
             {/* EMAIL */}
             <div>
-              <label htmlFor="email" className="block text-sm text-slate-400 uppercase tracking-widest placeholder:text-slate-400 font-bold mb-2">
+              <label htmlFor="email" className="block text-sm text-gray-600 capitalize tracking-widest placeholder:text-slate-400 font-medium mb-2">
                 Email Address
               </label>
               <input
@@ -199,7 +200,7 @@ function DonateSection() {
                 onChange={handleChange}
                 placeholder="codeforchange@example.com"
                 className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
-               focus:ring-1 focus:ring-primary/30 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
               outline-none transition"
               />
             </div>
@@ -208,7 +209,7 @@ function DonateSection() {
             <div>
               <label
                 htmlFor="contactNumber"
-                className="block text-sm text-slate-400 uppercase tracking-widest placeholder:text-slate-400 font-bold mb-2"
+                className="block text-sm text-gray-600 capitalize tracking-widest placeholder:text-slate-400 font-medium mb-2"
               >
                 Phone Number
               </label>
@@ -220,7 +221,7 @@ function DonateSection() {
                 onChange={handleChange}
                 placeholder="+9779812345678"
                 className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
-               focus:ring-1 focus:ring-primary/30 
+               focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
               outline-none transition"
               />
               {errors.contactNumber && (
@@ -232,7 +233,7 @@ function DonateSection() {
 
             {/* AMOUNT */}
             <div className="space-y-4">
-              <label className="block text-sm text-slate-400 uppercase tracking-widest font-bold">
+              <label className="block text-sm text-gray-600 capitalize tracking-widest placeholder:text-slate-400 font-medium mb-2">
                 Select Amount (NPR)
               </label>
 
@@ -293,7 +294,7 @@ function DonateSection() {
 
             {/* PAYMENT METHOD */}
             <div className="space-y-4">
-              <label className="block text-sm text-slate-400 uppercase tracking-widest font-bold">
+              <label className="block text-sm text-gray-600 capitalize tracking-widest placeholder:text-slate-400 font-medium mb-2">
                 Payment Method
               </label>
 
@@ -309,10 +310,10 @@ function DonateSection() {
                     onClick={() =>
                       setFormData({ ...formData, paymentMethod: method.id })
                     }
-                    className={`py-4 px-6 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all duration-300 ${
+                    className={`py-3 px-6 rounded-full cursor-pointer border font-medium text-xs uppercase tracking-wide transition-all duration-300 ${
                       formData.paymentMethod === method.id
                         ? "bg-primary text-white border-primary shadow-xl shadow-primary/20 scale-105"
-                        : "bg-slate-50 border border-slate-100 text-slate-400 hover:border-primary/20 hover:bg-white"
+                        : "bg-slate-50 border border-slate-300 text-slate-400 hover:border-primary/20 hover:bg-white"
                     }`}
                   >
                     {method.label}
@@ -332,14 +333,14 @@ function DonateSection() {
               type="submit"
               disabled={loading}
               className="w-full mt-8 bg-secondary cursor-pointer
-            text-white py-3 border-4 border-secondary rounded-full font-semibold shadow-lg 
+            text-white py-3 border-2 border-secondary rounded-full font-semibold shadow-lg 
             hover:bg-secondary/70 transition disabled:opacity-60"
             >
               {loading ? "Processing..." : "Donate Now"}
             </button>
 
-            <p className="text-center text-sm text-gray-500 mt-4">
-              🔒 Secure & trusted donation
+            <p className="text-center text-sm flex gap-3 justify-center text-gray-500 mt-4">
+              <FaUnlockAlt className="text-secondary"/> <span>Secure & trusted donation</span>
             </p>
             </form>
           </>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import Banner from "../Components/UI/Banner";
-import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
 import {
   FadeIn,
@@ -9,7 +8,6 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "../Components/Common/Animations";
-// import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
 import {
   FaFacebookF,
   FaInstagram,
@@ -17,17 +15,22 @@ import {
   FaGithub,
   FaYoutube,
   FaTwitter,
+  FaTiktok,
 } from "react-icons/fa";
 import {
   FiArrowRight,
   FiUsers,
   FiStar,
-  FiAward,
   FiExternalLink,
   FiGlobe,
-} from "react-icons/fi"; // Example icons
+  FiChevronDown,
+  FiCheck,
+} from "react-icons/fi";
+import useFetch from "../Hooks/useFetch";
+import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
+import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
+import CoreTeam from "../Components/UI/CoreTeam";
 
-// Updated Information
 const provinces = [
   { name: "Kathmandu", colorCode: "#CA163A" },
   { name: "Pokhara", colorCode: "#F2CA50" },
@@ -56,16 +59,12 @@ const positionOrder = [
   "executive-member",
 ];
 
-import useFetch from "../Hooks/useFetch";
-import { ADVISORS, CORE_TEAM, ALUMNI } from "../Data/teamData";
-import TeamMemberModal from "../Components/UI/Modal/TeamMemberModal";
-
 const Provinces = () => {
   const { data: apiTeam, Loading } = useFetch("/team", []);
   const { data: provincialStats } = useFetch("/province-stats", {});
   const { data: publicUsers } = useFetch("/users/public-users", []);
 
-  console.log(publicUsers);
+  // console.log(publicUsers);
   // console.log(provincialStats);
   // console.log(apiTeam);
   // console.log("hello")
@@ -73,10 +72,10 @@ const Provinces = () => {
   const [activeTab, setActiveTab] = useState("Kathmandu");
   const [selectedMember, setSelectedMember] = useState(null);
 
-  // Map static data instead of filtering from API for advisors and core team as requested
-  const advisorsData = ADVISORS;
-  const coreData = CORE_TEAM;
-  const alumniData = ALUMNI;
+  // Map dynamic data from API
+  const advisorsData = apiTeam?.filter((m) => m.type === "Advisor") || [];
+  const coreData = apiTeam?.filter((m) => m.type === "Core Team") || [];
+  const alumniData = ALUMNI; // Keeping Alumni static for now as no DB type added yet
 
   // Refined filtering to check both 'province' (new) and 'region' (old)
   const provincialMembersFromTeam =
@@ -155,7 +154,7 @@ const Provinces = () => {
       return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
     });
   };
-  console.log(currentTeam);
+  // console.log(currentTeam);
 
   const executiveMember = sortByPosition(
     currentTeam?.provincial?.filter((member) =>
@@ -163,8 +162,7 @@ const Provinces = () => {
     ) || [],
   );
 
-  console.log(executiveMember);
-
+  // console.log(executiveMember);
   // console.log(currentTeam.provincial)
   // console.log(currentTeam);
 
@@ -180,6 +178,7 @@ const Provinces = () => {
     youtube: <FaYoutube />,
     twitter: <FaTwitter />,
     website: <FiGlobe />,
+    tiktok: <FaTiktok />,
   };
 
   // console.log(member)
@@ -194,9 +193,6 @@ const Provinces = () => {
         ]}
       />
       <Banner />
-      {/* <div className="max-w-7xl mx-auto px-6 mt-8">
-        <Breadcrumbs crumbs={[{ name: "Provinces", path: "/provinces" }]} />
-      </div> */}
       <div className="min-h-screen bg-gray-50 pb-12">
         {/* Hero Section */}
         <section className="relative max-w-7xl mx-auto px-6 py-16 overflow-hidden">
@@ -220,7 +216,7 @@ const Provinces = () => {
                 <h1 className="text-6xl md:text-8xl font-black text-primary mb-8 tracking-tighter leading-[0.9]">
                   The People <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_auto] animate-gradient-x">
-                    Behind the Code.
+                    Behind the Change.
                   </span>
                 </h1>
 
@@ -233,27 +229,11 @@ const Provinces = () => {
                 {/* Social Proof & CTA */}
                 <div className="flex flex-wrap gap-8 items-center">
                   <Link
-                    to="/join-us"
+                    to="/register"
                     className="px-10 py-5 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest uppercase hover:bg-primary transition-all shadow-xl shadow-slate-900/20 active:scale-95"
                   >
                     Join the Movement
                   </Link>
-                  {/* 
-                <div className="flex items-center gap-4">
-                  <div className="flex -space-x-3">
-                    {[1, 2, 3].map((i) => (
-                      <img
-                        key={i}
-                        className="w-12 h-12 rounded-full border-4 border-white shadow-sm"
-                        src={`https://i.pravatar.cc/100?u=${i}`}
-                        alt="user"
-                      />
-                    ))}
-                  </div>
-                  <p className="text-sm font-bold text-slate-400">
-                    <span className="text-slate-900">750+</span> Volunteers
-                  </p>
-                </div> */}
                 </div>
               </SlideUp>
             </div>
@@ -272,7 +252,7 @@ const Provinces = () => {
                         Impact
                       </p>
                       <p className="text-lg font-black text-slate-900 leading-none">
-                        Nepal Wide
+                        Nation Wide
                       </p>
                     </div>
                   </div>
@@ -296,10 +276,13 @@ const Provinces = () => {
           </div>
         </section>
 
-        <div className="max-w-7xl mx-auto px-6 space-y-20">
+        {/* Core team */}
+        <CoreTeam onMemberClick={(member) => setSelectedMember(member)} />
+
+        <div className="max-w-7xl mx-auto space-y-20">
           {/* Province Navigation */}
           <section className="pb-16 px-4 max-w-7xl mx-auto">
-            <section className="pb-16 px-4 max-w-7xl mx-auto">
+            <section className="pb-16 max-w-7xl mx-auto">
               <ProvinceDropdown
                 provinces={provinces}
                 activeTab={activeTab}
@@ -412,6 +395,7 @@ const Provinces = () => {
                 </div>
               </FadeIn>
 
+              {/* Current team */}
               {/* 3. Refined Impact Team Grid */}
               <div>
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
@@ -455,7 +439,7 @@ const Provinces = () => {
                             onClick={() => {
                               setSelectedMember(member);
                             }}
-                            className="relative shadow-xl rounded-2xl p-3 transition-all duration-500 overflow-hidden hover:shadow-2xl"
+                            className="relative shadow-xl rounded-2xl p-2 md:p-3 transition-all duration-500 overflow-hidden hover:shadow-2xl"
                             style={{
                               borderColor: activeProvince?.colorCode,
                               boxShadow: `0 20px 40px -20px ${activeProvince?.colorCode}70`,
@@ -468,10 +452,10 @@ const Provinces = () => {
                                 .map(([platform, url], idx) => (
                                   <div
                                     key={platform}
-                                    className={`absolute z-20 ${idx < 3 ? "left-6" : "right-6"}
-                                     [--icon-gap:3.5rem] lg:[--icon-gap:2.5rem]`}
+                                    className={`absolute z-20 ${idx < 4 ? "left-2 md:left-5" : "right-2 md:right-5"}
+                                     [--icon-gap:2rem] md:[--icon-gap:2.65rem] [--top-starting:0.5rem] md:[--top-starting:1rem]`}
                                     style={{
-                                      top: `calc(1.5rem + ${idx % 3} * var(--icon-gap))`,
+                                      top: `calc(var(--top-starting) + ${idx % 4} * var(--icon-gap))`,
                                     }}
                                   >
                                     <a
@@ -482,13 +466,13 @@ const Provinces = () => {
                                       }
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className={`lg:w-9 w-11 h-11 lg:h-9 rounded-xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
+                                      className={` w-7 h-7 lg:h-9 lg:w-9 rounded-full bg-linear-to-tl from-white/20 to-transparent backdrop-blur-md border-t border-t-white  flex items-center justify-center text-primary 
                                         opacity-100 md:opacity-0 ${
-                                          idx < 3
+                                          idx < 4
                                             ? "md:-translate-x-12"
                                             : "md:translate-x-12"
                                         }
-                                         group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
+                                         group-hover:opacity-100 max-sm:text-sm group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
                                       style={{
                                         transitionDelay: `${idx * 100}ms`,
                                       }}
@@ -513,7 +497,7 @@ const Provinces = () => {
                                   style={{
                                     backgroundColor: activeProvince?.colorCode,
                                   }}
-                                  className="py-4 px-3 md:px-4"
+                                  className="py-2.5 sm:py-4 px-3 md:px-4"
                                 >
                                   <p className="transition-colors flex text-white gap-2 items-baseline tracking-tight">
                                     <span className="capitalize text-[10px] sm:text-sm">
@@ -546,49 +530,6 @@ const Provinces = () => {
                   links={selectedMember?.socialLinks}
                   onClose={() => setSelectedMember(null)}
                 />
-                {/* Section: Advisors */}
-                {currentTeam.advisors.length > 0 && (
-                  <section className="pb-7">
-                    <h2 className="text-4xl font-black text-primary mb-10 flex items-center gap-4 text-right">
-                      Our{" "}
-                      <span style={{ color: activeProvince?.colorCode }}>
-                        Advisors
-                      </span>
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {currentTeam.advisors.map((member, i) => (
-                        <TeamCard
-                          key={i}
-                          member={member}
-                          onSelect={setSelectedMember}
-                          variant="glass"
-                        />
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {/* Section: Alumni */}
-
-                {currentTeam.alumni.length > 0 && (
-                  <section className="pt-10">
-                    <h2 className="text-4xl font-black text-primary mb-7 flex items-center gap-4">
-                      Our{" "}
-                      <span style={{ color: activeProvince?.colorCode }}>
-                        Alumni
-                      </span>
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {currentTeam.alumni.map((member, i) => (
-                        <TeamCard
-                          key={i}
-                          member={member}
-                          onSelect={setSelectedMember}
-                          variant="glass"
-                        />
-                      ))}
-                    </div>
-                  </section>
-                )}
               </div>
             </div>
           </section>
@@ -598,86 +539,7 @@ const Provinces = () => {
   );
 };
 
-// TeamCard remains the same
-const TeamCard = ({ member, variant, onSelect }) => {
-  const isGlass = variant === "glass";
-
-  const socialIcons = {
-    linkedin: <FaLinkedinIn />,
-    facebook: <FaFacebookF />,
-    instagram: <FaInstagram />,
-    github: <FaGithub />,
-    youtube: <FaYoutube />,
-    twitter: <FaTwitter />,
-  };
-
-  const availableSocials = Object.entries(member.socialLinks || {}).filter(
-    ([_, url]) => url,
-  );
-  // console.log(member.socialLinks);
-
-  return (
-    <div
-      onClick={() => onSelect(member)}
-      className={`group relative rounded-3xl p-3 transition-all duration-700 
-      ${isGlass ? "bg-white/40 backdrop-blur-2xl border border-white/50 shadow-xl" : "bg-white border border-slate-100 shadow-md"}
-      hover:-translate-y-4 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)]`}
-    >
-      <div className="aspect-4/5 rounded-2xl relative overflow-hidden bg-slate-100">
-        {/* Social Overlay */}
-
-        {availableSocials.length > 0 &&
-          availableSocials.map(([platform, url], idx) => (
-            <div
-              key={platform}
-              className={`absolute z-20 ${idx < 3 ? "left-6" : "right-6"}
-             [--icon-gap:3.5rem] lg:[--icon-gap:2.5rem]`}
-              style={{
-                top: `calc(1.5rem + ${idx % 3} * var(--icon-gap))`,
-              }}
-            >
-              <a
-                href={url.startsWith("http") ? url : `https://${url}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`lg:w-9 w-11 h-11 lg:h-9 rounded-xl bg-white/95 backdrop-blur-md flex items-center justify-center text-primary 
-               opacity-100 md:opacity-0 ${
-                 idx < 3 ? "md:-translate-x-12" : "md:translate-x-12"
-               }
-               group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 hover:bg-primary hover:text-white shadow-lg`}
-                style={{ transitionDelay: `${idx * 100}ms` }}
-              >
-                {socialIcons[platform] || <FiExternalLink />}
-              </a>
-            </div>
-          ))}
-
-        <img
-          src={member.image}
-          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-          alt={member.name}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-      </div>
-
-      <div className="absolute lg:bottom-10 bottom-14 lg:left-4 left-8 right-8 lg:right-4 lg:p-2 px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl border border-white shadow-lg translate-y-6 group-hover:translate-y-2 transition-all duration-500">
-        <h4 className="font-black text-slate-900 tracking-tight text-lg lg:text-sm">
-          {member.name}
-        </h4>
-        <div className="flex items-center gap-2 mt-1">
-          <FiAward className="text-blue-600" />
-          <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.1em]">
-            {member.role}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export { Provinces, provinces };
-
-import { FiChevronDown, FiMapPin, FiCheck } from "react-icons/fi";
 
 const ProvinceDropdown = ({
   provinces,
@@ -688,7 +550,7 @@ const ProvinceDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="sm:hidden relative z-50">
+    <div className="sm:hidden relative z-10">
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}

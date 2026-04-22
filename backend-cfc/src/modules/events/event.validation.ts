@@ -26,11 +26,16 @@ export const createEventSchema = z.object({
     type: z.enum(["hackathon", "workshop", "webinar", "conference", "social_impact"]),
     status: z.enum(["Draft", "Published", "Upcoming", "Live", "Completed"]).optional(),
     organizer: z.string().trim().min(1, "Organizer is required"),
-    province: z.string().trim().optional().or(z.literal("")),
+    region: z.string().trim().optional().or(z.literal("")),
     speakers: z.preprocess(arrayPreprocess, z.array(z.any())).optional(),
     highlights: z.preprocess(arrayPreprocess, z.array(z.string())).optional(),
     benefits: z.preprocess(arrayPreprocess, z.array(z.string())).optional(),
     isCompleted: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
+    isNational: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
+    contactInfo: z.preprocess(arrayPreprocess, z.array(z.object({
+      type: z.enum(['email', 'phone', 'other']),
+      value: z.string().min(1),
+    }))).optional(),
   }).passthrough(),
 });
 
@@ -49,11 +54,16 @@ export const updateEventSchema = z.object({
     type: z.enum(["hackathon", "workshop", "webinar", "conference", "social_impact"]).optional(),
     status: z.enum(["Draft", "Published", "Upcoming", "Live", "Completed"]).optional(),
     organizer: z.string().trim().min(1).optional(),
-    province: z.string().trim().optional().or(z.literal("")),
+    region: z.string().trim().optional().or(z.literal("")),
     speakers: z.preprocess(arrayPreprocess, z.array(z.any())).optional(),
     highlights: z.preprocess(arrayPreprocess, z.array(z.string())).optional(),
     benefits: z.preprocess(arrayPreprocess, z.array(z.string())).optional(),
     isCompleted: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
+    isNational: z.union([z.string(), z.boolean()]).transform((val) => val === 'true' || val === true).optional(),
+    contactInfo: z.preprocess(arrayPreprocess, z.array(z.object({
+      type: z.enum(['email', 'phone', 'other']),
+      value: z.string().min(1),
+    }))).optional(),
   }).passthrough(),
   params: z.object({
     id: z.string().min(1, "ID is required"),

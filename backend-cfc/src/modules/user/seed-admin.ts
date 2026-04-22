@@ -30,7 +30,7 @@ async function seedAdmin() {
       name: "System Administrator",
       email: adminEmail,
       password: hashedPassword,
-      role: "admin",
+      role: "superadmin",
       isVerified: true,
       isActive: true,
       // Optional fields (uncomment if your schema has them)
@@ -39,7 +39,7 @@ async function seedAdmin() {
     });
 
     console.log("\n╔════════════════════════════════════════════╗");
-    console.log("║         ADMIN USER CREATED SUCCESSFULLY    ║");
+    console.log("║         SUPER ADMIN USER CREATED SUCCESSFULLY    ║");
     console.log("╚════════════════════════════════════════════╝");
     console.log(`Email:       ${admin.email}`);
     console.log(`Password:    ${plainPassword}`);

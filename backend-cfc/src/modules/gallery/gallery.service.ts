@@ -7,8 +7,8 @@ const CACHE_KEY = "gallery:all";
 const CACHE_TTL = 3600;
 
 export class GalleryService {
-  async getAllGalleryItems(queryParams: any = {}): Promise<IGallery[]> {
-    const { category, isFeatured, ...otherFilters } = queryParams;
+  async getAllGalleryItems(queryParams: any = {}): Promise<{ items: IGallery[], pagination: any }> {
+    const { category, isFeatured, page = 1, limit = 10, ...otherFilters } = queryParams;
 
     const query: any = { ...otherFilters };
 
@@ -38,17 +38,34 @@ export class GalleryService {
     }
 
     try {
-      const items = await Gallery.find(query).sort({ createdAt: -1 });
+      const parsedPage = parseInt(page as string, 10) || 1;
+      const parsedLimit = parseInt(limit as string, 10) || 10;
+      const skip = (parsedPage - 1) * parsedLimit;
+
+      const [items, total] = await Promise.all([
+        Gallery.find(query).sort({ createdAt: -1 }).skip(skip).limit(parsedLimit),
+        Gallery.countDocuments(query),
+      ]);
+
+      const result = {
+        items,
+        pagination: {
+          total,
+          page: parsedPage,
+          limit: parsedLimit,
+          totalPages: Math.ceil(total / parsedLimit),
+        },
+      };
 
       if (isCacheable) {
         redis
-          .setex(CACHE_KEY, CACHE_TTL, JSON.stringify(items))
+          .setex(CACHE_KEY, CACHE_TTL, JSON.stringify(result))
           .catch((err: any) => {
             console.warn("Redis gallery cache set failed:", err);
           });
       }
 
-      return items;
+      return result;
     } catch (error) {
       throw new AppError("Failed to fetch gallery items", 500);
     }

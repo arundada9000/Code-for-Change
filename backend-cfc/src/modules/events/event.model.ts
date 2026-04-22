@@ -39,7 +39,7 @@ const eventSchema = new Schema<IEvent>(
       required: [true, "Event location is required"],
       trim: true,
     },
-    province: {
+    region: {
       type: String,
       trim: true,
     },
@@ -99,6 +99,17 @@ const eventSchema = new Schema<IEvent>(
     isCompleted: {
       type: Boolean,
       default: false,
+    },
+    isNational: {
+      type: Boolean,
+      default: false,
+    },
+    contactInfo: {
+      type: [{
+        type: { type: String, enum: ['email', 'phone', 'other'], required: true },
+        value: { type: String, required: true, trim: true },
+      }],
+      default: [],
     },
   },
   {
