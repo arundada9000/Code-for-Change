@@ -16,7 +16,7 @@ export class GalleryController {
   });
 
   getGalleryItemById = asyncHandler(async (req: Request, res: Response) => {
-    const item = await galleryService.getGalleryItemById(req.params.id);
+    const item = await galleryService.getGalleryItemById((req.params.id as string));
     sendSuccess(res, item, "Gallery item fetched successfully");
   });
 
@@ -66,14 +66,14 @@ export class GalleryController {
       const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.GALLERY);
       updateData.imageUrl = result.secure_url;
 
-      const oldItem = await galleryService.getGalleryItemById(req.params.id);
+      const oldItem = await galleryService.getGalleryItemById((req.params.id as string));
       if (oldItem.imageUrl) {
         const publicId = extractPublicId(oldItem.imageUrl);
         await deleteFromCloudinary(publicId);
       }
     }
 
-    const item = await galleryService.updateGalleryItem(req.params.id, updateData);
+    const item = await galleryService.updateGalleryItem((req.params.id as string), updateData);
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -92,14 +92,14 @@ export class GalleryController {
   });
 
   deleteGalleryItem = asyncHandler(async (req: Request, res: Response) => {
-    const item = await galleryService.getGalleryItemById(req.params.id);
+    const item = await galleryService.getGalleryItemById((req.params.id as string));
 
     if (item.imageUrl) {
       const publicId = extractPublicId(item.imageUrl);
       await deleteFromCloudinary(publicId);
     }
 
-    await galleryService.deleteGalleryItem(req.params.id);
+    await galleryService.deleteGalleryItem((req.params.id as string));
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -109,7 +109,7 @@ export class GalleryController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "GALLERY",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted gallery image: ${item.title}`,
       });
     }

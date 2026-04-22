@@ -16,12 +16,12 @@ export class BlogController {
   });
 
   getBlogById = asyncHandler(async (req: Request, res: Response) => {
-    const blog = await blogService.getBlogById(req.params.id);
+    const blog = await blogService.getBlogById((req.params.id as string));
     sendSuccess(res, blog, "Blog fetched successfully");
   });
 
   getBlogBySlug = asyncHandler(async (req: Request, res: Response) => {
-    const blog = await blogService.getBlogBySlug(req.params.slug);
+    const blog = await blogService.getBlogBySlug((req.params.slug as string));
     sendSuccess(res, blog, "Blog fetched successfully");
   });
 
@@ -102,7 +102,7 @@ export class BlogController {
       const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.BLOGS);
       updateData.image = result.secure_url;
 
-      const oldBlog = await blogService.getBlogById(req.params.id);
+      const oldBlog = await blogService.getBlogById((req.params.id as string));
       if (oldBlog.image) {
         const publicId = oldBlog.image.split("/").pop()?.split(".")[0];
         if (publicId) {
@@ -111,7 +111,7 @@ export class BlogController {
       }
     }
 
-    const blog = await blogService.updateBlog(req.params.id, updateData);
+    const blog = await blogService.updateBlog((req.params.id as string), updateData);
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -130,7 +130,7 @@ export class BlogController {
   });
 
   deleteBlog = asyncHandler(async (req: Request, res: Response) => {
-    const blog = await blogService.getBlogById(req.params.id);
+    const blog = await blogService.getBlogById((req.params.id as string));
 
     if (blog.image) {
       const publicId = blog.image.split("/").pop()?.split(".")[0];
@@ -139,7 +139,7 @@ export class BlogController {
       }
     }
 
-    await blogService.deleteBlog(req.params.id);
+    await blogService.deleteBlog((req.params.id as string));
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -149,7 +149,7 @@ export class BlogController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "BLOG",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted blog: ${blog.title}`,
       });
     }

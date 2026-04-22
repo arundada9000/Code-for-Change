@@ -24,19 +24,19 @@ export class NewsletterController {
 
   // Admin: Get single subscriber
   getSubscriberById = asyncHandler(async (req: Request, res: Response) => {
-    const subscriber = await newsletterService.getSubscriberById(req.params.id);
+    const subscriber = await newsletterService.getSubscriberById((req.params.id as string));
     successResponse(res, subscriber, "Subscriber fetched successfully");
   });
 
   // Admin: Update subscriber status
   updateSubscriber = asyncHandler(async (req: Request, res: Response) => {
-    const subscriber = await newsletterService.updateSubscriber(req.params.id, req.body);
+    const subscriber = await newsletterService.updateSubscriber((req.params.id as string), req.body);
     successResponse(res, subscriber, "Subscriber updated successfully");
   });
 
   // Admin: Delete a subscriber
   deleteSubscriber = asyncHandler(async (req: Request, res: Response) => {
-    await newsletterService.deleteSubscriber(req.params.id);
+    await newsletterService.deleteSubscriber((req.params.id as string));
     successResponse(res, null, "Subscriber deleted successfully");
   });
 

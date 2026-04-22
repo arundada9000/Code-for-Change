@@ -54,7 +54,7 @@ export class ApplicationController {
    */
   updateStatus = asyncHandler(async (req: Request, res: Response) => {
     const { status } = req.body;
-    const application = await applicationService.updateStatus(req.params.id, status);
+    const application = await applicationService.updateStatus((req.params.id as string), status);
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -76,7 +76,7 @@ export class ApplicationController {
    * Admin: Delete application
    */
   deleteApplication = asyncHandler(async (req: Request, res: Response) => {
-    const application = await applicationService.getApplicationById(req.params.id);
+    const application = await applicationService.getApplicationById((req.params.id as string));
     
     // Delete resume from cloudinary
     if (application.resumeUrl) {
@@ -86,7 +86,7 @@ export class ApplicationController {
       }
     }
 
-    await applicationService.deleteApplication(req.params.id);
+    await applicationService.deleteApplication((req.params.id as string));
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -96,7 +96,7 @@ export class ApplicationController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "INTERNSHIP_APPLICATION",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted application of ${application.fullName}`,
       });
     }

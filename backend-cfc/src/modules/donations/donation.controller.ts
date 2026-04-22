@@ -22,14 +22,14 @@ export class DonationController {
   });
 
   getDonationById = asyncHandler(async (req: Request, res: Response) => {
-    const donation = await donationService.getDonationById(req.params.id);
+    const donation = await donationService.getDonationById((req.params.id as string));
     successResponse(res, donation, "Donation detail retrieved successfully");
   });
 
   updateDonationStatus = asyncHandler(async (req: Request, res: Response) => {
     const { status } = req.body;
     const verifiedBy = (req as any).user?.name || 'Admin';
-    const donation = await donationService.updateDonationStatus(req.params.id, status, verifiedBy);
+    const donation = await donationService.updateDonationStatus((req.params.id as string), status, verifiedBy);
     successResponse(res, donation, `Donation ${status.toLowerCase()} successfully`);
   });
 
@@ -38,7 +38,7 @@ export class DonationController {
       const result = await uploadToCloudinary(req.file.buffer, CLOUDINARY_FOLDERS.IMPACT);
       req.body.receipt = result.secure_url;
     }
-    const donation = await donationService.updateDonation(req.params.id, req.body);
+    const donation = await donationService.updateDonation((req.params.id as string), req.body);
     successResponse(res, donation, "Donation record updated successfully");
   });
 

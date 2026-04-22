@@ -27,7 +27,7 @@ export class ResourceController {
   getResourceById = asyncHandler(async (req: Request, res: Response) => {
     const authReq = req as AuthRequest;
     const role = authReq.user?.role ?? "guest";
-    const resource = await resourceService.getResourceById(req.params.id, role);
+    const resource = await resourceService.getResourceById((req.params.id as string), role);
     sendSuccess(res, resource, "Resource fetched successfully");
   });
 
@@ -36,8 +36,8 @@ export class ResourceController {
     const authReq = req as AuthRequest;
     const role = authReq.user?.role ?? "guest";
     // verify access before tracking
-    await resourceService.getResourceById(req.params.id, role);
-    const resource = await resourceService.incrementDownloads(req.params.id);
+    await resourceService.getResourceById((req.params.id as string), role);
+    const resource = await resourceService.incrementDownloads((req.params.id as string));
     sendSuccess(res, resource, "Download tracked");
   });
 
@@ -84,14 +84,14 @@ export class ResourceController {
       updateData.fileUrl = result.secure_url;
 
       // Delete old file from Cloudinary if replacing
-      const old = await resourceService.getResourceById(req.params.id, "admin");
+      const old = await resourceService.getResourceById((req.params.id as string), "admin");
       if (old.fileUrl && !old.fileUrl.startsWith("http://") && old.fileUrl.includes("cloudinary")) {
         const publicId = extractPublicId(old.fileUrl);
         await deleteFromCloudinary(publicId).catch(() => {});
       }
     }
 
-    const resource = await resourceService.updateResource(req.params.id, updateData);
+    const resource = await resourceService.updateResource((req.params.id as string), updateData);
 
     if (authReq.user) {
       await adminService.logActivity({
@@ -110,7 +110,7 @@ export class ResourceController {
   // Admin: Delete resource
   deleteResource = asyncHandler(async (req: Request, res: Response) => {
     const authReq = req as AuthRequest;
-    const resource = await resourceService.getResourceById(req.params.id, "admin");
+    const resource = await resourceService.getResourceById((req.params.id as string), "admin");
 
     // Delete file from Cloudinary if stored there
     if (resource.fileUrl && resource.fileUrl.includes("cloudinary")) {
@@ -118,7 +118,7 @@ export class ResourceController {
       await deleteFromCloudinary(publicId).catch(() => {});
     }
 
-    await resourceService.deleteResource(req.params.id);
+    await resourceService.deleteResource((req.params.id as string));
 
     if (authReq.user) {
       await adminService.logActivity({
@@ -126,7 +126,7 @@ export class ResourceController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "RESOURCE",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted resource: ${resource.title}`,
       });
     }
