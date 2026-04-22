@@ -38,7 +38,7 @@ export const updateUserController = asyncHandler(
 
       // Delete old profile image if exists
       try {
-        const oldUser = await UserTable.findById(req.params.id);
+        const oldUser = await UserTable.findById((req.params.id as string));
         if (oldUser?.profileImage) {
           const publicId = extractPublicId(oldUser.profileImage);
           await deleteFromCloudinary(publicId);
@@ -49,14 +49,14 @@ export const updateUserController = asyncHandler(
       }
     }
 
-    const user = await updateUser(req.params.id, updateData);
+    const user = await updateUser((req.params.id as string), updateData);
     successResponse(res, user, "User updated");
   }
 );
 // User Delete
 export const deleteUserController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const userIdToDelete = req.params.id;
+    const userIdToDelete = (req.params.id as string);
     const currentUserId = req.user?.id;
 
     if (!currentUserId) {
@@ -127,7 +127,7 @@ export const removeUserPermission = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const { userId } = req.params;
+    const userId = req.params.userId as string;
     const { permission } = req.body;
 
 

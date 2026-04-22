@@ -13,7 +13,7 @@ export class ImpactController {
   });
 
   getImpactById = asyncHandler(async (req: Request, res: Response) => {
-    const impact = await impactService.getImpactById(req.params.id);
+    const impact = await impactService.getImpactById((req.params.id as string));
     sendSuccess(res, impact, "Impact fetched successfully");
   });
 
@@ -59,12 +59,12 @@ export class ImpactController {
       updateData.isLarge = updateData.isLarge === 'true' || updateData.isLarge === true;
     }
 
-    const impact = await impactService.updateImpact(req.params.id, updateData);
+    const impact = await impactService.updateImpact((req.params.id as string), updateData);
     sendSuccess(res, impact, "Impact updated successfully");
   });
 
   deleteImpact = asyncHandler(async (req: Request, res: Response) => {
-    await impactService.deleteImpact(req.params.id);
+    await impactService.deleteImpact((req.params.id as string));
     sendSuccess(res, null, "Impact deleted successfully");
   });
 }

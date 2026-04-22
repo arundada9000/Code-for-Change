@@ -23,7 +23,7 @@ export class TestimonialController {
   });
 
   getTestimonialById = asyncHandler(async (req: Request, res: Response) => {
-    const testimonial = await testimonialService.getTestimonialById(req.params.id);
+    const testimonial = await testimonialService.getTestimonialById((req.params.id as string));
     sendSuccess(res, testimonial, "Testimonial fetched successfully");
   });
 
@@ -71,14 +71,14 @@ export class TestimonialController {
       updateData.image = result.secure_url;
 
       // Delete old image from Cloudinary
-      const old = await testimonialService.getTestimonialById(req.params.id);
+      const old = await testimonialService.getTestimonialById((req.params.id as string));
       if (old.image) {
         const publicId = old.image.split("/").pop()?.split(".")[0];
         if (publicId) await deleteFromCloudinary(`testimonials/${publicId}`);
       }
     }
 
-    const testimonial = await testimonialService.updateTestimonial(req.params.id, updateData);
+    const testimonial = await testimonialService.updateTestimonial((req.params.id as string), updateData);
 
     const authReq = req as AuthRequest;
     if (authReq.user) {
@@ -96,14 +96,14 @@ export class TestimonialController {
   });
 
   deleteTestimonial = asyncHandler(async (req: Request, res: Response) => {
-    const testimonial = await testimonialService.getTestimonialById(req.params.id);
+    const testimonial = await testimonialService.getTestimonialById((req.params.id as string));
 
     if (testimonial.image) {
       const publicId = testimonial.image.split("/").pop()?.split(".")[0];
       if (publicId) await deleteFromCloudinary(`testimonials/${publicId}`);
     }
 
-    await testimonialService.deleteTestimonial(req.params.id);
+    await testimonialService.deleteTestimonial((req.params.id as string));
 
     const authReq = req as AuthRequest;
     if (authReq.user) {
@@ -112,7 +112,7 @@ export class TestimonialController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "TESTIMONIAL",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted testimonial by: ${testimonial.author}`,
       });
     }

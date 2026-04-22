@@ -23,7 +23,7 @@ export class SupporterController {
   });
 
   getSupporterById = asyncHandler(async (req: Request, res: Response) => {
-    const supporter = await supporterService.getSupporterById(req.params.id);
+    const supporter = await supporterService.getSupporterById((req.params.id as string));
     sendSuccess(res, supporter, "Supporter fetched successfully");
   });
 
@@ -71,14 +71,14 @@ export class SupporterController {
       updateData.logo = result.secure_url;
 
       // Delete old logo from Cloudinary
-      const old = await supporterService.getSupporterById(req.params.id);
+      const old = await supporterService.getSupporterById((req.params.id as string));
       if (old.logo) {
         const publicId = old.logo.split("/").pop()?.split(".")[0];
         if (publicId) await deleteFromCloudinary(`supporters/${publicId}`);
       }
     }
 
-    const supporter = await supporterService.updateSupporter(req.params.id, updateData);
+    const supporter = await supporterService.updateSupporter((req.params.id as string), updateData);
 
     const authReq = req as AuthRequest;
     if (authReq.user) {
@@ -96,14 +96,14 @@ export class SupporterController {
   });
 
   deleteSupporter = asyncHandler(async (req: Request, res: Response) => {
-    const supporter = await supporterService.getSupporterById(req.params.id);
+    const supporter = await supporterService.getSupporterById((req.params.id as string));
 
     if (supporter.logo) {
       const publicId = supporter.logo.split("/").pop()?.split(".")[0];
       if (publicId) await deleteFromCloudinary(`supporters/${publicId}`);
     }
 
-    await supporterService.deleteSupporter(req.params.id);
+    await supporterService.deleteSupporter((req.params.id as string));
 
     const authReq = req as AuthRequest;
     if (authReq.user) {
@@ -112,7 +112,7 @@ export class SupporterController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "SUPPORTER",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted supporter: ${supporter.name}`,
       });
     }

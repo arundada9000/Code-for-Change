@@ -13,7 +13,7 @@ export class TeamController {
   });
 
   getMemberById = asyncHandler(async (req: Request, res: Response) => {
-    const member = await teamService.getMemberById(req.params.id);
+    const member = await teamService.getMemberById((req.params.id as string));
     sendSuccess(res, member, "Team member fetched successfully");
   });
 
@@ -48,7 +48,7 @@ export class TeamController {
 
   updateMember = asyncHandler(async (req: Request, res: Response) => {
     if (req.file) {
-      const oldMember = await teamService.getMemberById(req.params.id);
+      const oldMember = await teamService.getMemberById((req.params.id as string));
       if (oldMember.image) {
         const publicId = oldMember.image.split("/").pop()?.split(".")[0];
         if (publicId) {
@@ -72,12 +72,12 @@ export class TeamController {
       }
     }
 
-    const member = await teamService.updateMember(req.params.id, req.body);
+    const member = await teamService.updateMember((req.params.id as string), req.body);
     sendSuccess(res, member, "Team member updated successfully");
   });
 
   deleteMember = asyncHandler(async (req: Request, res: Response) => {
-    const member = await teamService.getMemberById(req.params.id);
+    const member = await teamService.getMemberById((req.params.id as string));
     
     if (member.image) {
       const publicId = member.image.split("/").pop()?.split(".")[0];
@@ -86,7 +86,7 @@ export class TeamController {
       }
     }
 
-    await teamService.deleteMember(req.params.id);
+    await teamService.deleteMember((req.params.id as string));
     sendSuccess(res, null, "Team member deleted successfully");
   });
 }

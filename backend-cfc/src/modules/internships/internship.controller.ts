@@ -22,7 +22,7 @@ export class InternshipController {
    * Get internship by ID
    */
   getInternshipById = asyncHandler(async (req: Request, res: Response) => {
-    const internship = await internshipService.getInternshipById(req.params.id);
+    const internship = await internshipService.getInternshipById((req.params.id as string));
     sendSuccess(res, internship, "Internship fetched successfully");
   });
 
@@ -70,7 +70,7 @@ export class InternshipController {
       updateData.companyLogo = result.secure_url;
 
       // Delete old logo if exists
-      const oldInternship = await internshipService.getInternshipById(req.params.id);
+      const oldInternship = await internshipService.getInternshipById((req.params.id as string));
       if (oldInternship.companyLogo) {
         const publicId = extractPublicId(oldInternship.companyLogo);
         if (publicId) {
@@ -79,7 +79,7 @@ export class InternshipController {
       }
     }
 
-    const internship = await internshipService.updateInternship(req.params.id, updateData);
+    const internship = await internshipService.updateInternship((req.params.id as string), updateData);
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -101,7 +101,7 @@ export class InternshipController {
    * Delete internship
    */
   deleteInternship = asyncHandler(async (req: Request, res: Response) => {
-    const internship = await internshipService.getInternshipById(req.params.id);
+    const internship = await internshipService.getInternshipById((req.params.id as string));
 
     if (internship.companyLogo) {
       const publicId = extractPublicId(internship.companyLogo);
@@ -110,7 +110,7 @@ export class InternshipController {
       }
     }
 
-    await internshipService.deleteInternship(req.params.id);
+    await internshipService.deleteInternship((req.params.id as string));
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -120,7 +120,7 @@ export class InternshipController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "INTERNSHIP",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted internship: ${internship.title} at ${internship.companyName}`,
       });
     }

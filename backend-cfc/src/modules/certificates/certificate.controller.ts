@@ -76,7 +76,7 @@ export class CertificateController {
    * Public: Verify certificate by token or ID
    */
   verifyCertificate = asyncHandler(async (req: Request, res: Response) => {
-    const certificate = await certificateService.verifyCertificate(req.params.token);
+    const certificate = await certificateService.verifyCertificate((req.params.token as string));
     sendSuccess(res, certificate, "Certificate verification successful");
   });
 
@@ -85,7 +85,7 @@ export class CertificateController {
    */
   updateStatus = asyncHandler(async (req: Request, res: Response) => {
     const { status } = req.body;
-    const certificate = await certificateService.updateStatus(req.params.id, status);
+    const certificate = await certificateService.updateStatus((req.params.id as string), status);
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -107,8 +107,8 @@ export class CertificateController {
    * Admin: Delete certificate
    */
   deleteCertificate = asyncHandler(async (req: Request, res: Response) => {
-    const certificate = await certificateService.getCertificateByIdOrSerial(req.params.id);
-    await certificateService.deleteCertificate(req.params.id);
+    const certificate = await certificateService.getCertificateByIdOrSerial((req.params.id as string));
+    await certificateService.deleteCertificate((req.params.id as string));
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -118,7 +118,7 @@ export class CertificateController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "CERTIFICATE",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted certificate record of ${certificate.recipientName} (${certificate.certificateId})`,
       });
     }

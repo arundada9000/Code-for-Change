@@ -22,7 +22,7 @@ export class EventController {
    * Get event by ID
    */
   getEventById = asyncHandler(async (req: Request, res: Response) => {
-    const event = await eventService.getEventById(req.params.id);
+    const event = await eventService.getEventById((req.params.id as string));
     sendSuccess(res, event, "Event fetched successfully");
   });
 
@@ -30,7 +30,7 @@ export class EventController {
    * Get event by Slug
    */
   getEventBySlug = asyncHandler(async (req: Request, res: Response) => {
-    const event = await eventService.getEventBySlug(req.params.slug);
+    const event = await eventService.getEventBySlug((req.params.slug as string));
     sendSuccess(res, event, "Event fetched successfully");
   });
 
@@ -108,7 +108,7 @@ export class EventController {
       updateData.image = result.secure_url;
 
       // Delete old image if exists
-      const oldEvent = await eventService.getEventById(req.params.id);
+      const oldEvent = await eventService.getEventById((req.params.id as string));
       if (oldEvent.image) {
         const publicId = oldEvent.image.split("/").pop()?.split(".")[0];
         if (publicId) {
@@ -136,7 +136,7 @@ export class EventController {
       updateData.isNational = updateData.isNational === 'true' || updateData.isNational === true;
     }
 
-    const event = await eventService.updateEvent(req.params.id, updateData);
+    const event = await eventService.updateEvent((req.params.id as string), updateData);
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -159,7 +159,7 @@ export class EventController {
    */
   deleteEvent = asyncHandler(async (req: Request, res: Response) => {
     // Get event to delete associated image
-    const event = await eventService.getEventById(req.params.id);
+    const event = await eventService.getEventById((req.params.id as string));
 
     // Delete image from Cloudinary
     if (event.image) {
@@ -169,7 +169,7 @@ export class EventController {
       }
     }
 
-    await eventService.deleteEvent(req.params.id);
+    await eventService.deleteEvent((req.params.id as string));
 
     // Log Activity
     const authReq = req as AuthRequest;
@@ -179,7 +179,7 @@ export class EventController {
         userName: authReq.user.name || authReq.user.email,
         action: "DELETE",
         resource: "EVENT",
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         details: `Deleted event: ${event.title}`,
       });
     }

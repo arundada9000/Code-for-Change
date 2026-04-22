@@ -33,7 +33,7 @@ export class AdminController {
   });
 
   updateUserController = asyncHandler(async (req: Request, res: Response) => {
-    const user = await adminService.updateUser(req.params.id, req.body, (req as any).user);
+    const user = await adminService.updateUser((req.params.id as string), req.body, (req as any).user);
 
     await adminService.logActivity({
       userId: (req as any).user?.id,
@@ -47,31 +47,31 @@ export class AdminController {
   });
 
   deleteUserController = asyncHandler(async (req: Request, res: Response) => {
-    await adminService.deleteUser(req.params.id);
+    await adminService.deleteUser((req.params.id as string));
 
     await adminService.logActivity({
       userId: (req as any).user?.id,
       userName: (req as any).user?.name,
       action: "DELETE",
       resource: "USER",
-      details: `Deleted user with ID: ${req.params.id}`,
+      details: `Deleted user with ID: ${(req.params.id as string)}`,
     });
 
     sendSuccess(res, null, "User deleted successfully");
   });
 
   getUserDetails = asyncHandler(async (req: Request, res: Response) => {
-    const user = await adminService.getUserById(req.params.id);
+    const user = await adminService.getUserById((req.params.id as string));
     sendSuccess(res, user, "User details fetched successfully");
   });
 
   getEventDetails = asyncHandler(async (req: Request, res: Response) => {
-    const event = await adminService.getEventById(req.params.id);
+    const event = await adminService.getEventById((req.params.id as string));
     sendSuccess(res, event, "Event details fetched successfully");
   });
 
   getBlogDetails = asyncHandler(async (req: Request, res: Response) => {
-    const blog = await adminService.getBlogById(req.params.id);
+    const blog = await adminService.getBlogById((req.params.id as string));
     sendSuccess(res, blog, "Blog details fetched successfully");
   });
 

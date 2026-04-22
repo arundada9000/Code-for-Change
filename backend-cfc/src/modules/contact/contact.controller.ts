@@ -12,7 +12,7 @@ export class ContactController {
   });
 
   getContactById = asyncHandler(async (req: Request, res: Response) => {
-    const contact = await contactService.getContactById(req.params.id);
+    const contact = await contactService.getContactById((req.params.id as string));
     successResponse(res, contact, "Contact fetched successfully");
   });
 
@@ -22,12 +22,12 @@ export class ContactController {
   });
 
   markAsRead = asyncHandler(async (req: Request, res: Response) => {
-    const contact = await contactService.markAsRead(req.params.id);
+    const contact = await contactService.markAsRead((req.params.id as string));
     successResponse(res, contact, "Contact marked as read");
   });
 
   deleteContact = asyncHandler(async (req: Request, res: Response) => {
-    await contactService.deleteContact(req.params.id);
+    await contactService.deleteContact((req.params.id as string));
     successResponse(res, null, "Contact deleted successfully");
   });
 }
