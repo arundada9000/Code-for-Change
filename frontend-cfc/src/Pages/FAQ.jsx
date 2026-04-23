@@ -82,6 +82,9 @@ function FAQ() {
               <div className="group bg-white cursor-pointer rounded-2xl border border-slate-200 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md">
                 <button
                   onClick={() => toggleAccordion(index)}
+                  aria-expanded={activeIndex === index}
+                  aria-controls={`faq-answer-${index}`}
+                  id={`faq-question-${index}`}
                   className="w-full flex items-center justify-between cursor-pointer p-6 text-left outline-none"
                 >
                   <span
@@ -99,12 +102,16 @@ function FAQ() {
                         ? "rotate-45 text-secondary"
                         : "text-slate-400"
                     }`}
+                    aria-hidden="true"
                   >
                     +
                   </span>
                 </button>
 
                 <div
+                  id={`faq-answer-${index}`}
+                  role="region"
+                  aria-labelledby={`faq-question-${index}`}
                   className={`transition-all duration-500 ease-in-out overflow-hidden ${
                     activeIndex === index
                       ? "max-h-125 opacity-100"

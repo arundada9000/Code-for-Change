@@ -65,44 +65,49 @@ const Field = ({
   formData,
   handleChange,
   regionColor,
-}) => (
-  <div>
-    <label className="block text-xs tracking-wider mb-1.5 ml-1">
-      {label}
-    </label>
-    {isEditing ? (
-      <div className="relative">
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2">
-          <Icon size={14} style={{ color: regionColor }} />
+}) => {
+  const inputId = name || label.toLowerCase().replace(/\s+/g, "-");
+  return (
+    <div>
+      <label htmlFor={inputId} className="block text-xs tracking-wider mb-1.5 ml-1">
+        {label}
+      </label>
+      {isEditing ? (
+        <div className="relative">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2" aria-hidden="true">
+            <Icon size={14} style={{ color: regionColor }} />
+          </div>
+          <input
+            id={inputId}
+            type={type}
+            name={name}
+            value={formData[name]}
+            onChange={handleChange}
+            placeholder={placeholder || `Enter ${label.toLowerCase()}`}
+            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 
+            placeholder:text-slate-300 outline-none
+            focus:border-(--region-color) ]
+            transition-all duration-200"
+          />
         </div>
-        <input
-          type={type}
-          name={name}
-          value={formData[name]}
-          onChange={handleChange}
-          placeholder={placeholder || `Enter ${label.toLowerCase()}`}
-          className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 
-          placeholder:text-slate-300 outline-none
-          focus:border-(--region-color) ]
-          transition-all duration-200"
-        />
-      </div>
-    ) : (
-      <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[46px] border border-transparent">
-        <Icon
-          size={14}
-          className="flex-shrink-0"
-          style={{ color: regionColor }}
-        />
-        <span className="text-sm text-slate-700 break-all">
-          {formData[name] || (
-            <span className="text-slate-300 ">Not provided</span>
-          )}
-        </span>
-      </div>
-    )}
-  </div>
-);
+      ) : (
+        <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl min-h-[46px] border border-transparent">
+          <Icon
+            size={14}
+            className="flex-shrink-0"
+            style={{ color: regionColor }}
+            aria-hidden="true"
+          />
+          <span className="text-sm text-slate-700 break-all">
+            {formData[name] || (
+              <span className="text-slate-300 ">Not provided</span>
+            )}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SectionTitle = ({ icon: Icon, title, regionColor }) => (
   <div className="flex items-center gap-2.5 mb-5">

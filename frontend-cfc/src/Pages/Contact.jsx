@@ -115,7 +115,7 @@ function ContactUs() {
             <StaggerContainer className="space-y-8">
               <StaggerItem>
                 <div className="flex gap-6 items-start">
-                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
+                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl" aria-hidden="true">
                     <IoLocationOutline className="text-2xl font-black" />
                   </div>
                   <div>
@@ -131,17 +131,15 @@ function ContactUs() {
 
               <StaggerItem>
                 <div className="flex gap-6 items-start">
-                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
+                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl" aria-hidden="true">
                     <IoMailUnreadOutline className="text-2xl font-black" />
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 uppercase text-xs tracking-widest mb-1">
                       Email Us
                     </h4>
-                    <a href="mailto:codeforchangeofficial@gmail.com">
-                      <p className="text-slate-600 font-medium cursor-pointer hover:underline">
-                        codeforchangeofficial@gmail.com
-                      </p>
+                    <a href="mailto:codeforchangeofficial@gmail.com" className="text-slate-600 font-medium hover:underline">
+                      codeforchangeofficial@gmail.com
                     </a>
                   </div>
                 </div>
@@ -149,7 +147,7 @@ function ContactUs() {
 
               <StaggerItem>
                 <div className="flex gap-6 items-start">
-                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl">
+                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-xl" aria-hidden="true">
                     <IoCallOutline className="text-2xl font-black" />
                   </div>
                   <div>
@@ -157,15 +155,12 @@ function ContactUs() {
                       Call Us
                     </h4>
 
-                    <a href="tel:  +9779867712888">
-                      <p className="text-slate-600 font-medium">
-                        +977- 9867712888
-                      </p>
+                    <a href="tel:+9779867712888" className="text-slate-600 font-medium hover:underline">
+                      +977-9867712888
                     </a>
-                    <a href="tel: +9779847527533">
-                      <p className="text-slate-600 font-medium">
-                        +977-9847527533
-                      </p>
+                    <br />
+                    <a href="tel:+9779847527533" className="text-slate-600 font-medium hover:underline">
+                      +977-9847527533
                     </a>
                   </div>
                 </div>
@@ -177,79 +172,88 @@ function ContactUs() {
           <SlideUp delay={0.2}>
             <section className="bg-white rounded-xl p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100">
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
+                    <label htmlFor="fullName" className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Full Name
                     </label>
                     <input
+                      id="fullName"
                       type="text"
                       name="fullName"
+                      autoComplete="name"
                       value={formData.fullName} // Controlled Value
                       onChange={handleChange} // Event Handler
                       placeholder="Enter name"
                       required
                       className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
                focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
-              outline-none transition"
+               outline-none transition"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
+                    <label htmlFor="email" className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Email Address
                     </label>
                     <input
+                      id="email"
                       type="email"
                       name="email"
+                      autoComplete="email"
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter email"
                       required
                       className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
-                      focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
-                      outline-none transition"
+                       focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
+                       outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
+                    <label htmlFor="phone" className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Phone number
                     </label>
                     <input
-                      type="number"
+                      id="phone"
+                      type="tel"
                       name="phone"
+                      autoComplete="tel"
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="Enter phone number"
                       required
                       className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
                focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
-              outline-none transition"
+               outline-none transition"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
+                    <label htmlFor="address" className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                       Address
                     </label>
                     <input
+                      id="address"
                       type="text"
                       name="address"
+                      autoComplete="street-address"
                       value={formData.address}
                       onChange={handleChange}
                       placeholder="Enter address"
                       required
                       className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
                focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
-              outline-none transition"
+               outline-none transition"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
+<div className="space-y-2">
+                  <label htmlFor="subject" className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                     Subject
                   </label>
                   <input
+                    id="subject"
                     type="text"
                     name="subject"
                     value={formData.subject}
@@ -258,15 +262,16 @@ function ContactUs() {
                     required
                     className="w-full rounded-full bg-slate-50 px-4 py-3 border border-gray-200 
                focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
-              outline-none transition"
+               outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-medium tracking-widest text-primary/70 ml-1">
+                  <label htmlFor="message" className="text-xs font-medium tracking-widest text-primary/70 ml-1">
                     Your Message
                   </label>
                   <textarea
+                    id="message"
                     name="message"
                     rows="5"
                     value={formData.message}
@@ -275,7 +280,7 @@ function ContactUs() {
                     required
                     className="w-full rounded-xl bg-slate-50 px-4 py-3 border border-gray-200 
                focus:ring-1 focus:ring-secondary focus:border-transparent placeholder:text-sm
-              outline-none transition"
+               outline-none transition"
                   ></textarea>
                 </div>
 
