@@ -22,25 +22,25 @@ import {
 function Home() {
   const Works = [
     {
-      icon: <FaChalkboardTeacher />,
+      icon: <FaChalkboardTeacher aria-hidden="true" />,
       title: "Workshops",
       shortDisc:
         "We organize hands-on technical and professional workshops throughout the year to equip students with industry-relevant skills, practical knowledge, and career readiness.",
     },
     {
-      icon: <FaCode />,
+      icon: <FaCode aria-hidden="true" />,
       title: "Hackathons",
       shortDisc:
         "Our nationwide hackathons bring students together to solve real-world problems, foster innovation, and promote teamwork under the guidance of industry mentors.",
     },
     {
-      icon: <FaUserGraduate />,
+      icon: <FaUserGraduate aria-hidden="true" />,
       title: "Internships",
       shortDisc:
         "We create internship opportunities by connecting talented students with organizations, helping them gain real-world experience and professional exposure.",
     },
     {
-      icon: <FaRegHandshake />,
+      icon: <FaRegHandshake aria-hidden="true" />,
       title: "Social Impact",
       shortDisc:
         "Through technology-driven initiatives, we work on projects that address social challenges and empower communities, using innovation as a tool for positive change.",

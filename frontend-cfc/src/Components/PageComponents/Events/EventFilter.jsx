@@ -134,10 +134,14 @@ const EventFilter = ({ onFilterChange }) => {
       >
         {/* Event Type */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2">
-            <FaGlobe className="text-secondary" /> Type
+          <label
+            htmlFor="filter-type"
+            className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2"
+          >
+            <FaGlobe className="text-secondary" aria-hidden="true" /> Type
           </label>
           <select
+            id="filter-type"
             value={filters.type}
             onChange={(e) => handleChange("type", e.target.value)}
             className="w-full px-4 py-3 bg-slate-50/20 border border-slate-300 rounded-full focus:outline-none focus:ring focus:ring-secondary transition-all font-medium text-slate-700 appearance-none cursor-pointer text-sm"
@@ -153,10 +157,15 @@ const EventFilter = ({ onFilterChange }) => {
 
         {/* Region */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2">
-            <FaMapMarkerAlt className="text-secondary" /> Region
+          <label
+            htmlFor="filter-region"
+            className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2"
+          >
+            <FaMapMarkerAlt className="text-secondary" aria-hidden="true" />{" "}
+            Region
           </label>
           <select
+            id="filter-region"
             value={filters.region}
             onChange={(e) => handleChange("region", e.target.value)}
             className="w-full px-4 py-3 bg-slate-50/20 border border-slate-300 rounded-full focus:outline-none focus:ring focus:ring-secondary transition-all font-medium text-slate-700 appearance-none cursor-pointer text-sm"
@@ -172,10 +181,14 @@ const EventFilter = ({ onFilterChange }) => {
 
         {/* Year */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2">
-            <FaCalendarAlt className="text-secondary" /> Year
+          <label
+            htmlFor="filter-year"
+            className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2"
+          >
+            <FaCalendarAlt className="text-secondary" aria-hidden="true" /> Year
           </label>
           <select
+            id="filter-year"
             value={filters.year}
             onChange={(e) => handleChange("year", e.target.value)}
             className="w-full px-4 py-3 bg-slate-50/20 border border-slate-300 rounded-full focus:outline-none focus:ring focus:ring-secondary transition-all font-medium text-slate-700 appearance-none cursor-pointer text-sm"
@@ -191,10 +204,14 @@ const EventFilter = ({ onFilterChange }) => {
 
         {/* National / Local */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2">
-            <FaStar className="text-secondary" /> Scope
+          <label
+            htmlFor="filter-scope"
+            className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2"
+          >
+            <FaStar className="text-secondary" aria-hidden="true" /> Scope
           </label>
           <select
+            id="filter-scope"
             value={filters.isNational}
             onChange={(e) => handleChange("isNational", e.target.value)}
             className="w-full px-4 py-3 bg-slate-50/20 border border-slate-300 rounded-full focus:outline-none focus:ring focus:ring-secondary transition-all font-medium text-slate-700 appearance-none cursor-pointer text-sm"
@@ -207,10 +224,15 @@ const EventFilter = ({ onFilterChange }) => {
 
         {/* Sort */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2">
-            <FaSortAmountDown className="text-secondary" /> Sort
+          <label
+            htmlFor="filter-sort"
+            className="text-xs font-bold text-primary/80 uppercase flex items-center gap-2"
+          >
+            <FaSortAmountDown className="text-secondary" aria-hidden="true" />{" "}
+            Sort
           </label>
           <select
+            id="filter-sort"
             value={filters.sort}
             onChange={(e) => handleChange("sort", e.target.value)}
             className="w-full px-4 py-3 bg-slate-50/20 border border-slate-300 rounded-full focus:outline-none focus:ring focus:ring-secondary transition-all font-medium text-slate-700 appearance-none cursor-pointer text-sm"
