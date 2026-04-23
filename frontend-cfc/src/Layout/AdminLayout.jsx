@@ -66,14 +66,23 @@ function AdminLayout() {
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <aside>
+      
+      {/* Skip to main content link for keyboard users */}
+      <a
+        href="#admin-main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-secondary focus:text-white focus:rounded-full focus:font-bold text-sm"
+      >
+        Skip to main content
+      </a>
+      
+      <aside role="navigation" aria-label="Admin sidebar">
         <AdminSidebar />
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0">
+      <main id="admin-main-content" className="flex-1 flex flex-col min-w-0" role="main">
         {/* Header - Professional Clean Design */}
-        <header className="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+        <header className="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm" role="banner">
           <div className="flex items-center gap-6">
             <div className="flex flex-col">
               <h1 className="text-xl font-bold text-gray-900 tracking-tight uppercase leading-none">
@@ -88,6 +97,9 @@ function AdminLayout() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
+              aria-expanded={isProfileOpen}
+              aria-haspopup="true"
+              aria-label="User menu"
               className="flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-2 rounded-xl transition-all border border-gray-200 group"
             >
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
@@ -142,7 +154,7 @@ function AdminLayout() {
         </div>
 
         {/* Footer */}
-        <footer className="bg-primary text-white py-4 px-6 mt-auto">
+        <footer className="bg-primary text-white py-4 px-6 mt-auto" role="contentinfo">
           <div className="container mx-auto flex flex-col md:flex-row gap-6 justify-between items-center">
             <div className="text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()} Code for Change. All rights
@@ -153,17 +165,24 @@ function AdminLayout() {
             </div>
 
             <div className="flex gap-3">
-              {SOCIAL_MEDIA_LINKS.map((item, index) => (
-                <a
-                  key={index}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-secondary/20 p-2.5 rounded-full hover:bg-secondary hover:scale-110 transition-all duration-300 text-lg"
-                >
-                  {item.icon}
-                </a>
-              ))}
+              {SOCIAL_MEDIA_LINKS.map((item, index) => {
+                const platformName = item.link.includes('facebook') ? 'Facebook' :
+                  item.link.includes('instagram') ? 'Instagram' :
+                  item.link.includes('youtube') ? 'YouTube' :
+                  item.link.includes('linkedin') ? 'LinkedIn' : 'X/Twitter';
+                return (
+                  <a
+                    key={index}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Follow us on ${platformName}`}
+                    className="bg-secondary/20 p-2.5 rounded-full hover:bg-secondary hover:scale-110 transition-all duration-300 text-lg"
+                  >
+                    {item.icon}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </footer>

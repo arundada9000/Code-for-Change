@@ -134,7 +134,9 @@ function Footer() {
             <p className="text-white/70 text-sm mt-2">Stay updated on our latest events and opportunities.</p>
             <div className="flex flex-col mt-6 gap-3 text-white">
               <div className="flex relative">
+                <label htmlFor="newsletter-email" className="sr-only">Email address</label>
                 <input
+                  id="newsletter-email"
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); setStatus(null); }}
@@ -143,6 +145,7 @@ function Footer() {
                   className="w-full py-3 px-4 pr-12 border border-secondary rounded bg-transparent focus:ring focus:ring-secondary outline-none disabled:opacity-60"
                   placeholder="Enter your email"
                   aria-label="Newsletter email subscription"
+                  autoComplete="email"
                 />
                 <button
                   onClick={handleSubscribe}

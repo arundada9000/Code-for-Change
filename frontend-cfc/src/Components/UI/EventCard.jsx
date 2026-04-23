@@ -9,9 +9,23 @@ import {
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate()
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      navigate(`/events/${event.slug || event._id || event.id}`);
+    }
+  };
+
   return (
-    <div
-    onClick={()=>navigate(`/events/${event.slug || event._id || event.id}`)} className="bg-white cursor-pointer rounded-2xl shadow-sm overflow-hidden group hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 border border-slate-100 flex flex-col h-full">
+    <article
+      onClick={()=>navigate(`/events/${event.slug || event._id || event.id}`)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`View event: ${event.title}, ${new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at ${event.location || 'Online'}`}
+      className="bg-white cursor-pointer rounded-2xl shadow-sm overflow-hidden group hover:shadow-2xl hover:shadow-secondary/10 transition-all duration-500 border border-slate-100 flex flex-col h-full"
+    >
       {/* Event Image */}
       <div className="h-48 w-full overflow-hidden relative shrink-0">
         <img
@@ -19,7 +33,7 @@ const EventCard = ({ event }) => {
             event.image ||
             "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800"
           }
-          alt={event.title}
+          alt={`Event image for ${event.title}`}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
         {/* Status badge top-right */}
@@ -30,6 +44,7 @@ const EventCard = ({ event }) => {
                 ? "bg-rose-500/90 text-white"
                 : "bg-secondary/90 text-white"
             }`}
+            aria-label={`Status: ${event.status || 'Published'}`}
           >
             {event.status || "Published"}
           </span>
@@ -38,7 +53,7 @@ const EventCard = ({ event }) => {
         {event.isNational && (
           <div className="absolute top-3 left-3">
             <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-md bg-amber-500/90 text-white">
-              <FaStar size={8} /> National
+              <FaStar size={8} aria-hidden="true" /> National
             </span>
           </div>
         )}
@@ -52,7 +67,7 @@ const EventCard = ({ event }) => {
           </h3>
           <div className="space-y-2 text-sm text-slate-600 mb-3">
             <div className="flex items-center gap-2">
-              <FaCalendarAlt className="text-secondary" />
+              <FaCalendarAlt className="text-secondary" aria-hidden="true" />
               {new Date(event.date).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -60,7 +75,7 @@ const EventCard = ({ event }) => {
               })}
             </div>
             <div className="flex items-center gap-2">
-              <FaMapMarkerAlt className="text-secondary" />
+              <FaMapMarkerAlt className="text-secondary" aria-hidden="true" />
               <span className="truncate">{event.location || "Online"}</span>
             </div>
           </div>
@@ -72,15 +87,17 @@ const EventCard = ({ event }) => {
         <Link
           to={`/events/${event.slug || event._id || event.id}`}
           className="mt-6 self-start px-6 py-2.5 border-2 border-secondary text-secondary rounded-full hover:bg-secondary hover:text-white transition-all font-bold text-sm flex items-center gap-2 group"
+          aria-label={`Learn more about ${event.title}`}
         >
           Learn More{" "}
           <FaArrowRight
             className="group-hover:translate-x-1 transition-transform"
             size={12}
+            aria-hidden="true"
           />
         </Link>
       </div>
-    </div>
+    </article>
   );
 };
 

@@ -308,14 +308,15 @@ function Register() {
                   />
 
                   <div className="space-y-2 group">
-                    <label className="text-base font-medium group-focus-within:text-secondary">
+                    <label htmlFor="role" className="text-base font-medium group-focus-within:text-secondary">
                       I am joining as
                     </label>
                     <div className="relative group mt-1">
-                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10" aria-hidden="true">
                         <FaUser />
                       </div>
                       <select
+                        id="role"
                         name="role"
                         value={form.role}
                         onChange={handleChange}
@@ -334,14 +335,15 @@ function Register() {
                   </div>
 
                   <div className="space-y-2 group">
-                    <label className="text-base font-medium group-focus-within:text-secondary">
+                    <label htmlFor="tenure" className="text-base font-medium group-focus-within:text-secondary">
                       Tenure
                     </label>
                     <div className="relative group mt-1">
-                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10" aria-hidden="true">
                         <FaCalendar />
                       </div>
                       <select
+                        id="tenure"
                         name="tenure"
                         value={form.tenure}
                         onChange={handleChange}
@@ -359,14 +361,15 @@ function Register() {
 
                   {form.role === "eb" && (
                     <div className="space-y-2 group">
-                      <label className="text-base font-medium group-focus-within:text-secondary">
+                      <label htmlFor="ebBody" className="text-base font-medium group-focus-within:text-secondary">
                         EB Position
                       </label>
                       <div className="relative group mt-1">
-                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10" aria-hidden="true">
                           <FaIdCard />
                         </div>
                         <select
+                          id="ebBody"
                           name="ebBody"
                           value={form.ebBody}
                           onChange={handleChange}
@@ -396,14 +399,15 @@ function Register() {
                   )}
 
                   <div className="space-y-2 group">
-                    <label className="text-base font-medium group-focus-within:text-secondary">
+                    <label htmlFor="province" className="text-base font-medium group-focus-within:text-secondary">
                       Region
                     </label>
                     <div className="relative group mt-1">
-                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10" aria-hidden="true">
                         <FaMapPin />
                       </div>
                       <select
+                        id="province"
                         name="province"
                         value={form.province}
                         onChange={handleChange}
@@ -467,14 +471,15 @@ function Register() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                     {/* Gender Select */}
                     <div className="space-y-2 group">
-                      <label className="text-base font-medium group-focus-within:text-secondary">
+                      <label htmlFor="gender" className="text-base font-medium group-focus-within:text-secondary">
                         Gender (Optional)
                       </label>
                       <div className="relative group mt-2">
-                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-secondary transition-colors z-10" aria-hidden="true">
                           <FaVenusMars />
                         </div>
                         <select
+                          id="gender"
                           name="gender"
                           value={form.gender}
                           onChange={handleChange}
@@ -630,24 +635,29 @@ const InputField = ({
   value,
   onChange,
   required = false,
-}) => (
-  <div className="group">
-    <label className=" group-focus-within:text-secondary font-medium text-base ">
-      {label}
-    </label>
-    <div className="relative group mt-1">
-      <Icon className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-secondary transition-colors group-hover:text-secondary" />
-      <input
-        type={type}
-        name={name}
-        required={required}
-        placeholder={placeholder}
-        className="w-full pl-16 pr-8 py-4  border cursor-pointer border-secondary/50 rounded-full outline-none focus:bg-white focus:ring focus:ring-secondary  font-medium transition-all text-sm"
-        value={value}
-        onChange={onChange}
-      />
+}) => {
+  const inputId = name || label.toLowerCase().replace(/\s+/g, "-");
+  return (
+    <div className="group">
+      <label htmlFor={inputId} className=" group-focus-within:text-secondary font-medium text-base ">
+        {label}
+      </label>
+      <div className="relative group mt-1">
+        <Icon className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-secondary transition-colors group-hover:text-secondary" aria-hidden="true" />
+        <input
+          id={inputId}
+          type={type}
+          name={name}
+          required={required}
+          autoComplete={name}
+          placeholder={placeholder}
+          className="w-full pl-16 pr-8 py-4  border cursor-pointer border-secondary/50 rounded-full outline-none focus:bg-white focus:ring focus:ring-secondary  font-medium transition-all text-sm"
+          value={value}
+          onChange={onChange}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Register;
