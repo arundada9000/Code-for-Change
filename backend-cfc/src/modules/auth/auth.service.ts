@@ -5,18 +5,23 @@ import { ENV } from "../../shared/configs/env.js";
 import { UserTable } from "../user/user.model.js";
 import { ILoginUserInput, LoginResponse } from "../user/user.interface.js";
 
+const ALLOWED_ROLES = ["gm", "eb", "cr", "ippl", "advisor", "alumni", "guest"];
+
 export const register = async (data: any) => {
   const existingUser = await UserTable.findOne({ email: data.email });
   if (existingUser) {
     throw new Error("User with this email already exists");
   }
 
+  const validRole = ALLOWED_ROLES.includes(data.role) ? data.role : "gm";
+  const isEbUser = validRole === "eb";
+
   const user = new UserTable({
     name: data.name,
     email: data.email,
     phone: data.phone,
     password: await hashPassword(data.password),
-    role: data.role || "gm",
+    role: validRole,
     tenure: data.tenure,
     bio: data.bio,
     gender: data.gender,
@@ -26,8 +31,8 @@ export const register = async (data: any) => {
     github: data.github,
     facebook: data.facebook,
     website: data.website,
-    isVerified: typeof data.isVerified === "boolean" ? data.isVerified : false,
-    isActive: typeof data.isActive === "boolean" ? data.isActive : true,
+    isVerified: false,
+    isActive: true,
     accountStatus: "pending",
     education: {
       collegeName: data.collegeName,
@@ -41,7 +46,7 @@ export const register = async (data: any) => {
       membershipStatus: "active",
     },
     executiveDetails: {
-      position: data.ebBody,
+      position: isEbUser ? data.ebBody : undefined,
     },
     profileImage: data.profileImage,
   });
