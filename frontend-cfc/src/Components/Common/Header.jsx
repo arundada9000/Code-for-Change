@@ -25,15 +25,18 @@ function Header({ setShowSidebar }) {
           ? "bg-primary/60 backdrop-blur-md top-5 border border-white/20 shadow-2xl"
           : "bg-transparent top-0 border-none"
       }`}
+      role="banner"
     >
       <div className="flex items-center justify-between">
-        <Link to="/" className="shrink-0">
-          <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
+        <Link to="/" className="shrink-0" aria-label="Code for Change Nepal - Home">
+          <img src="/logo.png" alt="Code for Change Nepal Logo" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Navigation */}
         <nav
           className="relative hidden lg:flex items-center gap-1"
+          aria-label="Main navigation"
+          role="navigation"
           onMouseLeave={() => setHoveredPath(null)}
         >
           {navItems.map((item) => {
@@ -110,17 +113,20 @@ function Header({ setShowSidebar }) {
           </Link>
 
           <button
-            onClick={(event) => {
-              event.stopPropagation();
-              setShowSidebar(true);
-            }}
-            className="lg:hidden p-2 text-primary"
-          >
-            <RiMenu3Fill
-              size={28}
-              className={scrolled ? "text-white" : "text-primary"}
-            />
-          </button>
+              onClick={(event) => {
+                event.stopPropagation();
+                setShowSidebar(true);
+              }}
+              className="lg:hidden p-2 text-primary"
+              aria-label="Open navigation menu"
+              aria-expanded="false"
+            >
+              <RiMenu3Fill
+                size={28}
+                className={scrolled ? "text-white" : "text-primary"}
+                aria-hidden="true"
+              />
+            </button>
         </div>
       </div>
     </header>

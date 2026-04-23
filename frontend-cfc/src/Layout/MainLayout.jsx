@@ -32,18 +32,27 @@ function MainLayout() {
       document.body.removeEventListener("click", handleClickOutside);
     };
   }, [showSidebar]);
-  return (
+return (
     <div>
       <SEO />
+      {/* Skip to main content link for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-secondary focus:text-white focus:rounded-full focus:font-bold text-sm"
+      >
+        Skip to main content
+      </a>
       <Header setShowSidebar={setShowSidebar} />
       <Sidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
         sidebarRef={sidebarRef}
       />
-      <Outlet />
+      <main id="main-content" role="main">
+        <Outlet />
+      </main>
       <BackToTop />
-     <Footer/>
+      <Footer />
     </div>
   );
 }

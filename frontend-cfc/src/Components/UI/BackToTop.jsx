@@ -26,11 +26,13 @@ function BackToTop() {
   };
 
   return (
-    <div
+    <button
       onClick={scrollToTop}
       className={`fixed bottom-8 right-8 z-50 cursor-pointer transition-all duration-300
         ${visible ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}
       `}
+      aria-label="Scroll to top"
+      aria-hidden={!visible}
     >
       <div
         className="relative w-12 h-12 rounded-full flex items-center justify-center"
@@ -45,7 +47,7 @@ function BackToTop() {
           <BsArrowUp className="text-2xl rounded-full text-secondary" />
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 

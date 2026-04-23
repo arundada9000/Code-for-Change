@@ -91,7 +91,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="bg-primary px-5 text-white">
+    <footer className="bg-primary px-5 text-white" role="contentinfo">
       <div className="max-w-7xl py-10 mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[1.7fr_1fr_1fr_1fr] py-10  gap-14">
           <div>
