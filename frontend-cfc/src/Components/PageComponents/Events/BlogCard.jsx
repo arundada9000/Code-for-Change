@@ -106,14 +106,18 @@ export function BlogCard() {
           return (
             <StaggerItem key={id} className="h-full">
               <article
-              onClick={() => navigate(`/creative/${id}-${slug}`)}
+                onClick={() => navigate(`/creative/${id}-${slug}`)}
+                onKeyDown={(e) => e.key === 'Enter' && navigate(`/creative/${id}-${slug}`)}
+                tabIndex={0}
+                role="button"
+                aria-label={`Read blog: ${blog.title}, published ${date}`}
                 className="h-full group flex flex-col bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
               >
                 {/* Image Container */}
                 <div className="relative overflow-hidden">
                   <img
                     src={coverImage}
-                    alt={blog.title}
+                    alt={`Cover image for ${blog.title}`}
                     className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Tag Overlay */}
@@ -139,6 +143,7 @@ export function BlogCard() {
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
+                        aria-hidden="true"
                       >
                         <path
                           strokeLinecap="round"
