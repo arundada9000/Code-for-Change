@@ -2,19 +2,30 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
-  withCredentials: true, // Sends HttpOnly cookies automatically
+  withCredentials: true, // Sends HttpOnly cookies when same-origin
 });
 
-// No Authorization header interceptor needed —
-// the backend reads the JWT from the HttpOnly 'jwt' cookie.
+// Attach Bearer token as fallback for cross-origin deployments
+// where HttpOnly cookies may not work (e.g. Vercel frontend + separate API host).
+// The backend checks cookies first, then falls back to this header.
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// Interceptor to handle auth errors globally
+// Handle auth errors globally
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear cached user data on auth failure
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
     return Promise.reject(error);
   }
