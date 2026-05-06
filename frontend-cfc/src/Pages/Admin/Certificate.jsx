@@ -24,6 +24,7 @@ import JSZip from "jszip";
 import CertificatePreview from "../../Components/UI/CertificatePreview";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import BulkCertificateModal from "./BulkCertificateModal";
+import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 import { useDebounce } from "../../Hooks/useDebounce";
 import logo from "../../assets/logo.png";
@@ -448,7 +449,7 @@ function Certificate() {
             <div className="flex flex-wrap gap-3 flex-1 md:flex-none">
 
               <button
-                onClick={() => { setBulkStep(1); setIsBulkModalOpen(true); }}
+                onClick={() => setIsBulkModalOpen(true)}
                 className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-secondary text-white px-6 py-4 rounded-2xl hover:bg-primary transition-all shadow-xl shadow-secondary/20 font-black text-[10px] uppercase tracking-widest whitespace-nowrap"
               >
                 <FaDownload className="text-lg" />{" "}
