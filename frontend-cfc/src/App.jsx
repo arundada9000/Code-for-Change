@@ -66,7 +66,6 @@ import PrivateRoute from "./Components/Common/PrivateRoute";
 import { Toaster } from "react-hot-toast";
 
 function App() {
-  console.log("Updated to latest version 1");
   useScrollToTop();
   return (
     <>

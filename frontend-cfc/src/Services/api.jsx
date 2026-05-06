@@ -2,29 +2,19 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
-  withCredentials: true,
+  withCredentials: true, // Sends HttpOnly cookies automatically
 });
 
-API.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// No Authorization header interceptor needed —
+// the backend reads the JWT from the HttpOnly 'jwt' cookie.
 
-// Interceptor to handle errors globally if needed
+// Interceptor to handle auth errors globally
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle auth errors (e.g. 401)
     if (error.response?.status === 401) {
-      // Potentially clear local storage or redirect to login
+      // Clear cached user data on auth failure
       localStorage.removeItem("user");
-      localStorage.removeItem("token");
     }
     return Promise.reject(error);
   }

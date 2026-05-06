@@ -5,6 +5,7 @@ import hpp from "hpp";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import mongoSanitize from "express-mongo-sanitize";
 import { rateLimit } from "express-rate-limit";
 import { ENV } from "./shared/configs/env.js";
 import "./shared/configs/cloudinary.js"; // Initialize Cloudinary config early
@@ -38,31 +39,15 @@ const app: Application = express();
 // the real client IP, which is critical for accurate rate limiting.
 app.set("trust proxy", 1);
 
-// Custom NoSQL Injection Protection + XSS sanitizer for Express 5
-const customSanitize = (req: any, res: any, next: any) => {
-  // Strip MongoDB operator keys ($where, $gt, etc.) recursively
-  const stripOperators = (obj: any): void => {
-    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
-      for (const key of Object.keys(obj)) {
-        if (/^\$/.test(key)) {
-          delete obj[key];
-        } else {
-          stripOperators(obj[key]);
-        }
-      }
-    } else if (Array.isArray(obj)) {
-      obj.forEach(stripOperators);
-    }
-  };
-
-  // Strip HTML tags from string values to prevent XSS persistence
+// XSS sanitizer — strips dangerous HTML/JS from string values in request body
+const xssSanitize = (req: any, _res: any, next: any) => {
   const stripHtml = (obj: any): any => {
     if (typeof obj === "string") {
       return obj
         .replace(/<script[\s\S]*?<\/script>/gi, "") // remove script blocks
-        .replace(/<[^>]+>/g, "") // remove all HTML tags
-        .replace(/javascript:/gi, "") // remove js: protocol
-        .replace(/on\w+\s*=/gi, ""); // remove event handlers
+        .replace(/<[^>]+>/g, "")                     // remove all HTML tags
+        .replace(/javascript:/gi, "")                 // remove js: protocol
+        .replace(/on\w+\s*=/gi, "");                  // remove event handlers
     }
     if (obj && typeof obj === "object" && !Array.isArray(obj)) {
       const clean: any = {};
@@ -78,16 +63,7 @@ const customSanitize = (req: any, res: any, next: any) => {
   };
 
   if (req.body) {
-    stripOperators(req.body);
     req.body = stripHtml(req.body);
-  }
-  if (req.params) stripOperators(req.params);
-  if (req.query) {
-    try {
-      stripOperators(req.query);
-    } catch (e) {
-      console.error("Sanitization error on query:", e);
-    }
   }
   next();
 };
@@ -110,9 +86,10 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   }),
 );
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(customSanitize);
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true, limit: "2mb" }));
+app.use(mongoSanitize());  // NoSQL injection protection (strips $ operators)
+app.use(xssSanitize);      // XSS protection (strips HTML/JS from body strings)
 app.use(cookieParser());
 app.use(hpp());
 app.use(compression());

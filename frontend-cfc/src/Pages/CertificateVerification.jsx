@@ -14,7 +14,6 @@ import {
   FaDownload,
 } from "react-icons/fa";
 import { Html5QrcodeScanner, Html5Qrcode } from "html5-qrcode";
-import { toPng } from "html-to-image";
 import toast from "react-hot-toast";
 import API from "../Services/api";
 import SEO from "../Components/Common/SEO";
@@ -150,6 +149,7 @@ function CertificateVerification() {
       "Generating high-quality certificate image...",
     );
     try {
+      const { toPng } = await import("html-to-image");
       // Scale for higher definition print quality
       const dataUrl = await toPng(node, {
         cacheBust: true,
