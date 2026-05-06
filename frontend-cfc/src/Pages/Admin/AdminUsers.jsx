@@ -15,6 +15,7 @@ import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
+import { useDebounce } from "../../Hooks/useDebounce";
 
 const FilterSelect = React.memo(({ label, options, value, onChange }) => (
   <div className="bg-gray-50/50 p-1.5 rounded-2xl border border-gray-100 shadow-sm w-full md:w-auto">
@@ -81,6 +82,7 @@ function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 400);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -471,7 +473,7 @@ function AdminUsers() {
   };
 
   const filteredUsers = users.filter((user) => {
-    const s = searchTerm.toLowerCase();
+    const s = debouncedSearchTerm.toLowerCase();
     const matchesSearch =
       user.name?.toLowerCase().includes(s) ||
       user.email?.toLowerCase().includes(s) ||
