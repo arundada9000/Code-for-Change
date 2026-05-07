@@ -32,6 +32,7 @@ import newsletterRoutes from "./modules/newsletter/newsletter.route.js";
 import teamRoutes from "./modules/team/team.route.js";
 import periodicalRoutes from "./modules/periodicals/periodical.route.js";
 import walkthroughRoutes from "./modules/walkthroughs/walkthrough.route.js";
+import resumeRoutes from "./modules/resume/resume.route.js";
 
 const app: Application = express();
 
@@ -176,6 +177,7 @@ app.use("/api", newsletterRoutes);
 app.use("/api/team", teamRoutes);
 app.use("/api", periodicalRoutes);
 app.use("/api", walkthroughRoutes);
+app.use("/api/resumes", resumeRoutes);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);

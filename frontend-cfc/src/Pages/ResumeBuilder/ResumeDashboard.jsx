@@ -28,16 +28,24 @@ const ResumeDashboard = () => {
     navigate("/resume-builder/new");
   };
 
-  const handleDelete = (id, title) => {
+  const handleDelete = async (id, title) => {
     if (window.confirm(`Delete "${title}"? This cannot be undone.`)) {
-      deleteResume(id);
-      toast.success("Resume deleted");
+      try {
+        await deleteResume(id);
+        toast.success("Resume deleted");
+      } catch {
+        toast.error("Failed to delete resume");
+      }
     }
   };
 
-  const handleDuplicate = (id) => {
-    const copy = duplicateResume(id);
-    if (copy) toast.success("Resume duplicated");
+  const handleDuplicate = async (id) => {
+    try {
+      await duplicateResume(id);
+      toast.success("Resume duplicated");
+    } catch {
+      toast.error("Failed to duplicate resume");
+    }
   };
 
   const toggleMenu = (id) => {

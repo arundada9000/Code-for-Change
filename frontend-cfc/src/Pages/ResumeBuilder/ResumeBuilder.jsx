@@ -17,38 +17,66 @@ import {
   FaCloudUploadAlt,
 } from "react-icons/fa";
 
-/**
- * ResumeBuilder — split-pane editor page.
- * Left: scrollable form editor. Right: sticky live A4 preview.
- * Mobile: tabbed view switching between Edit and Preview.
- */
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { getResume, saveResume, createNewResume } = useResumes();
+  const { getResume, fetchResume, saveResume, createNewResume } = useResumes();
 
   const previewRef = useRef(null);
   const [resumeData, setResumeData] = useState(null);
-  const [activeTab, setActiveTab] = useState("edit"); // mobile tab
+  const [activeTab, setActiveTab] = useState("edit");
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [hasUnsaved, setHasUnsaved] = useState(false);
+  const [initializing, setInitializing] = useState(true);
 
   // Load or create resume
   useEffect(() => {
-    if (resumeId === "new") {
-      const newResume = createNewResume();
-      navigate(`/resume-builder/${newResume.id}`, { replace: true });
-    } else if (resumeId) {
-      const existing = getResume(resumeId);
-      if (existing) {
-        setResumeData(existing);
-      } else {
-        toast.error("Resume not found");
-        navigate("/resume-builder", { replace: true });
+    let cancelled = false;
+
+    const init = async () => {
+      setInitializing(true);
+
+      if (resumeId === "new") {
+        try {
+          const newResume = await createNewResume();
+          if (!cancelled) {
+            navigate(`/resume-builder/${newResume.id || newResume._id}`, {
+              replace: true,
+            });
+          }
+        } catch (err) {
+          if (!cancelled) {
+            toast.error("Failed to create resume");
+            navigate("/resume-builder", { replace: true });
+          }
+        }
+        return;
       }
-    }
+
+      if (resumeId) {
+        // Try local state first, then API
+        let existing = getResume(resumeId);
+        if (!existing) {
+          existing = await fetchResume(resumeId);
+        }
+        if (!cancelled) {
+          if (existing) {
+            setResumeData(existing);
+          } else {
+            toast.error("Resume not found");
+            navigate("/resume-builder", { replace: true });
+          }
+          setInitializing(false);
+        }
+      }
+    };
+
+    init();
+    return () => {
+      cancelled = true;
+    };
   }, [resumeId]);
 
   // Update a top-level field in resume data
@@ -60,33 +88,17 @@ const ResumeBuilder = () => {
     setHasUnsaved(true);
   }, []);
 
-  // Save to localStorage
-  const handleSave = useCallback(() => {
+  // Save to backend
+  const handleSave = useCallback(async () => {
     if (!resumeData) return;
     setSaving(true);
     try {
-      saveResume(resumeData);
+      const updated = await saveResume(resumeData);
+      setResumeData(updated);
       setHasUnsaved(false);
       toast.success("Resume saved!");
     } catch {
       toast.error("Failed to save");
-    } finally {
-      setSaving(false);
-    }
-  }, [resumeData, saveResume]);
-
-  // Save to backend (placeholder — will be wired to API)
-  const handleSaveToBackend = useCallback(async () => {
-    if (!resumeData) return;
-    setSaving(true);
-    try {
-      // For now, save locally. When backend is ready, replace with:
-      // await API.post('/resumes', resumeData);
-      saveResume(resumeData);
-      setHasUnsaved(false);
-      toast.success("Resume saved to cloud!");
-    } catch {
-      toast.error("Failed to save to server");
     } finally {
       setSaving(false);
     }
@@ -122,7 +134,7 @@ const ResumeBuilder = () => {
     return () => window.removeEventListener("keydown", handler);
   }, [handleSave]);
 
-  if (!resumeData) {
+  if (initializing || !resumeData) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin" />
@@ -198,21 +210,14 @@ const ResumeBuilder = () => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer bg-slate-100 text-slate-600 hover:bg-slate-200"
-              title="Save locally (Ctrl+S)"
-            >
-              <FaSave size={12} />
-              <span className="hidden sm:inline">{saving ? "..." : "Save"}</span>
-            </button>
-            <button
-              onClick={handleSaveToBackend}
-              disabled={saving}
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer text-white"
               style={{ backgroundColor: accentColor }}
-              title="Save to server"
+              title="Save (Ctrl+S)"
             >
-              <FaCloudUploadAlt size={12} />
-              <span className="hidden sm:inline">Save to Cloud</span>
+              <FaSave size={12} />
+              <span className="hidden sm:inline">
+                {saving ? "Saving..." : "Save"}
+              </span>
             </button>
             <button
               onClick={handleExportPDF}

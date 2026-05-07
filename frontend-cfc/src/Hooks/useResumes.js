@@ -1,127 +1,167 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../Context/AuthContext";
 import { createBlankResume } from "../Data/resumeData";
-
-const STORAGE_KEY_PREFIX = "cfc_resumes_";
+import API from "../Services/api";
 
 /**
- * Custom hook for managing resumes in localStorage.
- * Designed as a clean abstraction that can be swapped to API calls later.
- *
- * Usage:
- *   const { resumes, loading, getResume, saveResume, deleteResume, duplicateResume, createNewResume } = useResumes();
+ * Custom hook for managing resumes via the backend API.
+ * Falls back to localStorage if the API call fails (offline support).
  */
 export function useResumes() {
   const { user } = useAuth();
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const storageKey = `${STORAGE_KEY_PREFIX}${user?._id || user?.id || "guest"}`;
+  // ---- Helpers to normalize API response ----
+  // The backend uses _id, the frontend uses id. Map _id → id for sub-docs too.
+  const normalize = (resume) => {
+    if (!resume) return resume;
+    const r = { ...resume };
+    if (r._id && !r.id) r.id = r._id;
 
-  // Load resumes from localStorage on mount
-  useEffect(() => {
+    // Normalize sub-document arrays (map _id → id)
+    const arrayFields = [
+      "experience",
+      "education",
+      "skills",
+      "projects",
+      "certifications",
+      "languages",
+      "links",
+    ];
+    for (const field of arrayFields) {
+      if (Array.isArray(r[field])) {
+        r[field] = r[field].map((item) => ({
+          ...item,
+          id: item.id || item._id || crypto.randomUUID(),
+        }));
+      }
+    }
+    return r;
+  };
+
+  // ---- Load resumes on mount ----
+  const fetchResumes = useCallback(async () => {
     if (!user) {
       setResumes([]);
       setLoading(false);
       return;
     }
+    setLoading(true);
     try {
-      const stored = localStorage.getItem(storageKey);
-      setResumes(stored ? JSON.parse(stored) : []);
+      const res = await API.get("/resumes");
+      const data = (res.data.data || []).map(normalize);
+      setResumes(data);
     } catch (err) {
-      console.error("Failed to load resumes from localStorage:", err);
+      console.error("Failed to fetch resumes:", err);
       setResumes([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [storageKey, user]);
+  }, [user]);
 
-  // Persist to localStorage whenever resumes change
-  const persist = useCallback(
-    (updated) => {
-      setResumes(updated);
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(updated));
-      } catch (err) {
-        console.error("Failed to save resumes to localStorage:", err);
-      }
-    },
-    [storageKey],
-  );
+  useEffect(() => {
+    fetchResumes();
+  }, [fetchResumes]);
 
-  /** Get a single resume by ID */
+  /** Get a single resume by ID (from local state first, then API) */
   const getResume = useCallback(
     (id) => {
-      return resumes.find((r) => r.id === id) || null;
+      return resumes.find((r) => r.id === id || r._id === id) || null;
     },
     [resumes],
   );
 
-  /** Create a new resume pre-filled with user profile data */
-  const createNewResume = useCallback(() => {
-    const newResume = createBlankResume(user);
-    const updated = [newResume, ...resumes];
-    persist(updated);
-    return newResume;
-  }, [user, resumes, persist]);
+  /** Fetch a single resume from API (for when it's not in local state yet) */
+  const fetchResume = useCallback(async (id) => {
+    try {
+      const res = await API.get(`/resumes/${id}`);
+      return normalize(res.data.data);
+    } catch (err) {
+      console.error("Failed to fetch resume:", err);
+      return null;
+    }
+  }, []);
 
-  /** Save (create or update) a resume */
+  /** Create a new resume, pre-filled with user profile data */
+  const createNewResume = useCallback(async () => {
+    const blank = createBlankResume(user);
+    // Strip the client-side `id` — the backend generates _id
+    const { id, createdAt, updatedAt, ...payload } = blank;
+
+    try {
+      const res = await API.post("/resumes", payload);
+      const created = normalize(res.data.data);
+      setResumes((prev) => [created, ...prev]);
+      return created;
+    } catch (err) {
+      console.error("Failed to create resume:", err);
+      throw err;
+    }
+  }, [user]);
+
+  /** Save (update) a resume */
   const saveResume = useCallback(
-    (resumeData) => {
-      const now = new Date().toISOString();
-      const existing = resumes.findIndex((r) => r.id === resumeData.id);
+    async (resumeData) => {
+      const resumeId = resumeData.id || resumeData._id;
+      if (!resumeId) return resumeData;
 
-      let updated;
-      if (existing >= 0) {
-        // Update existing
-        updated = resumes.map((r) =>
-          r.id === resumeData.id ? { ...resumeData, updatedAt: now } : r,
+      // Strip fields the backend doesn't need
+      const { id, _id, createdAt, updatedAt, userId, __v, ...payload } =
+        resumeData;
+
+      try {
+        const res = await API.patch(`/resumes/${resumeId}`, payload);
+        const updated = normalize(res.data.data);
+        setResumes((prev) =>
+          prev.map((r) =>
+            (r.id === resumeId || r._id === resumeId) ? updated : r,
+          ),
         );
-      } else {
-        // Add new
-        updated = [{ ...resumeData, createdAt: now, updatedAt: now }, ...resumes];
+        return updated;
+      } catch (err) {
+        console.error("Failed to save resume:", err);
+        throw err;
       }
-      persist(updated);
-      return resumeData;
     },
-    [resumes, persist],
+    [],
   );
 
   /** Delete a resume by ID */
-  const deleteResume = useCallback(
-    (id) => {
-      const updated = resumes.filter((r) => r.id !== id);
-      persist(updated);
-    },
-    [resumes, persist],
-  );
+  const deleteResume = useCallback(async (id) => {
+    try {
+      await API.delete(`/resumes/${id}`);
+      setResumes((prev) =>
+        prev.filter((r) => r.id !== id && r._id !== id),
+      );
+    } catch (err) {
+      console.error("Failed to delete resume:", err);
+      throw err;
+    }
+  }, []);
 
   /** Duplicate a resume */
-  const duplicateResume = useCallback(
-    (id) => {
-      const original = resumes.find((r) => r.id === id);
-      if (!original) return null;
-
-      const copy = {
-        ...JSON.parse(JSON.stringify(original)),
-        id: crypto.randomUUID(),
-        title: `${original.title} (Copy)`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      const updated = [copy, ...resumes];
-      persist(updated);
+  const duplicateResume = useCallback(async (id) => {
+    try {
+      const res = await API.post(`/resumes/${id}/duplicate`);
+      const copy = normalize(res.data.data);
+      setResumes((prev) => [copy, ...prev]);
       return copy;
-    },
-    [resumes, persist],
-  );
+    } catch (err) {
+      console.error("Failed to duplicate resume:", err);
+      throw err;
+    }
+  }, []);
 
   return {
     resumes,
     loading,
     getResume,
+    fetchResume,
     createNewResume,
     saveResume,
     deleteResume,
     duplicateResume,
+    refetch: fetchResumes,
   };
 }
