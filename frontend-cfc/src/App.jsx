@@ -57,6 +57,8 @@ const AdminSupporters = lazy(() => import("./Pages/Admin/AdminSupporters"));
 const AdminNewsletter = lazy(() => import("./Pages/Admin/AdminNewsletter"));
 const AdminContacts = lazy(() => import("./Pages/Admin/AdminContacts"));
 const AdminTeam = lazy(() => import("./Pages/Admin/AdminTeam"));
+const ResumeDashboard = lazy(() => import("./Pages/ResumeBuilder/ResumeDashboard"));
+const ResumeBuilderPage = lazy(() => import("./Pages/ResumeBuilder/ResumeBuilder"));
 import AuthLayout from "./Layout/AuthLayout";
 import Login from "./Pages/Auth/Login";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
@@ -125,6 +127,8 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route element={<MainLayout />}>
               <Route path="/profile" element={<UserProfile />} />
+              <Route path="/resume-builder" element={<ResumeDashboard />} />
+              <Route path="/resume-builder/:resumeId" element={<ResumeBuilderPage />} />
             </Route>
           </Route>
 

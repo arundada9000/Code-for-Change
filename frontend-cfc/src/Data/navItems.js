@@ -37,6 +37,11 @@ export const navItems = [
         requiresAuth: true,
       },
       {
+        title: "Resume Builder",
+        path: "/resume-builder",
+        requiresAuth: true,
+      },
+      {
         title: "Certificate Verification",
         path: "/certificate-verification",
       },

@@ -29,6 +29,7 @@ import {
   FaGlobe,
   FaIdCard,
   FaHistory,
+  FaFileAlt,
 } from "react-icons/fa";
 
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
@@ -449,6 +450,13 @@ function UserProfile() {
                 Quick Actions
               </p>
               <div className="space-y-2">
+                <Link
+                  to="/resume-builder"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all hover:opacity-90 bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                >
+                  <FaFileAlt size={14} />
+                  Resume Builder
+                </Link>
                 {isAdmin && (
                   <Link
                     to="/admin"
