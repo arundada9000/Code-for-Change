@@ -175,7 +175,7 @@ const ResumeSchema = new Schema<IResume>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "users",
       required: true,
       index: true,
     },

@@ -1,4 +1,6 @@
 import MinimalistPro from "./MinimalistPro";
+import CreativeBold from "./CreativeBold";
+import ClassicFormal from "./ClassicFormal";
 
 /**
  * Template registry — maps template IDs to React components.
@@ -9,11 +11,8 @@ import MinimalistPro from "./MinimalistPro";
  */
 const TEMPLATES = {
   "minimalist-pro": MinimalistPro,
-  // Future:
-  // 'creative-bold': CreativeBold,
-  // 'classic-formal': ClassicFormal,
-  // 'tech-modern': TechModern,
-  // 'elegant-serif': ElegantSerif,
+  "creative-bold": CreativeBold,
+  "classic-formal": ClassicFormal,
 };
 
 /**

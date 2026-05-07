@@ -133,11 +133,18 @@ export const TEMPLATE_LIST = [
     description: "Clean, modern layout with subtle accent colors and strong typography.",
     isPremium: false,
   },
-  // Future templates (placeholders — components not yet built)
-  // { id: 'creative-bold', name: 'Creative Bold', description: 'Vibrant colors and bold layouts for creative professionals.', isPremium: false },
-  // { id: 'classic-formal', name: 'Classic Formal', description: 'Traditional serif-based layout for corporate settings.', isPremium: false },
-  // { id: 'tech-modern', name: 'Tech Modern', description: 'Dark-mode inspired design for developers and engineers.', isPremium: false },
-  // { id: 'elegant-serif', name: 'Elegant Serif', description: 'Refined and sophisticated for executive-level resumes.', isPremium: false },
+  {
+    id: "creative-bold",
+    name: "Creative Bold",
+    description: "Striking two-column design with dark sidebar for creative professionals.",
+    isPremium: false,
+  },
+  {
+    id: "classic-formal",
+    name: "Classic Formal",
+    description: "Traditional serif-based layout ideal for corporate and executive roles.",
+    isPremium: false,
+  },
 ];
 
 export const PROFICIENCY_LEVELS = [
