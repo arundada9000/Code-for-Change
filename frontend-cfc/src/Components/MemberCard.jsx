@@ -84,24 +84,31 @@ const MemberCard = ({ user, regionColor = "#0076B4" }) => {
         {downloading ? "Generating..." : "Download Member Card"}
       </button>
 
-      {/* Hidden Card — rendered off-screen, captured as PNG */}
+      {/* Hidden Card — clipped container, captured as PNG */}
       <div
-        ref={cardRef}
+        aria-hidden="true"
         style={{
-          position: "fixed",
-          left: "-9999px",
-          top: 0,
-          display: "flex",
-          width: "420px",
-          flexDirection: "column",
-          fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
-          backgroundColor: "#ffffff",
-          borderRadius: "16px",
+          position: "absolute",
           overflow: "hidden",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.1)",
-          zIndex: -1,
+          height: 0,
+          width: 0,
+          opacity: 0,
+          pointerEvents: "none",
         }}
       >
+        <div
+          ref={cardRef}
+          style={{
+            display: "flex",
+            width: "420px",
+            flexDirection: "column",
+            fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
+            backgroundColor: "#ffffff",
+            borderRadius: "16px",
+            overflow: "hidden",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.1)",
+          }}
+        >
         {/* Top Banner */}
         <div
           style={{
@@ -424,6 +431,7 @@ const MemberCard = ({ user, regionColor = "#0076B4" }) => {
           >
             Empowering Change Through Code
           </div>
+        </div>
         </div>
       </div>
     </>
