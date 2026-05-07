@@ -57,6 +57,7 @@ const AdminSupporters = lazy(() => import("./Pages/Admin/AdminSupporters"));
 const AdminNewsletter = lazy(() => import("./Pages/Admin/AdminNewsletter"));
 const AdminContacts = lazy(() => import("./Pages/Admin/AdminContacts"));
 const AdminTeam = lazy(() => import("./Pages/Admin/AdminTeam"));
+const AdminResumes = lazy(() => import("./Pages/Admin/AdminResumes"));
 const ResumeDashboard = lazy(() => import("./Pages/ResumeBuilder/ResumeDashboard"));
 const ResumeBuilderPage = lazy(() => import("./Pages/ResumeBuilder/ResumeBuilder"));
 import AuthLayout from "./Layout/AuthLayout";
@@ -167,6 +168,7 @@ function App() {
               <Route path="newsletter" element={<AdminNewsletter />} />
               <Route path="contacts" element={<AdminContacts />} />
               <Route path="national-team" element={<AdminTeam />} />
+              <Route path="resumes" element={<AdminResumes />} />
               <Route path="sajilo-digital" element={<SajiloDigital />} />
             </Route>
           </Route>

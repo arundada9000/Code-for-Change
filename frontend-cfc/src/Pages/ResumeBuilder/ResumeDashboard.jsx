@@ -4,6 +4,7 @@ import { useResumes } from "../../Hooks/useResumes";
 import { exportResumeToPDF } from "./pdfExport";
 import { getTemplateComponent } from "./templates/templateRegistry";
 import { FadeIn, SlideUp } from "../../Components/Common/Animations";
+import { ResumeCardSkeleton } from "../../Components/Loading/Skeleton";
 import toast from "react-hot-toast";
 import {
   FaPlus,
@@ -54,8 +55,20 @@ const ResumeDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                My Resumes
+              </h1>
+              <p className="text-sm text-slate-400 mt-1">
+                Loading your resumes...
+              </p>
+            </div>
+          </div>
+          <ResumeCardSkeleton count={3} />
+        </div>
       </div>
     );
   }

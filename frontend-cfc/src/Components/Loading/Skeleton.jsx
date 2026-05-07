@@ -644,6 +644,52 @@ export const AdminDashboardSkeleton = () => (
   </>
 );
 
+/* ============================================================
+   12. ResumeCardSkeleton
+   Use for: Resume Builder dashboard cards grid
+   ============================================================ */
+export const ResumeCardSkeleton = ({ count = 6 }) => (
+  <>
+    <StyleInjector />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          className="bg-white rounded-2xl border border-slate-200 overflow-hidden"
+          style={{ animationDelay: `${i * 100}ms` }}
+        >
+          {/* Mini preview placeholder */}
+          <div className="h-48 bg-slate-50 p-4">
+            <TerminalDots />
+            <div className="space-y-2">
+              <Pulse className="h-4 w-3/4 rounded" />
+              <Pulse className="h-3 w-1/2 rounded" />
+              <Pulse className="h-3 w-5/6 rounded" />
+              <Pulse className="h-3 w-2/3 rounded" />
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Pulse className="h-3 w-16 rounded-full" />
+              <Pulse className="h-3 w-12 rounded-full" />
+              <Pulse className="h-3 w-14 rounded-full" />
+            </div>
+          </div>
+          {/* Card footer */}
+          <div className="p-4 space-y-3">
+            <div className="flex items-start justify-between">
+              <div className="space-y-1.5 flex-1">
+                <Pulse className="h-4 w-32 rounded" />
+                <Pulse className="h-3 w-24 rounded" />
+              </div>
+              <Pulse className="w-8 h-8 rounded-lg" />
+            </div>
+            <Pulse className="h-5 w-24 rounded-full" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </>
+);
+
 export default {
   TerminalCardSkeleton,
   InternshipCardSkeleton,
@@ -656,4 +702,5 @@ export default {
   BlogCardListSkeleton,
   AdminTableSkeleton,
   AdminDashboardSkeleton,
+  ResumeCardSkeleton,
 };

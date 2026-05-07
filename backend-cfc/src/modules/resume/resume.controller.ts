@@ -55,3 +55,24 @@ export const duplicateResume = asyncHandler(
     successResponse(res, resume, "Resume duplicated", 201);
   },
 );
+
+/** ADMIN: GET /api/resumes/admin/all — list all resumes */
+export const adminListResumes = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { page, limit, search } = req.query;
+    const result = await service.getAllResumes({
+      page: page ? Number(page) : undefined,
+      limit: limit ? Number(limit) : undefined,
+      search: search as string | undefined,
+    });
+    successResponse(res, result, "All resumes retrieved");
+  },
+);
+
+/** ADMIN: DELETE /api/resumes/admin/:id — delete any resume */
+export const adminDeleteResume = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    await service.adminDeleteResume(req.params.id as string);
+    successResponse(res, null, "Resume deleted by admin");
+  },
+);

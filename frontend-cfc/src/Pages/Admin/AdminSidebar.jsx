@@ -45,6 +45,7 @@ const sideBarItems = [
   { title: "Newsletter", icon: <HiOutlineMail />, path: "/admin/newsletter" },
   { title: "Contacts", icon: <FaRegEnvelope />, path: "/admin/contacts" },
   { title: "National Team", icon: <FaUserTie />, path: "/admin/national-team" },
+  { title: "Resumes", icon: <FaFileAlt />, path: "/admin/resumes" },
 ];
 
 function AdminSidebar() {

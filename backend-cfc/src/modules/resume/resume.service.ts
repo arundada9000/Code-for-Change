@@ -95,3 +95,57 @@ export const duplicateResume = async (resumeId: string, userId: string) => {
   });
   return copy;
 };
+
+/**
+ * ADMIN: Get all resumes across all users with search + pagination
+ */
+export const getAllResumes = async (query: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}) => {
+  const page = Math.max(1, query.page || 1);
+  const limit = Math.min(50, query.limit || 20);
+  const skip = (page - 1) * limit;
+
+  const filter: any = {};
+  if (query.search) {
+    const regex = new RegExp(query.search, "i");
+    filter.$or = [
+      { title: regex },
+      { "personalInfo.fullName": regex },
+      { "personalInfo.email": regex },
+    ];
+  }
+
+  const [resumes, total] = await Promise.all([
+    Resume.find(filter)
+      .populate("userId", "name email profileImage")
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Resume.countDocuments(filter),
+  ]);
+
+  return {
+    resumes,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+/**
+ * ADMIN: Delete any resume by ID
+ */
+export const adminDeleteResume = async (resumeId: string) => {
+  const resume = await Resume.findByIdAndDelete(resumeId);
+  if (!resume) {
+    throw new AppError("Resume not found", 404);
+  }
+  return resume;
+};
