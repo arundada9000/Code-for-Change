@@ -33,6 +33,7 @@ import {
 } from "react-icons/fa";
 
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
+import MemberCard from "../Components/MemberCard";
 
 // Region color map
 const REGION_COLORS = {
@@ -457,6 +458,7 @@ function UserProfile() {
                   <FaFileAlt size={14} />
                   Resume Builder
                 </Link>
+                <MemberCard user={user} regionColor={regionColor} />
                 {isAdmin && (
                   <Link
                     to="/admin"
