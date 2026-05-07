@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import { toPng } from "html-to-image";
 import {
   FaDownload,
   FaEnvelope,
@@ -23,21 +22,12 @@ const MemberCard = ({ user, regionColor = "#0076B4" }) => {
     if (!cardRef.current) return;
     setDownloading(true);
     try {
-      // Make the card visible for capture
-      cardRef.current.style.position = "fixed";
-      cardRef.current.style.left = "-9999px";
-      cardRef.current.style.display = "flex";
-
-      // Wait a frame for render
-      await new Promise((r) => setTimeout(r, 100));
+      const { toPng } = await import("html-to-image");
 
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 3,
         quality: 1,
       });
-
-      // Hide again
-      cardRef.current.style.display = "none";
 
       const link = document.createElement("a");
       link.download = `${(user.name || "member").replace(/\s+/g, "_")}_CFC_Card.png`;
@@ -98,7 +88,10 @@ const MemberCard = ({ user, regionColor = "#0076B4" }) => {
       <div
         ref={cardRef}
         style={{
-          display: "none",
+          position: "fixed",
+          left: "-9999px",
+          top: 0,
+          display: "flex",
           width: "420px",
           flexDirection: "column",
           fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
@@ -106,6 +99,7 @@ const MemberCard = ({ user, regionColor = "#0076B4" }) => {
           borderRadius: "16px",
           overflow: "hidden",
           boxShadow: "0 4px 24px rgba(0,0,0,0.1)",
+          zIndex: -1,
         }}
       >
         {/* Top Banner */}
