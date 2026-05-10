@@ -5,12 +5,14 @@ import { RiMenu3Fill } from "react-icons/ri";
 import { FiChevronDown } from "react-icons/fi";
 import { navItems } from "../../Data/navItems";
 import { useAuth } from "../../Context/AuthContext";
+import { usePWAInstall } from "../../Hooks/usePWAInstall";
 
 function Header({ setShowSidebar }) {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [hoveredPath, setHoveredPath] = useState(null);
   const { user } = useAuth();
+  const { canInstall, installApp } = usePWAInstall();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -101,6 +103,19 @@ function Header({ setShowSidebar }) {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-4">
+          {canInstall && (
+            <button
+              onClick={installApp}
+              className={`hidden md:flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold border-2 transition-all duration-300 ${
+                scrolled
+                  ? "border-emerald-400 text-emerald-400 hover:bg-emerald-400 hover:text-primary"
+                  : "border-secondary text-secondary hover:bg-secondary hover:text-white"
+              }`}
+            >
+              Install App
+            </button>
+          )}
+
           <Link
             to={user ? "/profile" : "/register"}
             className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${

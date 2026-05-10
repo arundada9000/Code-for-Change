@@ -4,10 +4,12 @@ import { navItems } from "../../../Data/navItems";
 import { Link, useLocation } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 import { useAuth } from "../../../Context/AuthContext";
+import { usePWAInstall } from "../../../Hooks/usePWAInstall";
 
 function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
   const location = useLocation();
   const { user } = useAuth();
+  const { canInstall, installApp } = usePWAInstall();
   const sideBarItems = navItems.filter(
     (items) => !["More"].includes(items.title),
   );
@@ -77,6 +79,11 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
             title: "Contact us",
             path: "/contact-us",
           },
+          {
+            title: "Resume Builder",
+            path: "/resume-builder",
+            requiresAuth: true,
+          },
           user
             ? { title: "My Profile", path: "/profile" }
             : { title: "Register", path: "/register" },
@@ -96,6 +103,18 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
               {val.title}
             </Link>
           ))}
+          
+        {canInstall && (
+          <button
+            onClick={() => {
+              setShowSidebar(false);
+              installApp();
+            }}
+            className="mt-4 font-bold text-lg text-emerald-400 border-2 border-emerald-400 rounded-xl py-3 px-4 text-center hover:bg-emerald-400 hover:text-primary transition-colors"
+          >
+            Install App
+          </button>
+        )}
       </div>
     </aside>
   );
