@@ -76,13 +76,13 @@ export class AdminService {
     ]);
 
     const trends = {
-      users: { percentage: 12, today: newUsersToday || 2 },
-      events: { percentage: 5, today: newEventsToday || 2 },
-      blogs: { percentage: 3, today: newBlogsToday || 1 },
-      messages: { percentage: 12, today: newMessagesToday || 0 },
-      donations: { percentage: 8, today: newDonationsToday || 4 },
-      certificates: { percentage: 15, today: newCertificatesToday || 3 },
-      internships: { percentage: 10, today: newInternshipsToday || 2 },
+      users: { percentage: 0, today: newUsersToday || 0 },
+      events: { percentage: 0, today: newEventsToday || 0 },
+      blogs: { percentage: 0, today: newBlogsToday || 0 },
+      messages: { percentage: 0, today: newMessagesToday || 0 },
+      donations: { percentage: 0, today: newDonationsToday || 0 },
+      certificates: { percentage: 0, today: newCertificatesToday || 0 },
+      internships: { percentage: 0, today: newInternshipsToday || 0 },
     };
 
     return {
@@ -110,28 +110,54 @@ export class AdminService {
   }
 
   async getDashboardAnalytics() {
-    // Analytics for charts: User growth over last 6 months
-    const last6Months = Array.from({ length: 6 }).map((_, i) => {
-      const d = new Date();
-      d.setMonth(d.getMonth() - i);
-      return {
-        month: d.toLocaleString('default', { month: 'short' }),
-        year: d.getFullYear(),
-      };
-    }).reverse();
+    const [usersByRole, membersByProvince, eventsByProvince, certificatesByProvince] = await Promise.all([
+      User.aggregate([
+        { $group: { _id: "$role", count: { $sum: 1 } } }
+      ]),
+      User.aggregate([
+        { $match: { role: { $in: ['eb', 'cr', 'gm'] } } },
+        { $group: { _id: { province: "$province", role: "$role" }, count: { $sum: 1 } } }
+      ]),
+      Event.aggregate([
+        { $group: { _id: "$region", count: { $sum: 1 } } }
+      ]),
+      Certificate.aggregate([
+        { $group: { _id: "$province", count: { $sum: 1 } } }
+      ])
+    ]);
 
-    // Mock data for user growth pipeline
+    // Format usersByRole
+    const formattedUsersByRole = usersByRole.map(u => ({
+      name: (u._id || 'unassigned').toUpperCase(),
+      value: u.count
+    }));
+
+    // Format membersByProvince
+    const provMap: Record<string, any> = {};
+    membersByProvince.forEach(m => {
+      const p = m._id.province || 'Unassigned';
+      if (!provMap[p]) provMap[p] = { province: p, eb: 0, cr: 0, gm: 0 };
+      provMap[p][m._id.role] = m.count;
+    });
+    const formattedMembersByProvince = Object.values(provMap);
+
+    // Format eventsByProvince
+    const formattedEventsByProvince = eventsByProvince.map(e => ({
+      province: e._id || 'Unassigned',
+      events: e.count
+    }));
+
+    // Format certificatesByProvince
+    const formattedCertificatesByProvince = certificatesByProvince.map(c => ({
+      province: c._id || 'Unassigned',
+      certificates: c.count
+    }));
+
     return {
-      userGrowth: last6Months.map(m => ({
-        label: m.month,
-        value: Math.floor(Math.random() * 50) + 10 // Replace with real aggregation if needed
-      })),
-      eventDistribution: [
-        { label: 'Workshops', value: 40 },
-        { label: 'Hackathons', value: 25 },
-        { label: 'Seminars', value: 20 },
-        { label: 'Others', value: 15 },
-      ]
+      usersByRole: formattedUsersByRole,
+      membersByProvince: formattedMembersByProvince,
+      eventsByProvince: formattedEventsByProvince,
+      certificatesByProvince: formattedCertificatesByProvince
     };
   }
 

@@ -11,6 +11,10 @@ import {
 import { HiTrendingUp, HiTrendingDown } from "react-icons/hi";
 import API from "../../Services/api";
 import { AdminDashboardSkeleton } from "../../Components/Loading/Skeleton";
+import UserRoleChart from '../../Components/Dashboard/UserRoleChart';
+import ProvinceMembersChart from '../../Components/Dashboard/ProvinceMembersChart';
+import ProvinceEventsChart from '../../Components/Dashboard/ProvinceEventsChart';
+import ProvinceCertificatesChart from '../../Components/Dashboard/ProvinceCertificatesChart';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -103,40 +107,6 @@ function Dashboard() {
       </div>
     </div>
   );
-
-  // Simple SVG Line Chart Component
-  const UserGrowthChart = ({ data }) => {
-    const max = Math.max(...data.map(d => d.value));
-    const points = data.map((d, i) => `${(i * 100) / (data.length - 1)},${100 - (d.value * 80) / max}`).join(' ');
-
-    return (
-      <div className="h-48 w-full relative pt-4">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-          <defs>
-            <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <path d={`M 0,100 L ${points} L 100,100 Z`} fill="url(#gradient)" className="transition-all duration-1000" />
-          <polyline
-            fill="none"
-            stroke="#10b981"
-            strokeWidth="2.5"
-            points={points}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="transition-all duration-1000"
-          />
-        </svg>
-        <div className="flex justify-between mt-4">
-          {data.map((d, i) => (
-            <span key={i} className="text-[10px] font-bold text-slate-400">{d.label}</span>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12">
@@ -352,22 +322,13 @@ function Dashboard() {
 
         {/* 3. Analytics & Growth Area */}
         <div className="lg:col-span-8 space-y-10">
-          <section className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h3 className="text-lg font-extrabold text-gray-900 tracking-tight">Growth Trend</h3>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-1">Monthly New Signups</p>
-              </div>
-              <div className="flex gap-2">
-                {['6M', '1Y', 'ALL'].map(t => (
-                  <button key={t} className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${t === '6M' ? 'bg-secondary text-white shadow-sm' : 'bg-gray-50 hover:bg-gray-100 text-gray-500'}`}>
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <UserGrowthChart data={stats.analytics.userGrowth} />
-          </section>
+          {/* Charts Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <UserRoleChart data={stats.analytics.usersByRole} />
+            <ProvinceMembersChart data={stats.analytics.membersByProvince} />
+            <ProvinceEventsChart data={stats.analytics.eventsByProvince} />
+            <ProvinceCertificatesChart data={stats.analytics.certificatesByProvince} />
+          </div>
 
           {/* Event Pipeline / Tasks */}
           <section className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
