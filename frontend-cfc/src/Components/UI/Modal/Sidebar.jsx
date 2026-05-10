@@ -110,7 +110,7 @@ function Sidebar({ showSidebar, setShowSidebar, sidebarRef }) {
               setShowSidebar(false);
               installApp();
             }}
-            className="mt-4 font-bold text-lg text-emerald-400 border-2 border-emerald-400 rounded-xl py-3 px-4 text-center hover:bg-emerald-400 hover:text-primary transition-colors"
+            className="mt-4 font-bold text-lg text-secondary border-2 border-secondary rounded-xl py-3 px-4 text-center hover:bg-secondary hover:text-white transition-colors"
           >
             Install App
           </button>

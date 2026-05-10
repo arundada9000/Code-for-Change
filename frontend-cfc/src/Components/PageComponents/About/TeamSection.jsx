@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ALUMNI } from "../../../Data/teamData";
 import {
   FaFacebookF,
   FaGithub,
@@ -13,8 +12,7 @@ import useFetch from "../../../Hooks/useFetch";
 import TeamMemberModal from "../../UI/Modal/TeamMemberModal";
 
 const TeamMemberCard = ({ member, type, onSelect }) => {
-  const accentColor =
-    type === "alumni" ? "#0076B4" : type === "advisor" ? "#0076B4" : "#0076B4";
+  const accentColor = type === "advisor" ? "#0076B4" : "#0076B4";
   const socialIcons = {
     linkedin: <FaLinkedinIn />,
     facebook: <FaFacebookF />,
@@ -120,7 +118,6 @@ const TeamSection = () => {
         { title: "Core Team", data: coreTeam, type: "core" },
         { title: "Board Members", data: boardMembers, type: "board" },
         { title: "Advisors", data: advisors, type: "advisor" },
-        { title: "Alumni", data: ALUMNI, type: "alumni" },
       ].map(
         (section) =>
           section.data.length > 0 && (
@@ -138,9 +135,7 @@ const TeamSection = () => {
                       ? "The driving force behind Code for Change - a dedicated group of professionals working to bridge the digital gap."
                       : section.type === "advisor"
                         ? "Seasoned experts providing strategic guidance and industry insights."
-                        : section.type === "board"
-                          ? "Visionary leaders overseeing the organization's growth and impact."
-                          : "Those who have helped shape CFC and continue to inspire us."}
+                        : "Visionary leaders overseeing the organization's growth and impact."}
                   </p>
                 </div>
                 <div className="hidden md:block h-0.5 flex-1 bg-slate-100 mx-12 mb-8" />

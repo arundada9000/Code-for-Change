@@ -22,11 +22,10 @@ function Header({ setShowSidebar }) {
 
   return (
     <header
-      className={`sticky py-2 max-w-7xl pl-6 pr-2 mx-auto z-50 transition-all rounded-full duration-500 ${
-        scrolled
-          ? "bg-primary/60 backdrop-blur-md top-5 border border-white/20 shadow-2xl"
-          : "bg-transparent top-0 border-none"
-      }`}
+      className={`sticky py-2 max-w-7xl pl-6 pr-2 mx-auto z-50 transition-all rounded-full duration-500 ${scrolled
+        ? "bg-primary/60 backdrop-blur-md top-5 border border-white/20 shadow-2xl"
+        : "bg-transparent top-0 border-none"
+        }`}
       role="banner"
     >
       <div className="flex items-center justify-between">
@@ -51,13 +50,12 @@ function Header({ setShowSidebar }) {
                 to={item.path}
                 onMouseEnter={() => setHoveredPath(item.path)}
                 className={`relative px-4 py-2 text-sm font-medium transition-colors duration-300 flex items-center gap-1 rounded-full 
-                ${
-                  isPillUnderMe
+                ${isPillUnderMe
                     ? "text-white" // Text is white when pill is present
                     : scrolled
                       ? "text-white/80" // Scrolled but not active/hovered
                       : "text-primary" // Not scrolled and not active/hovered
-                }`}
+                  }`}
               >
                 {/* Sliding Background Pill */}
                 {isPillUnderMe && (
@@ -106,11 +104,10 @@ function Header({ setShowSidebar }) {
           {canInstall && (
             <button
               onClick={installApp}
-              className={`hidden md:flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold border-2 transition-all duration-300 ${
-                scrolled
-                  ? "border-emerald-400 text-emerald-400 hover:bg-emerald-400 hover:text-primary"
-                  : "border-secondary text-secondary hover:bg-secondary hover:text-white"
-              }`}
+              className={`hidden border-secondary md:flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold border-2 transition-all duration-300 ${scrolled
+                ? " text-white hover:bg-white hover:text-primary"
+                : "text-secondary hover:bg-secondary hover:text-white"
+                }`}
             >
               Install App
             </button>
@@ -118,30 +115,29 @@ function Header({ setShowSidebar }) {
 
           <Link
             to={user ? "/profile" : "/register"}
-            className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
-              user
-                ? "bg-primary text-white border border-white/20 hover:scale-105"
-                : "bg-secondary text-white hover:shadow-[0_0_20px_rgba(var(--secondary),0.4)]"
-            }`}
+            className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${user
+              ? "bg-primary text-white border border-white/20 hover:scale-105"
+              : "bg-secondary text-white hover:shadow-[0_0_20px_rgba(var(--secondary),0.4)]"
+              }`}
           >
             {user ? "Profile" : "Register"}
           </Link>
 
           <button
-              onClick={(event) => {
-                event.stopPropagation();
-                setShowSidebar(true);
-              }}
-              className="lg:hidden p-2 text-primary"
-              aria-label="Open navigation menu"
-              aria-expanded="false"
-            >
-              <RiMenu3Fill
-                size={28}
-                className={scrolled ? "text-white" : "text-primary"}
-                aria-hidden="true"
-              />
-            </button>
+            onClick={(event) => {
+              event.stopPropagation();
+              setShowSidebar(true);
+            }}
+            className="lg:hidden p-2 text-primary"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+          >
+            <RiMenu3Fill
+              size={28}
+              className={scrolled ? "text-white" : "text-primary"}
+              aria-hidden="true"
+            />
+          </button>
         </div>
       </div>
     </header>
