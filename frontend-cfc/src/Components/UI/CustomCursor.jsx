@@ -3,7 +3,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 const CustomCursor = () => {
   // Initialize visibility purely based on device capability to prevent cascading renders
-  const [isVisible, setIsVisible] = useState(() => {
+  const [isVisible] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.matchMedia("(pointer: fine)").matches;
     }
@@ -72,7 +72,7 @@ const CustomCursor = () => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [cursorX, cursorY]);
+  }, [cursorX, cursorY, isVisible]);
 
   if (!isVisible) return null;
 
