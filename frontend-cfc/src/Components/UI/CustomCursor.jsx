@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 
 const CustomCursor = () => {
   // Initialize visibility purely based on device capability to prevent cascading renders
@@ -10,16 +10,12 @@ const CustomCursor = () => {
     return false;
   });
   const [variant, setVariant] = useState('default'); // 'default', 'button', 'input'
+  const [hoverSize, setHoverSize] = useState({ width: 56, height: 24 });
   const [isClicking, setIsClicking] = useState(false);
 
   // Direct DOM mapping using Motion Values to prevent React re-renders on mousemove
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-
-  // Spring physics configuration for smooth trailing effect
-  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
-  const smoothX = useSpring(cursorX, springConfig);
-  const smoothY = useSpring(cursorY, springConfig);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -51,6 +47,15 @@ const CustomCursor = () => {
       const isText = computedStyle.cursor === 'text' || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
 
       if (isPointer) {
+        // Find the actual button element to capture its exact size
+        const btn = target.closest('a, button, [role="button"], select') || target;
+        const rect = btn.getBoundingClientRect();
+        
+        // Expand width and height to frame the entire button + padding
+        setHoverSize({
+          width: Math.max(56, rect.width + 16),
+          height: Math.max(24, rect.height + 8)
+        });
         setVariant('button');
       } else if (isText) {
         setVariant('input');
@@ -87,8 +92,8 @@ const CustomCursor = () => {
       opacity: 1
     },
     button: {
-      width: 56, // Expand the brackets heavily on hover
-      height: 24,
+      width: hoverSize.width, 
+      height: hoverSize.height,
       x: "-50%",
       y: "-50%",
       color: "#00A155", // Emerald branding
@@ -110,8 +115,8 @@ const CustomCursor = () => {
     <motion.div
       className="fixed top-0 left-0 pointer-events-none z-[99999] flex items-center justify-center font-mono font-black text-xl transition-colors duration-300 drop-shadow-md mix-blend-difference"
       style={{
-        x: smoothX,
-        y: smoothY,
+        x: cursorX,
+        y: cursorY,
       }}
       animate={variant}
       variants={variants}
