@@ -29,6 +29,10 @@ const envSchema = z.object({
   // Security
   OTP_EXPIRY: z.coerce.number().default(300),
 
+  // WebAuthn / Passkeys
+  WEBAUTHN_RP_ID: z.string().optional(),   // e.g. "codeforchangenepal.com" — defaults to hostname from FRONTEND_URL
+  WEBAUTHN_RP_NAME: z.string().default("Code for Change Nepal"),
+
   // Payment
   PAYMENT_GATEWAY_URL: z.string().optional(),
   ESEWA_PRODUCT_CODE: z.string().default("EPAYTEST"),

@@ -240,6 +240,16 @@ const userSchema = new Schema(
     resetPasswordToken: { type: String },
     resetPasswordExpiry: { type: Date },
 
+    // WebAuthn / Passkey credentials (one per registered device)
+    webauthnCredentials: [{
+      credentialId: { type: String, required: true },
+      publicKey:    { type: String, required: true },
+      counter:      { type: Number, required: true, default: 0 },
+      transports:   [{ type: String }],
+      deviceName:   { type: String, default: 'Unknown Device' },
+      createdAt:    { type: Date, default: Date.now },
+    }],
+
     // Soft Delete
     isDeleted: { type: Boolean, default: false, index: true },
   },
@@ -255,5 +265,6 @@ userSchema.index({ email: 1 }, { unique: true });
 userSchema.index({ role: 1 });
 userSchema.index({ isActive: 1 });
 userSchema.index({ "membership.membershipId": 1 }, { sparse: true });
+userSchema.index({ "webauthnCredentials.credentialId": 1 }, { sparse: true });
 
 export const UserTable = model<IUser>("users", userSchema);

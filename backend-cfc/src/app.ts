@@ -21,6 +21,7 @@ import donationRoutes from "./modules/donations/donation.route.js";
 import internshipRoutes from "./modules/internships/internship.route.js";
 import applicationRoutes from "./modules/internships/application.route.js";
 import { authRoutes } from "./modules/auth/auth.route.js";
+import { webauthnRoutes } from "./modules/auth/webauthn.route.js";
 import { userRoutes } from "./modules/user/user.route.js";
 import certificateRoutes from "./modules/certificates/certificate.route.js";
 import galleryRoutes from "./modules/gallery/gallery.route.js";
@@ -122,6 +123,8 @@ const authLimiter = rateLimit({
 });
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/verify-otp", authLimiter);
+app.use("/api/auth/webauthn/login-options", authLimiter);
+app.use("/api/auth/webauthn/login-verify", authLimiter);
 
 // Registration limiter — 3 registrations per hour per IP
 const registrationLimiter = rateLimit({
@@ -167,6 +170,7 @@ app.use("/api", donationRoutes);
 app.use("/api/internships", applicationRoutes);
 app.use("/api", internshipRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/auth/webauthn", webauthnRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api", galleryRoutes);

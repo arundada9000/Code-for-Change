@@ -7,6 +7,7 @@ import {
   FaFacebookF, FaLinkedinIn, FaGithub, FaLink, FaVenusMars
 } from "react-icons/fa";
 import API from "../../Services/api";
+import BiometricSettings from "../../Components/PageComponents/Profile/BiometricSettings";
 
 function Profile() {
   const { user, updateUserData } = useAuth();
@@ -269,6 +270,9 @@ function Profile() {
               </div>
             </div>
           </section>
+
+          {/* Biometric Login Settings */}
+          <BiometricSettings />
         </div>
 
         {/* --- System Metrics Column --- */}

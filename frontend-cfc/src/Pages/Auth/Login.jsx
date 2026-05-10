@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FaLock, FaEnvelope, FaArrowRight } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaLock, FaEnvelope, FaArrowRight, FaFingerprint } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../Context/AuthContext";
@@ -7,9 +7,23 @@ import SEO from "../../Components/Common/SEO";
 
 function Login() {
   const navigate = useNavigate();
-  const { login, loading } = useAuth();
+  const { login, loginWithPasskey, loading } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [supportsPasskey, setSupportsPasskey] = useState(false);
+
+  // Check if browser supports WebAuthn
+  useEffect(() => {
+    const check = async () => {
+      try {
+        const { browserSupportsWebAuthn } = await import("@simplewebauthn/browser");
+        setSupportsPasskey(browserSupportsWebAuthn());
+      } catch {
+        setSupportsPasskey(false);
+      }
+    };
+    check();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,6 +36,16 @@ function Login() {
 
     const result = await login(form.email, form.password);
 
+    if (result.success) {
+      navigate("/admin");
+    } else {
+      setError(result.message);
+    }
+  };
+
+  const handlePasskeyLogin = async () => {
+    setError("");
+    const result = await loginWithPasskey();
     if (result.success) {
       navigate("/admin");
     } else {
@@ -196,6 +220,27 @@ function Login() {
                 Sign in to continue your mission.
               </p>
             </div>
+
+            {/* Passkey / biometric login button */}
+            {supportsPasskey && (
+              <div className="space-y-4">
+                <button
+                  type="button"
+                  onClick={handlePasskeyLogin}
+                  disabled={loading}
+                  className="w-full py-3.5 bg-primary/[0.04] hover:bg-primary/[0.08] border border-primary/10 text-primary rounded-xl font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaFingerprint className="text-lg text-secondary" />
+                  {loading ? "Authenticating..." : "Sign in with passkey"}
+                </button>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span className="text-xs text-gray-400 font-medium">or use password</span>
+                  <div className="flex-1 h-px bg-slate-200" />
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleLogin} className="space-y-5">
               {error && (

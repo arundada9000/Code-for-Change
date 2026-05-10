@@ -4,6 +4,16 @@
 import { PermissionValue, RoleValue } from "../../shared/configs/permissions.js";
 import { Document, Types } from "mongoose";
 
+// WebAuthn credential stored per registered device
+export interface WebAuthnCredential {
+  credentialId: string;
+  publicKey: string;
+  counter: number;
+  transports?: string[];
+  deviceName: string;
+  createdAt: Date;
+}
+
 // 1. User interface (full DB document shape)
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -95,6 +105,8 @@ export interface IUser extends Document {
 
   resetPasswordToken?: string;
   resetPasswordExpiry?: Date;
+
+  webauthnCredentials?: WebAuthnCredential[];
 
   isDeleted: boolean;
   createdAt: Date;

@@ -57,6 +57,51 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithPasskey = async () => {
+    setLoading(true);
+    try {
+      const { startAuthentication, browserSupportsWebAuthn } = await import("@simplewebauthn/browser");
+
+      if (!browserSupportsWebAuthn()) {
+        return { success: false, message: "Your browser does not support biometric login." };
+      }
+
+      // 1. Get authentication options from server
+      const optionsRes = await API.post("/auth/webauthn/login-options");
+      const { options, challengeId } = optionsRes.data.data;
+
+      // 2. Trigger browser biometric prompt
+      const authResponse = await startAuthentication({ optionsJSON: options });
+
+      // 3. Verify with server
+      const verifyRes = await API.post("/auth/webauthn/login-verify", {
+        challengeId,
+        response: authResponse,
+      });
+
+      const { user: userData, token } = verifyRes.data.data;
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      if (token) localStorage.setItem("token", token);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Passkey login failed:", error);
+
+      // User cancelled the biometric prompt
+      if (error?.name === "NotAllowedError") {
+        return { success: false, message: "Biometric authentication was cancelled." };
+      }
+
+      return {
+        success: false,
+        message: error.response?.data?.message || error.message || "Biometric login failed.",
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     try {
       await API.post("/auth/logout");
@@ -103,6 +148,7 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,
     login,
+    loginWithPasskey,
     logout,
     updateUserData,
     hasPermission,
