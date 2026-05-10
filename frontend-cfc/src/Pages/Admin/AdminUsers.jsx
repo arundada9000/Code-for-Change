@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaSearch, FaRegTrashAlt, FaUserEdit, FaUserPlus, FaTimes,
-  FaUniversity, FaGraduationCap, FaIdCard, FaFilter, FaPhoneAlt, FaClock,
+  FaUniversity, FaGraduationCap, FaIdCard, FaPhoneAlt, FaClock,
   FaFileCsv, FaFilePdf, FaFileWord, FaDownload, FaCheckCircle
 } from "react-icons/fa";
 import { BsPencil, BsThreeDotsVertical, BsTrash, BsEye } from "react-icons/bs";
@@ -17,51 +17,7 @@ import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
 import { useDebounce } from "../../Hooks/useDebounce";
 
-const FilterSelect = React.memo(({ label, options, value, onChange }) => (
-  <div className="bg-gray-50/50 p-1.5 rounded-2xl border border-gray-100 shadow-sm w-full md:w-auto">
-    {/* Desktop View */}
-    <div className="hidden md:flex items-center">
-      <div className="px-3 py-2 text-xs font-bold text-gray-400 border-r border-gray-200 mr-1 uppercase tracking-widest">{label}</div>
-      <div className="flex gap-1">
-        {options.map(opt => (
-          <button
-            key={opt}
-            onClick={() => onChange(opt === value ? 'all' : opt)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${value === opt
-              ? 'bg-white text-secondary shadow-sm border border-gray-200'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
-              }`}
-          >
-            {opt}
-          </button>
-        ))}
-        <button
-          onClick={() => onChange('all')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${value === 'all'
-            ? 'bg-white text-secondary shadow-sm border border-gray-200'
-            : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
-            }`}
-        >
-          All
-        </button>
-      </div>
-    </div>
 
-    {/* Mobile View */}
-    <div className="md:hidden px-2">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-transparent text-[10px] font-bold text-gray-600 outline-none py-2 uppercase tracking-widest"
-      >
-        <option value="all">All {label}</option>
-        {options.map(opt => (
-          <option key={opt} value={opt}>{opt}</option>
-        ))}
-      </select>
-    </div>
-  </div>
-));
 
 const ModalInput = React.memo(({ label, value, onChange, type = "text", required = false }) => (
   <div className="space-y-1.5">
@@ -553,43 +509,92 @@ function AdminUsers() {
         </div>
       </div>
 
-      {/* Search & Advanced Filters */}
-      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 space-y-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="relative flex-1">
-            <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by name, email, phone, ID, or college..."
-              className="w-full pl-12 pr-6 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 focus:bg-white outline-none font-medium text-sm transition-all text-gray-900"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 md:flex items-center gap-3 w-full lg:w-auto">
-            <FilterSelect
-              label="Verification"
-              options={['verified', 'unverified']}
-              value={activeStatus}
-              onChange={setActiveStatus}
-            />
-            <FilterSelect
-              label="Membership"
-              options={['active', 'expired', 'revoked']}
-              value={activeMembershipStatus}
-              onChange={setActiveMembershipStatus}
-            />
-          </div>
+      {/* Search & Filters */}
+      <div className="bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-gray-100 space-y-5" role="search" aria-label="Filter members">
+        {/* Search bar */}
+        <div className="relative">
+          <label htmlFor="user-search" className="sr-only">Search members</label>
+          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+          <input
+            id="user-search"
+            type="search"
+            aria-label="Search by name, email, phone, member ID, or college"
+            placeholder="Search by name, email, phone, member ID, or college..."
+            className="w-full pl-11 pr-10 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 focus:bg-white outline-none font-medium text-sm transition-all text-gray-900"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors cursor-pointer"
+              title="Clear search"
+              aria-label="Clear search"
+            >
+              <FaTimes size={14} />
+            </button>
+          )}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-gray-100 pt-6">
-          <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">Location</p>
+        {/* Filter grid */}
+        <fieldset className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 border-0 p-0 m-0">
+          <legend className="sr-only">Filter options</legend>
+
+          {/* Role */}
+          <div className="space-y-1">
+            <label htmlFor="filter-role" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Role</label>
             <select
+              id="filter-role"
+              value={activeRole}
+              onChange={(e) => setActiveRole(e.target.value)}
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+            >
+              <option value="all">All Roles</option>
+              {['admin', 'eb', 'cr', 'gm', 'guest'].map(r => (
+                <option key={r} value={r}>{r.toUpperCase()}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Verification */}
+          <div className="space-y-1">
+            <label htmlFor="filter-verification" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Verification</label>
+            <select
+              id="filter-verification"
+              value={activeStatus}
+              onChange={(e) => setActiveStatus(e.target.value)}
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+            >
+              <option value="all">All</option>
+              <option value="verified">Verified</option>
+              <option value="unverified">Unverified</option>
+            </select>
+          </div>
+
+          {/* Membership */}
+          <div className="space-y-1">
+            <label htmlFor="filter-membership" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Membership</label>
+            <select
+              id="filter-membership"
+              value={activeMembershipStatus}
+              onChange={(e) => setActiveMembershipStatus(e.target.value)}
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+            >
+              <option value="all">All</option>
+              <option value="active">Active</option>
+              <option value="expired">Expired</option>
+              <option value="revoked">Revoked</option>
+            </select>
+          </div>
+
+          {/* Location */}
+          <div className="space-y-1">
+            <label htmlFor="filter-location" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Location</label>
+            <select
+              id="filter-location"
               value={activeProvince}
               onChange={(e) => setActiveProvince(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
               <option value="all">All Regions</option>
               {['Kathmandu', 'Pokhara', 'Rupandehi', 'Dang', 'Birgunj', 'Farwest', 'Koshi', 'Chitwan', 'LB Karnali'].map(p => (
@@ -597,60 +602,73 @@ function AdminUsers() {
               ))}
             </select>
           </div>
-          <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">College</p>
+
+          {/* College */}
+          <div className="space-y-1">
+            <label htmlFor="filter-college" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">College</label>
             <select
+              id="filter-college"
               value={activeCollege}
               onChange={(e) => setActiveCollege(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
               <option value="all">All Colleges</option>
               {uniqueColleges.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
-          <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">Faculty</p>
+
+          {/* Faculty */}
+          <div className="space-y-1">
+            <label htmlFor="filter-faculty" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Faculty</label>
             <select
+              id="filter-faculty"
               value={activeFaculty}
               onChange={(e) => setActiveFaculty(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
               <option value="all">All Faculties</option>
               {uniqueFaculties.map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
-          <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">Joined Year</p>
+
+          {/* Joined Year */}
+          <div className="space-y-1">
+            <label htmlFor="filter-joined" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Joined</label>
             <select
+              id="filter-joined"
               value={activeJoinedYear}
               onChange={(e) => setActiveJoinedYear(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
             >
               <option value="all">All Years</option>
               {uniqueYears.map(y => <option key={y} value={y.toString()}>{y}</option>)}
             </select>
           </div>
-        </div>
+        </fieldset>
 
-        <div className="flex items-center gap-3 border-t border-gray-100 pt-6">
-          <div className="flex items-center gap-2 text-gray-500 mr-2 shrink-0">
-            <FaFilter size={12} />
-            <span className="text-xs font-bold uppercase tracking-widest">Role</span>
-          </div>
-          <div className="flex gap-2 w-full overflow-x-auto scrollbar-hide py-1">
-            {['all', 'admin', 'eb', 'cr', 'gm', 'guest'].map(role => (
-              <button
-                key={role}
-                onClick={() => setActiveRole(role)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${activeRole === role
-                  ? 'bg-secondary text-white border-secondary shadow-sm'
-                  : 'bg-white text-gray-500 border-gray-200 hover:text-secondary hover:border-emerald-200'
-                  }`}
-              >
-                {role}
-              </button>
-            ))}
-          </div>
+        {/* Result count + clear all */}
+        <div className="flex items-center justify-between pt-1" aria-live="polite">
+          <p className="text-xs text-gray-400 font-medium">
+            Showing <span className="font-bold text-gray-600">{filteredUsers.length}</span> of {users.length} members
+          </p>
+          {(activeRole !== 'all' || activeStatus !== 'all' || activeMembershipStatus !== 'all' || activeProvince !== 'all' || activeCollege !== 'all' || activeFaculty !== 'all' || activeJoinedYear !== 'all' || searchTerm) && (
+            <button
+              onClick={() => {
+                setActiveRole('all');
+                setActiveStatus('all');
+                setActiveMembershipStatus('all');
+                setActiveProvince('all');
+                setActiveCollege('all');
+                setActiveFaculty('all');
+                setActiveJoinedYear('all');
+                setSearchTerm('');
+              }}
+              className="text-xs font-semibold text-secondary hover:text-primary transition-colors cursor-pointer"
+              title="Reset all filters to default"
+            >
+              Clear all filters
+            </button>
+          )}
         </div>
       </div>
 
