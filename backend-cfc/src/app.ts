@@ -123,8 +123,17 @@ const authLimiter = rateLimit({
 });
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/verify-otp", authLimiter);
-app.use("/api/auth/webauthn/login-options", authLimiter);
-app.use("/api/auth/webauthn/login-verify", authLimiter);
+
+// WebAuthn limiter — 10 requests per 15 min (each login = 2 requests, so ~5 attempts)
+const webauthnLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: "Too many biometric login attempts. Please wait 15 minutes.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/auth/webauthn/login-options", webauthnLimiter);
+app.use("/api/auth/webauthn/login-verify", webauthnLimiter);
 
 // Registration limiter — 3 registrations per hour per IP
 const registrationLimiter = rateLimit({
