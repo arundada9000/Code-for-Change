@@ -15,6 +15,7 @@ import UserRoleChart from '../../Components/Dashboard/UserRoleChart';
 import ProvinceMembersChart from '../../Components/Dashboard/ProvinceMembersChart';
 import ProvinceEventsChart from '../../Components/Dashboard/ProvinceEventsChart';
 import ProvinceCertificatesChart from '../../Components/Dashboard/ProvinceCertificatesChart';
+import AdminActivityFeed from '../../Components/Dashboard/AdminActivityFeed';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -318,17 +319,13 @@ function Dashboard() {
         <StatCard title="Internships" value={stats.counts.internships} trend={stats.trends.internships} icon={FaIntern} color="from-teal-600 to-secondary" link="/admin/internships" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-
-        {/* 3. Analytics & Growth Area */}
-        <div className="lg:col-span-8 space-y-10">
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <UserRoleChart data={stats.analytics.usersByRole} />
-            <ProvinceMembersChart data={stats.analytics.membersByProvince} />
-            <ProvinceEventsChart data={stats.analytics.eventsByProvince} />
-            <ProvinceCertificatesChart data={stats.analytics.certificatesByProvince} />
-          </div>
+      {/* 3. Analytics & Growth Area (Full Width) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <UserRoleChart data={stats.analytics.usersByRole} />
+        <ProvinceMembersChart data={stats.analytics.membersByProvince} />
+        <ProvinceEventsChart data={stats.analytics.eventsByProvince} />
+        <ProvinceCertificatesChart data={stats.analytics.certificatesByProvince} />
+      </div>
 
           {/* Event Pipeline / Tasks */}
           <section className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
@@ -403,9 +400,13 @@ function Dashboard() {
                 </div>
               ))}
             </div>
-          </section>
-        </div>
+        </section>
 
+      {/* 5. Bottom Split Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="lg:col-span-8 space-y-6">
+          <AdminActivityFeed />
+        </div>
         {/* 4. Activity Feed & Persistence Sidebar */}
         <div className="lg:col-span-4 space-y-6">
           <section className="bg-gray-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-lg border border-gray-800">
@@ -467,60 +468,6 @@ function Dashboard() {
             </div>
           </section>
 
-          <section className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 space-y-8">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-extrabold text-gray-900">Recent Actions</h3>
-              <div className="p-2 bg-gray-50 hover:bg-gray-100 cursor-pointer rounded-lg text-gray-400 transition-colors"><FaEllipsisV size={14} /></div>
-            </div>
-            <div className="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-0 before:w-[1px] before:bg-gray-100">
-              {stats.recent.activities.map((log) => {
-                const getActionColor = (action) => {
-                  switch (action?.toUpperCase()) {
-                    case 'CREATE': return 'bg-secondary/100 shadow-emerald-200 border-emerald-100';
-                    case 'UPDATE': return 'bg-blue-500 shadow-blue-200 border-blue-100';
-                    case 'DELETE': return 'bg-rose-500 shadow-rose-200 border-rose-100';
-                    case 'LOGIN': return 'bg-indigo-500 shadow-indigo-200 border-indigo-100';
-                    default: return 'bg-gray-400 shadow-gray-200 border-gray-100';
-                  }
-                };
-
-                return (
-                  <div
-                    key={log._id}
-                    className="relative flex gap-5 z-10 group/log cursor-pointer"
-                    onClick={() => {
-                      if (log.userId) navigate(`/admin/user/${log.userId}`);
-                      else if (log.resourceId) {
-                        const path = log.resource?.toLowerCase().includes('event') ? 'event' :
-                          log.resource?.toLowerCase().includes('blog') ? 'blog' : null;
-                        if (path) navigate(`/admin/${path}/${log.resourceId}`);
-                      }
-                    }}
-                  >
-                    <div className={`w-4 h-4 rounded-full mt-1 border-4 border-white shadow-sm ${getActionColor(log.action)} group-hover/log:scale-125 transition-transform`}></div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-gray-600 leading-snug group-hover/log:text-gray-900 transition-colors">
-                        <span className={`font-bold ${log.action?.toUpperCase() === 'DELETE' ? 'text-rose-600' :
-                            log.action?.toUpperCase() === 'CREATE' ? 'text-secondary' :
-                              log.action?.toUpperCase() === 'UPDATE' ? 'text-blue-600' : 'text-indigo-600'
-                          }`}>{log.userName}</span> {log.details}
-                      </p>
-                      <p className="text-xs text-gray-400 font-semibold">{new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                    </div>
-                  </div>
-                );
-              })}
-              {stats.recent.activities.length === 0 && (
-                <p className="text-center text-gray-400 font-medium py-8">No recent activities found.</p>
-              )}
-            </div>
-            <button
-              onClick={() => navigate('/admin/user')}
-              className="w-full py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              View All Users
-            </button>
-          </section>
 
           {/* Event Reminders Section */}
           <section className="bg-secondary/10 rounded-3xl border border-emerald-100 p-8 space-y-6 shadow-sm">

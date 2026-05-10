@@ -354,4 +354,22 @@ export class AdminService {
       console.error("Failed to log activity:", error);
     }
   }
+
+  async getAdminActivities(page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+    
+    const [activities, total] = await Promise.all([
+      Log.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Log.countDocuments()
+    ]);
+
+    return {
+      activities,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      hasMore: skip + activities.length < total
+    };
+  }
 }
+

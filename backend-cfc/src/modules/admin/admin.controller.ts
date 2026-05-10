@@ -80,4 +80,12 @@ export class AdminController {
     const results = await adminService.globalSearch(q as string);
     sendSuccess(res, results, "Global search results fetched successfully");
   });
+
+  getAdminActivities = asyncHandler(async (req: Request, res: Response) => {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const activities = await adminService.getAdminActivities(page, limit);
+    sendSuccess(res, activities, "Activities fetched successfully");
+  });
 }
+

@@ -40,5 +40,6 @@ router.get("/admin/users/:id", authenticate, requireAnyPermission(PERMISSIONS.ME
 router.get("/admin/events/:id", authenticate, requireAnyPermission(PERMISSIONS.EVENT_VIEW), adminController.getEventDetails);
 router.get("/admin/blogs/:id", authenticate, requireAnyPermission(PERMISSIONS.BLOG_VIEW), adminController.getBlogDetails);
 router.get("/admin/search", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_VIEW), adminController.globalSearch);
+router.get("/admin/activities", authenticate, requireAnyPermission(PERMISSIONS.MEMBER_VIEW), adminController.getAdminActivities);
 
 export default router;
