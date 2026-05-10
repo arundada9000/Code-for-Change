@@ -34,6 +34,7 @@ import {
 
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
 import MemberCard from "../Components/MemberCard";
+import BiometricSettings from "../Components/PageComponents/Profile/BiometricSettings";
 
 // Region color map
 const REGION_COLORS = {
@@ -775,6 +776,9 @@ function UserProfile() {
                 <Field icon={FaYoutube} label="YouTube" name="youtube" type="url" placeholder="https://youtube.com/@..." isEditing={isEditing} formData={formData} handleChange={handleChange} regionColor={regionColor} />
               </div>
             </div>
+
+            {/* Biometric Login Settings */}
+            <BiometricSettings />
           
           </SlideUp>
         </div>
