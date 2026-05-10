@@ -522,69 +522,120 @@ function Member() {
         </div>
       </div>
 
-      {/* 2. Role Filter Tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {['all', 'superadmin', 'admin', 'eb', 'cr', 'gm', 'ippl', 'advisor', 'alumni', 'guest'].map((role) => (
-          <button
-            key={role}
-            onClick={() => setActiveFilter(role)}
-            className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeFilter === role
-              ? 'bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-200'
-              : 'bg-white text-slate-400 border-slate-100 hover:border-emerald-500 hover:text-emerald-600'
-              }`}
-          >
-            {role === 'all' ? 'All' : role === 'gm' ? 'General' : role.toUpperCase()}
-          </button>
-        ))}
-      </div>
+      {/* 2. Search & Filters */}
+      <div className="bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-slate-100 space-y-5" role="search" aria-label="Filter members">
+        {/* Search bar */}
+        <div className="relative">
+          <label htmlFor="member-search" className="sr-only">Search members</label>
+          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" aria-hidden="true" />
+          <input
+            id="member-search"
+            type="search"
+            aria-label="Search member by name, role, or position"
+            placeholder="Search by name, role, or position..."
+            className="w-full pl-11 pr-10 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-medium text-sm transition-all"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors cursor-pointer"
+              title="Clear search"
+              aria-label="Clear search"
+            >
+              <FaTimes size={14} />
+            </button>
+          )}
+        </div>
 
-      {/* 3. Operational Filters */}
-      <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
-            <input
-              placeholder="Search member by name..."
-              className="w-full pl-16 pr-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-medium text-sm transition-all"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+        {/* Filter grid */}
+        <fieldset className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-0 p-0 m-0">
+          <legend className="sr-only">Filter options</legend>
+
+          {/* Role */}
+          <div className="space-y-1">
+            <label htmlFor="member-filter-role" className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Role</label>
+            <select
+              id="member-filter-role"
+              value={activeFilter}
+              onChange={(e) => setActiveFilter(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl outline-none text-xs font-semibold text-slate-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+            >
+              <option value="all">All Roles</option>
+              {['superadmin', 'admin', 'eb', 'cr', 'gm', 'ippl', 'advisor', 'alumni', 'guest'].map(role => (
+                <option key={role} value={role}>{role === 'gm' ? 'General Member' : role.toUpperCase()}</option>
+              ))}
+            </select>
           </div>
 
-          <select
-            className="px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest outline-none cursor-pointer hover:bg-white transition-all appearance-none border-r-[16px] border-r-transparent"
-            onChange={(e) => setFilterProvince(e.target.value)}
-          >
-            <option value="All">All Regions</option>
-            <option value="Kathmandu">Kathmandu</option>
-            <option value="Pokhara">Pokhara</option>
-            <option value="Rupandehi">Rupandehi</option>
-            <option value="Dang">Dang</option>
-            <option value="Birgunj">Birgunj</option>
-            <option value="Farwest">Farwest</option>
-            <option value="Koshi">Koshi</option>
-            <option value="Chitwan">Chitwan</option>
-            <option value="LB Karnali">LB Karnali</option>
-          </select>
+          {/* Region */}
+          <div className="space-y-1">
+            <label htmlFor="member-filter-region" className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Region</label>
+            <select
+              id="member-filter-region"
+              value={filterProvince}
+              onChange={(e) => setFilterProvince(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl outline-none text-xs font-semibold text-slate-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+            >
+              <option value="All">All Regions</option>
+              {PROVINCES.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            className="px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest outline-none cursor-pointer hover:bg-white transition-all appearance-none border-r-[16px] border-r-transparent"
-            onChange={(e) => setFilterTenure(e.target.value)}
-          >
-            <option value="All">All Tenures</option>
-            <option value="2025-2026">2025-2026</option>
-            <option value="2024-2025">2024-2025</option>
-          </select>
+          {/* Tenure */}
+          <div className="space-y-1">
+            <label htmlFor="member-filter-tenure" className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Tenure</label>
+            <select
+              id="member-filter-tenure"
+              value={filterTenure}
+              onChange={(e) => setFilterTenure(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl outline-none text-xs font-semibold text-slate-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+            >
+              <option value="All">All Tenures</option>
+              <option value="2025-2026">2025-2026</option>
+              <option value="2024-2025">2024-2025</option>
+            </select>
+          </div>
 
-          <select
-            className="px-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest outline-none cursor-pointer hover:bg-white transition-all appearance-none border-r-[16px] border-r-transparent"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="All">All Status</option>
-            <option value="Verified">Verified</option>
-            <option value="Pending">Pending</option>
-          </select>
+          {/* Status */}
+          <div className="space-y-1">
+            <label htmlFor="member-filter-status" className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Status</label>
+            <select
+              id="member-filter-status"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl outline-none text-xs font-semibold text-slate-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+            >
+              <option value="All">All Status</option>
+              <option value="Verified">Verified</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
+        </fieldset>
+
+        {/* Result count + clear all */}
+        <div className="flex items-center justify-between pt-1" aria-live="polite">
+          <p className="text-xs text-slate-400 font-medium">
+            Showing <span className="font-bold text-slate-600">{filteredMembers.length}</span> of {members.length} members
+          </p>
+          {(activeFilter !== 'all' || filterProvince !== 'All' || filterTenure !== 'All' || filterStatus !== 'Verified' || search) && (
+            <button
+              onClick={() => {
+                setActiveFilter('all');
+                setFilterProvince('All');
+                setFilterTenure('All');
+                setFilterStatus('Verified');
+                setSearch('');
+              }}
+              className="text-xs font-semibold text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer"
+              title="Reset all filters to default"
+            >
+              Clear all filters
+            </button>
+          )}
         </div>
       </div>
 

@@ -662,101 +662,131 @@ function AdminEvents() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 space-y-4">
+      <div className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 space-y-4" role="search" aria-label="Filter events">
         <div className="flex flex-col md:flex-row gap-4">
+          {/* Search */}
           <div className="relative flex-1">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <label htmlFor="event-search" className="sr-only">Search events</label>
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true" />
             <input
-              type="text"
+              id="event-search"
+              type="search"
+              aria-label="Search events by title"
               placeholder="Search events by title..."
-              className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-transparent rounded-xl outline-none text-gray-700 font-medium focus:bg-white focus:border-gray-200 focus:ring-4 focus:ring-emerald-500/10 transition-all"
+              className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-gray-700 font-medium text-sm focus:bg-white focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors cursor-pointer"
+                title="Clear search"
+                aria-label="Clear search"
+              >
+                <FaTimes size={14} />
+              </button>
+            )}
           </div>
-          <div className="grid grid-cols-2 md:flex gap-3 md:gap-4 w-full md:w-auto">
-            <select
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl outline-none text-gray-700 font-semibold text-xs transition-all appearance-none cursor-pointer"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            >
-              <option value="">All Types</option>
-              {[
-                "workshop",
-                "hackathon",
-                "webinar",
-                "conference",
-                "social_impact",
-              ].map((t) => (
-                <option key={t} value={t}>
-                  {t.replace("_", " ")}
-                </option>
-              ))}
-            </select>
-            <select
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl outline-none text-gray-700 font-semibold text-xs transition-all appearance-none cursor-pointer"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-            >
-              <option value="">All Status</option>
-              {["Draft", "Published", "Upcoming", "Live", "Completed"].map(
-                (s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ),
-              )}
-            </select>
-            <select
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl outline-none text-gray-700 font-semibold text-xs transition-all appearance-none cursor-pointer"
-              value={filterProvince}
-              onChange={(e) => setFilterProvince(e.target.value)}
-            >
-              <option value="">All Regions</option>
-              {REGIONS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
+
+          {/* Type / Status / Region selects */}
+          <fieldset className="grid grid-cols-2 md:flex gap-3 md:gap-4 w-full md:w-auto border-0 p-0 m-0">
+            <legend className="sr-only">Filter by type, status, and region</legend>
+
+            <div className="space-y-1">
+              <label htmlFor="event-filter-type" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Type</label>
+              <select
+                id="event-filter-type"
+                className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+              >
+                <option value="">All Types</option>
+                {["workshop", "hackathon", "webinar", "conference", "social_impact"].map((t) => (
+                  <option key={t} value={t}>{t.replace("_", " ")}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="event-filter-status" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Status</label>
+              <select
+                id="event-filter-status"
+                className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                {["Draft", "Published", "Upcoming", "Live", "Completed"].map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="event-filter-region" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Region</label>
+              <select
+                id="event-filter-region"
+                className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs font-semibold text-gray-700 cursor-pointer hover:bg-white transition-all focus:border-emerald-300"
+                value={filterProvince}
+                onChange={(e) => setFilterProvince(e.target.value)}
+              >
+                <option value="">All Regions</option>
+                {REGIONS.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+          </fieldset>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-4 w-full md:w-auto">
+        {/* Date range row */}
+        <div className="flex flex-col md:flex-row gap-4 items-end justify-between border-t border-gray-100 pt-4">
+          <fieldset className="flex items-center gap-4 w-full md:w-auto border-0 p-0 m-0">
+            <legend className="sr-only">Filter by date range</legend>
             <div className="flex items-center gap-2 w-full md:w-auto">
-              <label className="text-xs font-bold text-gray-500">From:</label>
+              <label htmlFor="event-date-from" className="text-xs font-bold text-gray-500 whitespace-nowrap">From:</label>
               <input
+                id="event-date-from"
                 type="date"
-                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-100 focus:border-gray-300 rounded-lg text-xs font-semibold text-gray-700 outline-none transition-all"
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 focus:border-emerald-300 rounded-lg text-xs font-semibold text-gray-700 outline-none transition-all"
                 value={filterStartDate}
                 onChange={(e) => setFilterStartDate(e.target.value)}
               />
             </div>
             <div className="flex items-center gap-2 w-full md:w-auto">
-              <label className="text-xs font-bold text-gray-500">To:</label>
+              <label htmlFor="event-date-to" className="text-xs font-bold text-gray-500 whitespace-nowrap">To:</label>
               <input
+                id="event-date-to"
                 type="date"
-                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-100 focus:border-gray-300 rounded-lg text-xs font-semibold text-gray-700 outline-none transition-all"
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 focus:border-emerald-300 rounded-lg text-xs font-semibold text-gray-700 outline-none transition-all"
                 value={filterEndDate}
                 onChange={(e) => setFilterEndDate(e.target.value)}
               />
             </div>
-          </div>
-          <div className="text-right w-full md:w-auto">
-            <button
-              onClick={() => {
-                setSearchTerm("");
-                setFilterType("");
-                setFilterStatus("");
-                setFilterProvince("");
-                setFilterStartDate("");
-                setFilterEndDate("");
-              }}
-              className="text-xs font-bold text-gray-400 hover:text-rose-600 transition-colors"
-            >
-              Clear Filters
-            </button>
+          </fieldset>
+
+          {/* Result count + clear */}
+          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end" aria-live="polite">
+            <p className="text-xs text-gray-400 font-medium">
+              Showing <span className="font-bold text-gray-600">{filteredEvents.length}</span> events
+            </p>
+            {(searchTerm || filterType || filterStatus || filterProvince || filterStartDate || filterEndDate) && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setFilterType("");
+                  setFilterStatus("");
+                  setFilterProvince("");
+                  setFilterStartDate("");
+                  setFilterEndDate("");
+                }}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer"
+                title="Reset all filters to default"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         </div>
       </div>
