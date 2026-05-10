@@ -1,7 +1,10 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useProvinceColors } from '../../Hooks/useProvinceColors';
 
 const ProvinceMembersChart = ({ data }) => {
+  const { getColor } = useProvinceColors();
+
   if (!data || data.length === 0) return null;
 
   return (
@@ -38,9 +41,21 @@ const ProvinceMembersChart = ({ data }) => {
               wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', paddingTop: '20px' }}
               iconType="circle"
             />
-            <Bar dataKey="eb" name="Executive Board" stackId="a" fill="#10b981" radius={[0, 0, 4, 4]} />
-            <Bar dataKey="cr" name="Campus Reps" stackId="a" fill="#3b82f6" />
-            <Bar dataKey="gm" name="General Members" stackId="a" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="eb" name="Executive Board" stackId="a" radius={[0, 0, 4, 4]}>
+              {data.map((entry, index) => (
+                <Cell key={`eb-${index}`} fill={getColor(entry.province)} fillOpacity={1} />
+              ))}
+            </Bar>
+            <Bar dataKey="cr" name="Campus Reps" stackId="a">
+              {data.map((entry, index) => (
+                <Cell key={`cr-${index}`} fill={getColor(entry.province)} fillOpacity={0.6} />
+              ))}
+            </Bar>
+            <Bar dataKey="gm" name="General Members" stackId="a" radius={[4, 4, 0, 0]}>
+              {data.map((entry, index) => (
+                <Cell key={`gm-${index}`} fill={getColor(entry.province)} fillOpacity={0.3} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

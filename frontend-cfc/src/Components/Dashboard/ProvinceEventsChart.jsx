@@ -1,7 +1,10 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useProvinceColors } from '../../Hooks/useProvinceColors';
 
 const ProvinceEventsChart = ({ data }) => {
+  const { getColor } = useProvinceColors();
+
   if (!data || data.length === 0) return null;
 
   return (
@@ -32,10 +35,14 @@ const ProvinceEventsChart = ({ data }) => {
             <Tooltip 
               cursor={{ fill: '#f8fafc' }}
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
-              itemStyle={{ fontWeight: 'bold', color: '#f59e0b' }}
+              itemStyle={{ fontWeight: 'bold' }}
               labelStyle={{ fontWeight: 'black', color: '#0f172a', marginBottom: '8px' }}
             />
-            <Bar dataKey="events" name="Total Events" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={40} />
+            <Bar dataKey="events" name="Total Events" radius={[4, 4, 0, 0]} barSize={40}>
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={getColor(entry.province)} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

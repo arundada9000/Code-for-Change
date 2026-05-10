@@ -135,7 +135,7 @@ export class AdminService {
     // Format membersByProvince
     const provMap: Record<string, any> = {};
     membersByProvince.forEach(m => {
-      const p = m._id.province || 'Unassigned';
+      const p = m._id.province || 'National';
       if (!provMap[p]) provMap[p] = { province: p, eb: 0, cr: 0, gm: 0 };
       provMap[p][m._id.role] = m.count;
     });
@@ -143,13 +143,13 @@ export class AdminService {
 
     // Format eventsByProvince
     const formattedEventsByProvince = eventsByProvince.map(e => ({
-      province: e._id || 'Unassigned',
+      province: e._id || 'National',
       events: e.count
     }));
 
     // Format certificatesByProvince
     const formattedCertificatesByProvince = certificatesByProvince.map(c => ({
-      province: c._id || 'Unassigned',
+      province: c._id || 'National',
       certificates: c.count
     }));
 
