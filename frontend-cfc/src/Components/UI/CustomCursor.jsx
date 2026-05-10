@@ -10,7 +10,6 @@ const CustomCursor = () => {
     return false;
   });
   const [variant, setVariant] = useState('default'); // 'default', 'button', 'input'
-  const [hoverSize, setHoverSize] = useState({ width: 56, height: 24 });
   const [isClicking, setIsClicking] = useState(false);
 
   // Direct DOM mapping using Motion Values to prevent React re-renders on mousemove
@@ -47,15 +46,6 @@ const CustomCursor = () => {
       const isText = computedStyle.cursor === 'text' || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
 
       if (isPointer) {
-        // Find the actual button element to capture its exact size
-        const btn = target.closest('a, button, [role="button"], select') || target;
-        const rect = btn.getBoundingClientRect();
-        
-        // Expand width and height to frame the entire button + padding
-        setHoverSize({
-          width: Math.max(56, rect.width + 16),
-          height: Math.max(24, rect.height + 8)
-        });
         setVariant('button');
       } else if (isText) {
         setVariant('input');
@@ -88,24 +78,33 @@ const CustomCursor = () => {
       x: "-50%",
       y: "-50%",
       color: "#64748b", // slate-500
+      backgroundColor: "transparent",
+      border: "0px solid transparent",
+      borderRadius: "0%",
       scale: isClicking ? 0.8 : 1,
       opacity: 1
     },
     button: {
-      width: hoverSize.width, 
-      height: hoverSize.height,
+      width: 48, 
+      height: 48,
       x: "-50%",
       y: "-50%",
-      color: "#00A155", // Emerald branding
-      scale: isClicking ? 0.9 : 1.2,
-      opacity: 0.9
+      color: "transparent", // Hide the { } text
+      backgroundColor: "rgba(0, 161, 85, 0.1)", // Emerald glow
+      border: "1px solid rgba(0, 161, 85, 0.5)",
+      borderRadius: "50%",
+      scale: isClicking ? 0.8 : 1,
+      opacity: 1
     },
     input: {
       width: 10,
       height: 20,
       x: "-50%",
       y: "-50%",
-      color: "#0076B4", // Secondary brand color
+      color: "#0076B4", 
+      backgroundColor: "transparent",
+      border: "0px solid transparent",
+      borderRadius: "0%",
       scale: 1,
       opacity: 1
     }
