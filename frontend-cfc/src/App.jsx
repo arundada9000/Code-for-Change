@@ -67,6 +67,7 @@ import OTPVerify from "./Pages/Auth/OTPVerify";
 import ResetPassword from "./Pages/Auth/ResetPassword";
 import PrivateRoute from "./Components/Common/PrivateRoute";
 import { Toaster } from "react-hot-toast";
+import CustomCursor from "./Components/UI/CustomCursor";
 
 function App() {
   useScrollToTop();
@@ -175,6 +176,7 @@ function App() {
         </Routes>
       </Suspense>
       <Toaster position="top-center" reverseOrder={false} />
+      <CustomCursor />
     </>
   );
 }

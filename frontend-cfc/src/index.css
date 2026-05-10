@@ -136,3 +136,8 @@ body {
 }
 
 /* scrollbar end*/
+
+/* Custom Cursor */
+.custom-cursor-active * {
+  cursor: none !important;
+}
