@@ -62,6 +62,8 @@ export async function exportResumeToPDF(previewElement, fileName = "resume") {
     // A4 dimensions in mm
     const pageWidth = 210;
     const pageHeight = 297;
+    const marginBottom = 15; // 15mm margin at the bottom
+    const usableHeight = pageHeight - marginBottom;
 
     const pdf = new jsPDF({
       orientation: "portrait",
@@ -81,21 +83,20 @@ export async function exportResumeToPDF(previewElement, fileName = "resume") {
     const pdfWidth = pageWidth;
     const pdfHeight = pdfWidth * imgAspect;
 
-    // If content is taller than one page, we need multiple pages
-    if (pdfHeight <= pageHeight) {
-      pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
-    } else {
-      // Multi-page: slice the image
-      let remainingHeight = pdfHeight;
-      let yOffset = 0;
+    // Calculate exactly how many pages are needed, using a small tolerance 
+    // to prevent a tiny spillover from creating a completely blank last page.
+    const tolerance = 2; // mm
+    const totalPages = Math.max(1, Math.ceil((pdfHeight - tolerance) / pageHeight));
 
-      while (remainingHeight > 0) {
-        if (yOffset > 0) pdf.addPage();
+    for (let i = 0; i < totalPages; i++) {
+      if (i > 0) pdf.addPage();
 
-        pdf.addImage(dataUrl, "PNG", 0, -yOffset, pdfWidth, pdfHeight);
-        yOffset += pageHeight;
-        remainingHeight -= pageHeight;
-      }
+      const yOffset = i * usableHeight;
+      pdf.addImage(dataUrl, "PNG", 0, -yOffset, pdfWidth, pdfHeight);
+      
+      // Draw a white rectangle at the bottom to act as a margin
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, usableHeight, pageWidth, marginBottom, "F");
     }
 
     pdf.save(`${fileName}.pdf`);
