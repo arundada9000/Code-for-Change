@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   FaPlus, FaSearch, FaFileAlt, FaTimes, FaCloudUploadAlt,
   FaBook, FaDownload, FaTrash, FaEdit, FaEye, FaLink,
@@ -241,22 +241,26 @@ function AdminResources() {
   };
 
   // Filtered display
-  const filtered = resources.filter(r => {
-    const matchSearch = r.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchVis = filterVisibility === "all" || r.visibility === filterVisibility;
-    const matchCat = filterCategory === "all" || r.category === filterCategory;
-    return matchSearch && matchVis && matchCat;
-  });
+  const filtered = useMemo(() => {
+    return resources.filter(r => {
+      const matchSearch = r.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchVis = filterVisibility === "all" || r.visibility === filterVisibility;
+      const matchCat = filterCategory === "all" || r.category === filterCategory;
+      return matchSearch && matchVis && matchCat;
+    });
+  }, [resources, searchTerm, filterVisibility, filterCategory]);
 
   // Group by category for display
-  const grouped = filtered.reduce((acc, r) => {
-    const cat = r.category || "other";
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(r);
-    return acc;
-  }, {});
+  const grouped = useMemo(() => {
+    return filtered.reduce((acc, r) => {
+      const cat = r.category || "other";
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(r);
+      return acc;
+    }, {});
+  }, [filtered]);
 
   const typeIcon = (type) => {
     const map = { file: <FaFileAlt />, image: <FaImage />, link: <FaLink />, "color-code": <FaPalette />, notes: <FaBook />, assignment: <FaFileAlt />, lab: <FaFileAlt />, project: <FaFileAlt /> };

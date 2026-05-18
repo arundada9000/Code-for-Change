@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   FaPlus,
   FaRegTrashAlt,
@@ -203,10 +203,12 @@ export default function AdminTeam() {
     }
   };
 
-  const filteredItems = items.filter(item => 
-    item.name.toLowerCase().includes(search.toLowerCase()) || 
-    item.designation.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredItems = useMemo(() => {
+    return items.filter(item => 
+      item.name.toLowerCase().includes(search.toLowerCase()) || 
+      item.designation.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [items, search]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">

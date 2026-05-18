@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaSearch, FaRegTrashAlt, FaUserEdit, FaUserPlus, FaTimes,
@@ -427,34 +427,36 @@ function AdminUsers() {
     });
   };
 
-  const filteredUsers = users.filter((user) => {
-    const s = searchTerm.toLowerCase();
-    const matchesSearch =
-      user.name?.toLowerCase().includes(s) ||
-      user.email?.toLowerCase().includes(s) ||
-      user.phone?.toLowerCase().includes(s) ||
-      user.membership?.membershipId?.toLowerCase().includes(s) ||
-      user.education?.collegeName?.toLowerCase().includes(s);
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      const s = searchTerm.toLowerCase();
+      const matchesSearch =
+        user.name?.toLowerCase().includes(s) ||
+        user.email?.toLowerCase().includes(s) ||
+        user.phone?.toLowerCase().includes(s) ||
+        user.membership?.membershipId?.toLowerCase().includes(s) ||
+        user.education?.collegeName?.toLowerCase().includes(s);
 
-    // Filter out superadmin from being displayed or searched
-    const isSuperAdmin = user.email === "sajhilodigital@gmail.com" || user.role === "superadmin";
-    if (isSuperAdmin) return false;
+      // Filter out superadmin from being displayed or searched
+      const isSuperAdmin = user.email === "sajhilodigital@gmail.com" || user.role === "superadmin";
+      if (isSuperAdmin) return false;
 
-    const matchesRole = activeRole === "all" || user.role === activeRole;
-    const matchesStatus = activeStatus === "all" || (activeStatus === "verified" ? user.isVerified : !user.isVerified);
-    const matchesMemb = activeMembershipStatus === "all" || user.membership?.membershipStatus === activeMembershipStatus;
-    const matchesCollege = activeCollege === "all" || user.education?.collegeName === activeCollege;
-    const matchesFaculty = activeFaculty === "all" || user.education?.faculty === activeFaculty;
-    const matchesProvince = activeProvince === "all" || user.province === activeProvince;
-    const matchesYear = activeJoinedYear === "all" || new Date(user.createdAt).getFullYear().toString() === activeJoinedYear;
+      const matchesRole = activeRole === "all" || user.role === activeRole;
+      const matchesStatus = activeStatus === "all" || (activeStatus === "verified" ? user.isVerified : !user.isVerified);
+      const matchesMemb = activeMembershipStatus === "all" || user.membership?.membershipStatus === activeMembershipStatus;
+      const matchesCollege = activeCollege === "all" || user.education?.collegeName === activeCollege;
+      const matchesFaculty = activeFaculty === "all" || user.education?.faculty === activeFaculty;
+      const matchesProvince = activeProvince === "all" || user.province === activeProvince;
+      const matchesYear = activeJoinedYear === "all" || new Date(user.createdAt).getFullYear().toString() === activeJoinedYear;
 
-    return matchesSearch && matchesRole && matchesStatus && matchesMemb && matchesCollege && matchesFaculty && matchesProvince && matchesYear;
-  });
+      return matchesSearch && matchesRole && matchesStatus && matchesMemb && matchesCollege && matchesFaculty && matchesProvince && matchesYear;
+    });
+  }, [users, searchTerm, activeRole, activeStatus, activeMembershipStatus, activeCollege, activeFaculty, activeProvince, activeJoinedYear]);
 
   // Unique values for filters
-  const uniqueColleges = [...new Set(users.map(u => u.education?.collegeName).filter(Boolean))].sort();
-  const uniqueFaculties = [...new Set(users.map(u => u.education?.faculty).filter(Boolean))].sort();
-  const uniqueYears = [...new Set(users.map(u => u.createdAt ? new Date(u.createdAt).getFullYear() : null).filter(Boolean))].sort((a, b) => b - a);
+  const uniqueColleges = useMemo(() => [...new Set(users.map(u => u.education?.collegeName).filter(Boolean))].sort(), [users]);
+  const uniqueFaculties = useMemo(() => [...new Set(users.map(u => u.education?.faculty).filter(Boolean))].sort(), [users]);
+  const uniqueYears = useMemo(() => [...new Set(users.map(u => u.createdAt ? new Date(u.createdAt).getFullYear() : null).filter(Boolean))].sort((a, b) => b - a), [users]);
 
   if (loading && users.length === 0) return <AdminTableSkeleton />;
 
