@@ -4,6 +4,7 @@ import { asyncHandler } from "../../shared/utils/errorHandler.js";
 import { sendSuccess } from "../../shared/utils/response.js";
 import { AdminService } from "../admin/admin.service.js";
 import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { NotificationService } from "../notifications/notification.service.js";
 
 const certificateService = new CertificateService();
 const adminService = new AdminService();
@@ -31,6 +32,21 @@ export class CertificateController {
         resourceId: certificate._id.toString(),
         details: `Issued ${certificate.courseName} certificate to ${certificate.recipientName} (ID: ${certificate.certificateId})`,
       });
+    }
+
+    // Push Notification
+    try {
+      // Find the user if they have an account matching the email
+      await NotificationService.sendToQuery(
+        { email: certificate.recipientEmail, "notificationPreferences.certificates": true },
+        {
+          title: "New Certificate Issued!",
+          body: `You have been awarded a certificate for ${certificate.courseName}.`,
+          url: `/certificate`
+        }
+      );
+    } catch (error) {
+      console.error("Failed to send certificate push notification:", error);
     }
 
     sendSuccess(res, certificate, "Certificate issued successfully", 201);

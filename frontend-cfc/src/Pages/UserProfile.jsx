@@ -35,6 +35,7 @@ import {
 import { FadeIn, SlideUp } from "../Components/Common/Animations";
 import MemberCard from "../Components/MemberCard";
 import BiometricSettings from "../Components/PageComponents/Profile/BiometricSettings";
+import NotificationSettings from "../Components/PageComponents/Profile/NotificationSettings";
 
 // Region color map
 const REGION_COLORS = {
@@ -780,6 +781,8 @@ function UserProfile() {
             {/* Biometric Login Settings */}
             <BiometricSettings />
           
+            {/* Notification Settings */}
+            <NotificationSettings />
           </SlideUp>
         </div>
       </div>

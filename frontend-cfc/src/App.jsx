@@ -29,7 +29,8 @@ import NotFound from "./Pages/NotFound";
 import MainLayout from "./Layout/MainLayout";
 import UserProfile from "./Pages/UserProfile";
 import useScrollToTop from "./Hooks/useScrollToTop";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { registerServiceWorker } from "./utils/pushNotification";
 
 // Admin (all lazy-loaded for performance)
 import AdminLayout from "./Layout/AdminLayout";
@@ -60,6 +61,7 @@ const AdminTeam = lazy(() => import("./Pages/Admin/AdminTeam"));
 const AdminResumes = lazy(() => import("./Pages/Admin/AdminResumes"));
 const ResumeDashboard = lazy(() => import("./Pages/ResumeBuilder/ResumeDashboard"));
 const ResumeBuilderPage = lazy(() => import("./Pages/ResumeBuilder/ResumeBuilder"));
+const AdminPushNotifications = lazy(() => import("./Pages/Admin/AdminPushNotifications"));
 import AuthLayout from "./Layout/AuthLayout";
 import Login from "./Pages/Auth/Login";
 import ForgetPassword from "./Pages/Auth/ForgetPassword";
@@ -71,6 +73,11 @@ import CustomCursor from "./Components/UI/CustomCursor";
 
 function App() {
   useScrollToTop();
+
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
   return (
     <>
       <Suspense
@@ -170,6 +177,7 @@ function App() {
               <Route path="contacts" element={<AdminContacts />} />
               <Route path="national-team" element={<AdminTeam />} />
               <Route path="resumes" element={<AdminResumes />} />
+              <Route path="push-notifications" element={<AdminPushNotifications />} />
               <Route path="sajilo-digital" element={<SajiloDigital />} />
             </Route>
           </Route>

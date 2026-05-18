@@ -10,6 +10,7 @@ import {
   FaUserTie,
   FaFolderOpen,
   FaFileAlt,
+  FaBullhorn,
 } from "react-icons/fa";
 import { BiDonateHeart, BiCalendarEvent } from "react-icons/bi";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
@@ -46,6 +47,7 @@ const sideBarItems = [
   { title: "Contacts", icon: <FaRegEnvelope />, path: "/admin/contacts" },
   { title: "National Team", icon: <FaUserTie />, path: "/admin/national-team" },
   { title: "Resumes", icon: <FaFileAlt />, path: "/admin/resumes" },
+  { title: "Push Config", icon: <FaBullhorn />, path: "/admin/push-notifications" },
 ];
 
 function AdminSidebar() {

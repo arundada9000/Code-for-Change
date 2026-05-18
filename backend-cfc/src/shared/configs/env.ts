@@ -33,6 +33,10 @@ const envSchema = z.object({
   WEBAUTHN_RP_ID: z.string().optional(),   // e.g. "codeforchangenepal.com" — defaults to hostname from FRONTEND_URL
   WEBAUTHN_RP_NAME: z.string().default("Code for Change Nepal"),
 
+  // Push Notifications
+  VAPID_PUBLIC_KEY: z.string().optional(),
+  VAPID_PRIVATE_KEY: z.string().optional(),
+
   // Payment
   PAYMENT_GATEWAY_URL: z.string().optional(),
   ESEWA_PRODUCT_CODE: z.string().default("EPAYTEST"),

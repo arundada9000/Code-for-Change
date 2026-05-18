@@ -5,6 +5,7 @@ import { sendSuccess } from "../../shared/utils/response.js";
 import { uploadToCloudinary, deleteFromCloudinary, CLOUDINARY_FOLDERS, extractPublicId } from "../../shared/utils/cloudinary.js";
 import { AdminService } from "../admin/admin.service.js";
 import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { NotificationService } from "../notifications/notification.service.js";
 
 const adminService = new AdminService();
 const internshipService = new InternshipService();
@@ -54,6 +55,20 @@ export class InternshipController {
         resourceId: internship._id.toString(),
         details: `Created internship: ${internship.title} at ${internship.companyName}`,
       });
+    }
+
+    // Push Notification
+    try {
+      await NotificationService.sendToQuery(
+        { "notificationPreferences.internships": true },
+        {
+          title: "New Internship Opportunity!",
+          body: `${internship.companyName} is hiring for ${internship.title}. Apply now!`,
+          url: `/internships` // Assuming there is an internships listing page
+        }
+      );
+    } catch (error) {
+      console.error("Failed to send internship push notification:", error);
     }
 
     sendSuccess(res, internship, "Internship created successfully", 201);

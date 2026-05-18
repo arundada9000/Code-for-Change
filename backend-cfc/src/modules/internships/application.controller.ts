@@ -5,6 +5,7 @@ import { sendSuccess } from "../../shared/utils/response.js";
 import { uploadToCloudinary, deleteFromCloudinary, CLOUDINARY_FOLDERS, extractPublicId } from "../../shared/utils/cloudinary.js";
 import { AdminService } from "../admin/admin.service.js";
 import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { NotificationService } from "../notifications/notification.service.js";
 
 const adminService = new AdminService();
 const applicationService = new ApplicationService();
@@ -67,6 +68,22 @@ export class ApplicationController {
         resourceId: application._id.toString(),
         details: `Updated application status for ${application.fullName} to ${status}`,
       });
+    }
+
+    // Push Notification
+    try {
+      if (application.email) {
+        await NotificationService.sendToQuery(
+          { email: application.email, "notificationPreferences.applications": true },
+          {
+            title: "Application Status Update",
+            body: `Your internship application status is now: ${status}.`,
+            url: `/profile`
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Failed to send application status push notification:", error);
     }
 
     sendSuccess(res, application, `Application ${status.toLowerCase()} successfully`);

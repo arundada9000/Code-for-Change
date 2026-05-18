@@ -14,6 +14,25 @@ export interface WebAuthnCredential {
   createdAt: Date;
 }
 
+export interface PushSubscription {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+}
+
+export interface NotificationPreferences {
+  events: boolean;
+  eventsAllProvinces: boolean;
+  internships: boolean;
+  applications: boolean;
+  certificates: boolean;
+  account: boolean;
+  resources: boolean;
+  content: boolean;
+}
+
 // 1. User interface (full DB document shape)
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -107,6 +126,8 @@ export interface IUser extends Document {
   resetPasswordExpiry?: Date;
 
   webauthnCredentials?: WebAuthnCredential[];
+  pushSubscriptions?: PushSubscription[];
+  notificationPreferences?: NotificationPreferences;
 
   isDeleted: boolean;
   createdAt: Date;

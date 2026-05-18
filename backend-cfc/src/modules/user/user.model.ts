@@ -250,6 +250,28 @@ const userSchema = new Schema(
       createdAt:    { type: Date, default: Date.now },
     }],
 
+    // Push Notification Subscriptions & Preferences
+    pushSubscriptions: [
+      {
+        endpoint: { type: String, required: true },
+        keys: {
+          p256dh: { type: String, required: true },
+          auth: { type: String, required: true },
+        },
+      },
+    ],
+
+    notificationPreferences: {
+      events: { type: Boolean, default: true },
+      eventsAllProvinces: { type: Boolean, default: true },
+      internships: { type: Boolean, default: true },
+      applications: { type: Boolean, default: true },
+      certificates: { type: Boolean, default: true },
+      account: { type: Boolean, default: true },
+      resources: { type: Boolean, default: true },
+      content: { type: Boolean, default: true },
+    },
+
     // Soft Delete
     isDeleted: { type: Boolean, default: false, index: true },
   },

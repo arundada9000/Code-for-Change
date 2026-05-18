@@ -5,6 +5,7 @@ import { sendSuccess } from "../../shared/utils/response.js";
 import { uploadToCloudinary, deleteFromCloudinary, CLOUDINARY_FOLDERS } from "../../shared/utils/cloudinary.js";
 import { AdminService } from "../admin/admin.service.js";
 import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { NotificationService } from "../notifications/notification.service.js";
 
 const adminService = new AdminService();
 const eventService = new EventService();
@@ -91,6 +92,25 @@ export class EventController {
         resourceId: event._id.toString(),
         details: `Created event: ${event.title}`,
       });
+    }
+
+    // Push Notification
+    try {
+      const targetQuery: any = { "notificationPreferences.events": true };
+      if (!event.isNational && event.region) {
+        targetQuery.$or = [
+          { province: event.region },
+          { "notificationPreferences.eventsAllProvinces": true }
+        ];
+      }
+
+      await NotificationService.sendToQuery(targetQuery, {
+        title: "New Event Announced!",
+        body: `${event.title} is happening in ${event.region || "your area"}. Join now!`,
+        url: `/event/${event._id}`
+      });
+    } catch (error) {
+      console.error("Failed to send event push notification:", error);
     }
 
     sendSuccess(res, event, "Event created successfully", 201);
