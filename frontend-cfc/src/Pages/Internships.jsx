@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Banner from "../Components/UI/Banner";
 import Breadcrumbs from "../Components/UI/Breadcrumbs";
@@ -8,6 +8,7 @@ import {
   FaBuilding, FaArrowRight, FaSearch, FaFilter 
 } from "react-icons/fa";
 import API from "../Services/api";
+import DebouncedSearchInput from "../Components/UI/DebouncedSearchInput";
 import { InternshipCardSkeleton } from "../Components/Loading/Skeleton";
 import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
@@ -134,19 +135,21 @@ const Internships = () => {
     return { label: "Hiring", type: 'active' };
   };
 
-  const categories = ["All", ...new Set(internships.map(i => i.category))];
-  const types = ["All", "Full-time", "Remote", "Part-time", "Contract", ...new Set(internships.map(i => i.type))].filter((v, i, a) => a.indexOf(v) === i);
+  const categories = useMemo(() => ["All", ...new Set(internships.map(i => i.category))], [internships]);
+  const types = useMemo(() => ["All", "Full-time", "Remote", "Part-time", "Contract", ...new Set(internships.map(i => i.type))].filter((v, i, a) => a.indexOf(v) === i), [internships]);
 
-  const filteredInternships = internships.filter(job => {
-    const matchesCategory = category === "All" || job.category === category;
-    const matchesType = type === "All" || job.type === type;
-    const matchesSearch = 
-      job.title.toLowerCase().includes(search.toLowerCase()) ||
-      job.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      job.location.toLowerCase().includes(search.toLowerCase());
-    
-    return matchesCategory && matchesType && matchesSearch;
-  });
+  const filteredInternships = useMemo(() => {
+    return internships.filter(job => {
+      const matchesCategory = category === "All" || job.category === category;
+      const matchesType = type === "All" || job.type === type;
+      const matchesSearch = 
+        job.title.toLowerCase().includes(search.toLowerCase()) ||
+        job.companyName.toLowerCase().includes(search.toLowerCase()) ||
+        job.location.toLowerCase().includes(search.toLowerCase());
+      
+      return matchesCategory && matchesType && matchesSearch;
+    });
+  }, [internships, category, type, search]);
 
   const clearFilters = () => {
     setSearch("");
@@ -200,11 +203,10 @@ const Internships = () => {
             {/* Search Focal Point */}
             <div className="relative group">
               <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-secondary transition-all text-base" />
-              <input 
-                type="text" 
+              <DebouncedSearchInput 
                 placeholder="Search by job title, technologies, or keywords..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onSearch={setSearch}
                 className="w-full pl-14 pr-6 py-4 bg-white border border-gray-300 rounded-2xl text-sm font-bold text-primary  outline-none focus:bg-white focus:border-secondary focus:ring focus:ring-secondary/5 transition-all"
               />
             </div>

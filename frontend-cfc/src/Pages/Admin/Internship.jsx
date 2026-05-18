@@ -28,6 +28,7 @@ import "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 const TRACKS = [
   "Frontend",
@@ -214,12 +215,11 @@ function Internship() {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
-            <input
-              type="text"
+            <DebouncedSearchInput
               placeholder="Search by candidate name or email..."
               className="w-full pl-16 pr-8 py-4 bg-slate-50 rounded-xl outline-none text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500/20 transition-all"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onSearch={setSearch}
             />
           </div>
           <div className="flex gap-4">

@@ -4,6 +4,7 @@ import Banner from "../Components/UI/Banner";
 import SEO from "../Components/Common/SEO";
 import API from "../Services/api";
 import { useAuth } from "../Context/AuthContext";
+import DebouncedSearchInput from "../Components/UI/DebouncedSearchInput";
 import {
   FaSearch, FaFilter, FaDownload, FaExternalLinkAlt,
   FaLock, FaGlobe, FaCheck, FaCopy, FaPalette,
@@ -447,11 +448,10 @@ export default function Resources() {
             {/* Search */}
             <div className="relative group">
               <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-all" />
-              <input
-                type="text"
+              <DebouncedSearchInput
                 placeholder="Search by title, subject, tags..."
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onSearch={setSearch}
                 className="w-full pl-14 pr-6 py-4 bg-primary/5 border-2 border-transparent rounded-2xl text-sm font-bold text-primary placeholder:text-gray-400 outline-none focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all shadow-inner"
               />
             </div>

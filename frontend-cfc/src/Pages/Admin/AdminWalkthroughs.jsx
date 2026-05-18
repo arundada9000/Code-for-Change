@@ -14,6 +14,7 @@ import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 const PROVINCES = [
   "Kathmandu","Pokhara","Rupandehi","Dang","Birgunj","Farwest","Koshi","Chitwan","LB Karnali",
@@ -302,7 +303,7 @@ function AdminWalkthroughs() {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input type="text" placeholder="Search walkthroughs..." className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-700 font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <DebouncedSearchInput placeholder="Search walkthroughs..." className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-700 font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-sm" value={searchTerm} onSearch={setSearchTerm} />
           </div>
           <select className="w-full md:w-48 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-700 font-semibold text-xs cursor-pointer" value={filterProvince} onChange={(e) => setFilterProvince(e.target.value)}>
             <option value="">All Provinces</option>

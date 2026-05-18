@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 function AdminResumes() {
   const { hasPermission } = useAuth();
@@ -98,11 +99,10 @@ function AdminResumes() {
       <div className="px-4">
         <div className="relative max-w-md">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
-          <input
-            type="text"
+          <DebouncedSearchInput
             placeholder="Search by name, title, or email..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onSearch={setSearch}
             className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 outline-none focus:border-blue-400 transition-colors"
           />
         </div>

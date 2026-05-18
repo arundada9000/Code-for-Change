@@ -15,7 +15,7 @@ import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
-import { useDebounce } from "../../Hooks/useDebounce";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 
 
@@ -38,7 +38,6 @@ function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 400);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -429,7 +428,7 @@ function AdminUsers() {
   };
 
   const filteredUsers = users.filter((user) => {
-    const s = debouncedSearchTerm.toLowerCase();
+    const s = searchTerm.toLowerCase();
     const matchesSearch =
       user.name?.toLowerCase().includes(s) ||
       user.email?.toLowerCase().includes(s) ||
@@ -515,14 +514,13 @@ function AdminUsers() {
         <div className="relative">
           <label htmlFor="user-search" className="sr-only">Search members</label>
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-          <input
+          <DebouncedSearchInput
             id="user-search"
-            type="search"
             aria-label="Search by name, email, phone, member ID, or college"
             placeholder="Search by name, email, phone, member ID, or college..."
             className="w-full pl-11 pr-10 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-secondary/10 focus:border-emerald-300 focus:bg-white outline-none font-medium text-sm transition-all text-gray-900"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onSearch={setSearchTerm}
           />
           {searchTerm && (
             <button

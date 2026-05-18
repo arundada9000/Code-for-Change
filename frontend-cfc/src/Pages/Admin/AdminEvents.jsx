@@ -37,6 +37,7 @@ import autoTable from "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 const InputField = React.memo(
   ({
     label,
@@ -675,7 +676,7 @@ function AdminEvents() {
               placeholder="Search events by title..."
               className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-gray-700 font-medium text-sm focus:bg-white focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 transition-all"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={setSearchTerm}
             />
             {searchTerm && (
               <button

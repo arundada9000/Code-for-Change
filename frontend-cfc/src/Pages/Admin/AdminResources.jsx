@@ -8,6 +8,7 @@ import { MdColorLens } from "react-icons/md";
 import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 // ─────────────────────────────────────────────────────────
 // Constants (mirrors backend)
@@ -309,10 +310,10 @@ function AdminResources() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="relative col-span-1 md:col-span-1">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
-          <input
-            type="text" placeholder="Search resources..."
+          <DebouncedSearchInput
+            placeholder="Search resources..."
             className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-100 rounded-2xl outline-none shadow-sm focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 transition-all font-medium text-sm"
-            value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+            value={searchTerm} onSearch={setSearchTerm}
           />
         </div>
         <select

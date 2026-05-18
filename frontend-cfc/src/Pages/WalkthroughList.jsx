@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import Banner from "../Components/UI/Banner";
 import SEO from "../Components/Common/SEO";
 import API from "../Services/api";
+import DebouncedSearchInput from "../Components/UI/DebouncedSearchInput";
 import { SlideUp, StaggerContainer, StaggerItem } from "../Components/Common/Animations";
 
 const PROVINCES = [
@@ -56,11 +57,8 @@ function WalkthroughList() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setPage(1);
-      fetchWalkthroughs(1);
-    }, 400);
-    return () => clearTimeout(timer);
+    setPage(1);
+    fetchWalkthroughs(1);
   }, [searchTerm, filterProvince]);
 
   const loadMore = () => {
@@ -112,12 +110,11 @@ function WalkthroughList() {
         <div className="flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-1 w-full">
             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
+            <DebouncedSearchInput
               placeholder="Search walkthroughs..."
               className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-full outline-none text-slate-700 font-medium focus:ring-4 focus:ring-secondary/10 focus:border-secondary/30 transition-all text-sm"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={setSearchTerm}
             />
           </div>
           <select

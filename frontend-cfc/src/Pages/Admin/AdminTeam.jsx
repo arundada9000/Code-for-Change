@@ -16,6 +16,7 @@ import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 const InputField = React.memo(({ label, value, onChange, placeholder, required = false }) => (
   <div className="space-y-1.5">
@@ -238,12 +239,11 @@ export default function AdminTeam() {
            <option value="Board Member">Board Member</option>
            <option value="Advisor">Advisor</option>
          </select>
-         <input
-           type="text"
+         <DebouncedSearchInput
            placeholder="Search by name or designation..."
            className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl outline-none text-gray-700 font-medium text-sm transition-all"
            value={search}
-           onChange={(e) => setSearch(e.target.value)}
+           onSearch={setSearch}
          />
       </div>
 

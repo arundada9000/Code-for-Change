@@ -19,6 +19,7 @@ import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 const InputField = React.memo(
   ({
@@ -305,12 +306,11 @@ function AdminImpacts() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
         <div className="lg:col-span-3 relative">
           <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
+          <DebouncedSearchInput
             placeholder="Search by title or category..."
             className="w-full pl-16 pr-6 py-5 bg-white border border-slate-100 rounded-3xl outline-none shadow-sm focus:ring-4 focus:ring-blue-500/5 focus:border-blue-200 transition-all font-medium text-sm"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onSearch={setSearchTerm}
           />
         </div>
         <div className="lg:col-span-1 relative">

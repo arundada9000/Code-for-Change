@@ -6,9 +6,18 @@ import { validate, validateMongoId } from "../../shared/middlewares/validate.mid
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
 import { upload } from "../../shared/middlewares/multer.js";
 import { createApplicationSchema, updateApplicationStatusSchema } from "./application.validation.js";
+import { rateLimit } from "express-rate-limit";
 
 const router = Router();
 const applicationController = new ApplicationController();
+
+const applicationRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3, // Limit each IP to 3 requests per windowMs
+  message: "Too many internship applications created from this IP, please try again after 15 minutes",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 /**
  * @route   POST /api/internships/applications
@@ -17,6 +26,7 @@ const applicationController = new ApplicationController();
  */
 router.post(
   "/applications",
+  applicationRateLimiter,
   upload.single("resume"),
   validate(createApplicationSchema),
   applicationController.submitApplication

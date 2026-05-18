@@ -7,13 +7,23 @@ import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
 import { upload } from "../../shared/middlewares/multer.js";
+import { rateLimit } from "express-rate-limit";
 
 const router = Router();
 const donationController = new DonationController();
 
+const donationRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 donations per windowMs
+  message: "Too many donation attempts from this IP, please try again after 15 minutes",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Public route to record a donation
 router.post(
   "/donations", 
+  donationRateLimiter,
   upload.single('receipt'),
   validate(createDonationSchema), 
   donationController.createDonation
@@ -61,6 +71,7 @@ router.put(
 // eSewa Payment Routes
 router.post(
   "/donations/initiate-esewa", 
+  donationRateLimiter,
   validate(z.object({
     body: z.object({
       donorName: z.string().min(1, "Donor name is required"),

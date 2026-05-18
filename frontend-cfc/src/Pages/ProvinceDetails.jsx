@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   FiUsers,
@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { FaSearch, FaFilter, FaStar } from "react-icons/fa";
 import API from "../Services/api";
+import DebouncedSearchInput from "../Components/UI/DebouncedSearchInput";
 import SEO from "../Components/Common/SEO";
 import { provinces } from "./Provinces";
 import { ALUMNI } from "../Data/teamData";
@@ -163,6 +164,19 @@ const ProvinceDetails = () => {
   const [eventType, setEventType] = useState("");
   const [eventNational, setEventNational] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);
+
+  const filteredEvents = useMemo(() => {
+    return events.filter((e) => {
+      const matchSearch =
+        !eventSearch ||
+        e.title?.toLowerCase().includes(eventSearch.toLowerCase());
+      const matchType = !eventType || e.type === eventType;
+      const matchNational =
+        !eventNational ||
+        (eventNational === "national" ? e.isNational : !e.isNational);
+      return matchSearch && matchType && matchNational;
+    });
+  }, [events, eventSearch, eventType, eventNational]);
 
   const displayName = provinceName
     .replace(/-/g, " ")
@@ -868,12 +882,11 @@ const ProvinceDetails = () => {
           {events.length > 0 && (
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
-                <input
-                  type="text"
+                <DebouncedSearchInput
                   placeholder="Search events..."
                   value={eventSearch}
-                  onChange={(e) => {
-                    setEventSearch(e.target.value);
+                  onSearch={(val) => {
+                    setEventSearch(val);
                     setVisibleCount(6);
                   }}
                   className="w-full pl-10 pr-4 py-3 border border-slate-400 rounded-full text-sm outline-none focus:ring focus:ring-secondary focus:border-transparent transition-all"
@@ -929,18 +942,8 @@ const ProvinceDetails = () => {
 
         {(() => {
           // Client-side filter on already-fetched region events
-          const filtered = events.filter((e) => {
-            const matchSearch =
-              !eventSearch ||
-              e.title?.toLowerCase().includes(eventSearch.toLowerCase());
-            const matchType = !eventType || e.type === eventType;
-            const matchNational =
-              !eventNational ||
-              (eventNational === "national" ? e.isNational : !e.isNational);
-            return matchSearch && matchType && matchNational;
-          });
-          const visible = filtered.slice(0, visibleCount);
-          const hasMore = filtered.length > visibleCount;
+          const visible = filteredEvents.slice(0, visibleCount);
+          const hasMore = filteredEvents.length > visibleCount;
 
           if (loading)
             return (

@@ -13,6 +13,7 @@ import Papa from "papaparse";
 import API from "../../Services/api";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 const AVAILABLE_PERMISSIONS = {
   "Member Management": ["member:create", "member:update", "member:view", "member:delete", "member:verify"],
@@ -528,14 +529,13 @@ function Member() {
         <div className="relative">
           <label htmlFor="member-search" className="sr-only">Search members</label>
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" aria-hidden="true" />
-          <input
+          <DebouncedSearchInput
             id="member-search"
-            type="search"
             aria-label="Search member by name, role, or position"
             placeholder="Search by name, role, or position..."
             className="w-full pl-11 pr-10 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-200 font-medium text-sm transition-all"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onSearch={setSearch}
           />
           {search && (
             <button

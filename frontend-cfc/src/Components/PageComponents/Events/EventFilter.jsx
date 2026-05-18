@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DebouncedSearchInput from "../../UI/DebouncedSearchInput";
 import {
   FaSearch,
   FaFilter,
@@ -101,11 +102,10 @@ const EventFilter = ({ onFilterChange }) => {
           {/* Search Bar */}
           <div className="relative w-full md:w-96">
             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
+            <DebouncedSearchInput
               placeholder="Search events, topics, or keywords..."
               value={filters.search}
-              onChange={(e) => handleChange("search", e.target.value)}
+              onSearch={(val) => handleChange("search", val)}
               className="w-full pl-12 pr-4 py-3 border font-normal border-slate-300 shadow rounded-full focus:outline-none focus:border-transparent focus:ring focus:ring-secondary transition-all text-slate-700 placeholder:font-normal placeholder:text-sm"
             />
           </div>

@@ -33,6 +33,7 @@ import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 const InputField = React.memo(
   ({
@@ -550,12 +551,11 @@ function AdminInternships() {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
-            <input
-              type="text"
+            <DebouncedSearchInput
               placeholder="Search by title or company..."
               className="w-full pl-16 pr-8 py-4 bg-slate-50 rounded-xl outline-none text-slate-700 font-medium focus:ring-2 focus:ring-emerald-500/20 transition-all"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={setSearchTerm}
             />
           </div>
           <div className="grid grid-cols-2 md:flex gap-3 md:gap-4 w-full md:w-auto">

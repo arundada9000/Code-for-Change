@@ -26,7 +26,7 @@ import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import BulkCertificateModal from "./BulkCertificateModal";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
-import { useDebounce } from "../../Hooks/useDebounce";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 import logo from "../../assets/logo.png";
 
 function Certificate() {
@@ -34,7 +34,6 @@ function Certificate() {
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [statusFilter, setStatusFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
   const [provinceFilter, setProvinceFilter] = useState("All");
@@ -81,13 +80,13 @@ function Certificate() {
 
   useEffect(() => {
     fetchCertificates();
-  }, [debouncedSearchTerm, statusFilter, typeFilter, provinceFilter]);
+  }, [searchTerm, statusFilter, typeFilter, provinceFilter]);
 
   const fetchCertificates = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (debouncedSearchTerm) params.append("search", debouncedSearchTerm);
+      if (searchTerm) params.append("search", searchTerm);
       if (statusFilter !== "All") params.append("status", statusFilter);
       if (typeFilter !== "All") params.append("certificateType", typeFilter);
       if (provinceFilter !== "All") params.append("province", provinceFilter);
@@ -467,12 +466,12 @@ function Certificate() {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
-            <input
-              type="text"
+            <DebouncedSearchInput
               placeholder="Search by ID, Name or Email..."
               className="w-full pl-16 pr-8 py-4 bg-slate-50 rounded-2xl outline-none text-slate-700 font-bold text-xs uppercase tracking-widest focus:ring-4 focus:ring-secondary/10 focus:bg-white transition-all border border-transparent focus:border-secondary/20"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={setSearchTerm}
+              delay={500}
             />
           </div>
           <div className="grid grid-cols-2 md:flex gap-3">

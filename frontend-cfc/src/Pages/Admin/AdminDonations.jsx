@@ -32,6 +32,7 @@ import autoTable from "jspdf-autotable";
 import Papa from "papaparse";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 function AdminDonations() {
   const { hasPermission } = useAuth();
@@ -487,12 +488,11 @@ function AdminDonations() {
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full max-w-xl group">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500 transition-colors" />
-          <input
-            type="text"
+          <DebouncedSearchInput
             placeholder="Search by donor, transaction ID, or category..."
             className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 outline-none font-semibold text-sm text-slate-700 shadow-sm transition-all"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onSearch={setSearchTerm}
           />
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">

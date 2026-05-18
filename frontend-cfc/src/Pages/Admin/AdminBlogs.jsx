@@ -22,6 +22,7 @@ import "jspdf-autotable";
 import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
+import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 const InputField = React.memo(
   ({
     label,
@@ -598,12 +599,11 @@ function AdminBlogs() {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
+            <DebouncedSearchInput
               placeholder="Search articles by title..."
               className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-700 font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-300 transition-all text-sm"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={setSearchTerm}
             />
           </div>
           <div className="grid grid-cols-2 md:flex gap-3 md:gap-4 w-full md:w-auto">
