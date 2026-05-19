@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
+import { compressImage } from "../../utils/imageCompressor";
 
 const InputField = React.memo(
   ({
@@ -114,17 +115,19 @@ function AdminGallery() {
     fetchGallery(1);
   }, [filterProvince]);
 
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (file && file.type.startsWith("image/")) {
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          imageFile: file,
+          imageFile: fileToUse,
           imagePreview: reader.result,
         }));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileToUse);
     } else {
       toast.error("Please upload a valid image file.");
     }

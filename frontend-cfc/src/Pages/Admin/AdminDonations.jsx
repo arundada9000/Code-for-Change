@@ -33,6 +33,7 @@ import Papa from "papaparse";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
+import { compressImage } from "../../utils/imageCompressor";
 
 function AdminDonations() {
   const { hasPermission } = useAuth();
@@ -200,15 +201,17 @@ function AdminDonations() {
     setOpenMenuId(null);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setReceiptFile(file);
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
+      setReceiptFile(fileToUse);
       const reader = new FileReader();
       reader.onloadend = () => {
         setReceiptPreview(reader.result);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileToUse);
     }
   };
 

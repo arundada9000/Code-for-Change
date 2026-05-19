@@ -75,6 +75,7 @@ const TextAreaField = React.memo(
 );
 
 import { useAuth } from "../../Context/AuthContext";
+import { compressImage } from "../../utils/imageCompressor";
 
 function AdminBlogs() {
   const { hasPermission } = useAuth();
@@ -209,17 +210,19 @@ function AdminBlogs() {
   };
 
   // --- Image Handling ---
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (file && file.type.startsWith("image/")) {
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          imageFile: file,
+          imageFile: fileToUse,
           imagePreview: reader.result,
         }));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileToUse);
     } else {
       alert("Please upload a valid image file.");
     }

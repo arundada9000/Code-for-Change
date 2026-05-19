@@ -20,6 +20,7 @@ import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
+import { compressImage } from "../../utils/imageCompressor";
 
 const InputField = React.memo(
   ({
@@ -169,13 +170,15 @@ function AdminImpacts() {
     }));
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
       setFormData((prev) => ({
         ...prev,
-        imageFile: file,
-        imagePreview: URL.createObjectURL(file),
+        imageFile: fileToUse,
+        imagePreview: URL.createObjectURL(fileToUse),
       }));
     }
   };

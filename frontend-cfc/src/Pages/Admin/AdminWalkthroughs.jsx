@@ -15,6 +15,7 @@ import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
+import { compressImage } from "../../utils/imageCompressor";
 
 const PROVINCES = [
   "Kathmandu","Pokhara","Rupandehi","Dang","Birgunj","Farwest","Koshi","Chitwan","LB Karnali",
@@ -150,12 +151,14 @@ function AdminWalkthroughs() {
     setIsModalOpen(true);
   };
 
-  const handleImageFile = (e) => {
+  const handleImageFile = async (e) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
       const reader = new FileReader();
-      reader.onloadend = () => setFormData((prev) => ({ ...prev, imageFile: file, imagePreview: reader.result }));
-      reader.readAsDataURL(file);
+      reader.onloadend = () => setFormData((prev) => ({ ...prev, imageFile: fileToUse, imagePreview: reader.result }));
+      reader.readAsDataURL(fileToUse);
     } else {
       toast.error("Please select a valid image file.");
     }

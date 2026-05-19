@@ -34,6 +34,7 @@ import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import { useAuth } from "../../Context/AuthContext";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
+import { compressImage } from "../../utils/imageCompressor";
 
 const InputField = React.memo(
   ({
@@ -165,17 +166,19 @@ function AdminInternships() {
     }
   };
 
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (file && file.type.startsWith("image/")) {
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          logoFile: file,
+          logoFile: fileToUse,
           logoPreview: reader.result,
         }));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileToUse);
     } else {
       toast.error("Please upload a valid image file.");
     }

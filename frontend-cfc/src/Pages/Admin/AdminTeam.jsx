@@ -17,6 +17,7 @@ import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
+import { compressImage } from "../../utils/imageCompressor";
 
 const InputField = React.memo(({ label, value, onChange, placeholder, required = false }) => (
   <div className="space-y-1.5">
@@ -100,17 +101,19 @@ export default function AdminTeam() {
     fetchTeam();
   }, [filterType]);
 
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (file && file.type.startsWith("image/")) {
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          imageFile: file,
+          imageFile: fileToUse,
           imagePreview: reader.result,
         }));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileToUse);
     } else {
       toast.error("Please upload a valid image file.");
     }

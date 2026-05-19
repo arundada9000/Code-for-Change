@@ -38,6 +38,7 @@ import Papa from "papaparse";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
+import { compressImage } from "../../utils/imageCompressor";
 const InputField = React.memo(
   ({
     label,
@@ -221,17 +222,19 @@ function AdminEvents() {
     fetchEvents(nextPage);
   };
 
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (file && file.type.startsWith("image/")) {
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          imageFile: file,
+          imageFile: fileToUse,
           imagePreview: reader.result,
         }));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileToUse);
     } else {
       alert("Please upload a valid image file.");
     }

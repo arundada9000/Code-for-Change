@@ -14,6 +14,7 @@ import API from "../../Services/api";
 import { useAuth } from "../../Context/AuthContext";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
+import { compressImage } from "../../utils/imageCompressor";
 
 const AVAILABLE_PERMISSIONS = {
   "Member Management": ["member:create", "member:update", "member:view", "member:delete", "member:verify"],
@@ -235,11 +236,13 @@ function Member() {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+      const { file: compressedFile } = await compressImage(file);
+      const fileToUse = compressedFile || file;
+      setSelectedFile(fileToUse);
+      setPreviewUrl(URL.createObjectURL(fileToUse));
     }
   };
 
