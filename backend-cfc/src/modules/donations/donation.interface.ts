@@ -6,7 +6,7 @@ export interface IDonation extends Document {
   phone?: string;
   amount: number;
   province?: string;
-  paymentMethod: 'eSewa' | 'Khalti' | 'Bank Transfer' | 'ConnectIPS' | 'Cash' | 'Other';
+  paymentMethod: 'eSewa' | 'Khalti' | 'Bank Transfer' | 'ConnectIPS' | 'Cash' | 'Card' | 'Other';
   category: string;
   transactionId: string;
   receiverAccount: string;

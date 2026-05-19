@@ -2,8 +2,6 @@ import React from "react";
 import HeroSection from "../Components/PageComponents/Home/HeroSection";
 import AboutSection from "../Components/PageComponents/About/AboutSection";
 import Supporters from "../Components/PageComponents/Supporters";
-// import Event from "../Components/PageComponents/Events/Event";
-// works
 import CurrentEvent from "../Components/PageComponents/Events/CurrentEvent";
 import Testimonials from "../Components/PageComponents/Testimonials";
 import SEO from "../Components/Common/SEO";
@@ -96,9 +94,6 @@ function Home() {
         </StaggerContainer>
       </div>
       <CurrentEvent />
-      {/* <div className="bg-secondary/10">
-        <Event />
-      </div> */}
       <Testimonials />
     </>
   );

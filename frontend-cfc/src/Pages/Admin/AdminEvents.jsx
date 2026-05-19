@@ -39,6 +39,8 @@ import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 import { compressImage } from "../../utils/imageCompressor";
+import { useAuth } from "../../Context/AuthContext";
+
 const InputField = React.memo(
   ({
     label,
@@ -81,8 +83,6 @@ const TextAreaField = React.memo(
     </div>
   ),
 );
-
-import { useAuth } from "../../Context/AuthContext";
 
 function AdminEvents() {
   const { hasPermission } = useAuth();
@@ -275,7 +275,7 @@ function AdminEvents() {
         try {
           const parsed = JSON.parse(arr[0]);
           if (Array.isArray(parsed)) return parsed;
-        } catch (e) {console.log(e)}
+        } catch (e) {}
       }
       return arr;
     }

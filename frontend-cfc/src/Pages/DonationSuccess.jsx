@@ -53,7 +53,7 @@ const DonationSuccess = () => {
               </div>
               <h2 className="text-3xl font-bold text-gray-900">Verification Error</h2>
               <p className="text-gray-600 max-w-md mx-auto">{error}</p>
-              <Link to="/donate" className="inline-block px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:shadow-lg transition-all">
+              <Link to="/donate-us" className="inline-block px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:shadow-lg transition-all">
                 Retry Donation
               </Link>
             </div>

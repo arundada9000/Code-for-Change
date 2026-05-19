@@ -8,9 +8,17 @@ export class ApplicationService {
    */
   async submitApplication(data: Partial<IInternshipApplication>): Promise<IInternshipApplication> {
     try {
+      const existing = await InternshipApplication.findOne({
+        email: data.email,
+        internshipId: data.internshipId
+      });
+      if (existing) {
+        throw new AppError("You have already applied for this internship.", 400);
+      }
       return await InternshipApplication.create(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Application Submission Error:", error);
+      if (error instanceof AppError) throw error;
       throw new AppError("Failed to submit application", 500);
     }
   }

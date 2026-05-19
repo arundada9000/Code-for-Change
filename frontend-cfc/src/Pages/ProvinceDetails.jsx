@@ -261,8 +261,6 @@ const ProvinceDetails = () => {
             m.region === "All",
         );
 
-        // console.log(allPublicUsers);
-
         const provincialPublicUsers =
           allPublicUsers
             ?.filter(
@@ -296,8 +294,6 @@ const ProvinceDetails = () => {
           (m) => m.type === "Board Member",
         );
 
-        // console.log(centralAdvisors);
-
         setEvents(allEvents);
         setTeam(combinedTeam);
         setAdvisors(centralAdvisors);
@@ -311,8 +307,6 @@ const ProvinceDetails = () => {
 
     fetchData();
   }, [displayName]);
-
-  // console.log(advisors);
 
   // Filter social links that exist
 

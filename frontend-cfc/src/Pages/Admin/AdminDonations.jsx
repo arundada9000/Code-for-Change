@@ -96,7 +96,7 @@ function AdminDonations() {
       const res = await API.get(`/admin/donations?${params.toString()}`);
       setDonations(res.data.data);
     } catch (error) {
-      toast.error("Failed to fetch donations",error);
+      toast.error("Failed to fetch donations: " + (error?.response?.data?.message || error?.message || "Unknown error"));
     } finally {
       setLoading(false);
     }
@@ -122,7 +122,7 @@ function AdminDonations() {
         setSelectedDonation({ ...selectedDonation, status });
       }
     } catch (error) {
-      toast.error("Failed to update status",error);
+      toast.error("Failed to update status: " + (error?.response?.data?.message || error?.message || "Unknown error"));
     }
   };
 

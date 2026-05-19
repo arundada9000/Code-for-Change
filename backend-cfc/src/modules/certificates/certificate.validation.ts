@@ -23,6 +23,7 @@ export const issueCertificateSchema = z.object({
     signaturePosition: z.string().trim().optional(),
     signatureImage:    z.string().optional(),
     awardedTo:         z.string().trim().optional(),
+    province:          z.string().trim().optional(),
   }),
 });
 

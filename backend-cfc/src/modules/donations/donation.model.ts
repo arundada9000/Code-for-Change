@@ -28,7 +28,7 @@ const donationSchema = new Schema<IDonation>(
     },
     paymentMethod: {
       type: String,
-      enum: ['eSewa', 'Khalti', 'Bank Transfer', 'ConnectIPS', 'Cash', 'Other'],
+      enum: ['eSewa', 'Khalti', 'Bank Transfer', 'ConnectIPS', 'Cash', 'Card', 'Other'],
       required: [true, "Payment method is required"],
     },
     category: {

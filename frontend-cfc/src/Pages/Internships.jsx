@@ -52,7 +52,7 @@ const parseArray = (data) => {
       }
 
       // Handle comma-separated values
-      if (trimmed.includes(',')) {
+      } else if (trimmed.includes(',')) {
         trimmed.split(',').forEach(s => {
           const clean = s.trim();
           if (clean) result.push(clean);
@@ -165,9 +165,6 @@ const Internships = () => {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Internships", path: "/internships" }]}
       />
       <Banner />
-      {/* <div className="max-w-7xl mx-auto px-6 mt-8">
-        <Breadcrumbs crumbs={[{ name: "Internships", path: "/internships" }]} />
-      </div> */}
       
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Compact Brand Header */}

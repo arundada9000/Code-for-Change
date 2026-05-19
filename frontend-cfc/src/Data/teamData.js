@@ -6,12 +6,12 @@ export const ADVISORS = [
     image: "/core-team/biplac-sharma.jpg",
     quote: "It is great to see the progress made by CFC since its initiation.",
     socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
+      linkedin: "",
+      facebook: "",
+      instagram: "",
+      github: "",
+      youtube: "",
+      twitter: "",
     },
   },
   {
@@ -21,12 +21,12 @@ export const ADVISORS = [
     image: "/core-team/shantosh-lamsal.jpg",
     quote: "It is great to see the progress made by CFC since its initiation.",
     socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
+      linkedin: "",
+      facebook: "",
+      instagram: "",
+      github: "",
+      youtube: "",
+      twitter: "",
     },
   },
 ];
@@ -37,12 +37,12 @@ export const CORE_TEAM = [
     role: "Director",
     image: "/core-team/niranjan-chettri.jpg",
     socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
+      linkedin: "",
+      facebook: "",
+      instagram: "",
+      github: "",
+      youtube: "",
+      twitter: "",
     },
   },
   {
@@ -50,12 +50,12 @@ export const CORE_TEAM = [
     role: "Core Member, CTO",
     image: "/core-team/sunam-ghaire.jpg",
     socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
+      linkedin: "",
+      facebook: "",
+      instagram: "",
+      github: "",
+      youtube: "",
+      twitter: "",
     },
   },
   {
@@ -63,71 +63,14 @@ export const CORE_TEAM = [
     role: "Project Lead",
     image: "/core-team/rishna-prashad-pokhrel.jpg",
     socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
+      linkedin: "",
+      facebook: "",
+      instagram: "",
+      github: "",
+      youtube: "",
+      twitter: "",
     },
   },
 ];
 
-export const ALUMNI = [
-  {
-    name: "Alumni Member 1",
-    role: "Former President",
-    image:
-      "https://ui-avatars.com/api/?name=Alumni+1&background=random&color=fff&size=256",
-    socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
-    },
-  },
-  {
-    name: "Alumni Member 2",
-    role: "Former CTO",
-    image:
-      "https://ui-avatars.com/api/?name=Alumni+2&background=random&color=fff&size=256",
-    socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
-    },
-  },
-  {
-    name: "Alumni Member 2",
-    role: "Former CTO",
-    image:
-      "https://ui-avatars.com/api/?name=Alumni+2&background=random&color=fff&size=256",
-    socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
-    },
-  },
-  {
-    name: "Alumni Member 2",
-    role: "Former CTO",
-    image:
-      "https://ui-avatars.com/api/?name=Alumni+2&background=random&color=fff&size=256",
-    socialLinks: {
-      linkedin: "linkedin.com/bijaykuc",
-      facebook: "linkedin.com/bijaykuc",
-      instagram: "linkedin.com/bijaykuc",
-      github: "linkedin.com/bijaykuc",
-      youtube: "linkedin.com/bijaykuc",
-      twitter: "linkedin.com/bijaykuc",
-    },
-  },
-];
+export const ALUMNI = [];

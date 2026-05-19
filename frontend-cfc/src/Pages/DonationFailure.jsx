@@ -44,7 +44,7 @@ const DonationFailure = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Link to="/donate" className="flex items-center justify-center gap-3 bg-primary text-white py-4 rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/20">
+              <Link to="/donate-us" className="flex items-center justify-center gap-3 bg-primary text-white py-4 rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/20">
                 <FaArrowLeft /> Try Again
               </Link>
               <a href="mailto:support@codeforchangenepal.com" className="flex items-center justify-center gap-3 bg-white border-2 border-gray-100 text-gray-600 py-4 rounded-2xl font-bold hover:bg-gray-50 transition-all">

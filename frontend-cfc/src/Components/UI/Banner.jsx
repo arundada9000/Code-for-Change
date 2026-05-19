@@ -8,10 +8,10 @@ function Banner() {
 
   // Function to format the path into a readable title
   const getPageTitle = (path) => {
-    const formattedPath = path.replace("/", "").replace(/-/g, " ");
+    const formattedPath = path.replace("/", "").replace(/-/g, " ").replace(/\//g, " - ");
 
     return formattedPath
-      ? formattedPath.charAt(0).toUpperCase() + formattedPath.slice(1)
+      ? formattedPath.replace(/\b\w/g, l => l.toUpperCase())
       : "Home";
   };
  
@@ -19,7 +19,6 @@ function Banner() {
 
   return (
     <div className="relative bg-primary">
-      {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-6 text-center text-white">
         <p className="text-3xl text-[#c8c8c8] uppercase pb-4 font-bold">
           {title}
@@ -35,8 +34,6 @@ function Banner() {
             {title}
           </span>
         </div>
-
-        {/* <h1 className="text-5xl font-bold uppercase">{title}</h1> */}
       </div>
     </div>
   );

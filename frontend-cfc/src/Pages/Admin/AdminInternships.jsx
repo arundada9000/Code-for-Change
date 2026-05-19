@@ -282,6 +282,7 @@ function AdminInternships() {
         data.append(key, JSON.stringify(formData[key]));
       } else if (
         formData[key] !== null &&
+        formData[key] !== "" &&
         key !== "logoPreview" &&
         key !== "logoFile"
       ) {

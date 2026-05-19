@@ -48,7 +48,7 @@ function CertificateVerification() {
       setResult({ status: "success", data: data.data });
     } catch (error) {
       console.error("Verification failed", error);
-      setResult({ status: "error", message: "Invalid Certificates" });
+      setResult({ status: "error", message: error.response?.data?.message || "Invalid Certificates" });
     } finally {
       setLoading(false);
     }
@@ -398,10 +398,7 @@ function CertificateVerification() {
                   Registry Audit Portal
                 </h2>
                 <p className="text-slate-500 text-sm font-medium max-w-md mx-auto leading-relaxed">
-                  Check the authenticity of any digital certificate using the ID
-                  printed on the document. Please ensure you've entered the
-                  Registry Number correctly or try scanning the original QR
-                  code.
+                  {result?.message || "Check the authenticity of any digital certificate using the ID printed on the document. Please ensure you've entered the Registry Number correctly or try scanning the original QR code."}
                 </p>
                 <button
                   onClick={() => {

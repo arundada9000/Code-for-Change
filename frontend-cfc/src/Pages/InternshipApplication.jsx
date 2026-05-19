@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Banner from "../Components/UI/Banner";
-import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
 import {
   FaCode,
@@ -44,6 +43,7 @@ function InternshipApplication() {
     contactNumber: "",
     skills: "",
     college: "",
+    province: "",
     track: TRACKS.includes(initialTrack) ? initialTrack : TRACKS[0],
     coverLetter: "",
     internshipId: internshipId,
@@ -86,6 +86,7 @@ function InternshipApplication() {
     data.append("contactNumber", formData.contactNumber);
     data.append("skills", formData.skills);
     data.append("college", formData.college);
+    if (formData.province) data.append("province", formData.province);
     data.append("track", formData.track);
     data.append("coverLetter", formData.coverLetter);
     data.append("resume", formData.resume);
@@ -136,6 +137,7 @@ function InternshipApplication() {
                 contactNumber: "",
                 skills: "",
                 college: "",
+                province: "",
                 track: TRACKS[0],
                 coverLetter: "",
                 resume: null,
@@ -162,12 +164,6 @@ function InternshipApplication() {
         ]}
       />
       <Banner />
-      {/* <div className="max-w-6xl mx-auto px-6 mt-8">
-        <Breadcrumbs crumbs={[
-          { name: "Internships", path: "/internships" },
-          { name: "Application", path: "/internship-application" }
-        ]} />
-      </div> */}
 
       <div className="max-w-6xl mx-auto px-6 pt-16">
         <div className="grid lg:grid-cols-3 gap-12">
@@ -289,8 +285,30 @@ function InternshipApplication() {
                   </div>
                 </div>
 
-                {/* Track Preference */}
-                <div className="space-y-2">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Province Preference */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">
+                      Province
+                    </label>
+                    <select
+                      name="province"
+                      value={formData.province}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-5 py-4 rounded-full bg-slate-50 border border-slate-300  focus:bg-white focus:ring focus:ring-secondary foucs:border-transparent focus:outline-none transition-all cursor-pointer"
+                    >
+                      <option value="" disabled>Select your province</option>
+                      {["Kathmandu", "Pokhara", "Rupandehi", "Dang", "Birgunj", "Farwest", "Koshi", "Chitwan", "LB Karnali"].map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Track Preference */}
+                  <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700 ml-1">
                     Application Track
                   </label>

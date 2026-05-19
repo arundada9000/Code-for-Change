@@ -10,7 +10,7 @@ const ApplicationSchema: Schema = new Schema(
     resumeUrl: { type: String, required: true },
     fileType: { 
       type: String, 
-      enum: ["pdf", "docx"], 
+      enum: ["pdf", "docx", "doc"], 
       required: true 
     },
     status: {

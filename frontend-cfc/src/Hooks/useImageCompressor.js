@@ -48,11 +48,11 @@ export default function useImageCompressor(defaultOptions = {}) {
   const compressingRef = useRef(false);
 
   // Cleanup on unmount
-  useState(() => {
+  useEffect(() => {
     return () => {
       mountedRef.current = false;
     };
-  });
+  }, []);
 
   /**
    * Compress a single image file.

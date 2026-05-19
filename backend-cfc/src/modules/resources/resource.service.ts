@@ -36,9 +36,13 @@ export class ResourceService {
     const allowedVisibilities = getAllowedVisibilities(roleLevel);
 
     const filter: Record<string, any> = {
-      isActive: true,
       visibility: { $in: allowedVisibilities },
     };
+
+    // Only enforce isActive: true for non-admins
+    if (roleLevel < 4) {
+      filter.isActive = true;
+    }
 
     // Optional filters
     if (query.category) filter.category = query.category;

@@ -6,8 +6,8 @@ self.addEventListener("push", function (event) {
       
       const options = {
         body: data.body,
-        icon: data.icon || "/icons/icons/icon-192x192.png",
-        badge: "/icons/icons/icon-72x72.png",
+        icon: data.icon || "/icons/icon-192x192.png",
+        badge: "/icons/icon-72x72.png",
         data: data.data || {},
         vibrate: [100, 50, 100],
         requireInteraction: false
@@ -20,7 +20,7 @@ self.addEventListener("push", function (event) {
       event.waitUntil(
         self.registration.showNotification("New Notification", {
           body: event.data.text(),
-          icon: "/icons/icons/icon-192x192.png",
+          icon: "/icons/icon-192x192.png",
         })
       );
     }

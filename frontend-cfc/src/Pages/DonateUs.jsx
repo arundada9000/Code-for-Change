@@ -1,6 +1,5 @@
 import React from 'react'
 import Banner from '../Components/UI/Banner'
-import Breadcrumbs from '../Components/UI/Breadcrumbs'
 import SEO from '../Components/Common/SEO'
 import DonateSection from '../Components/PageComponents/Donate/DonateSection'
 
@@ -13,9 +12,6 @@ function DonateUs() {
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Donate", path: "/donate-us" }]}
     />
     <Banner/>
-    {/* <div className="max-w-7xl mx-auto px-5 mt-8">
-      <Breadcrumbs crumbs={[{ name: "Donate", path: "/donate-us" }]} />
-    </div> */}
     <DonateSection/>
     </>
   )

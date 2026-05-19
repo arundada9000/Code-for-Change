@@ -1,6 +1,6 @@
 import { Event } from "../events/event.model.js";
 import { Blog } from "../blogs/blog.model.js";
-// import { Resource } from "../resources/resource.model.js";
+import { Resource } from "../resources/resource.model.js";
 // import { TeamMember } from "../team/team.model.js";
 import { Impact } from "../impact/impact.model.js";
 import { Contact } from "../contact/contact.model.js";
@@ -186,7 +186,7 @@ export class AdminService {
       case "blogs":
         return await Blog.find().sort({ createdAt: -1 });
       case "resources":
-        return []; // Resource model is missing
+        return await Resource.find().sort({ createdAt: -1 });
       case "team":
         return await User.find({ role: { $ne: 'guest' } }).sort({ createdAt: -1 });
       case "impacts":

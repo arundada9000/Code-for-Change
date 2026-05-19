@@ -64,11 +64,6 @@ const Provinces = () => {
   const { data: provincialStats } = useFetch("/province-stats", {});
   const { data: publicUsers } = useFetch("/users/public-users", []);
 
-  // console.log(publicUsers);
-  // console.log(provincialStats);
-  // console.log(apiTeam);
-  // console.log("hello")
-
   const [activeTab, setActiveTab] = useState("Kathmandu");
   const [selectedMember, setSelectedMember] = useState(null);
 
@@ -108,14 +103,10 @@ const Provinces = () => {
         isPublicUser: true,
       })) || [];
 
-  //  console.log(provincialMembersFromUsers)
-
   const allProvincialMembers = [
     ...provincialMembersFromTeam,
     ...provincialMembersFromUsers,
   ];
-
-  // console.log(allProvincialMembers);
 
   const provincialEbCount =
     allProvincialMembers?.filter(
@@ -154,17 +145,12 @@ const Provinces = () => {
       return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
     });
   };
-  // console.log(currentTeam);
 
   const executiveMember = sortByPosition(
     currentTeam?.provincial?.filter((member) =>
       ["eb", "executive"].includes(member.role?.toLowerCase()),
     ) || [],
   );
-
-  // console.log(executiveMember);
-  // console.log(currentTeam.provincial)
-  // console.log(currentTeam);
 
   const activeProvince = provinces.find(
     (province) => province.name === activeTab,
@@ -181,7 +167,6 @@ const Provinces = () => {
     tiktok: <FaTiktok />,
   };
 
-  // console.log(member)
   return (
     <main>
       <SEO
@@ -433,7 +418,6 @@ const Provinces = () => {
                           key={member._id || i}
                           className="relative group cursor-pointer rounded-2xl transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl h-full"
                         >
-                          {/* {console.log(currentTeam)} */}
                           {/* Neumorphic background */}
                           <div
                             onClick={() => {

@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -29,6 +29,8 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+      } finally {
+        setLoading(false);
       }
     };
     checkAuth();
@@ -133,14 +135,20 @@ export const AuthProvider = ({ children }) => {
       return true;
     }
 
-    // Check for specific permission override in user object
-    if (user.permissions?.includes(permission)) {
+    // Normalize permission format: frontend may use underscores (e.g. "event_create")
+    // but backend stores colons (e.g. "event:create"). Accept both formats.
+    const normalized = permission.replace(/_/g, ":");
+
+    // Check for specific permission in user's permissions array
+    if (user.permissions?.includes(normalized)) {
       return true;
     }
 
-    // Basic role-based permission check (if available in frontend)
-    // For now, we mainly rely on the backend for enforcement, 
-    // but this helper allows UI-level hiding of buttons.
+    // Also check the original format in case permissions are stored with underscores
+    if (normalized !== permission && user.permissions?.includes(permission)) {
+      return true;
+    }
+
     return false;
   };
 
