@@ -967,7 +967,7 @@ const ProvinceDetails = () => {
               </div>
             );
 
-          if (filtered.length === 0)
+          if (filteredEvents.length === 0)
             return (
               <div className="text-center text-gray-400 italic py-12">
                 No events found matching the current filters.
@@ -1001,7 +1001,7 @@ const ProvinceDetails = () => {
                     className="px-8 py-3 rounded-full font-bold text-sm text-white shadow-lg transition-all hover:scale-105"
                     style={{ backgroundColor: themeColor }}
                   >
-                    Load More ({filtered.length - visibleCount} remaining)
+                    Load More ({filteredEvents.length - visibleCount} remaining)
                   </button>
                 </div>
               )}

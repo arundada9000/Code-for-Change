@@ -676,7 +676,7 @@ function AdminEvents() {
               placeholder="Search events by title..."
               className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-gray-700 font-medium text-sm focus:bg-white focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 transition-all"
               value={searchTerm}
-              onSearch={setSearchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
               <button
