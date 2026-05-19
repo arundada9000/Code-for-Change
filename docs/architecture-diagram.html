@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFC Website — Architecture Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 40px;
+  }
+  h1 { text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: #f8fafc; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 40px; }
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  /* ── Layers ── */
+  .layer { margin-bottom: 32px; }
+  .layer-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .layer-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .layer-client .layer-header { background: #1e3a5f; color: #93c5fd; }
+  .layer-cdn   .layer-header { background: #1a3a2a; color: #86efac; }
+  .layer-fe    .layer-header { background: #3b1f3b; color: #d8b4fe; }
+  .layer-be    .layer-header { background: #3b2a1a; color: #fcd34d; }
+  .layer-data  .layer-header { background: #3b1f1f; color: #fca5a5; }
+  .layer-external .layer-header { background: #1e293b; color: #94a3b8; }
+
+  /* ── Cards ── */
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: default;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .card:hover {
+    border-color: #64748b;
+    background: #273449;
+    transform: translateY(-1px);
+  }
+  .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+  }
+  .card-tech {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .card-tech span {
+    background: #0f172a;
+    padding: 1px 7px;
+    border-radius: 4px;
+    border: 1px solid #334155;
+  }
+  .card-desc {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .card-url {
+    font-size: 0.7rem;
+    color: #5b7b99;
+    margin-top: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .card-fe    { border-color: #3b1f3b; }
+  .card-be    { border-color: #3b2a1a; }
+  .card-mongo { border-color: #1a3a2a; }
+
+  /* ── Grid variants ── */
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .grid-5 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  .grid-6 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; }
+  .grid-7 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr; }
+
+  /* ── Arrows between layers ── */
+  .arrow-down {
+    text-align: center;
+    color: #475569;
+    font-size: 1.5rem;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Flow highlight ── */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1a2332;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+  }
+  .flow-step {
+    background: #334155;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    color: #cbd5e1;
+  }
+  .flow-arrow { color: #475569; font-size: 1.2rem; }
+
+  /* ── Tag badges ── */
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    margin-left: 6px;
+  }
+  .badge-green  { background: #166534; color: #86efac; }
+  .badge-blue   { background: #1e3a5f; color: #93c5fd; }
+  .badge-yellow { background: #4a3d1a; color: #fcd34d; }
+  .badge-red    { background: #4a1a1a; color: #fca5a5; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    body { padding: 16px; }
+    .grid-2, .grid-3, .grid-4, .grid-5, .grid-6, .grid-7 { grid-template-columns: 1fr 1fr; }
+    .flow-row { flex-wrap: wrap; }
+  }
+  @media (max-width: 500px) {
+    .grid-2, .grid-3, .grid-4, .grid-5, .grid-6, .grid-7 { grid-template-columns: 1fr; }
+  }
+
+  hr { border: none; border-top: 1px solid #1e293b; margin: 32px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🏗️ Code for Change — Architecture Diagram</h1>
+<p class="subtitle">Full-stack React + Express + MongoDB application — production deployment topology</p>
+
+<!-- ── Request Flow ── -->
+<div class="flow-row">
+  <span class="flow-step">🌐 User</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">📡 DNS (Vercel)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">🖥️ Frontend (React SPA)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">🔧 Backend (Express API)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">🗄️ MongoDB Atlas</span>
+</div>
+
+<!-- ── Client Layer ── -->
+<div class="layer layer-client">
+  <div class="layer-header">🌐 Client Layer</div>
+  <div class="layer-grid grid-2">
+    <div class="card">
+      <div class="card-title">Browser (User)</div>
+      <div class="card-tech"><span>Chrome</span><span>Firefox</span><span>Safari</span><span>Edge</span></div>
+      <div class="card-desc">Visits codeforchangenepal.com. Receives React SPA + PWA service worker. WebAuthn biometric prompts.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">PWA Capabilities</div>
+      <div class="card-tech"><span>Manifest</span><span>Service Worker</span><span>Push API</span><span>Installable</span></div>
+      <div class="card-desc">Installable on desktop/mobile. Push notifications via Web Push API. iOS splash screens for 8 device sizes.</div>
+      <div class="card-url">/public/manifest.json · /public/sw.js</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<!-- ── CDN / Hosting Layer ── -->
+<div class="layer layer-cdn">
+  <div class="layer-header">☁️ Hosting &amp; CDN (Vercel)</div>
+  <div class="layer-grid grid-3">
+    <div class="card">
+      <div class="card-title">📄 Static Assets</div>
+      <div class="card-tech"><span>Vite Build</span><span>dist/</span></div>
+      <div class="card-desc">Built HTML, JS, CSS served from Vercel Edge Network. Fast global delivery via CDN.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔧 Serverless API</div>
+      <div class="card-tech"><span>Express 5</span><span>Node 20</span></div>
+      <div class="card-desc">/api/* routes handled by serverless function. MongoDB connection cached via isConnected flag.</div>
+      <div class="card-url">/api/index.ts → app.ts</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🌍 Domain &amp; SSL</div>
+      <div class="card-tech"><span>Vercel DNS</span><span>Let's Encrypt</span></div>
+      <div class="card-desc">Automatic SSL certificates. Custom domain: codeforchangenepal.com + sajilodigital subdomain.</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<!-- ── Frontend Layer ── -->
+<div class="layer layer-fe">
+  <div class="layer-header">🖥️ Frontend — React SPA <span class="badge badge-yellow">React 19</span><span class="badge badge-blue">Vite 7</span></div>
+  <div class="layer-grid grid-3">
+    <div class="card card-fe">
+      <div class="card-title">📁 Pages &amp; Routing</div>
+      <div class="card-tech"><span>React Router 7</span><span>Lazy Loading</span></div>
+      <div class="card-desc">
+        <strong>Public (13):</strong> Home, About, Events, Blog, Impact, Provinces, Gallery, Donate, Contact, FAQ, Register, JoinUs, Resources<br>
+        <strong>Auth (4):</strong> Login, Register, OTP, Reset Password<br>
+        <strong>User (3):</strong> Profile, Resume Dashboard, Resume Builder<br>
+        <strong>Admin (18):</strong> Dashboard, Events, Blogs, Users, Certificates, Donations, Internships, Gallery, Impacts, Resources, Testimonials, Supporters, Newsletter, Contacts, National Team, Resumes, Push Notifications, Sajilo Digital
+      </div>
+    </div>
+    <div class="card card-fe">
+      <div class="card-title">🎨 UI &amp; Components</div>
+      <div class="card-tech"><span>Tailwind 4</span><span>Framer Motion</span><span>Recharts</span><span>Jodit</span></div>
+      <div class="card-desc">
+        <strong>Layouts:</strong> MainLayout (Header+Footer), AdminLayout (Sidebar+TopBar), AuthLayout (centered card)<br>
+        <strong>Common:</strong> Header, Footer, SEO, PrivateRoute, Animations, DocxViewer<br>
+        <strong>UI:</strong> Card, Banner, EventCard, TeamCard, CoreTeam, CustomCursor, BackToTop, Breadcrumbs, CertificatePreview, DebouncedSearchInput<br>
+        <strong>Dashboard:</strong> AdminActivityFeed, Province charts, UserRoleChart<br>
+        <strong>Page:</strong> HeroSection, Testimonials, Supporters, EventFilter, BiometricSettings, NotificationSettings
+      </div>
+    </div>
+    <div class="card card-fe">
+      <div class="card-title">⚡ State &amp; API</div>
+      <div class="card-tech"><span>Context API</span><span>Axios</span><span>localStorage</span></div>
+      <div class="card-desc">
+        <strong>AuthContext:</strong> User state, login/logout, passkey login, permission checking, isAdmin flag<br>
+        <strong>API Service:</strong> Axios instance with withCredentials=true, Bearer token fallback, 401 auto-logout<br>
+        <strong>Hooks:</strong> useFetch, useDebounce, usePWAInstall, useProvinceColors, useResumes, useImageCompressor
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<!-- ── Backend Layer ── -->
+<div class="layer layer-be">
+  <div class="layer-header">🔧 Backend — Express API <span class="badge badge-green">Express 5</span><span class="badge badge-blue">TypeScript 5.9</span></div>
+  <div class="layer-grid grid-4">
+    <div class="card card-be">
+      <div class="card-title">🛡️ Middleware Stack</div>
+      <div class="card-tech"><span>helmet</span><span>cors</span><span>mongoSanitize</span><span>xss</span></div>
+      <div class="card-desc">
+        Order: helmet → cors → json (2MB) → mongoSanitize → xssSanitize → cookieParser → hpp → compression → morgan → rateLimiters<br>
+        <strong>7 rate limiters</strong> for auth, registration, password reset, WebAuthn, contact, donation, newsletter, applications
+      </div>
+    </div>
+    <div class="card card-be">
+      <div class="card-title">🔐 Auth &amp; Authorization</div>
+      <div class="card-tech"><span>JWT</span><span>WebAuthn</span><span>bcrypt</span></div>
+      <div class="card-desc">
+        Dual token strategy: HttpOnly cookie + Bearer fallback. JWT with 1d expiry.<br>
+        WebAuthn via @simplewebauthn/server v13.<br>
+        OTP flow with bcrypt-hashed codes, 60s cooldown, 5-attempt lockout.
+      </div>
+    </div>
+    <div class="card card-be">
+      <div class="card-title">📦 21 Feature Modules</div>
+      <div class="card-tech"><span>Modular Pattern</span></div>
+      <div class="card-desc">
+        Each module: interface.ts → model.ts → validation.ts → service.ts → controller.ts → route.ts<br>
+        <strong>Modules:</strong> auth, user, admin, events, blogs, impact, gallery, certificates, donations, internships, resources, contact, newsletter, testimonials, supporters, team, periodicals, walkthroughs, resume, notifications, seo
+      </div>
+    </div>
+    <div class="card card-be">
+      <div class="card-title">⚙️ Shared Infrastructure</div>
+      <div class="card-tech"><span>Middlewares</span><span>Utils</span><span>Configs</span></div>
+      <div class="card-desc">
+        <strong>Middlewares:</strong> auth (JWT verify + lastActive update), role (permission check), validate (Zod body/params/query), multer (memoryStorage, 5MB)<br>
+        <strong>Utils:</strong> jwt, hash, mailer, otp, cloudinary, response, errorHandler, asyncHandler, appError, dns (MX verify)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<!-- ── Data & External Layer ── -->
+<div class="layer layer-data">
+  <div class="layer-header">🗄️ Data &amp; External Services</div>
+  <div class="layer-grid grid-3">
+    <div class="card card-mongo">
+      <div class="card-title">🍃 MongoDB Atlas</div>
+      <div class="card-tech"><span>Mongoose 9</span><span>MongoDB 7</span></div>
+      <div class="card-desc">
+        <strong>Collections (13+):</strong> users, events, blogs, impacts, certificates, donations, internships, applications, contacts, newsletters, gallery, testimonials, supporters, periodicals, walkthroughs, resources, resumes, logs, tasks, Counter<br>
+        Mongoose schema with auto-index creation. No migration framework.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">☁️ Cloudinary</div>
+      <div class="card-tech"><span>Media CDN</span></div>
+      <div class="card-desc">
+        All file uploads via Multer → memory buffer → stream to Cloudinary. Organized under cfc/{module}/ folders. 120s timeout. Auto image optimization.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📧 SMTP (Gmail)</div>
+      <div class="card-tech"><span>Nodemailer</span></div>
+      <div class="card-desc">
+        Sends OTP emails for password reset. Uses Gmail App Password. Optional — backend runs without it, but OTP flows will fail.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔐 WebAuthn</div>
+      <div class="card-tech"><span>@simplewebauthn</span></div>
+      <div class="card-desc">
+        In-memory challenge store (60s TTL, 5min cleanup). RP ID must match domain. Requires HTTPS. Passkey count per user: unlimited.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔔 Web Push</div>
+      <div class="card-tech"><span>web-push</span><span>VAPID</span></div>
+      <div class="card-desc">
+        VAPID keys required. Subscriptions stored in user.pushSubscriptions. Invalid subs auto-removed on 410 error. Target by role/province/all.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💳 eSewa</div>
+      <div class="card-tech"><span>Payment Gateway</span></div>
+      <div class="card-desc">
+        Nepali payment gateway. Sandbox + production URLs. Redirect-based flow (no webhook). Pending donations if user closes browser before redirect.
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Auth Flow Detail ── -->
+<h2 style="margin-bottom: 16px;">🔐 Authentication Flows</h2>
+<div class="layer-grid grid-2">
+  <div class="card card-be">
+    <div class="card-title">Password Login</div>
+    <div class="card-desc">
+      1. POST /api/auth/login { email, password }<br>
+      2. Find user → check isActive, isVerified, lockUntil<br>
+      3. Compare bcrypt password<br>
+      4. On fail: increment failedLoginAttempts → lock at 5<br>
+      5. On success: reset attempts, update lastLogin, push loginHistory<br>
+      6. Generate JWT, set HttpOnly cookie + return token in body<br>
+      7. Frontend stores token in localStorage (fallback), user in localStorage
+    </div>
+    <div class="card-tech"><span>Rate: 5/15min</span><span>JWT: 1d</span><span>Cookie: HttpOnly</span></div>
+  </div>
+  <div class="card card-be">
+    <div class="card-title">WebAuthn / Passkey Login</div>
+    <div class="card-desc">
+      1. POST /webauthn/login-options → get challenge<br>
+      2. Browser: startAuthentication() → biometric prompt<br>
+      3. POST /webauthn/login-verify { challengeId, response }<br>
+      4. Find user by credentialId → verify signature with stored public key<br>
+      5. Same security checks: isActive, isVerified, lockUntil<br>
+      6. Update counter (replay protection), update lastLogin<br>
+      7. Issue SAME JWT + cookie as password login<br>
+      8. Frontend stores token + user (identical to password login)
+    </div>
+    <div class="card-tech"><span>Rate: 10/15min</span><span>Challenge: 60s TTL</span><span>In-memory store</span></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── RBAC Table ── -->
+<h2 style="margin-bottom: 16px;">👥 Role-Based Access Control</h2>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+  <thead>
+    <tr style="background: #1e293b; border-bottom: 2px solid #334155;">
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Role</th>
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Slug</th>
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Access Level</th>
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Special Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">Super Admin</td><td style="padding: 8px 14px; color: #fca5a5;">superadmin</td><td style="padding: 8px 14px;">🔓 Full — all 50+ permissions</td><td style="padding: 8px 14px; color: #94a3b8;">Protected account (sajhilodigital@gmail.com). Immutable via API. Hidden from user lists.</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">Admin</td><td style="padding: 8px 14px; color: #fca5a5;">admin</td><td style="padding: 8px 14px;">🔓 Full — all permissions</td><td style="padding: 8px 14px; color: #94a3b8;">Bypasses permission checks entirely (performance optimization).</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">EB (Executive)</td><td style="padding: 8px 14px; color: #fcd34d;">eb</td><td style="padding: 8px 14px;">🔒 16 specific permissions</td><td style="padding: 8px 14px; color: #94a3b8;">12 positions. Tech-lead gets admin-level bypass. Others go through permission check.</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">CR</td><td style="padding: 8px 14px; color: #93c5fd;">cr</td><td style="padding: 8px 14px;">🔒 View-only (8 perms)</td><td style="padding: 8px 14px; color: #94a3b8;">College Representatives. Read access to events, blogs, members, etc.</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">GM</td><td style="padding: 8px 14px; color: #93c5fd;">gm</td><td style="padding: 8px 14px;">🔒 View-only (8 perms)</td><td style="padding: 8px 14px; color: #94a3b8;">General Members — same permissions as CR.</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">IPPL</td><td style="padding: 8px 14px; color: #93c5fd;">ippl</td><td style="padding: 8px 14px;">🔒 View-only (8 perms)</td><td style="padding: 8px 14px; color: #94a3b8;">Internship/Project Leads.</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">Advisor</td><td style="padding: 8px 14px; color: #93c5fd;">advisor</td><td style="padding: 8px 14px;">🔒 View-only (8 perms)</td><td style="padding: 8px 14px; color: #94a3b8;">Advisory board members.</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">Alumni</td><td style="padding: 8px 14px; color: #93c5fd;">alumni</td><td style="padding: 8px 14px;">🔒 View-only (8 perms)</td><td style="padding: 8px 14px; color: #94a3b8;">Former members. Same view permissions.</td></tr>
+    <tr><td style="padding: 8px 14px;">Guest</td><td style="padding: 8px 14px; color: #64748b;">guest</td><td style="padding: 8px 14px;">🔒 Minimal (1 perm)</td><td style="padding: 8px 14px; color: #94a3b8;">Default for unregistered users. Can only update own profile after login.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<hr>
+
+<!-- ── Rate Limiters Table ── -->
+<h2 style="margin-bottom: 16px;">⏱️ Rate Limiters</h2>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+  <thead>
+    <tr style="background: #1e293b; border-bottom: 2px solid #334155;">
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Limiter</th>
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Routes</th>
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Window</th>
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Max</th>
+      <th style="padding: 10px 14px; text-align: left; color: #f1f5f9;">Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">🌐 Global</td><td style="padding: 8px 14px;">All /api/*</td><td style="padding: 8px 14px;">1 hour</td><td style="padding: 8px 14px;">1000</td><td style="padding: 8px 14px; color: #94a3b8;">General API abuse protection</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">🔐 Auth</td><td style="padding: 8px 14px;">/auth/login, /verify-otp</td><td style="padding: 8px 14px;">15 min</td><td style="padding: 8px 14px;">5</td><td style="padding: 8px 14px; color: #94a3b8;">Brute force protection</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">🖐️ WebAuthn</td><td style="padding: 8px 14px;">/webauthn/login-*</td><td style="padding: 8px 14px;">15 min</td><td style="padding: 8px 14px;">10</td><td style="padding: 8px 14px; color: #94a3b8;">Biometric brute force (~5 attempts)</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">📝 Registration</td><td style="padding: 8px 14px;">/auth/register</td><td style="padding: 8px 14px;">1 hour</td><td style="padding: 8px 14px;">3</td><td style="padding: 8px 14px; color: #94a3b8;">Spam account creation</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">🔑 Password Reset</td><td style="padding: 8px 14px;">/forget-password, /resend-otp</td><td style="padding: 8px 14px;">1 hour</td><td style="padding: 8px 14px;">5</td><td style="padding: 8px 14px; color: #94a3b8;">Reset abuse protection</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">📧 Contact</td><td style="padding: 8px 14px;">/contacts</td><td style="padding: 8px 14px;">1 hour</td><td style="padding: 8px 14px;">3</td><td style="padding: 8px 14px; color: #94a3b8;">Spam message prevention</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">💳 Donation</td><td style="padding: 8px 14px;">/donations, /initiate-esewa</td><td style="padding: 8px 14px;">15 min</td><td style="padding: 8px 14px;">5</td><td style="padding: 8px 14px; color: #94a3b8;">Payment abuse protection</td></tr>
+    <tr style="border-bottom: 1px solid #1e293b;"><td style="padding: 8px 14px;">📬 Newsletter</td><td style="padding: 8px 14px;">/newsletter/subscribe</td><td style="padding: 8px 14px;">1 hour</td><td style="padding: 8px 14px;">2</td><td style="padding: 8px 14px; color: #94a3b8;">Subscription spam</td></tr>
+    <tr><td style="padding: 8px 14px;">📄 Application</td><td style="padding: 8px 14px;">/internships/applications</td><td style="padding: 8px 14px;">15 min</td><td style="padding: 8px 14px;">3</td><td style="padding: 8px 14px; color: #94a3b8;">Application spam</td></tr>
+  </tbody>
+</table>
+</div>
+
+<hr>
+
+<!-- ── Module Files per Module ── -->
+<h2 style="margin-bottom: 16px;">📁 Module File Pattern</h2>
+<div style="background: #1e293b; border-radius: 8px; padding: 20px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; line-height: 1.7;">
+modules/events/<br>
+├── <span style="color: #93c5fd;">event.interface.ts</span>  <span style="color: #64748b;">// TypeScript interfaces + enums</span><br>
+├── <span style="color: #86efac;">event.model.ts</span>      <span style="color: #64748b;">// Mongoose schema + model + hooks</span><br>
+├── <span style="color: #fcd34d;">event.validation.ts</span>  <span style="color: #64748b;">// Zod schemas for create/update</span><br>
+├── <span style="color: #d8b4fe;">event.service.ts</span>     <span style="color: #64748b;">// Business logic + DB operations</span><br>
+├── <span style="color: #fca5a5;">event.controller.ts</span>  <span style="color: #64748b;">// Request handlers (asyncHandler wrappers)</span><br>
+└── <span style="color: #fdba74;">event.route.ts</span>       <span style="color: #64748b;">// Express Router + middleware chain</span>
+</div>
+
+<p style="text-align: center; margin-top: 40px; color: #475569; font-size: 0.8rem;">
+  Generated from codebase · May 2026 · <a href="ARCHITECTURE.md" style="color: #64748b;">← Back to Architecture Doc</a>
+</p>
+
+</div>
+</body>
+</html>
