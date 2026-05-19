@@ -162,4 +162,5 @@ See the full [Architecture](./docs/ARCHITECTURE.md) doc for detailed directory b
 ## 📄 License
 
 All rights reserved. **Code for Change Nepal** owns the brand and content.  
-Codebase maintained by **Sajilo Digital**.
+Codebase maintained by **Sajilo Digital**.  
+Originally built by **Arun Neupane** — [arunneupane0000@gmail.com](mailto:arunneupane0000@gmail.com) · [GitHub](https://github.com/arundada9000) · [Portfolio](https://arunneupane.netlify.app)

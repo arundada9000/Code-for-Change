@@ -300,12 +300,16 @@ const hasPermission = (permission) => {
   if (!user) return false;
   if (userRole === "admin" || userRole === "superadmin") return true;
   if (userRole === "eb" && user.executiveDetails?.position === "tech-lead") return true;
-  if (user.permissions?.includes(permission)) return true;
+  // Normalize underscores to colons so frontend can use either format
+  const normalized = permission.replace(/_/g, ":");
+  if (user.permissions?.includes(normalized)) return true;
+  // Also check original format as fallback
+  if (normalized !== permission && user.permissions?.includes(permission)) return true;
   return false;
 };
 ```
 
-This mirrors the backend's permission logic. **Keep it in sync** when backend permissions change.
+This mirrors the backend's permission logic. The normalization allows the frontend to check permissions using underscore format (e.g. `"certificate_issue"`) which gets converted to the backend's colon format (e.g. `"certificate:issue"`). **Keep it in sync** when backend permissions change.
 
 ### Env Variable — VITE Prefix Required
 
@@ -538,8 +542,8 @@ The log is write-only (appended on action, never modified) and has a `{ createdA
 case "events": return await Event.find().sort({ createdAt: -1 });
 case "blogs": return await Blog.find().sort({ createdAt: -1 });
 case "team": return await User.find({ role: { $ne: 'guest' } });
-case "resources": return [];  // ⚠️ Returns empty array!
+case "resources": return await Resource.find().sort({ createdAt: -1 });
 case "users": return await User.find().select("-password -otp ...");
 ```
 
-**Note:** `resources` type **always returns an empty array**. This might be a bug or a placeholder. The resources module has its own endpoints under `/api/resources`.
+**Note:** `resources` type **previously returned an empty array** due to a commented-out model import. This has been fixed. Admins can now see all resources (including inactive ones) via the admin content endpoint.

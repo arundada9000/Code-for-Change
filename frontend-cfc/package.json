@@ -2,6 +2,7 @@
   "name": "cfc",
   "private": true,
   "version": "0.0.0",
+  "author": "Arun Neupane <arunneupane0000@gmail.com> (https://arunneupane.netlify.app)",
   "type": "module",
   "scripts": {
     "render-build": "npm install --legacy-peer-deps && npm run build",

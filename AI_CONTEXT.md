@@ -10,7 +10,7 @@
 Name:     Code for Change (CFC) Official Website
 URL:      https://codeforchangenepal.com
 What:     Non-profit platform for IT students in Nepal — events, resources, community
-Built by: Sajilo Digital (https://sajilodigital.com.np)
+Built by: Arun Neupane / Sajilo Digital (https://sajilodigital.com.np)
 Arch:     Monorepo with /frontend-cfc + /backend-cfc
 ```
 

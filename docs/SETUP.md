@@ -306,10 +306,10 @@ The donation system integrates with **eSewa** (a Nepali payment gateway).
 The `.env.example` contains sandbox credentials:
 ```
 ESEWA_PRODUCT_CODE=EPAYTEST
-ESEWA_SECRET_KEY=8g8M89Pgg8UXX80c
+ESEWA_SECRET_KEY=your_esewa_secret_key_here
 ```
 
-These work with the eSewa test environment for development.
+Replace `your_esewa_secret_key_here` with your eSewa sandbox secret key. The original sandbox key that was previously hardcoded in `.env.example` has been removed from the repository.
 
 ### Production Setup
 

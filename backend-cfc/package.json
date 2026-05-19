@@ -12,7 +12,7 @@
     "seed:admin": "tsx src/modules/user/seed-admin.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Arun Neupane <arunneupane0000@gmail.com> (https://arunneupane.netlify.app)",
   "license": "ISC",
   "dependencies": {
     "@simplewebauthn/server": "^13.3.0",
