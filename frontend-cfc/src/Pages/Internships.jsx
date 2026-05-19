@@ -49,8 +49,6 @@ const parseArray = (data) => {
           const clean = s.trim();
           if (clean && clean.length > 1) result.push(clean);
         });
-      }
-
       // Handle comma-separated values
       } else if (trimmed.includes(',')) {
         trimmed.split(',').forEach(s => {

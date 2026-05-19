@@ -11,7 +11,7 @@
 - **Files:** `backend-cfc/src/shared/utils/appError.ts` and `backend-cfc/src/shared/utils/errorHandler.ts`
 - **Problem:** Both files define an `AppError` class with slightly different signatures. `appError.ts` requires `statusCode`; `errorHandler.ts` defaults to 500. Depending on which file a module imports, `instanceof AppError` checks may silently fail.
 - **Impact:** Error handling is unpredictable — some errors get proper status codes, others default to 500. Middleware that catches `AppError` instances may miss errors thrown with the other class.
-- **Fix:** Consolidate to one class in a single file. Re-export from the other (or delete one and update all imports).
+- **Fix:** ~~Consolidate to one class in a single file. Re-export from the other (or delete one and update all imports).~~ **[FIXED]** `AppError` is now solely defined in `appError.ts` and exported by `errorHandler.ts`.
 
 ### 2. Dual Auth Token Strategy (XSS Risk)
 - **File:** `backend-cfc/src/shared/middlewares/auth.middleware.ts`

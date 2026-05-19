@@ -326,6 +326,7 @@ function InternshipApplication() {
                     ))}
                   </select>
                 </div>
+                </div>
 
                 {/* Skills Input */}
                 <div className="space-y-2">
