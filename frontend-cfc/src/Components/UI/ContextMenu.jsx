@@ -248,6 +248,9 @@ const ContextMenu = () => {
   // ── Open on right-click ────────────────────────────────
   useEffect(() => {
     const handleContextMenu = (e) => {
+      // Skip on admin pages — let the native browser menu show
+      if (window.location.pathname.startsWith('/admin')) return;
+
       e.preventDefault();
 
       const contextItems = getContextItems(e.target);
