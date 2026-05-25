@@ -854,6 +854,10 @@ export const initConsoleGreeting = () => {
     }
   }
 
+  Object.defineProperty(window, '_cfcMusicPlaying', {
+    get: function() { return musicState.playing; }
+  });
+
   Object.defineProperty(window, 'play', {
     get: function() { playTrack(); return musicState.playing ? `\u266b Playing: ${playlist[musicState.currentIndex].name}` : 'Starting...'; }
   });

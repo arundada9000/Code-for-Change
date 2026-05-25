@@ -70,6 +70,7 @@ import ResetPassword from "./Pages/Auth/ResetPassword";
 import PrivateRoute from "./Components/Common/PrivateRoute";
 import { Toaster } from "react-hot-toast";
 import CustomCursor from "./Components/UI/CustomCursor";
+import ContextMenu from "./Components/UI/ContextMenu";
 
 function App() {
   useScrollToTop();
@@ -196,6 +197,7 @@ function App() {
       </Suspense>
       <Toaster position="top-center" reverseOrder={false} />
       <CustomCursor />
+      <ContextMenu />
     </>
   );
 }

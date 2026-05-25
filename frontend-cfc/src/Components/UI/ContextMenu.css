@@ -1,0 +1,446 @@
+/* ═══════════════════════════════════════════════════════════
+   CFC Context Menu — "Glass Terminal" Theme
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap');
+
+/* ── Animated gradient border ───────────────────────────── */
+@keyframes cfc-ctx-border-rotate {
+  0%   { --cfc-ctx-angle: 0deg; }
+  100% { --cfc-ctx-angle: 360deg; }
+}
+
+@property --cfc-ctx-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ── Scanline sweep ──────────────────────────────────────── */
+@keyframes cfc-ctx-scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(300%); }
+}
+
+/* ── Glitch micro-effect ────────────────────────────────── */
+@keyframes cfc-ctx-glitch {
+  0%   { transform: translate(0);       filter: none; }
+  20%  { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
+  40%  { transform: translate(2px, -1px); filter: hue-rotate(-90deg); }
+  60%  { transform: translate(-1px, 2px); filter: hue-rotate(45deg); }
+  80%  { transform: translate(1px, -2px); filter: hue-rotate(-45deg); }
+  100% { transform: translate(0);        filter: none; }
+}
+
+/* ── Blinking terminal caret ────────────────────────────── */
+@keyframes cfc-ctx-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* ── Ripple expand ──────────────────────────────────────── */
+@keyframes cfc-ctx-ripple {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+/* ── Typing cursor at prompt ────────────────────────────── */
+@keyframes cfc-ctx-type-cursor {
+  0%, 100% { border-right-color: #00ffae; }
+  50%      { border-right-color: transparent; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   THE MENU PANEL
+   ══════════════════════════════════════════════════════════ */
+
+.cfc-ctx-menu {
+  font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  position: fixed;
+  z-index: 99990;
+  min-width: 300px;
+  max-width: 360px;
+  padding: 6px 0;
+
+  /* Glassmorphism */
+  background: rgba(10, 12, 18, 0.88);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 174, 0.25);
+
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 174, 0.15),
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    0 2px 8px rgba(0, 255, 174, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  overflow: hidden;
+}
+
+/* The animated gradient border overlay (since border-image breaks radius) */
+.cfc-ctx-menu::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 13px;
+  padding: 1px;
+  background: linear-gradient(
+    var(--cfc-ctx-angle, 0deg),
+    #00ffae,
+    #7b61ff,
+    #00c4ff,
+    #ff3cac,
+    #00ffae
+  );
+  animation: cfc-ctx-border-rotate 4s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scanline overlay */
+.cfc-ctx-menu::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 174, 0.015) 2px,
+    rgba(0, 255, 174, 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   HEADER — Title bar with traffic lights
+   ══════════════════════════════════════════════════════════ */
+
+.cfc-ctx-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.cfc-ctx-traffic-lights {
+  display: flex;
+  gap: 6px;
+}
+
+.cfc-ctx-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.cfc-ctx-dot--red    { background: #ff5f57; box-shadow: 0 0 6px rgba(255, 95, 87, 0.4); }
+.cfc-ctx-dot--yellow { background: #febc2e; box-shadow: 0 0 6px rgba(254, 188, 46, 0.4); }
+.cfc-ctx-dot--green  { background: #28c840; box-shadow: 0 0 6px rgba(40, 200, 64, 0.4); }
+
+.cfc-ctx-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.5px;
+  flex: 1;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MENU ITEMS
+   ══════════════════════════════════════════════════════════ */
+
+.cfc-ctx-items {
+  padding: 4px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.cfc-ctx-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.cfc-ctx-item:hover {
+  background: rgba(0, 255, 174, 0.08);
+}
+
+/* Glitch on hover */
+.cfc-ctx-item:hover .cfc-ctx-label {
+  animation: cfc-ctx-glitch 0.25s ease-out;
+}
+
+/* Icon / Emoji */
+.cfc-ctx-icon {
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  filter: grayscale(0.3);
+  transition: filter 0.2s ease;
+}
+
+.cfc-ctx-item:hover .cfc-ctx-icon {
+  filter: grayscale(0);
+}
+
+/* The syntax-highlighted command label */
+.cfc-ctx-label {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  color: #e0e0e0;
+  white-space: nowrap;
+}
+
+/* Syntax classes */
+.cfc-ctx-prompt {
+  color: #00ffae;
+  margin-right: 6px;
+  font-weight: 700;
+}
+
+.cfc-ctx-cmd {
+  color: #7dd3fc; /* sky-300 */
+}
+
+.cfc-ctx-arg {
+  color: #fcd34d; /* amber-300 */
+}
+
+.cfc-ctx-str {
+  color: #86efac; /* green-300 */
+}
+
+.cfc-ctx-bracket {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.cfc-ctx-flag {
+  color: #c084fc; /* purple-300 */
+}
+
+/* Blinking cursor that appears on hover */
+.cfc-ctx-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  background: #00ffae;
+  margin-left: 4px;
+  opacity: 0;
+  transition: opacity 0.1s;
+  animation: cfc-ctx-blink 0.9s step-end infinite;
+  vertical-align: middle;
+}
+
+.cfc-ctx-item:hover .cfc-ctx-cursor {
+  opacity: 1;
+}
+
+/* Keyboard shortcut badge */
+.cfc-ctx-shortcut {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.5px;
+  margin-left: auto;
+  padding-left: 12px;
+  flex-shrink: 0;
+}
+
+.cfc-ctx-item:hover .cfc-ctx-shortcut {
+  color: rgba(0, 255, 174, 0.5);
+}
+
+/* Click ripple */
+.cfc-ctx-ripple {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 174, 0.35) 0%, transparent 70%);
+  animation: cfc-ctx-ripple 0.5s ease-out forwards;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SEPARATOR
+   ══════════════════════════════════════════════════════════ */
+
+.cfc-ctx-separator {
+  height: 1px;
+  margin: 4px 14px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 174, 0.2),
+    rgba(123, 97, 255, 0.2),
+    transparent
+  );
+  position: relative;
+  z-index: 2;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER — status bar
+   ══════════════════════════════════════════════════════════ */
+
+.cfc-ctx-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 14px 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.cfc-ctx-footer-text {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.3px;
+}
+
+.cfc-ctx-footer-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cfc-ctx-footer-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #28c840;
+  box-shadow: 0 0 6px rgba(40, 200, 64, 0.5);
+  animation: cfc-ctx-blink 2s ease-in-out infinite;
+}
+
+.cfc-ctx-footer-status {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SUBMENU LABEL (for groups)
+   ══════════════════════════════════════════════════════════ */
+
+.cfc-ctx-group-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(0, 255, 174, 0.35);
+  padding: 6px 14px 2px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ══════════════════════════════════════════════════════════
+   "PERMISSION DENIED" EASTER EGG OVERLAY
+   ══════════════════════════════════════════════════════════ */
+
+@keyframes cfc-ctx-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+@keyframes cfc-ctx-denied-flash {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.cfc-ctx-denied-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(255, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: cfc-ctx-denied-flash 2.5s ease-out forwards;
+  pointer-events: none;
+  font-family: 'Fira Code', monospace;
+}
+
+.cfc-ctx-denied-text {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ff3333;
+  text-shadow:
+    0 0 20px rgba(255, 0, 0, 0.5),
+    0 0 40px rgba(255, 0, 0, 0.3);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  animation: cfc-ctx-shake 0.5s ease-in-out;
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOAST NOTIFICATION (for copy, etc.)
+   ══════════════════════════════════════════════════════════ */
+
+@keyframes cfc-ctx-toast-in {
+  0%   { transform: translateY(20px) scale(0.95); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes cfc-ctx-toast-out {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-10px) scale(0.95); opacity: 0; }
+}
+
+.cfc-ctx-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #00ffae;
+  background: rgba(10, 12, 18, 0.92);
+  backdrop-filter: blur(12px);
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 174, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 255, 174, 0.1);
+  animation: cfc-ctx-toast-in 0.3s ease-out;
+  pointer-events: none;
+}
+
+.cfc-ctx-toast.leaving {
+  animation: cfc-ctx-toast-out 0.3s ease-in forwards;
+}
