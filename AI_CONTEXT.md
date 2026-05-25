@@ -178,9 +178,9 @@ frontend-cfc/src/
 ├── Layout/                             # MainLayout, AdminLayout, AuthLayout
 ├── Pages/                              # All page components
 ├── Components/Common/                  # Header, Footer, PrivateRoute, SEO
-├── Components/UI/                      # Reusable UI components
+├── Components/UI/                      # Reusable UI components (ContextMenu, etc.)
 ├── Hooks/                              # Custom hooks
-└── utils/                              # pushNotification, imageCompressor
+└── utils/                              # pushNotification, imageCompressor, consoleGreeting
 ```
 
 ---

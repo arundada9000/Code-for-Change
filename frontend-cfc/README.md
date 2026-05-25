@@ -11,6 +11,8 @@ The official frontend application and administrative dashboard for [codeforchang
   - Administrative routes (~17 unique pages) are entirely **Lazy-Loaded** (`React.lazy` & `Suspense`) so normal visitors do not load heavy admin panel JavaScript bundles.
 - **Advanced State Management**: Custom Context Providers (e.g., `AuthContext`) for globally maintaining user sessions, JWT states, and decoding RBAC hierarchy seamlessly across child components.
 - **Data Fetching integration**: A highly customized `Axios` application instance that intercepts 401s, handles global error triggers securely, and dynamically embeds server responses into `react-hot-toast` notifications.
+- **Developer Console**: Full terminal emulator in the browser console (`initConsoleGreeting`) with music player, province navigation, easter eggs (matrix rain, romantic effect), and developer card.
+- **Context Menu**: Right-click anywhere opens a terminal-themed context menu (`ContextMenu.jsx`) for quick navigation, music toggle, and easter egg triggers.
 
 ---
 
@@ -42,7 +44,7 @@ src/
 ├── main.jsx                  # React DOM Injector and highest-level context wrappers
 ├── Components/
 │   ├── Common/               # PrivateRoutes, Loaders, and global Modals
-│   ├── UI/                   # Reusable UI Blocks (Cards, Carousels, Tables)
+│   ├── UI/                   # Reusable UI Blocks (Cards, Carousels, Tables, ContextMenu)
 ├── Context/
 │   └── AuthContext.jsx       # The brain of user sessions and hierarchy logic
 ├── Hooks/
@@ -55,6 +57,8 @@ src/
 │   ├── Admin/                # (Lazy-Loaded) Dashboard data tables and content managers
 │   ├── Auth/                 # Registration, OTP logic, Passwords
 │   └── [...Public Pages]     # Blogs, Provinces, Events, Contact, 404
+├── utils/
+│   └── consoleGreeting.js    # Browser console terminal — music player, easter eggs, navigation
 └── Services/
     └── api.jsx               # Axios connection handlers
 ```
