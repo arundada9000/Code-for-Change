@@ -23,7 +23,7 @@ const TeamMemberCard = ({ member, type, onSelect }) => {
   };
 
   const availableSocials = Object.entries(member.socialLinks || {}).filter(
-    ([_, url]) => url,
+    ([, url]) => url,
   );
 
   return (

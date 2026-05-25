@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+
 import {
   FaPlus,
   FaSearch,
@@ -95,7 +95,6 @@ function AdminEvents() {
   const [isDragging, setIsDragging] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
-  const menuRef = useRef(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -258,12 +257,11 @@ function AdminEvents() {
       try {
         const parsed = JSON.parse(arr);
         return Array.isArray(parsed) ? parsed : [arr];
-      } catch (e) {
+      } catch {
         return arr
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean);
-          
       }
     }
     if (Array.isArray(arr)) {
@@ -275,7 +273,7 @@ function AdminEvents() {
         try {
           const parsed = JSON.parse(arr[0]);
           if (Array.isArray(parsed)) return parsed;
-        } catch (e) {}
+        } catch {}
       }
       return arr;
     }
@@ -899,13 +897,14 @@ function AdminEvents() {
                           data-menu-dropdown
                           className="absolute right-20 top-6 w-40 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
                         >
-                          <Link
-                            to={`/events/${event.slug || event._id || event.id}`}
+                          <a
+                            href={`/events/${event.slug || event._id || event.id}`}
                             target="_blank"
+                            rel="noopener noreferrer"
                             className="w-full px-5 py-2.5 text-left flex items-center gap-3 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all"
                           >
                             <BsEye className="text-blue-500" /> View
-                          </Link>
+                          </a>
                           {hasPermission("event_update") && (
                             <button
                               onClick={() => {
@@ -1003,12 +1002,12 @@ function AdminEvents() {
                     data-menu-dropdown
                     className="absolute top-14 right-4 w-40 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 py-2 animate-in fade-in zoom-in duration-200"
                   >
-                    <Link
-                      to={`/events/${event.slug || event._id}`}
+                    <a
+                      href={`/events/${event.slug || event._id}`}
                       className="w-full px-5 py-2.5 text-left block text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-3"
                     >
                       <BsEye className="text-blue-500" /> View
-                    </Link>
+                    </a>
                     {hasPermission("event_update") && (
                       <button
                         onClick={() => handleOpenModal(event)}

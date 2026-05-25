@@ -15,7 +15,6 @@ import { BsThreeDotsVertical, BsPencil } from "react-icons/bs";
 import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
-import { useAuth } from "../../Context/AuthContext";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 import { compressImage } from "../../utils/imageCompressor";
 
@@ -36,7 +35,6 @@ const InputField = React.memo(({ label, value, onChange, placeholder, required =
 ));
 
 export default function AdminTeam() {
-  const { hasPermission } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -168,7 +166,7 @@ export default function AdminTeam() {
       toast.success("Team member deleted");
       setDeleteModalOpen(false);
       setItemToDelete(null);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete member");
     }
   };

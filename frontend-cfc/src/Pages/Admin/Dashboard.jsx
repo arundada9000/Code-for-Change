@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FaUsers, FaCalendarAlt, FaBlog, FaCheckCircle,
@@ -21,11 +21,6 @@ function Dashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState(null);
-  const [searching, setSearching] = useState(false);
-  const searchRef = useRef(null);
 
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
@@ -34,9 +29,6 @@ function Dashboard() {
     fetchDashboardData();
 
     const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchResults(null);
-      }
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
         setShowNotifications(false);
       }
@@ -56,26 +48,6 @@ function Dashboard() {
       console.error("Dashboard fetch error:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSearch = async (query) => {
-    setSearchQuery(query);
-    if (query.length < 2) {
-      setSearchResults(null);
-      return;
-    }
-
-    try {
-      setSearching(true);
-      const res = await API.get(`/admin/search?q=${query}`);
-      if (res.data.success) {
-        setSearchResults(res.data.data);
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setSearching(false);
     }
   };
 
@@ -123,110 +95,6 @@ function Dashboard() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="relative group" ref={searchRef}>
-            {/* <input
-              type="text"
-              placeholder="Search users, events, blogs..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-secondary/100/5 transition-all w-full md:w-80 shadow-sm font-bold text-sm"
-            />
-            <FaSearch className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${searching ? 'text-secondary animate-pulse' : 'text-slate-300 group-focus-within:text-secondary/100'}`} /> */}
-
-            {/* Search Results Dropdown */}
-            {searchResults && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-50 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="max-h-[400px] overflow-y-auto p-2 space-y-4">
-
-                  {/* Users Results */}
-                  {searchResults.users?.length > 0 && (
-                    <div className="space-y-1">
-                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Users</p>
-                      {searchResults.users.map(u => (
-                        <div
-                          key={u._id}
-                          onClick={() => {
-                            navigate(`/admin/user/${u._id}`);
-                            setSearchResults(null);
-                            setSearchQuery('');
-                          }}
-                          className="flex items-center gap-3 p-3 hover:bg-secondary/10 rounded-xl transition-all cursor-pointer group"
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs ring-4 ring-transparent group-hover:ring-emerald-100 transition-all">
-                            {u.name[0]}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-700 transition-colors">{u.name}</p>
-                            <p className="text-[10px] text-slate-400 truncate">{u.email}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Events Results */}
-                  {searchResults.events?.length > 0 && (
-                    <div className="space-y-1">
-                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Events</p>
-                      {searchResults.events.map(e => (
-                        <div
-                          key={e._id}
-                          onClick={() => {
-                            navigate(`/admin/event/${e._id}`);
-                            setSearchResults(null);
-                            setSearchQuery('');
-                          }}
-                          className="flex items-center gap-3 p-3 hover:bg-secondary/10 rounded-xl transition-all cursor-pointer group"
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center font-bold text-xs">
-                            <FaCalendarAlt size={12} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-700 transition-colors">{e.title}</p>
-                            <p className="text-[10px] text-slate-400">
-                              {e.startDate ? new Date(e.startDate).toLocaleDateString() : 'No date set'}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Blogs Results */}
-                  {searchResults.blogs?.length > 0 && (
-                    <div className="space-y-1">
-                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Blogs</p>
-                      {searchResults.blogs.map(b => (
-                        <div
-                          key={b._id}
-                          onClick={() => {
-                            navigate(`/admin/blog/${b._id}`);
-                            setSearchResults(null);
-                            setSearchQuery('');
-                          }}
-                          className="flex items-center gap-3 p-3 hover:bg-secondary/10 rounded-xl transition-all cursor-pointer group"
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-xs">
-                            <FaBlog size={12} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-700 transition-colors">{b.title}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* No Results */}
-                  {searchResults.users.length === 0 && searchResults.events.length === 0 && searchResults.blogs.length === 0 && (
-                    <div className="p-8 text-center">
-                      <p className="text-sm font-bold text-slate-400 italic">No results found for "{searchQuery}"</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
           <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}

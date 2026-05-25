@@ -13,7 +13,6 @@ const CertificatePreview = ({ data, activeProvince }) => {
     startDate = "2024-11-26",
     endDate = "2025-02-26",
     issueDate = new Date().toISOString(),
-    tokenHash = "preview-only",
     signatureName = "",
     signaturePosition = "",
     signatureImage = "",

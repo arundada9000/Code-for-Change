@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import DonationImg from "../../../assets/Donate.png";
-import { useNavigate } from "react-router-dom";
 import API from "../../../Services/api";
 import { FadeIn, SlideUp } from "../../Common/Animations";
 import { FaUnlockAlt } from "react-icons/fa";
@@ -17,7 +16,6 @@ function DonateSection() {
   const [isCustomAmount, setIsCustomAmount] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   //HandleChange
   const handleChange = (e) => {

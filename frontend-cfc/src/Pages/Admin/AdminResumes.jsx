@@ -4,11 +4,9 @@ import API from "../../Services/api";
 import { toast } from "react-hot-toast";
 import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
-import { useAuth } from "../../Context/AuthContext";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 
 function AdminResumes() {
-  const { hasPermission } = useAuth();
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -57,7 +55,7 @@ function AdminResumes() {
       toast.success("Resume deleted successfully");
       setDeleteModalOpen(false);
       setItemToDelete(null);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete resume");
     }
   };

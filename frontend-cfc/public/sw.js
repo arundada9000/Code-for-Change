@@ -1,3 +1,4 @@
+/* global clients */
 // Service Worker for Push Notifications
 self.addEventListener("push", function (event) {
   if (event.data) {

@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
           setUser(response.data.data);
           localStorage.setItem("user", JSON.stringify(response.data.data));
         }
-      } catch (error) {
+      } catch {
         // If 401, user is not logged in or cookie expired
         setUser(null);
         localStorage.removeItem("user");

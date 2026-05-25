@@ -106,7 +106,7 @@ function AdminContacts() {
         ),
       );
       toast.success(`Message marked as read`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to mark message as read");
     }
   };
@@ -130,7 +130,7 @@ function AdminContacts() {
       toast.success("Message deleted successfully");
       setDeleteModalOpen(false);
       setItemToDelete(null);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete message");
     }
   };

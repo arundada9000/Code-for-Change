@@ -179,7 +179,7 @@ function AdminWalkthroughs() {
       await API.patch(`/walkthroughs/${editingItem._id}/remove-file`, { fileUrl });
       setFormData((prev) => ({ ...prev, existingFiles: prev.existingFiles.filter((f) => f !== fileUrl) }));
       toast.success("File removed");
-    } catch (err) {
+    } catch {
       toast.error("Failed to remove file");
     }
   };
@@ -236,7 +236,7 @@ function AdminWalkthroughs() {
       setWalkthroughs(walkthroughs.filter((w) => w._id !== itemToDelete._id));
       setItemToDelete(null);
       toast.success("Walkthrough deleted");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete walkthrough");
     }
   };

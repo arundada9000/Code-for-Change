@@ -110,11 +110,6 @@ export async function compressImage(file, options = {}) {
     ...options,
   };
 
-  // Map our onProgress to library's expected format
-  if (compressionOptions.onProgress) {
-    compressionOptions.onProgress = compressionOptions.onProgress;
-  }
-
   try {
     const compressedBlob = await imageCompression(file, compressionOptions);
 

@@ -115,3 +115,4 @@ export async function isPushSubscribed() {
   const subscription = await registration.pushManager.getSubscription();
   return !!subscription;
 }
+

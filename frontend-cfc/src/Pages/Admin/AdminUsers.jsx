@@ -420,7 +420,7 @@ function AdminUsers() {
           }
           toast.success(`Successfully enrolled ${count} members`);
           fetchUsers();
-        } catch (error) {
+        } catch {
           toast.error("Import failed: One or more records are invalid");
         }
       }

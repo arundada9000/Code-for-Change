@@ -414,7 +414,7 @@ function Member() {
           }
           toast.success(`Successfully imported ${count} verification records`);
           fetchMembers();
-        } catch (error) {
+        } catch {
           toast.error("Import failed: One or more records are invalid");
         }
       }

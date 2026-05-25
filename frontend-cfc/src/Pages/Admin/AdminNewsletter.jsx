@@ -52,7 +52,7 @@ function AdminNewsletter() {
       toast.success(
         `Subscriber ${newStatus === "active" ? "reactivated" : "unsubscribed"}`,
       );
-    } catch (error) {
+    } catch {
       toast.error("Failed to update subscriber status");
     }
   };
@@ -69,7 +69,7 @@ function AdminNewsletter() {
       toast.success("Subscriber deleted successfully");
       setDeleteModalOpen(false);
       setItemToDelete(null);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete subscriber");
     }
   };
@@ -92,7 +92,7 @@ function AdminNewsletter() {
       a.remove();
       window.URL.revokeObjectURL(url);
       toast.success(`Exported as ${format.toUpperCase()} successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Export failed. Please try again.");
     } finally {
       setExporting(false);

@@ -87,7 +87,7 @@ export function useResumes() {
   const createNewResume = useCallback(async () => {
     const blank = createBlankResume(user);
     // Strip the client-side `id` — the backend generates _id
-    const { id, createdAt, updatedAt, ...payload } = blank;
+    const { ...payload } = blank;
 
     try {
       const res = await API.post("/resumes", payload);
@@ -107,7 +107,7 @@ export function useResumes() {
       if (!resumeId) return resumeData;
 
       // Strip fields the backend doesn't need
-      const { id, _id, createdAt, updatedAt, userId, __v, ...payload } =
+      const { __v, ...payload } =
         resumeData;
 
       try {

@@ -63,7 +63,7 @@ function CoreTeam({ onMemberClick }) {
           {coreTeam.map((member, index) => {
             const availableSocials = Object.entries(
               member.socialLinks || {},
-            ).filter(([_, url]) => url);
+            ).filter(([, url]) => url);
             return (
               <div
                 key={member._id || index}

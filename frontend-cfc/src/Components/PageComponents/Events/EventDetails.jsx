@@ -6,7 +6,7 @@ import useFetch from "../../../Hooks/useFetch";
 
 export default function EventDetails() {
   const { eventSlug } = useParams();
-  const [idStr, ...slugParts] = eventSlug.split("-");
+  const idStr = eventSlug.split("-")[0];
   
   const { data: apiEvent, loading } = useFetch(`/events/${idStr}`);
 

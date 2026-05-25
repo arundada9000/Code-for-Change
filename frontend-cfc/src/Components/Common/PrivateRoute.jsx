@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 
 const PrivateRoute = ({ adminOnly = false }) => {
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

@@ -21,7 +21,7 @@ export const TeamCard = ({ member, variant, onSelect }) => {
   const isGlass = variant === "glass";
 
   const availableSocials = Object.entries(member.socialLinks || {}).filter(
-    ([_, url]) => url,
+    ([, url]) => url,
   );
 
   const handleKeyDown = (e) => {

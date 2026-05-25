@@ -463,7 +463,7 @@ function AdminInternships() {
           }
           toast.success(`Successfully imported ${count} vacancies`);
           fetchInternships();
-        } catch (error) {
+        } catch {
           toast.error("Import failed: Check CSV format");
         }
       },
