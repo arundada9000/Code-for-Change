@@ -14,7 +14,6 @@ const MENU_ITEMS = [
     items: [
       {
         id: 'nav-home',
-        icon: '🏠',
         label: <><span className="cfc-ctx-cmd">cd</span> <span className="cfc-ctx-arg">~/home</span></>,
         shortcut: 'Alt+H',
         action: 'navigate',
@@ -22,7 +21,6 @@ const MENU_ITEMS = [
       },
       {
         id: 'nav-about',
-        icon: '👥',
         label: <><span className="cfc-ctx-cmd">git checkout</span> <span className="cfc-ctx-arg">about</span></>,
         shortcut: 'Alt+A',
         action: 'navigate',
@@ -30,7 +28,6 @@ const MENU_ITEMS = [
       },
       {
         id: 'nav-events',
-        icon: '📅',
         label: <><span className="cfc-ctx-cmd">ls</span> <span className="cfc-ctx-arg">./events</span></>,
         shortcut: 'Alt+E',
         action: 'navigate',
@@ -38,7 +35,6 @@ const MENU_ITEMS = [
       },
       {
         id: 'nav-contact',
-        icon: '📡',
         label: <><span className="cfc-ctx-cmd">./</span><span className="cfc-ctx-str">contact.sh</span></>,
         shortcut: 'Alt+C',
         action: 'navigate',
@@ -53,24 +49,15 @@ const MENU_ITEMS = [
     items: [
       {
         id: 'copy-url',
-        icon: '📋',
         label: <><span className="cfc-ctx-cmd">navigator</span><span className="cfc-ctx-bracket">.</span><span className="cfc-ctx-cmd">clipboard</span><span className="cfc-ctx-bracket">.</span><span className="cfc-ctx-str">write</span><span className="cfc-ctx-bracket">()</span></>,
         shortcut: 'Ctrl+L',
         action: 'copy-url',
       },
       {
         id: 'toggle-music',
-        icon: '🎵',
         label: <><span className="cfc-ctx-cmd">system</span><span className="cfc-ctx-bracket">.</span><span className="cfc-ctx-cmd">music</span><span className="cfc-ctx-bracket">.</span><span className="cfc-ctx-str">toggle</span><span className="cfc-ctx-bracket">()</span></>,
         shortcut: 'Alt+M',
         action: 'toggle-music',
-      },
-      {
-        id: 'view-source',
-        icon: '💻',
-        label: <><span className="cfc-ctx-cmd">git remote</span> <span className="cfc-ctx-flag">-v</span></>,
-        shortcut: 'Ctrl+U',
-        action: 'view-source',
       },
     ],
   },
@@ -81,24 +68,15 @@ const MENU_ITEMS = [
     items: [
       {
         id: 'matrix',
-        icon: '🟢',
         label: <><span className="cfc-ctx-cmd">execute</span><span className="cfc-ctx-bracket">(</span><span className="cfc-ctx-str">matrix_rain</span><span className="cfc-ctx-bracket">)</span></>,
         shortcut: 'Alt+X',
         action: 'matrix',
       },
       {
         id: 'sudo-rm',
-        icon: '💀',
         label: <><span className="cfc-ctx-cmd">sudo</span> <span className="cfc-ctx-flag">rm</span> <span className="cfc-ctx-flag">-rf</span> <span className="cfc-ctx-arg">/</span></>,
         shortcut: '⚠',
         action: 'sudo-rm',
-      },
-      {
-        id: 'developer',
-        icon: '🧑‍💻',
-        label: <><span className="cfc-ctx-cmd">console</span><span className="cfc-ctx-bracket">.</span><span className="cfc-ctx-str">log</span><span className="cfc-ctx-bracket">(</span><span className="cfc-ctx-arg">developer</span><span className="cfc-ctx-bracket">)</span></>,
-        shortcut: 'Alt+D',
-        action: 'developer',
       },
     ],
   },
@@ -139,7 +117,7 @@ function triggerPermissionDenied() {
 
   const text = document.createElement('div');
   text.className = 'cfc-ctx-denied-text';
-  text.textContent = '⛔ Permission Denied';
+  text.textContent = 'ACCESS DENIED';
   overlay.appendChild(text);
 
   document.body.appendChild(overlay);
@@ -147,11 +125,11 @@ function triggerPermissionDenied() {
 
   // Console warning
   console.log(
-    '%c⛔ Permission Denied: Operation not permitted.',
+    '%cPermission Denied: Operation not permitted.',
     'font-size: 18px; font-weight: bold; color: #ff3333; text-shadow: 0 0 10px rgba(255,0,0,0.5); padding: 8px;'
   );
   console.log(
-    '%cNice try. 😏 This incident will be reported.',
+    '%cNice try. This incident will be reported.',
     'font-size: 13px; color: #ff6b6b; font-style: italic; padding: 4px;'
   );
 }
@@ -189,11 +167,9 @@ const MenuItem = ({ item, index, onAction }) => {
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      <span className="cfc-ctx-icon">{item.icon}</span>
       <span className="cfc-ctx-label">
         <span className="cfc-ctx-prompt">&gt;</span>
         {item.label}
-        <span className="cfc-ctx-cursor" />
       </span>
       {item.shortcut && (
         <span className="cfc-ctx-shortcut">{item.shortcut}</span>
@@ -222,7 +198,6 @@ function getContextItems(targetEl) {
   if (targetEl?.tagName === 'IMG' && targetEl.src) {
     extras.push({
       id: 'extract-image',
-      icon: '🖼️',
       label: <><span className="cfc-ctx-cmd">extract_asset</span><span className="cfc-ctx-bracket">(</span><span className="cfc-ctx-str">image</span><span className="cfc-ctx-bracket">)</span></>,
       shortcut: '',
       action: 'open-image',
@@ -235,7 +210,6 @@ function getContextItems(targetEl) {
   if (link && link.href) {
     extras.push({
       id: 'copy-link',
-      icon: '🔗',
       label: <><span className="cfc-ctx-cmd">copy</span><span className="cfc-ctx-bracket">(</span><span className="cfc-ctx-str">href</span><span className="cfc-ctx-bracket">)</span></>,
       shortcut: '',
       action: 'copy-link',
@@ -248,7 +222,6 @@ function getContextItems(targetEl) {
   if (selection) {
     extras.push({
       id: 'copy-selection',
-      icon: '📝',
       label: <><span className="cfc-ctx-cmd">copy</span><span className="cfc-ctx-bracket">(</span><span className="cfc-ctx-str">selected_string</span><span className="cfc-ctx-bracket">)</span></>,
       shortcut: 'Ctrl+C',
       action: 'copy-text',
@@ -376,10 +349,6 @@ const ContextMenu = () => {
           }
           break;
 
-        case 'view-source':
-          window.open('https://github.com/arundada9000', '_blank');
-          break;
-
         case 'matrix':
           // Trigger the matrix effect from consoleGreeting
           try {
@@ -393,15 +362,6 @@ const ContextMenu = () => {
 
         case 'sudo-rm':
           triggerPermissionDenied();
-          break;
-
-        case 'developer':
-          try {
-            const desc = Object.getOwnPropertyDescriptor(window, 'developer');
-            if (desc?.get) desc.get.call(window);
-          } catch {
-            showToast('Developer card not available');
-          }
           break;
 
         default:
@@ -473,7 +433,7 @@ const ContextMenu = () => {
                   {section.group === 'CONTEXT' ? '// CONTEXT' :
                    section.group === 'NAVIGATE' ? '// NAVIGATE' :
                    section.group === 'EXECUTE' ? '// EXECUTE' :
-                   section.group === 'DANGER_ZONE' ? '// DANGER_ZONE ⚠' :
+                    section.group === 'DANGER_ZONE' ? '// DANGER_ZONE' :
                    `// ${section.group}`}
                 </div>
                 {section.items.map((item, iIdx) => (
@@ -490,11 +450,7 @@ const ContextMenu = () => {
 
           {/* ── Footer: status bar ── */}
           <div className="cfc-ctx-footer">
-            <span className="cfc-ctx-footer-text">code-for-change v1.0</span>
-            <div className="cfc-ctx-footer-indicator">
-              <div className="cfc-ctx-footer-dot" />
-              <span className="cfc-ctx-footer-status">READY</span>
-            </div>
+            <span className="cfc-ctx-footer-status">READY</span>
           </div>
         </motion.div>
       )}

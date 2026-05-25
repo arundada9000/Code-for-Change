@@ -32,22 +32,10 @@
   100% { transform: translate(0);        filter: none; }
 }
 
-/* ── Blinking terminal caret ────────────────────────────── */
-@keyframes cfc-ctx-blink {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0; }
-}
-
 /* ── Ripple expand ──────────────────────────────────────── */
 @keyframes cfc-ctx-ripple {
   0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.6; }
   100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-}
-
-/* ── Typing cursor at prompt ────────────────────────────── */
-@keyframes cfc-ctx-type-cursor {
-  0%, 100% { border-right-color: #00ffae; }
-  50%      { border-right-color: transparent; }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -194,20 +182,6 @@
   animation: cfc-ctx-glitch 0.25s ease-out;
 }
 
-/* Icon / Emoji */
-.cfc-ctx-icon {
-  font-size: 14px;
-  width: 20px;
-  text-align: center;
-  flex-shrink: 0;
-  filter: grayscale(0.3);
-  transition: filter 0.2s ease;
-}
-
-.cfc-ctx-item:hover .cfc-ctx-icon {
-  filter: grayscale(0);
-}
-
 /* The syntax-highlighted command label */
 .cfc-ctx-label {
   flex: 1;
@@ -246,23 +220,6 @@
 
 .cfc-ctx-flag {
   color: #c084fc; /* purple-300 */
-}
-
-/* Blinking cursor that appears on hover */
-.cfc-ctx-cursor {
-  display: inline-block;
-  width: 7px;
-  height: 15px;
-  background: #00ffae;
-  margin-left: 4px;
-  opacity: 0;
-  transition: opacity 0.1s;
-  animation: cfc-ctx-blink 0.9s step-end infinite;
-  vertical-align: middle;
-}
-
-.cfc-ctx-item:hover .cfc-ctx-cursor {
-  opacity: 1;
 }
 
 /* Keyboard shortcut badge */
@@ -324,30 +281,10 @@
   z-index: 2;
 }
 
-.cfc-ctx-footer-text {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.2);
-  letter-spacing: 0.3px;
-}
-
-.cfc-ctx-footer-indicator {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.cfc-ctx-footer-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #28c840;
-  box-shadow: 0 0 6px rgba(40, 200, 64, 0.5);
-  animation: cfc-ctx-blink 2s ease-in-out infinite;
-}
-
 .cfc-ctx-footer-status {
   font-size: 10px;
   color: rgba(255, 255, 255, 0.3);
+  margin-left: auto;
 }
 
 /* ══════════════════════════════════════════════════════════
