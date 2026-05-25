@@ -5,6 +5,9 @@ import App from "./App.jsx";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import { HelmetProvider } from "react-helmet-async";
+import { initConsoleGreeting } from "./utils/consoleGreeting.js";
+
+initConsoleGreeting();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

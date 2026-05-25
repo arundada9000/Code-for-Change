@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
@@ -73,6 +73,17 @@ import CustomCursor from "./Components/UI/CustomCursor";
 
 function App() {
   useScrollToTop();
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    const allowed = ['/', '/about', '/events', '/our-impact', '/creative', '/certificate-verification', '/provinces', '/internships', '/internship-application', '/donate-us', '/gallery', '/resources', '/contact-us', '/faq', '/register', '/join-us', '/profile', '/resume-builder', '/login', '/forget-password', '/admin', '/donation-success', '/donation-failure', '/creative/walkthrough', '/creative/periodicals'];
+    const allowedPrefixes = ['/admin/', '/provinces/', '/resume-builder/', '/events/', '/creative/', '/our-impact/', '/verify-certificate/'];
+    window.__cfc_navigate = (path) => {
+      if (allowed.includes(path) || allowedPrefixes.some(p => path.startsWith(p))) {
+        navigate(path);
+      }
+    };
+  }, [navigate]);
 
   useEffect(() => {
     registerServiceWorker();
