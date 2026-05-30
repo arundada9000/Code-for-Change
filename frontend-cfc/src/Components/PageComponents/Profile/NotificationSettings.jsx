@@ -5,7 +5,10 @@ import { FaBell, FaBellSlash, FaSpinner, FaGlobe, FaMapMarkerAlt } from "react-i
 import { subscribeUserToPush, unsubscribeUserFromPush, isPushSubscribed } from "../../../utils/pushNotification";
 import toast from "react-hot-toast";
 
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || "BAwqVpdnWrDfqwBb6uzVg7njMJwL5O4ej5EoyFY7-PTtVmnv9A-oyZ99RrwP30hpXB_6i04UuxKKuZEECMg9Ui0"; // Replace with your actual public key
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+if (!VAPID_PUBLIC_KEY) {
+  throw new Error("VITE_VAPID_PUBLIC_KEY environment variable is not set");
+}
 
 const NotificationSettings = () => {
   const { user, updateUserData } = useAuth();

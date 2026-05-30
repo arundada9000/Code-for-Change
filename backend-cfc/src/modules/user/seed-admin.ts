@@ -4,47 +4,54 @@ import { UserTable } from "./user.model.js";
 import { ROLES, PERMISSIONS } from "../../shared/configs/permissions.js";
 import { hashPassword } from "../../shared/utils/hash.js";
 
+const ADMIN_ACCOUNTS = [
+  {
+    email: process.env.ADMIN_EMAIL || "sajhilodigital@gmail.com",
+    password: process.env.ADMIN_PASSWORD || "Admin@2025Secure!",
+    name: "Sajilo Digital",
+  },
+  ...(process.env.ADMIN_EMAIL_2
+    ? [
+        {
+          email: process.env.ADMIN_EMAIL_2,
+          password: process.env.ADMIN_PASSWORD_2 || "Admin@2025Secure!",
+          name: "Code for Change",
+        },
+      ]
+    : []),
+];
+
 async function seedAdmin() {
   try {
     console.log("Starting admin seed process...");
     await connectDB();
     console.log("✓ Database connection established");
 
-    const adminEmail = "sajhilodigital@gmail.com";
-    const plainPassword = "Admin@2025Secure!";
+    for (const account of ADMIN_ACCOUNTS) {
+      const existingAdmin = await UserTable.findOne({ email: account.email });
 
-    // Check if admin already exists
-    const existingAdmin = await UserTable.findOne({ email: adminEmail });
+      if (existingAdmin) {
+        console.log(`Admin "${account.email}" already exists. Skipping.`);
+        continue;
+      }
 
-    if (existingAdmin) {
-      console.log("Admin user already exists. Skipping creation.");
-      console.log("→ Email:", existingAdmin.email);
-      console.log("→ Role:", existingAdmin.role);
-      process.exit(0);
+      const hashedPassword = await hashPassword(account.password);
+
+      await UserTable.create({
+        name: account.name,
+        email: account.email,
+        password: hashedPassword,
+        role: "superadmin",
+        isVerified: true,
+        isActive: true,
+      });
+
+      console.log(`✓ Super admin created: ${account.email}`);
     }
 
-    // Create new admin
-    const hashedPassword = await hashPassword(plainPassword);
-
-    const admin = await UserTable.create({
-      name: "System Administrator",
-      email: adminEmail,
-      password: hashedPassword,
-      role: "superadmin",
-      isVerified: true,
-      isActive: true,
-      // Optional fields (uncomment if your schema has them)
-      // permissions: ['*'],
-      // createdBy: 'system-seed-script',
-    });
-
     console.log("\n╔════════════════════════════════════════════╗");
-    console.log("║         SUPER ADMIN USER CREATED SUCCESSFULLY    ║");
+    console.log("║         ADMIN SEED COMPLETE                ║");
     console.log("╚════════════════════════════════════════════╝");
-    console.log(`Email:       ${admin.email}`);
-    console.log(`Password:    ${plainPassword}`);
-    console.log(`Role:        ${admin.role}`);
-    console.log(`User ID:     ${admin._id}`);
 
     process.exit(0);
   } catch (error: any) {
