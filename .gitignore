@@ -99,6 +99,7 @@ pids/
 *.pid.lock
 *.seed
 *.tgz
+*.tar.gz
 *.pem
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 .node_repl_history
