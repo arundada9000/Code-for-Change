@@ -61,7 +61,7 @@ const noSqlSanitize = (req: any, _res: any, next: any) => {
   next();
 };
 
-// XSS sanitizer — strips dangerous HTML/JS from string values in request body
+// XSS sanitizer — strips dangerous HTML/JS from string values in body, query, and params
 const xssSanitize = (req: any, _res: any, next: any) => {
   const stripHtml = (obj: any): any => {
     if (typeof obj === "string") {
@@ -84,8 +84,16 @@ const xssSanitize = (req: any, _res: any, next: any) => {
     return obj;
   };
 
-  if (req.body) {
-    req.body = stripHtml(req.body);
+  if (req.body) req.body = stripHtml(req.body);
+  if (req.query) {
+    for (const key of Object.keys(req.query)) {
+      req.query[key] = stripHtml(req.query[key]);
+    }
+  }
+  if (req.params) {
+    for (const key of Object.keys(req.params)) {
+      req.params[key] = stripHtml(req.params[key]);
+    }
   }
   next();
 };
