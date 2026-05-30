@@ -109,11 +109,7 @@ function App() {
             <Route path="/our-impact" element={<OurImpact />}></Route>
             <Route path="/creative" element={<Blog />}></Route>
             <Route
-              path="/certificate-verification/:token?"
-              element={<CertificateVerification />}
-            ></Route>
-            <Route
-              path="/verify-certificate/:token"
+              path="/verify-certificate/:token?"
               element={<CertificateVerification />}
             ></Route>
             <Route path="/provinces" element={<Provinces />}></Route>

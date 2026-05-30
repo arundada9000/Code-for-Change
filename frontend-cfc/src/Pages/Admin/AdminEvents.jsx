@@ -21,7 +21,7 @@ import {
   FaFilePdf,
   FaFileWord,
   FaDownload,
-  FaDownload as FaImport,
+  FaFileImport as FaImport,
 } from "react-icons/fa";
 import {
   BsThreeDotsVertical,

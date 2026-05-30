@@ -40,10 +40,10 @@ export class AdminService {
       Log.find().sort({ createdAt: -1 }).limit(10),
       User.find({ lastLogin: { $exists: true } }).sort({ lastLogin: -1 }).limit(5),
       User.countDocuments({ 
-        lastActive: { $gte: new Date(Date.now() - 5 * 60 * 1000) } 
+        lastActive: { $gte: new Date(Date.now() - 2 * 60 * 1000) } 
       }),
       User.find({ 
-        lastActive: { $gte: new Date(Date.now() - 5 * 60 * 1000) } 
+        lastActive: { $gte: new Date(Date.now() - 2 * 60 * 1000) } 
       }).select("name lastActive").sort({ lastActive: -1 }),
       Event.find({
         startDate: { $gte: new Date() }

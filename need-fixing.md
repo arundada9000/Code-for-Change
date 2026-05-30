@@ -1,11 +1,21 @@
 # Need Fixing — Critical Issues Across the Project
 
 > **Priority:** 🔴 Critical > 🟠 High > 🟡 Medium  
-> **Source:** Codebase audit during documentation phase for `AI_CONTEXT.md`, `docs/EDGE_CASES.md`
+> **Source:** Codebase audit during documentation phase for `AI_CONTEXT.md`, `docs/EDGE_CASES.md`, `new-bugs.md`
 
 ---
 
 ## 🔴 Critical — Fix ASAP
+
+### 0. eSewa Payment Flow Is Completely Disconnected from Frontend
+- **File:** `frontend-cfc/src/Components/PageComponents/Donate/DonateSection.jsx:63-108`
+- **Problem:** The donation form **always** POSTs to `/donations` (creates a manual "Pending" record) regardless of selection. When user selects "eSewa," they expect gateway redirect. Instead: "Your donation request has been recorded."
+- **Impact:** eSewa is listed as a payment option but does nothing. Users think they paid but no transaction occurred. Real donations lost.
+- **Fix:** When `paymentMethod === "eSewa"`, call `POST /donations/initiate-esewa` and redirect user to the gateway URL returned by backend.
+
+---
+
+## 🟠 High — Will Cause Production Pain
 
 ### 1. Duplicate `AppError` Class
 - **Files:** `backend-cfc/src/shared/utils/appError.ts` and `backend-cfc/src/shared/utils/errorHandler.ts`
@@ -64,23 +74,108 @@
 
 ## 🟡 Medium — Should Address
 
-### 9. No MongoDB Migration Framework
+### 9. No Backend File Size Limit on Internship Resume Uploads
+- **File:** `backend-cfc/src/modules/internships/application.route.ts:30`
+- **Problem:** Frontend enforces 5MB, but backend multer has no `limits` config. Attacker can upload arbitrary-sized files.
+- **Fix:** Add `limits: { fileSize: 5 * 1024 * 1024 }` to `upload.single("resume")`.
+
+### 10. eSewa Signature Verification Message Format May Be Incorrect
+- **File:** `backend-cfc/src/modules/donations/donation.service.ts:67-69`
+- **Problem:** The signature message includes ALL fields including `signed_field_names` itself. May fail verification for legitimate payments.
+- **Fix:** Exclude `signed_field_names` from the signature message string.
+
+### 11. eSewa Verify Endpoint Has No Rate Limiter
+- **File:** `backend-cfc/src/modules/donations/donation.route.ts:86`
+- **Problem:** `GET /donations/verify-esewa` is unauthenticated and has no rate limiting. Open to brute-force/abuse.
+- **Fix:** Add a rate limiter (e.g. 10/15min).
+
+### 12. External QR API Dependency — Unnecessary Network Call
+- **File:** `frontend-cfc/src/Pages/Admin/Certificate.jsx:155-156`
+- **Problem:** PDF QR generation uses `https://api.qrserver.com/...`, but `react-qr-code` is already imported for on-screen QR.
+- **Fix:** Use `react-qr-code` or a local QR library for PDFs too.
+
+### 13. Certificate Duplicate-Detection Logic Duplicated Between Single and Bulk
+- **File:** `backend-cfc/src/modules/certificates/certificate.service.ts:44-61,108-122`
+- **Problem:** Same date-range duplicate check is copy-pasted between `issueCertificate` and `bulkIssue`.
+- **Fix:** Extract into a shared helper method.
+
+### 14. Duplicate Constants Between Certificate.jsx and BulkCertificateModal.jsx
+- **Files:** `frontend-cfc/src/Pages/Admin/Certificate.jsx` + `BulkCertificateModal.jsx`
+- **Problem:** Both define identical copies of `PROVINCES`, `PROVINCE_REGIONS`, `TEMPLATE_DEFAULTS`, CSS classes.
+- **Fix:** Extract shared constants to a separate file.
+
+### 15. Skeleton Component Injects Duplicate Style Tags
+- **File:** `frontend-cfc/src/Components/Loading/Skeleton.jsx:28`
+- **Problem:** Every skeleton instance injects a `<style>` tag with duplicate `@keyframes cfcShimmer`.
+- **Fix:** Use a shared `<style>` tag or CSS module.
+
+### 16. Confusing `FaDownload as FaImport` Alias
+- **File:** `frontend-cfc/src/Pages/Admin/AdminEvents.jsx:24`
+- **Problem:** `FaDownload` imported twice — once as itself, once aliased as `FaImport`.
+- **Fix:** Use a proper import icon.
+
+### 17. No `province` Field in Public Donation Form
+- **File:** `frontend-cfc/src/Components/PageComponents/Donate/DonateSection.jsx`
+- **Problem:** Public donation form doesn't collect province for demographic data.
+
+### 18. `FRONTEND_URL` Optional but Required for eSewa Redirects
+- **File:** `backend-cfc/src/shared/configs/env.ts:27` + `donation.service.ts:47`
+- **Problem:** `FRONTEND_URL` is optional with a default, but eSewa redirect URLs depend on it.
+- **Fix:** Make `FRONTEND_URL` required in dev/prod.
+
+### 19. Donation Stats Endpoint Doesn't Support Province Filtering
+- **File:** `backend-cfc/src/modules/donations/donation.service.ts:154`
+- **Fix:** Add province filter to `getDonationStats`.
+
+### 20. Certificate Verify Endpoint — Only Global Rate Limiter
+- **File:** `backend-cfc/src/modules/certificates/certificate.route.ts:20-24`
+- **Problem:** Public verify endpoint has no dedicated rate limiter (only 1000/hr global).
+- **Fix:** Add a dedicated limiter (e.g. 20/min).
+
+### 21. Two Frontend Routes for Same Verification Page
+- **File:** `frontend-cfc/src/App.jsx:99-106`
+- **Problem:** Both `/certificate-verification/:token?` and `/verify-certificate/:token` point to the same page.
+- **Fix:** Consolidate to one route.
+
+### 22. Volunteer Track Silent Fallback
+- **File:** `frontend-cfc/src/Pages/InternshipApplication.jsx:47`
+- **Problem:** If `job.category` doesn't match any `TRACKS`, falls back to `TRACKS[0]` silently.
+- **Fix:** Show a warning or fall back gracefully.
+
+### 23. Fragile Route Ordering in app.ts
+- **File:** `backend-cfc/src/app.ts:180-181`
+- **Problem:** If `applicationRoutes` and `internshipRoutes` are reordered, protected endpoints become public.
+
+### 24. Certificate Single-Issue Random ID Collision
+- **File:** `backend-cfc/src/modules/certificates/certificate.model.ts:59-64`
+- **Problem:** 1M:1 odds/day for certificateId collision; gives misleading error.
+- **Fix:** Add retry logic or use a longer random string.
+
+### 25. Unused `Breadcrumbs` Import in Internships.jsx
+- **File:** `frontend-cfc/src/Pages/Internships.jsx:4`
+- **Problem:** Import left behind after dead JSX cleanup. Component never rendered.
+
+### 26. `VITE_API_BASE_URL` Fallback to localhost in Production **[FIXED]**
+- **File:** `frontend-cfc/src/Services/api.jsx:4`
+- **Problem:** Fell back to `http://localhost:5000/api` if env var unset.
+- **Fix:** ~~Now throws if `VITE_API_BASE_URL` is not set.~~ ✅ **FIXED** in commit `2caae1c`.
+
+### 27. VAPID Public Key Hardcoded in Frontend Source **[FIXED]**
+- **File:** `frontend-cfc/src/Components/PageComponents/Profile/NotificationSettings.jsx:8`
+- **Problem:** Hardcoded fallback VAPID key in source. Silent failure on key rotation.
+- **Fix:** ~~Now throws if `VITE_VAPID_PUBLIC_KEY` is not set.~~ ✅ **FIXED** in commit `2caae1c`.
+
+### 28. No MongoDB Migration Framework
 - **Files:** All Mongoose models (`*.model.ts`)
 - **Problem:** Schema changes apply directly with no migration system. Adding a `required` field to an existing schema crashes on documents that lack that field.
 - **Impact:** Breaking production on schema changes. No rollback capability.
 - **Fix:** Use `migrate-mongo` or write a simple migration script pattern. Add `required: false` for new fields on existing collections, with a data migration step.
 
-### 10. "Online Users" Metric Is 5 Minutes Stale
+### 29. "Online Users" Metric Is 5 Minutes Stale
 - **File:** `backend-cfc/src/modules/dashboard/dashboard.service.ts`
 - **Problem:** "Online users" count is based on `lastActive` timestamp with a 5-minute threshold. This is not real-time.
 - **Impact:** Misleading for admin monitoring and decision-making.
 - **Fix:** Reduce threshold to 1-2 minutes or implement a heartbeart mechanism. Add a note in the UI that this is "active in last N minutes."
-
-### 11. VAPID Public Key Hardcoded in Frontend Source
-- **File:** `frontend-cfc/src/Components/PageComponents/Profile/NotificationSettings.jsx` (line 8)
-- **Problem:** The `VITE_VAPID_PUBLIC_KEY` env var is never set. The code falls back to a hardcoded string in source. If the backend VAPID keys are regenerated, push notifications silently break with no error.
-- **Impact:** After key rotation, all push subscriptions fail. Users get no notification, and there's no indication of why.
-- **Fix:** Set `VITE_VAPID_PUBLIC_KEY` in `frontend-cfc/.env` (and Vercel env vars). Remove the hardcoded fallback — fail loudly if the env var is missing.
 
 ---
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Banner from "../Components/UI/Banner";
-import Breadcrumbs from "../Components/UI/Breadcrumbs";
 import SEO from "../Components/Common/SEO";
 import { 
   FaBriefcase, FaMapMarkerAlt, FaClock, 

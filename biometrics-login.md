@@ -9,7 +9,7 @@
 
 ## What It Does
 
-Allows users to sign in using their device's built-in biometric hardware — fingerprint, Face ID, Windows Hello, or device PIN — as an **alternative** to email + password. The existing password login remains unchanged and always available as a fallback.
+Allows users to sign in using their device's built-in biometric hardware - fingerprint, Face ID, Windows Hello, or device PIN - as an **alternative** to email + password. The existing password login remains unchanged and always available as a fallback.
 
 ## How It Works (Under the Hood)
 

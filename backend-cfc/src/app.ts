@@ -177,6 +177,8 @@ app.use("/api", impactRoutes);
 app.use("/api", contactRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", donationRoutes);
+// WARNING: applicationRoutes (auth-protected) must come BEFORE internshipRoutes (public).
+// Reversing this order exposes protected endpoints without authentication.
 app.use("/api/internships", applicationRoutes);
 app.use("/api", internshipRoutes);
 app.use("/api/auth", authRoutes);

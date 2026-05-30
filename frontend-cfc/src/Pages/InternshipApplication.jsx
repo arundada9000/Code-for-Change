@@ -44,7 +44,7 @@ function InternshipApplication() {
     skills: "",
     college: "",
     province: "",
-    track: TRACKS.includes(initialTrack) ? initialTrack : TRACKS[0],
+    track: TRACKS.includes(initialTrack) ? initialTrack : (console.warn(`Unknown track "${initialTrack}", falling back to "${TRACKS[0]}"`), TRACKS[0]),
     coverLetter: "",
     internshipId: internshipId,
     resume: null, // For file objects
