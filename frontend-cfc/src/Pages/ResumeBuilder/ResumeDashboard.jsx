@@ -55,14 +55,14 @@ const ResumeDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
+      <div className="min-h-screen bg-slate-50 py-12 px-5 md:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
                 My Resumes
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-base text-slate-400 mt-2">
                 Loading your resumes...
               </p>
             </div>
@@ -74,24 +74,24 @@ const ResumeDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-slate-50 py-12 px-5 md:px-8 pb-24">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <FadeIn>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-12">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight mb-2">
                 My Resumes
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-base text-slate-500">
                 Create, edit, and download your professional resumes
               </p>
             </div>
             <button
               onClick={handleCreate}
-              className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-xl hover:shadow-lg hover:shadow-blue-200 transition-all cursor-pointer"
+              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-secondary to-blue-600 text-white text-sm font-black uppercase tracking-wide rounded-full hover:shadow-[0_15px_30px_-10px_rgba(0,118,180,0.4)] hover:-translate-y-1 transition-all cursor-pointer"
             >
-              <FaPlus size={12} />
+              <FaPlus size={14} />
               Create New Resume
             </button>
           </div>
@@ -100,22 +100,22 @@ const ResumeDashboard = () => {
         {/* Empty State */}
         {resumes.length === 0 && (
           <FadeIn>
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
-                <FaFileAlt size={32} className="text-slate-300" />
+            <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-[3rem] border border-slate-100 shadow-sm mt-8">
+              <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-8 shadow-inner">
+                <FaFileAlt size={36} className="text-secondary" />
               </div>
-              <h2 className="text-lg font-bold text-slate-700 mb-2">
+              <h2 className="text-2xl font-black text-slate-800 mb-4 tracking-tight">
                 No resumes yet
               </h2>
-              <p className="text-sm text-slate-400 max-w-sm mb-6">
+              <p className="text-base text-slate-500 max-w-md mb-8 leading-relaxed">
                 Create your first professional resume with our builder. Your
-                profile data will be pre-filled automatically!
+                profile data will be pre-filled automatically to save you time!
               </p>
               <button
                 onClick={handleCreate}
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors cursor-pointer"
+                className="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white text-sm font-black uppercase tracking-wide rounded-full hover:bg-secondary hover:shadow-[0_15px_30px_-10px_rgba(0,118,180,0.4)] hover:-translate-y-1 transition-all cursor-pointer"
               >
-                <FaPlus size={12} />
+                <FaPlus size={14} />
                 Create First Resume
               </button>
             </div>
@@ -124,21 +124,22 @@ const ResumeDashboard = () => {
 
         {/* Resume Grid */}
         {resumes.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {resumes.map((resume, index) => (
-              <SlideUp key={resume.id} delay={index * 0.05}>
-                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:border-slate-300 transition-all group">
+              <SlideUp key={resume.id} delay={index * 0.1}>
+                <div className={`bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-15px_rgba(0,118,180,0.15)] hover:border-blue-100 hover:-translate-y-2 transition-all duration-500 group relative ${openMenuId === resume.id ? 'z-30' : 'z-10'}`}>
+                  
                   {/* Mini preview */}
                   <div
-                    className="h-48 bg-slate-50 overflow-hidden relative cursor-pointer"
+                    className="h-56 bg-slate-100 overflow-hidden rounded-t-[2rem] relative cursor-pointer group-hover:bg-blue-50/30 transition-colors"
                     onClick={() =>
                       navigate(`/resume-builder/${resume.id}`)
                     }
                   >
                     <div
-                      className="origin-top-left"
+                      className="origin-top-left absolute top-4 left-4 right-4 bg-white rounded-xl shadow-sm border border-slate-200/50 overflow-hidden transition-transform duration-700 group-hover:scale-105"
                       style={{
-                        transform: "scale(0.22)",
+                        transform: "scale(0.24)",
                         width: "210mm",
                         minHeight: "297mm",
                         pointerEvents: "none",
@@ -152,23 +153,24 @@ const ResumeDashboard = () => {
                         },
                       )}
                     </div>
+                    
                     {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors flex items-center justify-center">
-                      <span className="opacity-0 group-hover:opacity-100 bg-white/90 px-4 py-2 rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-opacity">
-                        <FaEdit className="inline mr-1.5" size={11} />
+                    <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors duration-500 flex items-center justify-center">
+                      <span className="opacity-0 group-hover:opacity-100 bg-white/95 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider text-slate-800 shadow-xl transition-all duration-300 translate-y-4 group-hover:translate-y-0 flex items-center gap-2">
+                        <FaEdit size={12} className="text-secondary" />
                         Edit Resume
                       </span>
                     </div>
                   </div>
 
                   {/* Card footer */}
-                  <div className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-sm font-bold text-slate-800 truncate">
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="min-w-0 flex-1 pr-4">
+                        <h3 className="text-lg font-black text-slate-900 truncate group-hover:text-secondary transition-colors tracking-tight">
                           {resume.title}
                         </h3>
-                        <p className="text-[11px] text-slate-400 mt-0.5">
+                        <p className="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-wider">
                           Updated{" "}
                           {new Date(resume.updatedAt).toLocaleDateString(
                             "en-US",
@@ -185,18 +187,18 @@ const ResumeDashboard = () => {
                       <div className="relative">
                         <button
                           onClick={() => toggleMenu(resume.id)}
-                          className="p-2 text-slate-300 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer"
+                          className={`w-10 h-10 flex items-center justify-center rounded-full transition-all cursor-pointer border ${openMenuId === resume.id ? 'bg-blue-50 text-secondary border-blue-100' : 'text-slate-400 border-transparent hover:text-secondary hover:bg-blue-50 hover:border-blue-100'}`}
                         >
-                          <FaEllipsisV size={12} />
+                          <FaEllipsisV size={14} />
                         </button>
 
                         {openMenuId === resume.id && (
                           <>
                             <div
-                              className="fixed inset-0 z-10"
+                              className="fixed inset-0 z-40"
                               onClick={() => setOpenMenuId(null)}
                             />
-                            <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-20 min-w-[160px] py-1 overflow-hidden">
+                            <div className="absolute right-0 top-[calc(100%+8px)] bg-white/95 backdrop-blur-xl border border-slate-100/80 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.2)] z-50 min-w-[200px] p-2 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                               <button
                                 onClick={() => {
                                   navigate(
@@ -204,18 +206,20 @@ const ResumeDashboard = () => {
                                   );
                                   setOpenMenuId(null);
                                 }}
-                                className="flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                                className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors cursor-pointer group/item"
                               >
-                                <FaEdit size={11} /> Edit
+                                <div className="w-7 h-7 rounded-lg bg-slate-100 text-secondary flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><FaEdit size={12} /></div>
+                                Edit Resume
                               </button>
                               <button
                                 onClick={() => {
                                   handleDuplicate(resume.id);
                                   setOpenMenuId(null);
                                 }}
-                                className="flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                                className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors cursor-pointer group/item"
                               >
-                                <FaCopy size={11} /> Duplicate
+                                <div className="w-7 h-7 rounded-lg bg-slate-100 text-secondary flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><FaCopy size={12} /></div>
+                                Duplicate
                               </button>
                               <button
                                 onClick={() => {
@@ -224,12 +228,12 @@ const ResumeDashboard = () => {
                                   );
                                   setOpenMenuId(null);
                                 }}
-                                className="flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-semibold text-emerald-600 hover:bg-emerald-50 cursor-pointer"
+                                className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors cursor-pointer group/item"
                               >
-                                <FaDownload size={11} /> Download
-                                PDF
+                                <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><FaDownload size={12} /></div>
+                                Export PDF
                               </button>
-                              <div className="border-t border-slate-100 my-1" />
+                              <div className="h-px bg-slate-100 my-1 mx-2" />
                               <button
                                 onClick={() => {
                                   handleDelete(
@@ -238,9 +242,10 @@ const ResumeDashboard = () => {
                                   );
                                   setOpenMenuId(null);
                                 }}
-                                className="flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-semibold text-rose-500 hover:bg-rose-50 cursor-pointer"
+                                className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer group/item"
                               >
-                                <FaTrash size={11} /> Delete
+                                <div className="w-7 h-7 rounded-lg bg-red-50/50 text-red-500 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-sm transition-all"><FaTrash size={12} /></div>
+                                Delete
                               </button>
                             </div>
                           </>
@@ -249,18 +254,18 @@ const ResumeDashboard = () => {
                     </div>
 
                     {/* Template badge */}
-                    <div className="mt-3 flex items-center gap-2">
-                      <span
-                        className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                        style={{
-                          backgroundColor: `${resume.accentColor || "#0076B4"}15`,
-                          color: resume.accentColor || "#0076B4",
-                        }}
-                      >
-                        {resume.templateId
-                          ?.replace(/-/g, " ")
-                          .replace(/\b\w/g, (c) => c.toUpperCase())}
-                      </span>
+                    <div className="flex items-center gap-2 pt-4 border-t border-slate-50">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: resume.accentColor || "#0076B4" }}
+                        />
+                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                          {resume.templateId
+                            ?.replace(/-/g, " ")
+                            .replace(/\b\w/g, (c) => c.toUpperCase())}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

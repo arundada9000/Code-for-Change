@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 
 /**
  * SectionWrapper — Collapsible accordion wrapper for resume editor sections.
@@ -23,43 +23,58 @@ const SectionWrapper = ({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-200">
+    <div
+      className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+        isOpen
+          ? "bg-white border-slate-200 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)]"
+          : "bg-white border-slate-100 hover:border-slate-200 hover:shadow-sm"
+      }`}
+    >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-3.5 cursor-pointer hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-5 py-4 cursor-pointer transition-colors group/btn"
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <div
-            className="p-1.5 rounded-lg"
-            style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300"
+            style={{
+              backgroundColor: isOpen ? accentColor : `${accentColor}12`,
+              color: isOpen ? "#fff" : accentColor,
+            }}
           >
             <Icon size={14} />
           </div>
-          <span className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+          <span className="text-sm font-black text-slate-800 tracking-tight">
             {title}
           </span>
           {count !== undefined && count > 0 && (
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+              className="text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center text-white"
               style={{ backgroundColor: accentColor }}
             >
               {count}
             </span>
           )}
         </div>
-        {isOpen ? (
-          <FaChevronUp size={12} className="text-slate-400" />
-        ) : (
-          <FaChevronDown size={12} className="text-slate-400" />
-        )}
+        <div
+          className={`w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center transition-all duration-300 group-hover/btn:bg-slate-100 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        >
+          <FaChevronDown size={10} className="text-slate-400" />
+        </div>
       </button>
 
-      {isOpen && (
-        <div className="px-4 pb-4 border-t border-slate-100">
-          <div className="pt-4">{children}</div>
+      <div
+        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-5 pb-5 border-t border-slate-100">
+          <div className="pt-5">{children}</div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

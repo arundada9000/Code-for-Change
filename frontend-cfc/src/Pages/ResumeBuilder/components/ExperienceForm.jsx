@@ -4,15 +4,10 @@ import { createExperienceEntry } from "../../../Data/resumeData";
 
 /**
  * ExperienceForm — manages work experience entries.
- *
- * Props:
- *   - items: experience array
- *   - onChange: (updatedArray) => void
- *   - accentColor: hex string
  */
 const ExperienceForm = ({ items, onChange, accentColor = "#0076B4" }) => {
   const inputClass =
-    "w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white transition-all";
+    "w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)] transition-all";
 
   const addEntry = () => {
     onChange([...items, createExperienceEntry()]);
@@ -31,23 +26,31 @@ const ExperienceForm = ({ items, onChange, accentColor = "#0076B4" }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {items.map((exp, index) => (
         <div
           key={exp.id}
-          className="p-3 bg-slate-50/50 border border-slate-100 rounded-lg space-y-3 relative group"
+          className="p-4 bg-slate-50/50 border border-slate-100 rounded-2xl space-y-3 relative group hover:border-slate-200 transition-colors"
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold text-slate-400 uppercase">
-              #{index + 1}
-            </span>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div
+                className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black text-white"
+                style={{ backgroundColor: accentColor }}
+              >
+                {index + 1}
+              </div>
+              <span className="text-xs font-bold text-slate-500">
+                {exp.position || "New Position"}
+              </span>
+            </div>
             <button
               type="button"
               onClick={() => removeEntry(exp.id)}
-              className="text-rose-400 hover:text-rose-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
               title="Remove"
             >
-              <FaTrash size={11} />
+              <FaTrash size={10} />
             </button>
           </div>
 
@@ -72,7 +75,7 @@ const ExperienceForm = ({ items, onChange, accentColor = "#0076B4" }) => {
               onChange={(e) => updateField(exp.id, "startDate", e.target.value)}
               className={inputClass}
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <input
                 type="month"
                 value={exp.endDate}
@@ -82,14 +85,14 @@ const ExperienceForm = ({ items, onChange, accentColor = "#0076B4" }) => {
                 disabled={exp.current}
                 className={`${inputClass} ${exp.current ? "opacity-40" : ""}`}
               />
-              <label className="flex items-center gap-1.5 text-xs text-slate-500 whitespace-nowrap cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-500 whitespace-nowrap cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={exp.current}
                   onChange={(e) =>
                     updateField(exp.id, "current", e.target.checked)
                   }
-                  className="accent-blue-500"
+                  className="w-4 h-4 rounded accent-blue-500 cursor-pointer"
                 />
                 Current
               </label>
@@ -102,8 +105,8 @@ const ExperienceForm = ({ items, onChange, accentColor = "#0076B4" }) => {
               updateField(exp.id, "description", e.target.value)
             }
             placeholder="Describe your role, responsibilities, and achievements..."
-            rows={2}
-            className={`${inputClass} resize-none`}
+            rows={3}
+            className={`${inputClass} resize-none leading-relaxed`}
           />
         </div>
       ))}
@@ -111,7 +114,7 @@ const ExperienceForm = ({ items, onChange, accentColor = "#0076B4" }) => {
       <button
         type="button"
         onClick={addEntry}
-        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg border-2 border-dashed border-slate-200 text-slate-400 hover:border-blue-300 hover:text-blue-500 transition-colors w-full justify-center cursor-pointer"
+        className="flex items-center gap-2.5 px-4 py-3.5 text-xs font-black uppercase tracking-wider rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50/50 transition-all w-full justify-center cursor-pointer"
       >
         <FaPlus size={10} /> Add Experience
       </button>

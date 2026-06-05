@@ -15,10 +15,10 @@ const ResumePreview = forwardRef(({ resumeData, templateId, accentColor }, ref) 
   const TemplateComponent = getTemplateComponent(templateId);
 
   return (
-    <div className="h-full overflow-auto bg-slate-100 p-4 flex justify-center">
+    <div className="flex justify-center items-start w-full">
       <div
         ref={ref}
-        className="bg-white shadow-2xl flex-shrink-0"
+        className="bg-white rounded-md shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] flex-shrink-0"
         style={{
           width: "210mm",
           minHeight: "297mm",

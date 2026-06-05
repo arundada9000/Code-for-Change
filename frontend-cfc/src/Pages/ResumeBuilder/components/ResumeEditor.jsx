@@ -34,7 +34,15 @@ const ResumeEditor = ({ resumeData, onUpdate, accentColor = "#0076B4" }) => {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4 pb-8">
+      {/* Quick helper text */}
+      <div className="flex items-center gap-2 mb-2 px-1">
+        <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></div>
+        <p className="text-xs font-bold text-slate-400">
+          Fill in each section to build your resume
+        </p>
+      </div>
+
       <SectionWrapper
         icon={FaUser}
         title="Personal Information"

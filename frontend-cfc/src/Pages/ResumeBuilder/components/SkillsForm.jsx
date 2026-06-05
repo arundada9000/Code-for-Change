@@ -7,7 +7,7 @@ import { createSkillGroup } from "../../../Data/resumeData";
  */
 const SkillsForm = ({ items, onChange, accentColor = "#0076B4" }) => {
   const inputClass =
-    "w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white transition-all";
+    "w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)] transition-all";
 
   const [newSkills, setNewSkills] = useState({});
 
@@ -59,23 +59,31 @@ const SkillsForm = ({ items, onChange, accentColor = "#0076B4" }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {items.map((group, index) => (
         <div
           key={group.id}
-          className="p-3 bg-slate-50/50 border border-slate-100 rounded-lg space-y-3 relative group"
+          className="p-4 bg-slate-50/50 border border-slate-100 rounded-2xl space-y-4 relative group hover:border-slate-200 transition-colors"
         >
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold text-slate-400 uppercase">
-              Group #{index + 1}
-            </span>
+            <div className="flex items-center gap-2">
+              <div
+                className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black text-white"
+                style={{ backgroundColor: accentColor }}
+              >
+                {index + 1}
+              </div>
+              <span className="text-xs font-bold text-slate-500">
+                {group.category || "New Group"}
+              </span>
+            </div>
             <button
               type="button"
               onClick={() => removeGroup(group.id)}
-              className="text-rose-400 hover:text-rose-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
               title="Remove"
             >
-              <FaTrash size={11} />
+              <FaTrash size={10} />
             </button>
           </div>
 
@@ -88,27 +96,29 @@ const SkillsForm = ({ items, onChange, accentColor = "#0076B4" }) => {
           />
 
           {/* Skill tags */}
-          <div className="flex flex-wrap gap-1.5">
-            {group.items.map((skill, i) => (
-              <span
-                key={i}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold"
-                style={{
-                  backgroundColor: `${accentColor}15`,
-                  color: accentColor,
-                }}
-              >
-                {skill}
-                <button
-                  type="button"
-                  onClick={() => removeSkillFromGroup(group.id, i)}
-                  className="hover:opacity-70 cursor-pointer"
+          {group.items.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {group.items.map((skill, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-colors hover:opacity-80"
+                  style={{
+                    backgroundColor: `${accentColor}12`,
+                    color: accentColor,
+                  }}
                 >
-                  <FaTimes size={8} />
-                </button>
-              </span>
-            ))}
-          </div>
+                  {skill}
+                  <button
+                    type="button"
+                    onClick={() => removeSkillFromGroup(group.id, i)}
+                    className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-black/10 cursor-pointer transition-colors"
+                  >
+                    <FaTimes size={7} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Add skill input */}
           <div className="flex gap-2">
@@ -125,7 +135,7 @@ const SkillsForm = ({ items, onChange, accentColor = "#0076B4" }) => {
             <button
               type="button"
               onClick={() => addSkillToGroup(group.id)}
-              className="px-3 py-2 rounded-lg text-white text-xs font-bold transition-colors cursor-pointer"
+              className="px-5 py-3 rounded-xl text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer hover:shadow-md"
               style={{ backgroundColor: accentColor }}
             >
               Add
@@ -137,7 +147,7 @@ const SkillsForm = ({ items, onChange, accentColor = "#0076B4" }) => {
       <button
         type="button"
         onClick={addGroup}
-        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg border-2 border-dashed border-slate-200 text-slate-400 hover:border-blue-300 hover:text-blue-500 transition-colors w-full justify-center cursor-pointer"
+        className="flex items-center gap-2.5 px-4 py-3.5 text-xs font-black uppercase tracking-wider rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50/50 transition-all w-full justify-center cursor-pointer"
       >
         <FaPlus size={10} /> Add Skill Group
       </button>

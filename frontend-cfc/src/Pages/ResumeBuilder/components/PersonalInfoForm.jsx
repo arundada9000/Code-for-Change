@@ -11,16 +11,16 @@ import {
 } from "react-icons/fa";
 
 const inputClass =
-  "w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white transition-all";
+  "w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)] transition-all";
 
 /**
  * Single field row — defined OUTSIDE the parent to prevent unmount on re-render.
  */
 const Field = ({ icon: Icon, name, placeholder, type = "text", fullWidth, value, onChange, accentColor }) => (
   <div className={fullWidth ? "sm:col-span-2" : ""}>
-    <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2">
-        <Icon size={13} style={{ color: accentColor }} />
+    <div className="relative group/field">
+      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-md flex items-center justify-center transition-colors">
+        <Icon size={12} style={{ color: accentColor }} className="opacity-60 group-focus-within/field:opacity-100 transition-opacity" />
       </div>
       <input
         type={type}
@@ -41,7 +41,7 @@ const PersonalInfoForm = ({ data, onChange, accentColor = "#0076B4" }) => {
   const handle = (e) => onChange(e.target.name, e.target.value);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Field icon={FaUser} name="fullName" placeholder="Full Name" value={data.fullName || ""} onChange={handle} accentColor={accentColor} />
         <Field icon={FaBriefcase} name="title" placeholder="Job Title (e.g. Frontend Developer)" value={data.title || ""} onChange={handle} accentColor={accentColor} />
@@ -55,7 +55,7 @@ const PersonalInfoForm = ({ data, onChange, accentColor = "#0076B4" }) => {
 
       {/* Summary / Objective */}
       <div>
-        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+        <label className="block text-xs font-black text-slate-500 uppercase mb-2">
           Professional Summary
         </label>
         <textarea
@@ -63,8 +63,8 @@ const PersonalInfoForm = ({ data, onChange, accentColor = "#0076B4" }) => {
           value={data.summary || ""}
           onChange={handle}
           placeholder="Write a brief professional summary or objective..."
-          rows={3}
-          className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white transition-all resize-none"
+          rows={4}
+          className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder:text-slate-300 outline-none focus:border-blue-400 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)] transition-all resize-none leading-relaxed"
         />
       </div>
     </div>
