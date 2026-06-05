@@ -28,6 +28,7 @@ import DeleteModal from "../../Components/UI/Modal/DeleteModal";
 import { useAuth } from "../../Context/AuthContext";
 import DebouncedSearchInput from "../../Components/UI/DebouncedSearchInput";
 import logo from "../../assets/logo.png";
+import { provinces } from "../Provinces";
 
 function Certificate() {
   const { hasPermission } = useAuth();
@@ -176,7 +177,7 @@ function Certificate() {
     doc.setLineWidth(4);
     doc.rect(5, 5, pageWidth - 10, pageHeight - 10); // outer
 
-    doc.setDrawColor(203, 213, 225); // slate-300
+    doc.setDrawColor(hexColor); // province color
     doc.setLineWidth(0.5);
     doc.rect(8, 8, pageWidth - 16, pageHeight - 16); // thin inner
 
@@ -260,8 +261,11 @@ function Certificate() {
     };
     const config = getTemplateConfig(cert.certificateType);
 
+    const activeProvince = provinces.find((p) => p.name.toLowerCase() === cert?.province?.toLowerCase());
+    const hexColor = activeProvince?.colorCode || "#0f172a";
+
     // 5. Main Titles
-    doc.setTextColor(15, 23, 42);
+    doc.setTextColor(hexColor);
     doc.setFontSize(48);
     doc.setFont("helvetica", "bolditalic");
     doc.text(config.header, pageWidth / 2, 60, { align: "center" });
@@ -273,14 +277,14 @@ function Certificate() {
 
     // 6. Awarded To Pill
     const awardedToText = (cert.awardedTo || "Cordially Awarded To").toUpperCase();
-    doc.setFillColor(15, 23, 42);
+    doc.setFillColor(hexColor);
     doc.roundedRect(pageWidth / 2 - 40, 80, 80, 10, 5, 5, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
     doc.text(awardedToText, pageWidth / 2, 86.5, { align: "center" });
 
     // 7. Recipient Name
-    doc.setTextColor(15, 23, 42);
+    doc.setTextColor(hexColor);
     doc.setFontSize(36);
     doc.setFont("helvetica", "bolditalic");
     doc.text(cert.recipientName.toUpperCase(), pageWidth / 2, 110, {
