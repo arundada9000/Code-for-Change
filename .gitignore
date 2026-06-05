@@ -12,6 +12,7 @@ bower_components/
 .env
 .env.*
 !.env.example
+backend-cfc/.env.example
 
 # ========================
 # Build Outputs
