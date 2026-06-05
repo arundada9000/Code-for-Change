@@ -35,7 +35,11 @@ function Profile() {
 
   if (!user) return (
     <div className="flex items-center justify-center min-h-[400px]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+      <div className="text-lg font-black text-slate-800 tracking-widest flex items-center gap-3">
+        <span className="text-emerald-500 animate-pulse">{"<"}</span>
+        <span className="animate-pulse text-slate-300">Loading...</span>
+        <span className="text-emerald-500 animate-pulse">{"/>"}</span>
+      </div>
     </div>
   );
 

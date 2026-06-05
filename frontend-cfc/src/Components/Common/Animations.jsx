@@ -1,19 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-// Shared hook with a safety fallback timer
-const useSafeInView = (margin = "50px", fallbackMs = 800) => {
+const useSafeInView = (margin = "0px", fallbackMs = 800) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin, amount: 0 });
-  const [forced, setForced] = useState(false);
+  // amount: 0.05 means 5% of the element must be visible before triggering (fixes excessive scroll required for tall elements)
+  const isInView = useInView(ref, { once: true, margin, amount: 0.05 });
 
-  useEffect(() => {
-    // Safety net: if IntersectionObserver never fires, force visibility
-    const timer = setTimeout(() => setForced(true), fallbackMs);
-    return () => clearTimeout(timer);
-  }, [fallbackMs]);
-
-  return { ref, visible: isInView || forced };
+  return { ref, visible: isInView };
 };
 
 export const FadeIn = ({ children, className = "", delay = 0, duration = 0.5 }) => {

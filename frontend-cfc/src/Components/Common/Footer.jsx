@@ -98,7 +98,7 @@ function Footer() {
             <Link to="/">
               <img src="/logo.png" alt="Code for Change Nepal Logo" className="w-30" />
             </Link>
-            <p className="text-white pt-10">
+            <p className="text-white/70 pt-10 leading-relaxed">
               We are Open platform for the learners to learn and trainers to
               transfer their learning to learners. We are the group of Young
               people uniting all the IT students and professionals under the
@@ -106,15 +106,15 @@ function Footer() {
             </p>
           </div>
           <div>
-            <h3 className="text-white text-lg">
+            <h3 className="text-sm font-bold tracking-widest uppercase text-white">
               Important Links
             </h3>
-            <div className="flex flex-col gap-1 mt-8 text-white">
+            <div className="flex flex-col gap-2 mt-8 text-white/70">
               {importantLinks.map((val, i) => (
                 <Link
                   key={i}
                   to={val.path}
-                  className="hover:text-secondary transition"
+                  className="hover:text-secondary hover:translate-x-1 transition-all duration-300"
                 >
                   {val.title}
                 </Link>
@@ -122,15 +122,15 @@ function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="text-white text-lg">Services</h3>
-            <div className="flex flex-col gap-1 mt-8 text-white ">
+            <h3 className="text-sm font-bold tracking-widest uppercase text-white">Services</h3>
+            <div className="flex flex-col gap-2 mt-8 text-white/70">
               {services.map((val, i) => (
-                <Link key={i} to={val.path} className="hover:text-secondary transition">{val.title}</Link>
+                <Link key={i} to={val.path} className="hover:text-secondary hover:translate-x-1 transition-all duration-300">{val.title}</Link>
               ))}
             </div>
           </div>
           <div>
-            <h3 className="text-white text-lg">Newsletter</h3>
+            <h3 className="text-sm font-bold tracking-widest uppercase text-white">Newsletter</h3>
             <p className="text-white/70 text-sm mt-2">Stay updated on our latest events and opportunities.</p>
             <div className="flex flex-col mt-6 gap-3 text-white">
               <div className="flex relative">
@@ -142,7 +142,7 @@ function Footer() {
                   onChange={(e) => { setEmail(e.target.value); setStatus(null); }}
                   onKeyDown={handleKeyDown}
                   disabled={status === "loading" || status === "success"}
-                  className="w-full py-3 px-4 pr-12 border border-secondary rounded bg-transparent focus:ring focus:ring-secondary outline-none disabled:opacity-60"
+                  className="w-full py-3 px-4 pr-12 border border-white/20 rounded-lg bg-white/5 focus:border-secondary focus:ring-1 focus:ring-secondary outline-none disabled:opacity-60 placeholder:text-white/40 transition-colors duration-300"
                   placeholder="Enter your email"
                   aria-label="Newsletter email subscription"
                   autoComplete="email"
@@ -169,9 +169,9 @@ function Footer() {
             </div>
           </div>
         </div>
-        <hr className="w-full" />
+        <hr className="w-full border-white/10" />
         <div className="flex max-md:flex-col gap-5 justify-between items-center mt-10">
-          <p className="">
+          <p className="text-white/50 text-sm">
             &copy; {new Date().getFullYear()} Code for Change. All right reserved. Developed by Sajilo
             Digital&trade;
           </p>
@@ -183,7 +183,7 @@ function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={val.label}
-                className="bg-secondary p-3 rounded-full hover:bg-primary cursor-pointer transition-all ease-in duration-300"
+                className="bg-white/10 p-3 rounded-full hover:bg-secondary hover:scale-110 cursor-pointer transition-all ease-out duration-300"
               >
                 {val.icon}
               </a>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { FaQuoteRight } from "react-icons/fa";
+import { FaQuoteRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import API from "../../Services/api";
+import { SlideUp, FadeIn } from "../Common/Animations";
 
 const CARD_WIDTH = 340;
 const GAP = 20;
@@ -105,46 +106,55 @@ export default function Testimonial() {
   if (loading || testimonials.length === 0) return null;
 
   return (
-    <section className="py-16 max-w-7xl mx-auto px-4 relative">
-      {/* Label */}
+    <section className="py-20 max-w-7xl mx-auto px-5 relative">
+      {/* Section Header */}
       <div className="max-w-2xl mb-14">
-        <div className="flex gap-2 items-center group cursor-pointer">
-          <div className="w-10 h-0.5 bg-primary transition-all duration-300" />
-          <h4 className="uppercase text-base font-medium tracking-wider">
-            What our well-wishers say
-          </h4>
-        </div>
+        <SlideUp>
+          <div className="flex gap-2 items-center group cursor-pointer">
+            <div className="w-10 h-0.5 bg-secondary transition-all duration-300 group-hover:w-16" />
+            <h4 className="uppercase text-base font-bold tracking-widest text-secondary">
+              What our well-wishers say
+            </h4>
+          </div>
+        </SlideUp>
 
-        {/* Heading */}
-        <h2 className="md:text-4xl text-3xl font-bold text-primary py-4">
-          Voices of students and professionals shaping our story
-        </h2>
-        <p className="text-gray-600 max-w-3xl">
-          Hear from the talented individuals whose ideas, feedback, and
-          experiences drive innovation and growth across our community.
-        </p>
+        <SlideUp delay={0.1}>
+          <h2 className="md:text-4xl text-3xl font-black text-slate-900 leading-tight py-4">
+            Voices of students and professionals shaping our story
+          </h2>
+        </SlideUp>
+        <FadeIn delay={0.2}>
+          <p className="text-slate-600 max-w-3xl leading-relaxed text-lg">
+            Hear from the talented individuals whose ideas, feedback, and
+            experiences drive innovation and growth across our community.
+          </p>
+        </FadeIn>
       </div>
+
       {/* Carousel viewport */}
       <div className="relative">
         {/* Left Arrow */}
         <button
           onClick={prev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20
-   rounded-full flex items-center justify-center
- text-3xl px-5 py-2 bg-white/80 backdrop-blur-md border border-gray-200
-  shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer"
+          className="absolute -left-2 md:left-0 top-1/2 -translate-y-1/2 z-20
+            w-12 h-12 rounded-full flex items-center justify-center
+            bg-white border border-slate-200 text-slate-500
+            shadow-sm hover:shadow-md hover:text-secondary hover:border-secondary/30
+            transition-all duration-300 cursor-pointer active:scale-90"
         >
-          ‹
+          <FaChevronLeft size={14} />
         </button>
 
+        {/* Right Arrow */}
         <button
           onClick={next}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-20
-   rounded-full flex items-center justify-center
- text-3xl px-5 py-2 bg-white/80 backdrop-blur-md border border-gray-200
-  shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer"
+          className="absolute -right-2 md:right-0 top-1/2 -translate-y-1/2 z-20
+            w-12 h-12 rounded-full flex items-center justify-center
+            bg-white border border-slate-200 text-slate-500
+            shadow-sm hover:shadow-md hover:text-secondary hover:border-secondary/30
+            transition-all duration-300 cursor-pointer active:scale-90"
         >
-          ›
+          <FaChevronRight size={14} />
         </button>
 
         <div
@@ -163,17 +173,16 @@ export default function Testimonial() {
             {slides.map((item, i) => (
               <div
                 key={i}
-                className="shrink-0 rounded-2xl p-7 flex flex-col justify-between
-  bg-linear-to-br from-white via-white to-gray-50
-  border border-gray-200/60
-  shadow-[0_0_10px_rgba(0,0,0,0.08)]
-  hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]
-  transition-all duration-500 hover:-translate-y-2"
+                className="shrink-0 rounded-3xl p-8 flex flex-col justify-between
+                  bg-white border border-slate-100
+                  shadow-sm
+                  hover:shadow-[0_20px_40px_-15px_rgba(0,118,180,0.12)]
+                  transition-all duration-500 hover:-translate-y-2"
                 style={{ width: CARD_WIDTH, minHeight: 320 }}
               >
                 {/* Avatar */}
-                <div className="flex justify-center -mt-14">
-                  <div className="w-24 h-24 rounded-full p-0.5 bg-linear-to-tr from-primary to-purple-500 shadow-lg">
+                <div className="flex justify-center -mt-16">
+                  <div className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-tr from-secondary to-blue-400 shadow-lg shadow-secondary/20">
                     <div className="w-full h-full rounded-full overflow-hidden bg-white">
                       <img
                         src={item.image}
@@ -185,22 +194,22 @@ export default function Testimonial() {
                 </div>
 
                 {/* Quote */}
-                <div className="mt-8 text-center relative">
-                  <FaQuoteRight className="absolute -top-10 right-2 text-5xl text-purple-100" />
-                  <p className="text-gray-700 leading-relaxed text-sm md:text-base line-clamp-3 md:line-clamp-4">
+                <div className="mt-6 text-center relative flex-1">
+                  <FaQuoteRight className="absolute -top-8 right-2 text-5xl text-secondary/10" />
+                  <p className="text-slate-600 leading-relaxed text-sm md:text-base line-clamp-4">
                     {item.text}
                   </p>
                 </div>
 
                 {/* Divider */}
-                <div className="w-10 h-1 rounded-full bg-linear-to-r from-primary to-purple-500 mx-auto my-5" />
+                <div className="w-10 h-1 rounded-full bg-gradient-to-r from-secondary to-blue-400 mx-auto my-5" />
 
                 {/* Author */}
                 <div className="text-center">
-                  <p className="font-semibold text-gray-900 text-lg">
+                  <p className="font-black text-slate-900 text-lg">
                     {item.author}
                   </p>
-                  <p className="text-xs tracking-wide uppercase text-gray-500">
+                  <p className="text-xs tracking-widest uppercase text-slate-400 font-bold mt-1">
                     {item.role}
                   </p>
                 </div>
@@ -210,7 +219,7 @@ export default function Testimonial() {
         </div>
 
         {/* Dots */}
-        <div className="flex justify-center gap-3 mt-8">
+        <div className="flex justify-center gap-2.5 mt-6">
           {Array.from({ length: totalDots }).map((_, i) => (
             <button
               key={i}
@@ -220,10 +229,10 @@ export default function Testimonial() {
                 trackRef.current.style.transition = "transform 0.6s ease";
                 setIndex(visible + i);
               }}
-              className={`h-2 rounded-full transition-all duration-500 ${
+              className={`h-2 rounded-full transition-all duration-500 cursor-pointer ${
                 i === activeDot
-                  ? "w-8 bg-primary"
-                  : "w-2 bg-gray-300 hover:bg-gray-400"
+                  ? "w-8 bg-secondary"
+                  : "w-2 bg-slate-200 hover:bg-slate-400"
               }`}
             />
           ))}

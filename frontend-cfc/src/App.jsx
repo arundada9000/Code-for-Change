@@ -31,6 +31,7 @@ import UserProfile from "./Pages/UserProfile";
 import useScrollToTop from "./Hooks/useScrollToTop";
 import { lazy, Suspense, useEffect } from "react";
 import { registerServiceWorker } from "./utils/pushNotification";
+import GlobalLoader from "./Components/Loading/GlobalLoader";
 
 // Admin (all lazy-loaded for performance)
 import AdminLayout from "./Layout/AdminLayout";
@@ -93,11 +94,7 @@ function App() {
   return (
     <>
       <Suspense
-        fallback={
-          <div className="min-h-screen flex items-center justify-center bg-white">
-            <div className="w-10 h-10 border-4 border-slate-100 border-t-emerald-500 rounded-full animate-spin"></div>
-          </div>
-        }
+        fallback={<GlobalLoader />}
       >
         <Routes>
           {/* Public routes for normal user*/}
@@ -108,6 +105,7 @@ function App() {
             <Route path="/events" element={<Events />}></Route>
             <Route path="/our-impact" element={<OurImpact />}></Route>
             <Route path="/creative" element={<Blog />}></Route>
+            <Route path="certificate-verification" element={< CertificateVerification />} />
             <Route
               path="/verify-certificate/:token?"
               element={<CertificateVerification />}

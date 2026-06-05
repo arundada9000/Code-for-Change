@@ -6,7 +6,7 @@ import OurObjectives from "../Components/PageComponents/About/OurObjectives";
 import Mission from "../Components/PageComponents/About/Mission";
 import OurValues from "../Components/PageComponents/About/OurValues";
 import TeamSection from "../Components/PageComponents/About/TeamSection";
-import { FadeIn } from "../Components/Common/Animations";
+import { FadeIn, SlideUp } from "../Components/Common/Animations";
 
 function About() {
   return (
@@ -25,20 +25,18 @@ function About() {
           <AboutSection />
         </div>
       </FadeIn>
-      <FadeIn delay={0.2}>
+      <SlideUp delay={0.1}>
         <OurObjectives />
-      </FadeIn>
-      <FadeIn delay={0.3}>
+      </SlideUp>
+      <SlideUp delay={0.1}>
         <Mission />
-      </FadeIn>
-      <FadeIn delay={0.4}>
+      </SlideUp>
+      <SlideUp delay={0.1}>
         <OurValues />
-      </FadeIn>
-      <FadeIn delay={0.5}>
-        <div className="max-w-7xl mx-auto px-5">
-          <TeamSection />
-        </div>
-      </FadeIn>
+      </SlideUp>
+      <div className="max-w-7xl mx-auto px-5">
+        <TeamSection />
+      </div>
     </div>
   );
 }

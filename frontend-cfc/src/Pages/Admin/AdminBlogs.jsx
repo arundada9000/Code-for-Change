@@ -794,7 +794,7 @@ function AdminBlogs() {
                           className="absolute right-16 top-1/2 -translate-y-1/2 w-48 bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-100 z-50 py-2 animate-in fade-in zoom-in duration-200 transform origin-right"
                         >
                           <Link
-                            to={`/blog/${blog._id || blog.id}-${
+                            to={`/creative/${blog._id || blog.id}-${
                               blog.slug ||
                               blog.title
                                 .toLowerCase()

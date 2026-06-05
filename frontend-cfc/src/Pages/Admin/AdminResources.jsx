@@ -337,7 +337,11 @@ function AdminResources() {
       {/* ── Content ── */}
       {loading ? (
         <div className="flex justify-center items-center py-24">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent" />
+          <div className="text-xl font-black text-slate-800 tracking-widest flex items-center gap-3">
+            <span className="text-emerald-500 animate-pulse">{"<"}</span>
+            <span className="animate-pulse text-slate-300">Loading...</span>
+            <span className="text-emerald-500 animate-pulse">{"/>"}</span>
+          </div>
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-3xl p-20 text-center shadow-sm border border-slate-100">

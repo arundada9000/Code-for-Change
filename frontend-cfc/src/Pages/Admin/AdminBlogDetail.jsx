@@ -37,7 +37,11 @@ function AdminBlogDetail() {
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="flex flex-col items-center gap-4">
-        <BsArrowRepeat className="text-4xl text-emerald-500 animate-spin" />
+        <div className="text-xl font-black text-slate-800 tracking-widest flex items-center gap-3">
+          <span className="text-emerald-500 animate-pulse">{"<"}</span>
+          <span className="animate-pulse text-slate-300">Loading...</span>
+          <span className="text-emerald-500 animate-pulse">{"/>"}</span>
+        </div>
         <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Retrieving blog data...</p>
       </div>
     </div>

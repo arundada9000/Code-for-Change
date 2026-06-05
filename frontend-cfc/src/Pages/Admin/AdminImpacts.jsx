@@ -349,7 +349,11 @@ function AdminImpacts() {
       {/* Impact Table */}
       {loading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          <div className="text-xl font-black text-slate-800 tracking-widest flex items-center gap-3">
+            <span className="text-blue-500 animate-pulse">{"<"}</span>
+            <span className="animate-pulse text-slate-300">Loading...</span>
+            <span className="text-blue-500 animate-pulse">{"/>"}</span>
+          </div>
         </div>
       ) : (
         <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import API from "../../Services/api";
+import { FadeIn } from "../Common/Animations";
 
 function Supporters() {
   const [partners, setPartners] = useState([]);
@@ -46,35 +47,37 @@ function Supporters() {
   if (partners.length === 0) return null;
 
   return (
-    <section className="pb-16 overflow-hidden">
-      <div className="flex gap-5 items-center">
-        <p className="uppercase text-base font-semibold whitespace-nowrap text-primary">
-          Our Supporters
-        </p>
-        <hr className="h-0.5 bg-primary flex-1 opacity-20" />
-      </div>
+    <FadeIn>
+      <section className="pb-16 overflow-hidden">
+        <div className="flex gap-5 items-center">
+          <p className="uppercase text-base font-semibold whitespace-nowrap text-primary">
+            Our Supporters
+          </p>
+          <hr className="h-0.5 bg-primary flex-1 opacity-20" />
+        </div>
 
-      <div
-        ref={carouselRef}
-        className="flex gap-10 md:gap-28 max-md:h-14 h-20 mt-12 overflow-hidden"
-      >
-        {[...partners, ...partners].map((supporter, i) => (
-          <a
-            key={i}
-            href={supporter.url || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="shrink-0"
-          >
-            <img
-              src={supporter.logo}
-              alt={supporter.name || `Partner ${i + 1}`}
-              className="h-full object-contain"
-            />
-          </a>
-        ))}
-      </div>
-    </section>
+        <div
+          ref={carouselRef}
+          className="flex gap-10 md:gap-28 max-md:h-14 h-20 mt-12 overflow-hidden"
+        >
+          {[...partners, ...partners].map((supporter, i) => (
+            <a
+              key={i}
+              href={supporter.url || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 transition-opacity hover:opacity-70"
+            >
+              <img
+                src={supporter.logo}
+                alt={supporter.name || `Partner ${i + 1}`}
+                className="h-full object-contain"
+              />
+            </a>
+          ))}
+        </div>
+      </section>
+    </FadeIn>
   );
 }
 

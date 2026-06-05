@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   FaPlus, FaSearch, FaTimes, FaCloudUploadAlt,
-  FaFileCsv, FaFilePdf, FaFileAlt, FaTrash,
+  FaFileCsv, FaFilePdf, FaFileAlt, FaTrash, FaRegTrashAlt,
 } from "react-icons/fa";
 import { BsPencil, BsEye, BsThreeDotsVertical } from "react-icons/bs";
 import { Link } from "react-router-dom";
