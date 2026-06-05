@@ -7,7 +7,7 @@ import ResumeEditor from "./components/ResumeEditor";
 import ResumePreview from "./ResumePreview";
 import { exportResumeToPDF } from "./pdfExport";
 import toast from "react-hot-toast";
-import GlobalLoader from "../../components/Loading/GlobalLoader";
+import GlobalLoader from "../../Components/Loading/GlobalLoader";
 import {
   FaArrowLeft,
   FaSave,
