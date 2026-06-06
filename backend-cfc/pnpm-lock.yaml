@@ -42,9 +42,6 @@ importers:
       express-async-handler:
         specifier: ^1.2.0
         version: 1.2.0
-      express-mongo-sanitize:
-        specifier: ^2.2.0
-        version: 2.2.0
       express-rate-limit:
         specifier: ^8.2.1
         version: 8.3.2(express@5.2.1)
@@ -109,9 +106,6 @@ importers:
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
-      '@types/express-mongo-sanitize':
-        specifier: ^2.1.2
-        version: 2.1.2
       '@types/hpp':
         specifier: ^0.2.7
         version: 0.2.7
@@ -421,10 +415,6 @@ packages:
 
   '@types/cors@2.8.19':
     resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
-
-  '@types/express-mongo-sanitize@2.1.2':
-    resolution: {integrity: sha512-a0Vy5Ivkc9iipHBgcnpRsAl3H/pM4gkL6mf5BqGVg4NsVJXlI6hwzle+UHS9O7oqUau+b6S+hzZ3tXQaAhLcmg==}
-    deprecated: This is a stub types definition. express-mongo-sanitize provides its own type definitions, so you do not need this installed.
 
   '@types/express-serve-static-core@5.1.1':
     resolution: {integrity: sha512-v4zIMr/cX7/d2BpAEX3KNKL/JrT1s43s96lLvvdTmza1oEvDudCqK9aF/djc/SWgy8Yh0h30TZx5VpzqFCxk5A==}
@@ -777,10 +767,6 @@ packages:
 
   express-async-handler@1.2.0:
     resolution: {integrity: sha512-rCSVtPXRmQSW8rmik/AIb2P0op6l7r1fMW538yyvTMltCO4xQEWMmobfrIxN2V1/mVrgxB8Az3reYF6yUZw37w==}
-
-  express-mongo-sanitize@2.2.0:
-    resolution: {integrity: sha512-PZBs5nwhD6ek9ZuP+W2xmpvcrHwXZxD5GdieX2dsjPbAbH4azOkrHbycBud2QRU+YQF1CT+pki/lZGedHgo/dQ==}
-    engines: {node: '>=10'}
 
   express-rate-limit@8.3.2:
     resolution: {integrity: sha512-77VmFeJkO0/rvimEDuUC5H30oqUC4EyOhyGccfqoLebB0oiEYfM7nwPrsDsBL1gsTpwfzX8SFy2MT3TDyRq+bg==}
@@ -1801,10 +1787,6 @@ snapshots:
     dependencies:
       '@types/node': 25.6.0
 
-  '@types/express-mongo-sanitize@2.1.2':
-    dependencies:
-      express-mongo-sanitize: 2.2.0
-
   '@types/express-serve-static-core@5.1.1':
     dependencies:
       '@types/node': 25.6.0
@@ -2171,8 +2153,6 @@ snapshots:
   etag@1.8.1: {}
 
   express-async-handler@1.2.0: {}
-
-  express-mongo-sanitize@2.2.0: {}
 
   express-rate-limit@8.3.2(express@5.2.1):
     dependencies:

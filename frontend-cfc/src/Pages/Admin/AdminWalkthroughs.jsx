@@ -373,7 +373,7 @@ function AdminWalkthroughs() {
                       </button>
                       {openMenuId === item._id && (
                         <div ref={menuRef} className="absolute right-16 top-1/2 -translate-y-1/2 w-40 bg-white rounded-xl shadow-xl border border-slate-100 z-50 py-2 animate-in fade-in zoom-in duration-200">
-                          <Link to={`/creative/walkthrough/${item._id}-${item.slug}`} target="_blank" className="w-full px-4 py-2 text-left flex items-center gap-2 text-xs font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all">
+                          <Link to={`/creative/walkthrough/${item._id}-${item.slug}`} target="_blank" rel="noopener noreferrer" className="w-full px-4 py-2 text-left flex items-center gap-2 text-xs font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all">
                             <BsEye /> Preview
                           </Link>
                           {hasPermission("walkthrough_update") && (

@@ -98,7 +98,8 @@ function AdminBlogDetail() {
             <div className="flex flex-wrap gap-4">
               <a 
                 href={`/blog/${blog._id}-${blog.slug}`} 
-                target="_blank" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-slate-200"
               >
                 View Live Article <FaExternalLinkAlt />

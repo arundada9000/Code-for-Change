@@ -141,6 +141,7 @@ function AdminEventDetail() {
               <a
                 href={`/events/${event.slug}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg"
               >
                 View Public <FaExternalLinkAlt />
@@ -228,6 +229,7 @@ function AdminEventDetail() {
               <a
                 href={event.registrationLink}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-sm font-bold text-emerald-600 break-all underline decoration-2"
               >
                 {event.registrationLink}
