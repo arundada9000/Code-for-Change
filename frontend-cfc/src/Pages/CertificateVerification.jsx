@@ -252,53 +252,112 @@ function CertificateVerification() {
 
         {/* Scanner Modal */}
         {showScanner && (
-          <div className="fixed inset-0 bg-[#01152E]/90 backdrop-blur-md z-[100] flex items-center justify-center p-6">
-            <div className="bg-white rounded-[3rem] w-full max-w-lg p-8 relative animate-in zoom-in-95 duration-300">
+          <div className="fixed inset-0 bg-[#01152E]/90 backdrop-blur-sm z-[100] flex items-center justify-center p-4 md:p-6">
+            <div className="bg-white rounded-3xl w-full max-w-md p-6 md:p-8 relative animate-in zoom-in-95 duration-300 shadow-2xl flex flex-col max-h-[90vh]">
+              {/* Close Button */}
               <button
                 onClick={() => stopScanner()}
-                className="absolute top-6 right-6 text-slate-400 hover:text-rose-500 transition-colors"
+                className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-rose-500 rounded-full transition-colors z-10"
               >
-                <FaTimesCircle size={28} />
+                <FaTimesCircle size={22} />
               </button>
 
-              <div className="mb-8 text-center pt-4">
-                <h3 className="text-2xl font-black text-[#01152E] uppercase italic tracking-tighter mb-2">
-                  Scan QR Code
+              <div className="mb-6 text-center pt-2">
+                <div className="w-12 h-12 bg-[#0076B4]/10 text-[#0076B4] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <FaQrcode size={24} />
+                </div>
+                <h3 className="text-2xl font-black text-[#01152E] tracking-tight mb-2">
+                  Scan Certificate QR
                 </h3>
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
-                  Select an option to scan
+                <p className="text-slate-500 text-sm font-medium">
+                  Align the QR code within the frame to verify
                 </p>
               </div>
 
               {/* Hidden element for file scanning */}
               <div id="reader-hidden" className="hidden"></div>
 
-              <div className="space-y-6">
-                <div className="rounded-2xl overflow-hidden border-2 border-slate-100 shadow-inner bg-slate-50 relative aspect-square">
-                  <div id="reader" className="w-full h-full"></div>
-                </div>
+              {/* Scrollable Content Area */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar -mx-2 px-2 pb-2">
+                <div className="space-y-6 flex flex-col items-center">
+                  
+                  {/* Scanner Container */}
+                  <div className="w-full max-w-[280px] rounded-2xl border border-slate-200 bg-slate-50 relative flex flex-col items-center justify-center shadow-inner mx-auto p-4">
+                    <div id="reader" className="w-full flex flex-col items-center justify-center"></div>
+                  </div>
 
-                <div className="flex flex-col gap-3">
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full flex items-center justify-center gap-3 bg-slate-100 hover:bg-[#0076B4] hover:text-white text-[#01152E] py-4 rounded-xl font-bold transition-all text-sm group"
-                  >
-                    <FaImage className="text-lg" />
-                    Upload QR Image
-                  </button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                  />
-                </div>
+                  {/* Divider */}
+                  <div className="flex items-center gap-4 w-full text-slate-300">
+                    <div className="h-px bg-slate-100 flex-1"></div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">OR</span>
+                    <div className="h-px bg-slate-100 flex-1"></div>
+                  </div>
 
-                <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Point camera at QR or upload a clear screenshot
-                </p>
+                  {/* Upload Action */}
+                  <div className="w-full">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-100 hover:border-[#0076B4] hover:bg-[#0076B4]/5 text-[#01152E] py-3.5 rounded-xl font-bold transition-all text-sm group"
+                    >
+                      <FaUpload className="text-lg text-slate-400 group-hover:text-[#0076B4] transition-colors" />
+                      Upload QR Image
+                    </button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                  </div>
+                </div>
               </div>
+
+              {/* CSS Overrides for Html5QrcodeScanner Library Defaults */}
+              <style dangerouslySetInnerHTML={{ __html: `
+                #reader { border: none !important; width: 100% !important; padding: 0 !important; }
+                #reader__scan_region { background: transparent !important; min-height: auto !important; border-radius: 1rem !important; overflow: hidden !important; margin-bottom: 1rem !important; }
+                #reader video { object-fit: cover !important; border-radius: 1rem !important; width: 100% !important; }
+                #reader__dashboard_section_csr { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; gap: 10px; }
+                #reader__dashboard_section_csr span { text-align: center; width: 100%; }
+                #reader__dashboard_section_csr span button {
+                  background: #0076B4 !important;
+                  color: white !important;
+                  border: none !important;
+                  padding: 0.6rem 1.2rem !important;
+                  border-radius: 0.75rem !important;
+                  font-weight: 700 !important;
+                  font-size: 0.875rem !important;
+                  cursor: pointer !important;
+                  transition: all 0.2s !important;
+                  width: auto !important;
+                }
+                #reader__dashboard_section_csr span button:hover {
+                  background: #01152E !important;
+                }
+                #reader__dashboard_section_swaplink {
+                  text-decoration: none !important;
+                  color: #0076B4 !important;
+                  font-weight: 600 !important;
+                  font-size: 0.875rem !important;
+                  display: inline-block !important;
+                  margin-top: 0.5rem !important;
+                }
+                #reader a { color: #0076B4 !important; }
+                #html5-qrcode-button-camera-permission { width: 100%; }
+                #html5-qrcode-button-camera-stop { background: #ef4444 !important; }
+                #html5-qrcode-button-camera-stop:hover { background: #dc2626 !important; }
+                #reader__dashboard_section_fsr { display: none !important; }
+                #reader__info_icon { display: none !important; }
+                #reader__header_message { display: none !important; }
+                #reader a[href*="scanapp"] { display: none !important; }
+                #reader img[alt*="Info"] { display: none !important; }
+                #reader__scan_region br { display: none !important; }
+                #reader__scan_region > a { display: none !important; }
+                #reader__scan_region > img:not([id]) { display: none !important; }
+                [id^="reader"] a[rel="noopener noreferrer"] { display: none !important; }
+                #reader ~ a, #reader a[target="_blank"] { display: none !important; }
+              `}} />
             </div>
           </div>
         )}

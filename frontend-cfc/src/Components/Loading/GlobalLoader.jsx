@@ -2,8 +2,8 @@ import React from "react";
 
 const GlobalLoader = () => {
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
-      <div className="relative flex flex-col items-center">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white/90 backdrop-blur-md z-[9999]">
+      <div className="relative flex flex-col items-center p-8 rounded-3xl bg-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80">
         {/* Animated brackets and text */}
         <div className="text-2xl md:text-3xl font-black text-slate-800 tracking-widest flex items-center gap-3">
           <span className="text-emerald-500 animate-pulse">{"<"}</span>
@@ -16,10 +16,10 @@ const GlobalLoader = () => {
         </div>
         
         {/* Subtitle / loading indicator */}
-        <div className="mt-4 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: "0ms" }}></span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: "150ms" }}></span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: "300ms" }}></span>
+        <div className="mt-6 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500/80 animate-bounce" style={{ animationDelay: "0ms" }}></span>
+          <span className="w-2 h-2 rounded-full bg-emerald-500/80 animate-bounce" style={{ animationDelay: "150ms" }}></span>
+          <span className="w-2 h-2 rounded-full bg-emerald-500/80 animate-bounce" style={{ animationDelay: "300ms" }}></span>
         </div>
 
         {/* Global Keyframes for Shimmer if Tailwind doesn't have it natively */}
