@@ -24,11 +24,11 @@ const DocxViewer = ({ url }) => {
         });
       } catch (err) {
         if (containerRef.current) {
-          containerRef.current.innerHTML = `
-            <div class="docx-error p-4 text-red-500 bg-red-50 border border-red-200 rounded-lg text-center font-medium text-sm">
-              Failed to load document: ${err.message}
-            </div>
-          `;
+          const div = document.createElement("div");
+          div.className = "docx-error p-4 text-red-500 bg-red-50 border border-red-200 rounded-lg text-center font-medium text-sm";
+          div.textContent = `Failed to load document: ${err.message}`;
+          containerRef.current.innerHTML = "";
+          containerRef.current.appendChild(div);
         }
       }
     };
