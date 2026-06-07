@@ -53,9 +53,10 @@ function isFileMagicValid(file: Express.Multer.File): boolean {
     if (!matchesPrimary) return false;
 
     if (sig.additionalBytes) {
-      if (file.buffer.length < sig.additionalBytes.offset + sig.additionalBytes.bytes.length) return false;
-      return sig.additionalBytes.bytes.every(
-        (byte, i) => file.buffer[sig.additionalBytes.offset + i] === byte,
+      const additionalBytes = sig.additionalBytes;
+      if (file.buffer.length < additionalBytes.offset + additionalBytes.bytes.length) return false;
+      return additionalBytes.bytes.every(
+        (byte, i) => file.buffer[additionalBytes.offset + i] === byte,
       );
     }
     return true;
