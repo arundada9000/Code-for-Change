@@ -1,3 +1,4 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import {
   listResumes,
@@ -24,14 +25,14 @@ router.use(authenticate);
 
 // Admin routes (must be before /:id to avoid matching "admin" as an id)
 router.get("/admin/all", requireAnyPermission("user:view" as any), adminListResumes);
-router.delete("/admin/:id", requireAnyPermission("user:delete" as any), adminDeleteResume);
+router.delete("/admin/:id", validateMongoId(), requireAnyPermission("user:delete" as any), adminDeleteResume);
 
 // User routes
 router.get("/", listResumes);
-router.get("/:id", getResume);
+router.get("/:id", validateMongoId(), getResume);
 router.post("/", validateReqBody(createResumeSchema), createResume);
-router.patch("/:id", validateReqBody(updateResumeSchema), updateResume);
-router.delete("/:id", deleteResume);
-router.post("/:id/duplicate", duplicateResume);
+router.patch("/:id", validateMongoId(), validateReqBody(updateResumeSchema), updateResume);
+router.delete("/:id", validateMongoId(), deleteResume);
+router.post("/:id/duplicate", validateMongoId(), duplicateResume);
 
 export default router;

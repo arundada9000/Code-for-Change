@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { InternshipController } from "./internship.controller.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
@@ -25,23 +25,23 @@ router.post(
   "/internships", 
   authenticate, 
   requireAnyPermission(PERMISSIONS.INTERNSHIP_CREATE), 
-  upload.single("companyLogo"), 
+  upload.single("companyLogo"), validateFileMagicBytes, 
   validate(createInternshipSchema), 
   internshipController.createInternship
 );
 
 router.put(
-  "/internships/:id", 
+  "/internships/:id", validateMongoId(), 
   authenticate, 
   requireAnyPermission(PERMISSIONS.INTERNSHIP_UPDATE), 
   validateMongoId(), 
-  upload.single("companyLogo"), 
+  upload.single("companyLogo"), validateFileMagicBytes, 
   validate(updateInternshipSchema), 
   internshipController.updateInternship
 );
 
 router.delete(
-  "/internships/:id", 
+  "/internships/:id", validateMongoId(), 
   authenticate, 
   requireAnyPermission(PERMISSIONS.INTERNSHIP_DELETE), 
   validateMongoId(), 

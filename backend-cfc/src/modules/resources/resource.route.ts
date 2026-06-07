@@ -1,9 +1,12 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { ResourceController } from "./resource.controller.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
+import { validate } from "../../shared/middlewares/validate.middleware.js";
+import { createResourceSchema, updateResourceSchema } from "./resource.validation.js";
 
 const router = Router();
 const resourceController = new ResourceController();
@@ -24,7 +27,7 @@ router.get("/resources", (req, res, next) => {
   });
 }, resourceController.getAllResources);
 
-router.get("/resources/:id", (req, res, next) => {
+router.get("/resources/:id", validateMongoId(), (req, res, next) => {
   authenticate(req as any, res, (err) => {
     if (err) (req as any).user = undefined;
     next();
@@ -32,7 +35,7 @@ router.get("/resources/:id", (req, res, next) => {
 }, resourceController.getResourceById);
 
 // Track download (accessible to anyone who can see the resource)
-router.post("/resources/:id/download", (req, res, next) => {
+router.post("/resources/:id/download", validateMongoId(), (req, res, next) => {
   authenticate(req as any, res, (err) => {
     if (err) (req as any).user = undefined;
     next();
@@ -46,20 +49,22 @@ router.post(
   "/resources",
   authenticate,
   requireAnyPermission(PERMISSIONS.RESOURCE_CREATE),
-  upload.single("file"),
+  upload.single("file"), validateFileMagicBytes,
+  validate(createResourceSchema),
   resourceController.createResource
 );
 
 router.put(
-  "/resources/:id",
+  "/resources/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.RESOURCE_UPDATE),
-  upload.single("file"),
+  upload.single("file"), validateFileMagicBytes,
+  validate(updateResourceSchema),
   resourceController.updateResource
 );
 
 router.delete(
-  "/resources/:id",
+  "/resources/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.RESOURCE_DELETE),
   resourceController.deleteResource

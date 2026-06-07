@@ -1,6 +1,7 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { WalkthroughController } from "./walkthrough.controller.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
@@ -13,7 +14,7 @@ const walkthroughController = new WalkthroughController();
 // ─── Public Routes ──────────────────────────────────────────────────────────────
 router.get("/walkthroughs", walkthroughController.getAllWalkthroughs);
 router.get("/walkthroughs/slug/:slug", walkthroughController.getWalkthroughBySlug);
-router.get("/walkthroughs/:id", walkthroughController.getWalkthroughById);
+router.get("/walkthroughs/:id", validateMongoId(), walkthroughController.getWalkthroughById);
 
 // ─── Protected Admin Routes ─────────────────────────────────────────────────────
 router.post(
@@ -23,32 +24,32 @@ router.post(
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "files", maxCount: 10 },
-  ]),
+  ]), validateFileMagicBytes,
   validate(createWalkthroughSchema),
   walkthroughController.createWalkthrough
 );
 
 router.put(
-  "/walkthroughs/:id",
+  "/walkthroughs/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.WALKTHROUGH_UPDATE),
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "files", maxCount: 10 },
-  ]),
+  ]), validateFileMagicBytes,
   validate(updateWalkthroughSchema),
   walkthroughController.updateWalkthrough
 );
 
 router.patch(
-  "/walkthroughs/:id/remove-file",
+  "/walkthroughs/:id/remove-file", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.WALKTHROUGH_UPDATE),
   walkthroughController.removeFile
 );
 
 router.delete(
-  "/walkthroughs/:id",
+  "/walkthroughs/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.WALKTHROUGH_DELETE),
   walkthroughController.deleteWalkthrough

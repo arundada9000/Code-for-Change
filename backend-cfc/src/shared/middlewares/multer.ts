@@ -9,14 +9,19 @@ const storage = multer.memoryStorage();
  * Checking these prevents MIME type spoofing (where a malicious file is
  * uploaded with a forged Content-Type header).
  */
-const MAGIC_BYTES: { mime: string; bytes: number[]; offset?: number }[] = [
+const MAGIC_BYTES: { mime: string; bytes: number[]; offset?: number; additionalBytes?: { bytes: number[], offset: number } }[] = [
   // JPEG: FF D8 FF
   { mime: "image/jpeg", bytes: [0xff, 0xd8, 0xff] },
   { mime: "image/jpg", bytes: [0xff, 0xd8, 0xff] },
   // PNG: 89 50 4E 47
   { mime: "image/png", bytes: [0x89, 0x50, 0x4e, 0x47] },
-  // WebP: starts with RIFF....WEBP
-  { mime: "image/webp", bytes: [0x52, 0x49, 0x46, 0x46] }, // "RIFF"
+  // WebP: starts with RIFF, then WEBP at offset 8
+  { 
+    mime: "image/webp", 
+    bytes: [0x52, 0x49, 0x46, 0x46], // "RIFF"
+    offset: 0,
+    additionalBytes: { bytes: [0x57, 0x45, 0x42, 0x50], offset: 8 } // "WEBP"
+  },
   // PDF: %PDF
   { mime: "application/pdf", bytes: [0x25, 0x50, 0x44, 0x46] },
   // DOC (OLE2): D0 CF 11 E0
@@ -42,9 +47,18 @@ function isFileMagicValid(file: Express.Multer.File): boolean {
 
   return signatures.some((sig) => {
     const offset = sig.offset ?? 0;
-    return sig.bytes.every(
+    const matchesPrimary = sig.bytes.every(
       (byte, i) => file.buffer[offset + i] === byte,
     );
+    if (!matchesPrimary) return false;
+
+    if (sig.additionalBytes) {
+      if (file.buffer.length < sig.additionalBytes.offset + sig.additionalBytes.bytes.length) return false;
+      return sig.additionalBytes.bytes.every(
+        (byte, i) => file.buffer[sig.additionalBytes.offset + i] === byte,
+      );
+    }
+    return true;
   });
 }
 

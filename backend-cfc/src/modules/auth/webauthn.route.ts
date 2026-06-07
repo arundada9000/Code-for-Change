@@ -1,3 +1,4 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import * as ctrl from "./webauthn.controller.js";
@@ -14,6 +15,6 @@ router.post("/login-verify", ctrl.loginVerify);
 
 // ── Credential management (authenticated) ───────────────────────────
 router.get("/credentials", authenticate, ctrl.listCredentials);
-router.delete("/credentials/:id", authenticate, ctrl.removeCredential);
+router.delete("/credentials/:id", validateMongoId(), authenticate, ctrl.removeCredential);
 
 export { router as webauthnRoutes };

@@ -4,7 +4,7 @@ import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { validate, validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 import { createApplicationSchema, updateApplicationStatusSchema } from "./application.validation.js";
 import { rateLimit } from "express-rate-limit";
 
@@ -27,7 +27,7 @@ const applicationRateLimiter = rateLimit({
 router.post(
   "/applications",
   applicationRateLimiter,
-  upload.single("resume"),
+  upload.single("resume"), validateFileMagicBytes,
   validate(createApplicationSchema),
   applicationController.submitApplication
 );
@@ -50,7 +50,7 @@ router.get(
  * @access  Admin (INTERNSHIP_UPDATE)
  */
 router.patch(
-  "/applications/:id/status",
+  "/applications/:id/status", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.INTERNSHIP_UPDATE),
   validateMongoId(),
@@ -64,7 +64,7 @@ router.patch(
  * @access  Admin (INTERNSHIP_DELETE)
  */
 router.delete(
-  "/applications/:id",
+  "/applications/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.INTERNSHIP_DELETE),
   validateMongoId(),

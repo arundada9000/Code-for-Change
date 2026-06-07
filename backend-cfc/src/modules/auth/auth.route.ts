@@ -25,8 +25,7 @@ const router = Router();
 
 router.post(
   "/register",
-  upload.single("profileImage"),
-  validateFileMagicBytes,
+  upload.single("profileImage"), validateFileMagicBytes,
   validateReqBody(registerSchema),
   registerController,
 );

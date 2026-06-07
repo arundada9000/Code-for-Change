@@ -1,3 +1,4 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { NewsletterController } from "./newsletter.controller.js";
@@ -51,14 +52,14 @@ router.get(
 );
 
 router.get(
-  "/newsletter/:id",
+  "/newsletter/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.NEWSLETTER_VIEW),
   newsletterController.getSubscriberById,
 );
 
 router.patch(
-  "/newsletter/:id",
+  "/newsletter/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.NEWSLETTER_UPDATE),
   validate(updateSubscriberSchema),
@@ -66,7 +67,7 @@ router.patch(
 );
 
 router.delete(
-  "/newsletter/:id",
+  "/newsletter/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.NEWSLETTER_DELETE),
   newsletterController.deleteSubscriber,

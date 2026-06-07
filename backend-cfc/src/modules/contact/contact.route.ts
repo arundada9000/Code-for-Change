@@ -1,3 +1,4 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { ContactController } from "./contact.controller.js";
@@ -24,9 +25,9 @@ const contactRateLimiter = rateLimit({
 });
 
 router.get("/contacts", authenticate, requireAnyPermission(PERMISSIONS.CONTACT_VIEW), contactController.getAllContacts);
-router.get("/contacts/:id", authenticate, requireAnyPermission(PERMISSIONS.CONTACT_VIEW), contactController.getContactById);
+router.get("/contacts/:id", validateMongoId(), authenticate, requireAnyPermission(PERMISSIONS.CONTACT_VIEW), contactController.getContactById);
 router.post("/contacts", contactRateLimiter, validate(createContactSchema), contactController.createContact);
-router.patch("/contacts/:id/read", authenticate, requireAnyPermission(PERMISSIONS.CONTACT_VIEW), contactController.markAsRead);
-router.delete("/contacts/:id", authenticate, requireAnyPermission(PERMISSIONS.CONTACT_DELETE), contactController.deleteContact);
+router.patch("/contacts/:id/read", validateMongoId(), authenticate, requireAnyPermission(PERMISSIONS.CONTACT_VIEW), contactController.markAsRead);
+router.delete("/contacts/:id", validateMongoId(), authenticate, requireAnyPermission(PERMISSIONS.CONTACT_DELETE), contactController.deleteContact);
 
 export default router;

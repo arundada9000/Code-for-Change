@@ -1,3 +1,4 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
@@ -24,16 +25,15 @@ router.get(
 );
 
 router.put(
-  "/update-user/:id",
+  "/update-user/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.MEMBER_UPDATE),
-  upload.single("profileImage"),
-  validateFileMagicBytes,
+  upload.single("profileImage"), validateFileMagicBytes,
   updateUserController
 );
 
 router.delete(
-  "/delete-user/:id",
+  "/delete-user/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.MEMBER_DELETE),
   deleteUserController

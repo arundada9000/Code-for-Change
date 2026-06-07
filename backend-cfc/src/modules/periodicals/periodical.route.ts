@@ -1,6 +1,7 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { PeriodicalController } from "./periodical.controller.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
@@ -13,36 +14,36 @@ const periodicalController = new PeriodicalController();
 // ─── Public Routes ──────────────────────────────────────────────────────────────
 router.get("/periodicals", periodicalController.getAllPeriodicals);
 router.get("/periodicals/slug/:slug", periodicalController.getPeriodicalBySlug);
-router.get("/periodicals/:id", periodicalController.getPeriodicalById);
+router.get("/periodicals/:id", validateMongoId(), periodicalController.getPeriodicalById);
 
 // ─── Protected Admin Routes ─────────────────────────────────────────────────────
 router.post(
   "/periodicals",
   authenticate,
   requireAnyPermission(PERMISSIONS.PERIODICAL_CREATE),
-  upload.array("files", 10),
+  upload.array("files", 10), validateFileMagicBytes,
   validate(createPeriodicalSchema),
   periodicalController.createPeriodical
 );
 
 router.put(
-  "/periodicals/:id",
+  "/periodicals/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.PERIODICAL_UPDATE),
-  upload.array("files", 10),
+  upload.array("files", 10), validateFileMagicBytes,
   validate(updatePeriodicalSchema),
   periodicalController.updatePeriodical
 );
 
 router.patch(
-  "/periodicals/:id/remove-file",
+  "/periodicals/:id/remove-file", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.PERIODICAL_UPDATE),
   periodicalController.removeFile
 );
 
 router.delete(
-  "/periodicals/:id",
+  "/periodicals/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.PERIODICAL_DELETE),
   periodicalController.deletePeriodical

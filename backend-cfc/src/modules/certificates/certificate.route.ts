@@ -50,7 +50,7 @@ router.get(
 );
 
 router.patch(
-  "/:id/status",
+  "/:id/status", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.CERTIFICATE_UPDATE),
   validateMongoId(),
@@ -59,7 +59,7 @@ router.patch(
 );
 
 router.delete(
-  "/:id",
+  "/:id", validateMongoId(),
   authenticate,
   requireAnyPermission(PERMISSIONS.CERTIFICATE_DELETE),
   validateMongoId(),

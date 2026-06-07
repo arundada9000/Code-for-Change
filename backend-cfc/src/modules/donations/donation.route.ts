@@ -1,3 +1,4 @@
+import { validateMongoId } from "../../shared/middlewares/validate.middleware.js";
 import { Router } from "express";
 import { z } from "zod";
 import { DonationController } from "./donation.controller.js";
@@ -24,8 +25,7 @@ const donationRateLimiter = rateLimit({
 router.post(
   "/donations", 
   donationRateLimiter,
-  upload.single('receipt'),
-  validateFileMagicBytes,
+  upload.single('receipt'), validateFileMagicBytes,
   validate(createDonationSchema), 
   donationController.createDonation
 );
@@ -46,14 +46,14 @@ router.get(
 );
 
 router.get(
-  "/admin/donations/:id", 
+  "/admin/donations/:id", validateMongoId(), 
   authenticate, 
   requireAnyPermission(PERMISSIONS.REPORT_VIEW),
   donationController.getDonationById
 );
 
 router.patch(
-  "/admin/donations/:id/status", 
+  "/admin/donations/:id/status", validateMongoId(), 
   authenticate, 
   requireAnyPermission(PERMISSIONS.SETTINGS_MANAGE),
   validate(updateDonationStatusSchema), 
@@ -61,11 +61,10 @@ router.patch(
 );
 
 router.put(
-  "/admin/donations/:id", 
+  "/admin/donations/:id", validateMongoId(), 
   authenticate, 
   requireAnyPermission(PERMISSIONS.SETTINGS_MANAGE),
-  upload.single('receipt'),
-  validateFileMagicBytes,
+  upload.single('receipt'), validateFileMagicBytes,
   validate(updateDonationSchema), 
   donationController.updateDonation
 );
