@@ -335,7 +335,7 @@ const ContextMenu = () => {
           break;
 
         case 'open-image':
-          window.open(item.url, '_blank');
+          window.open(item.url, '_blank', 'noopener,noreferrer');
           break;
 
         case 'toggle-music':

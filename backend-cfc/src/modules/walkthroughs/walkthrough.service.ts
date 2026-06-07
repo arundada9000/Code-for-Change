@@ -1,17 +1,12 @@
 import { Walkthrough } from "./walkthrough.model.js";
 import { IWalkthrough } from "./walkthrough.interface.js";
 import { AppError } from "../../shared/utils/errorHandler.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 import redis from "../../shared/configs/redis.js";
 
 const CACHE_KEY = "walkthroughs:all";
 const CACHE_TTL = 3600;
 
-/**
- * Escape regex special characters to prevent ReDoS attacks
- */
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
 
 export class WalkthroughService {
   async getAllWalkthroughs(queryParams: any = {}): Promise<{ walkthroughs: IWalkthrough[]; pagination: any }> {

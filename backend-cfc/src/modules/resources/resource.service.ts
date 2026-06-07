@@ -1,4 +1,5 @@
 import { Resource } from "./resource.model.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 import { ResourceVisibility, IResource } from "./resource.interface.js";
 import { RoleValue, ROLES } from "../../shared/configs/permissions.js";
 
@@ -47,7 +48,7 @@ export class ResourceService {
     // Optional filters
     if (query.category) filter.category = query.category;
     if (query.type) filter.type = query.type;
-    if (query.subject) filter.subject = new RegExp(query.subject, "i");
+    if (query.subject) filter.subject = new RegExp(escapeRegex(query.subject), "i");
 
     return Resource.find(filter).sort({ createdAt: -1 });
   }

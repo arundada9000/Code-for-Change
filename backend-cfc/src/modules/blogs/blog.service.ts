@@ -1,6 +1,7 @@
 import { Blog } from "./blog.model.js";
 import { IBlog } from "./blog.interface.js";
 import { AppError } from "../../shared/utils/errorHandler.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 import redis from "../../shared/configs/redis.js";
 
 const CACHE_KEY = "blogs:all";
@@ -14,10 +15,11 @@ export class BlogService {
     const query: any = { ...otherFilters };
 
     if (search) {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { content: { $regex: search, $options: "i" } },
-        { tags: { $regex: search, $options: "i" } },
+        { title: { $regex: safeSearch, $options: "i" } },
+        { content: { $regex: safeSearch, $options: "i" } },
+        { tags: { $regex: safeSearch, $options: "i" } },
       ];
     }
 
@@ -30,7 +32,7 @@ export class BlogService {
     }
 
     if (author) {
-      query.author = { $regex: author, $options: "i" };
+      query.author = { $regex: escapeRegex(author), $options: "i" };
     }
 
     if (startDate || endDate) {

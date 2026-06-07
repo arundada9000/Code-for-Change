@@ -6,7 +6,7 @@ import { validate } from "../../shared/middlewares/validate.middleware.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 import { rateLimit } from "express-rate-limit";
 
 const router = Router();
@@ -25,6 +25,7 @@ router.post(
   "/donations", 
   donationRateLimiter,
   upload.single('receipt'),
+  validateFileMagicBytes,
   validate(createDonationSchema), 
   donationController.createDonation
 );
@@ -64,6 +65,7 @@ router.put(
   authenticate, 
   requireAnyPermission(PERMISSIONS.SETTINGS_MANAGE),
   upload.single('receipt'),
+  validateFileMagicBytes,
   validate(updateDonationSchema), 
   donationController.updateDonation
 );

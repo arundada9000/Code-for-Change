@@ -2,7 +2,7 @@ import { Router } from "express";
 import { PERMISSIONS } from "../../shared/configs/permissions.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 import { requireAnyPermission } from "../../shared/middlewares/role.middleware.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 import { addUserPermission, createUserController, deleteUserController, getPublicUsersController, getUsersController, removeUserPermission, updateUserController } from "./user.controller.js";
 
 const router = Router();
@@ -28,6 +28,7 @@ router.put(
   authenticate,
   requireAnyPermission(PERMISSIONS.MEMBER_UPDATE),
   upload.single("profileImage"),
+  validateFileMagicBytes,
   updateUserController
 );
 

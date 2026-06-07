@@ -549,7 +549,7 @@ function UserProfile() {
                     key={index}
                     disabled={!social.url}
                     onClick={() =>
-                      social.url && window.open(social.url, "_blank")
+                      social.url && window.open(social.url, "_blank", "noopener,noreferrer")
                     }
                     className={`p-3 rounded-xl cursor-pointer border flex flex-col items-center gap-1 transition-all ${social.url ? "bg-white border-slate-200 hover:shadow-md" : "bg-slate-50 opacity-40 cursor-not-allowed"}`}
                   >

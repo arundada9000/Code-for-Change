@@ -1,4 +1,5 @@
 import { Resume } from "./resume.model.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 import { AppError } from "../../shared/utils/appError.js";
 
 const MAX_RESUMES_PER_USER = 10;
@@ -110,7 +111,7 @@ export const getAllResumes = async (query: {
 
   const filter: any = {};
   if (query.search) {
-    const regex = new RegExp(query.search, "i");
+    const regex = new RegExp(escapeRegex(query.search), "i");
     filter.$or = [
       { title: regex },
       { "personalInfo.fullName": regex },

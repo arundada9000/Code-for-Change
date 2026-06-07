@@ -1,6 +1,7 @@
 import { Internship } from "./internship.model.js";
 import { IInternship } from "./internship.interface.js";
 import { AppError } from "../../shared/utils/errorHandler.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 import redis from "../../shared/configs/redis.js";
 
 const CACHE_KEY = "internships:all";
@@ -27,11 +28,12 @@ export class InternshipService {
     const query: any = { ...otherFilters };
 
     if (search) {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { companyName: { $regex: search, $options: "i" } },
-        { location: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
+        { title: { $regex: safeSearch, $options: "i" } },
+        { companyName: { $regex: safeSearch, $options: "i" } },
+        { location: { $regex: safeSearch, $options: "i" } },
+        { description: { $regex: safeSearch, $options: "i" } },
       ];
     }
 

@@ -3,6 +3,7 @@ import { Certificate } from "./certificate.model.js";
 import { Counter } from "./counter.model.js";
 import { ICertificate, CertificateStatus } from "./certificate.interface.js";
 import { AppError } from "../../shared/utils/errorHandler.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 
 // ── Region Code Dictionary ────────────────────────────────────────────────────
 // Strict 2-letter codes so IDs are always predictable
@@ -180,10 +181,11 @@ export class CertificateService {
     const query: any = {};
 
     if (search) {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { recipientName: { $regex: search, $options: "i" } },
-        { recipientEmail: { $regex: search, $options: "i" } },
-        { certificateId: { $regex: search, $options: "i" } },
+        { recipientName: { $regex: safeSearch, $options: "i" } },
+        { recipientEmail: { $regex: safeSearch, $options: "i" } },
+        { certificateId: { $regex: safeSearch, $options: "i" } },
       ];
     }
 

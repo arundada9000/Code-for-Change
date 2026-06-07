@@ -19,13 +19,14 @@ import {
   updateProfileSchema,
 } from "./auth.validation.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
-import { upload } from "../../shared/middlewares/multer.js";
+import { upload, validateFileMagicBytes } from "../../shared/middlewares/multer.js";
 
 const router = Router();
 
 router.post(
   "/register",
   upload.single("profileImage"),
+  validateFileMagicBytes,
   validateReqBody(registerSchema),
   registerController,
 );

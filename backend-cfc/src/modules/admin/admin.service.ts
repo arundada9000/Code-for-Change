@@ -1,4 +1,5 @@
 import { Event } from "../events/event.model.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 import { Blog } from "../blogs/blog.model.js";
 import { Resource } from "../resources/resource.model.js";
 // import { TeamMember } from "../team/team.model.js";
@@ -320,7 +321,7 @@ export class AdminService {
   async globalSearch(query: string) {
     if (!query) return { users: [], events: [], blogs: [] };
 
-    const searchRegex = new RegExp(query, "i");
+    const searchRegex = new RegExp(escapeRegex(query), "i");
 
     const [users, events, blogs] = await Promise.all([
       User.find({

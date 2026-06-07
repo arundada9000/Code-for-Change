@@ -1,17 +1,13 @@
 import { Periodical } from "./periodical.model.js";
 import { IPeriodical } from "./periodical.interface.js";
 import { AppError } from "../../shared/utils/errorHandler.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 import redis from "../../shared/configs/redis.js";
 
 const CACHE_KEY = "periodicals:all";
 const CACHE_TTL = 3600;
 
-/**
- * Escape regex special characters to prevent ReDoS attacks
- */
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+
 
 export class PeriodicalService {
   async getAllPeriodicals(queryParams: any = {}): Promise<{ periodicals: IPeriodical[]; pagination: any }> {

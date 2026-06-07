@@ -1,6 +1,7 @@
 import { InternshipApplication } from "./application.model.js";
 import { IInternshipApplication, ApplicationStatus } from "./application.interface.js";
 import { AppError } from "../../shared/utils/errorHandler.js";
+import { escapeRegex } from "../../shared/utils/escapeRegex.js";
 
 export class ApplicationService {
   /**
@@ -31,21 +32,22 @@ export class ApplicationService {
     const query: any = {};
 
     if (search) {
+      const safeSearch = escapeRegex(search);
       // Find internships matching search to include in search
       const { Internship } = await import("./internship.model.js");
       const matchingInternships = await Internship.find({
         $or: [
-          { title: { $regex: search, $options: "i" } },
-          { companyName: { $regex: search, $options: "i" } }
+          { title: { $regex: safeSearch, $options: "i" } },
+          { companyName: { $regex: safeSearch, $options: "i" } }
         ]
       }).select("_id");
       
       const internshipIds = matchingInternships.map(i => i._id);
 
       query.$or = [
-        { fullName: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { college: { $regex: search, $options: "i" } },
+        { fullName: { $regex: safeSearch, $options: "i" } },
+        { email: { $regex: safeSearch, $options: "i" } },
+        { college: { $regex: safeSearch, $options: "i" } },
         { internshipId: { $in: internshipIds } }
       ];
     }
