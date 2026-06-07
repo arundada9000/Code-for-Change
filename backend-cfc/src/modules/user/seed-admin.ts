@@ -6,7 +6,7 @@ import { hashPassword } from "../../shared/utils/hash.js";
 
 const ADMIN_ACCOUNTS = [
   {
-    email: process.env.ADMIN_EMAIL || "sajhilodigital@gmail.com",
+    email: process.env.SUPERADMIN_EMAIL || "admin@codeforchange.org",
     password: process.env.ADMIN_PASSWORD || "Admin@2025Secure!",
     name: "Sajilo Digital",
   },

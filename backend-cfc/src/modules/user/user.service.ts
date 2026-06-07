@@ -92,8 +92,7 @@ export const getUsers = async (
   const { excludeUserId } = options;
 
   const query: any = {
-    // Exclude super admin email - strictly hidden from all lists
-    email: { $ne: "sajhilodigital@gmail.com" },
+    // Exclude super admin - strictly hidden from all lists
     role: { $ne: ROLES.SUPER_ADMIN },
   };
 
@@ -149,7 +148,7 @@ export const updateUser = async (
 
     // 0️⃣ Superadmin protection
     const userToUpdate = await UserTable.findById(id);
-    if (userToUpdate && userToUpdate.email === "sajhilodigital@gmail.com") {
+    if (userToUpdate && userToUpdate.role === ROLES.SUPER_ADMIN) {
       throw new Error(
         "Superadmin account cannot be modified via secondary admin channels.",
       );
@@ -303,10 +302,7 @@ export const deleteUser = async (id: string, currentUserId: string) => {
   }
 
   // Prevent deletion of superadmin
-  if (
-    user.email === "sajhilodigital@gmail.com" ||
-    user.role === ROLES.SUPER_ADMIN
-  ) {
+  if (user.role === ROLES.SUPER_ADMIN) {
     throw new Error("Superadmin account is immutable and cannot be deleted.");
   }
 

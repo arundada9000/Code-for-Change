@@ -110,7 +110,7 @@ function AdminUsers() {
       setLoading(true);
       const res = await API.get("/admin/content?type=users");
       if (res.data.success) {
-        const validUsers = (res.data.data || []).filter(u => u.email !== "sajhilodigital@gmail.com.np");
+        const validUsers = (res.data.data || []).filter(u => u.role !== "superadmin");
         setUsers(validUsers);
       }
     } catch (error) {
@@ -438,7 +438,7 @@ function AdminUsers() {
         user.education?.collegeName?.toLowerCase().includes(s);
 
       // Filter out superadmin from being displayed or searched
-      const isSuperAdmin = user.email === "sajhilodigital@gmail.com" || user.role === "superadmin";
+      const isSuperAdmin = user.role === "superadmin";
       if (isSuperAdmin) return false;
 
       const matchesRole = activeRole === "all" || user.role === activeRole;
