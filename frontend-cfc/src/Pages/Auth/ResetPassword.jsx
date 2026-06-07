@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaLock, FaArrowRight, FaCheckCircle } from "react-icons/fa";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import API from "../../Services/api";
 import SEO from "../../Components/Common/SEO";
@@ -11,8 +11,9 @@ function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const email = sessionStorage.getItem("reset_email");
-  const resetToken = sessionStorage.getItem("reset_token");
+  const { state } = useLocation();
+  const email = state?.email;
+  const resetToken = state?.resetToken;
 
   useEffect(() => {
     if (!email || !resetToken) {
@@ -45,8 +46,7 @@ function ResetPassword() {
       });
       if (res.data.success) {
         setSuccess(true);
-        sessionStorage.removeItem("reset_email");
-        sessionStorage.removeItem("reset_token");
+        // React Router state will be cleared naturally on navigation
         setTimeout(() => {
           navigate("/login");
         }, 3000);

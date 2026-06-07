@@ -21,11 +21,8 @@ function ForgetPassword() {
       const res = await API.post("/auth/forget-password", { email });
       if (res.data.success) {
         setSuccess(true);
-        // Store email in sessionStorage to use in next steps
-        sessionStorage.setItem("reset_email", email);
-        setTimeout(() => {
-          navigate("/verify-otp");
-        }, 2000);
+        // Pass email to next step via React Router state
+        navigate("/verify-otp", { state: { email } });
       } else {
         setError(res.data.message || "Failed to send OTP");
       }

@@ -4,6 +4,9 @@ export const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
 export const sendOTP = async (email: string, otp: string) => {
+  // Sanitize: strictly remove any non-numeric characters before interpolation
+  const cleanOtp = otp.replace(/[^0-9]/g, "");
+
   const subject = "Your OTP Code";
 
   const html = `
@@ -21,7 +24,7 @@ export const sendOTP = async (email: string, otp: string) => {
           border: 2px solid #1a73e8;
           border-radius: 6px;
           background-color: #f1f3f4;
-        ">${otp}</span>
+        ">${cleanOtp}</span>
       </div>
 
       <p>If you did not request this, you can safely ignore this email.</p>

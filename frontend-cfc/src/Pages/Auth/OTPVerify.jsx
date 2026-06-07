@@ -12,7 +12,8 @@ function OTPVerify() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const email = sessionStorage.getItem("reset_email");
+  const { state } = useLocation();
+  const email = state?.email;
 
   useEffect(() => {
     if (!email) {
@@ -37,10 +38,9 @@ function OTPVerify() {
       const res = await API.post("/auth/verify-otp", { email, otp });
       if (res.data.success) {
         setSuccess(true);
-        // Store reset token for the final step
-        sessionStorage.setItem("reset_token", res.data.data.resetToken);
+        // Pass email and resetToken to next step via React Router state
         setTimeout(() => {
-          navigate("/reset-password");
+          navigate("/reset-password", { state: { email, resetToken: res.data.data.resetToken } });
         }, 2000);
       } else {
         setError(res.data.message || "Invalid OTP");
