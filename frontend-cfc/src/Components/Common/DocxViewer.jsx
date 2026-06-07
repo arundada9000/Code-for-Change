@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { renderAsync } from "docx-preview";
+import DOMPurify from "dompurify";
 
 const DocxViewer = ({ url }) => {
   const containerRef = useRef(null);
@@ -22,6 +23,11 @@ const DocxViewer = ({ url }) => {
           ignoreHeight: false,
           experimental: true,
         });
+
+        // Sanitize the rendered DOM output to prevent XSS from malicious docx
+        if (containerRef.current) {
+          DOMPurify.sanitize(containerRef.current, { IN_PLACE: true });
+        }
       } catch (err) {
         if (containerRef.current) {
           const div = document.createElement("div");
