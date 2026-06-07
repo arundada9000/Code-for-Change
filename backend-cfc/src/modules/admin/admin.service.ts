@@ -208,9 +208,9 @@ export class AdminService {
     if (!user) throw new Error("User not found");
 
     // 0️⃣ Superadmin protection
-    if (user.email === "sajhilodigital@gmail.com" || user.role === 'superadmin') {
-      if (currentUser?.email !== "sajhilodigital@gmail.com") {
-        throw new Error("Superadmin accounts can only be modified by the primary system owner.");
+    if (user.role === 'superadmin') {
+      if (currentUser?.role !== 'superadmin') {
+        throw new Error("Superadmin accounts can only be modified by another superadmin.");
       }
     }
 
