@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { toast } from "react-hot-toast";
-import JSZip from "jszip";
 import API from "../../Services/api";
 import CertificatePreview from "../../Components/UI/CertificatePreview";
 
@@ -106,6 +105,8 @@ export default function BulkCertificateModal({ onClose, onSuccess }) {
       toast.success(`✅ ${issued.length} certificates issued!`);
 
       setBulkProgress("Packaging QR codes into ZIP...");
+      const JSZipLib = await import("jszip");
+      const JSZip = JSZipLib.default || JSZipLib;
       const zip = new JSZip();
       const qrFolder = zip.folder(sharedData.courseName.replace(/\s+/g, "_"));
       for (const cert of issued) {

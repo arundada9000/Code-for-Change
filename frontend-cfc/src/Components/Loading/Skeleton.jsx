@@ -19,21 +19,7 @@ export const Pulse = ({ className = "" }) => (
   />
 );
 
-/* ------ Global shimmer keyframe (injected once) ------------ */
-const shimmerStyle = `
-  @keyframes cfcShimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  @keyframes terminalBlink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
-`;
 
-const StyleInjector = () => (
-  <style dangerouslySetInnerHTML={{ __html: shimmerStyle }} />
-);
 
 /* ------ Terminal window top bar dots ----------------------- */
 const TerminalDots = () => (
@@ -66,7 +52,7 @@ const CodeLine = ({ width = "w-full", short = false }) => (
    ============================================================ */
 export const TerminalCardSkeleton = ({ count = 3, cols = "md:grid-cols-3" }) => (
   <>
-    <StyleInjector />
+
     <div className={`grid grid-cols-1 ${cols} gap-6 lg:gap-8`}>
       {Array.from({ length: count }).map((_, i) => (
         <div
@@ -110,7 +96,7 @@ export const TerminalCardSkeleton = ({ count = 3, cols = "md:grid-cols-3" }) => 
    ============================================================ */
 export const InternshipCardSkeleton = ({ count = 4 }) => (
   <>
-    <StyleInjector />
+
     <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
       {Array.from({ length: count }).map((_, i) => (
         <div
@@ -165,7 +151,7 @@ export const GalleryMasonrySkeleton = ({ count = 9 }) => {
   const heights = ["h-48", "h-64", "h-56", "h-72", "h-44", "h-60", "h-52", "h-68", "h-48"];
   return (
     <>
-      <StyleInjector />
+  
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 lg:px-10">
         {Array.from({ length: count }).map((_, i) => (
           <div
@@ -187,7 +173,7 @@ export const GalleryMasonrySkeleton = ({ count = 9 }) => {
    ============================================================ */
 export const ArticleDetailSkeleton = () => (
   <>
-    <StyleInjector />
+
     <div className="bg-white min-h-screen">
       {/* Hero header */}
       <header className="pt-28 pb-16 border-b border-slate-100 px-6 max-w-5xl mx-auto">
@@ -270,7 +256,7 @@ export const ArticleDetailSkeleton = () => (
    ============================================================ */
 export const ImpactCardSkeleton = () => (
   <>
-    <StyleInjector />
+
     <>
       {/* Featured section */}
       <section className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
@@ -338,7 +324,7 @@ export const ImpactCardSkeleton = () => (
    ============================================================ */
 export const ProvinceDetailSkeleton = () => (
   <>
-    <StyleInjector />
+
     <div className="min-h-screen bg-white">
       {/* Hero */}
       <Pulse className="w-full h-96 rounded-none" />
@@ -385,7 +371,7 @@ export const ProvinceDetailSkeleton = () => (
    ============================================================ */
 export const CertificateResultSkeleton = () => (
   <>
-    <StyleInjector />
+
     <div className="mt-8 bg-[#01152E]/[0.03] rounded-3xl p-8 border border-[#0076B4]/10">
       <TerminalDots />
       <div className="space-y-4">
@@ -412,7 +398,7 @@ export const CertificateResultSkeleton = () => (
    ============================================================ */
 export const DonationVerificationSkeleton = () => (
   <>
-    <StyleInjector />
+
     <div className="flex flex-col items-center justify-center min-h-screen px-6">
       <div className="w-full max-w-md bg-white rounded-3xl p-10 border border-[#0076B4]/10 shadow-sm">
         <TerminalDots />
@@ -442,7 +428,7 @@ export const DonationVerificationSkeleton = () => (
    ============================================================ */
 export const BlogCardListSkeleton = ({ count = 3 }) => (
   <>
-    <StyleInjector />
+
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
@@ -472,7 +458,7 @@ export const BlogCardListSkeleton = ({ count = 3 }) => (
    ============================================================ */
 export const AdminTableSkeleton = ({ rows = 5 }) => (
   <>
-    <StyleInjector />
+
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-700">
       {/* Search / Filter Bar Skeleton */}
       <div className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-center">
@@ -546,7 +532,7 @@ export const AdminTableSkeleton = ({ rows = 5 }) => (
    ============================================================ */
 export const AdminDashboardSkeleton = () => (
   <>
-    <StyleInjector />
+
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 pb-12">
       {/* Header Skeleton */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
@@ -650,7 +636,7 @@ export const AdminDashboardSkeleton = () => (
    ============================================================ */
 export const ResumeCardSkeleton = ({ count = 6 }) => (
   <>
-    <StyleInjector />
+
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {Array.from({ length: count }).map((_, i) => (
         <div

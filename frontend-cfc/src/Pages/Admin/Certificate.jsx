@@ -18,9 +18,6 @@ import {
 import { BsThreeDotsVertical, BsTrash, BsDownload } from "react-icons/bs";
 import API from "../../Services/api";
 import { toast } from "react-hot-toast";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
-import JSZip from "jszip";
 import CertificatePreview from "../../Components/UI/CertificatePreview";
 import { AdminTableSkeleton } from "../../Components/Loading/Skeleton";
 import BulkCertificateModal from "./BulkCertificateModal";
@@ -142,6 +139,8 @@ function Certificate() {
   };
 
   const generatePDF = async (cert) => {
+    const { jsPDF } = await import("jspdf");
+    
     const doc = new jsPDF({
       orientation: "landscape",
       unit: "mm",
@@ -150,16 +149,15 @@ function Certificate() {
 
     const qrValue = `${window.location.origin}/certificate-verification/${cert.certificateId}`;
 
-    // Generate QR Code as DataURL
+    // Generate QR Code as DataURL locally
     const generateQRCodeDataURL = async (value) => {
       try {
-        const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(value)}`;
-        const response = await fetch(url);
-        const blob = await response.blob();
-        return new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(blob);
+        const QRCodeLib = await import("qrcode");
+        const QRCode = QRCodeLib.default || QRCodeLib;
+        return await QRCode.toDataURL(value, {
+          errorCorrectionLevel: 'H',
+          margin: 1,
+          color: { dark: '#0f172a', light: '#ffffff' }
         });
       } catch (e) {
         console.error("QR Generation Error:", e);
