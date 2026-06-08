@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 
 import { rateLimit } from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
 import { ENV } from "./shared/configs/env.js";
 import "./shared/configs/cloudinary.js"; // Initialize Cloudinary config early
 import { errorHandler } from "./shared/utils/errorHandler.js";
@@ -42,62 +43,6 @@ const app: Application = express();
 // the real client IP, which is critical for accurate rate limiting.
 app.set("trust proxy", 1);
 
-// NoSQL injection sanitizer — strips $ operators and dots from keys
-const noSqlSanitize = (req: any, _res: any, next: any) => {
-  const sanitize = (obj: any): any => {
-    if (typeof obj !== "object" || obj === null) return obj;
-    if (Array.isArray(obj)) return obj.map(sanitize);
-    const clean: any = {};
-    for (const key of Object.keys(obj)) {
-      if (key.startsWith("$")) continue; // strip $ operators
-      const safeKey = key.includes(".") ? key.replace(/\./g, "") : key;
-      clean[safeKey] = sanitize(obj[key]);
-    }
-    return clean;
-  };
-  if (req.body) req.body = sanitize(req.body);
-  if (req.query) { for (const k of Object.keys(req.query)) if (k.startsWith("$")) delete req.query[k]; }
-  if (req.params) { for (const k of Object.keys(req.params)) if (k.startsWith("$")) delete req.params[k]; }
-  next();
-};
-
-// XSS sanitizer — strips dangerous HTML/JS from string values in body, query, and params
-const xssSanitize = (req: any, _res: any, next: any) => {
-  const stripHtml = (obj: any): any => {
-    if (typeof obj === "string") {
-      return obj
-        .replace(/<script[\s\S]*?<\/script>/gi, "") // remove script blocks
-        .replace(/<[^>]+>/g, "")                     // remove all HTML tags
-        .replace(/javascript:/gi, "")                 // remove js: protocol
-        .replace(/on\w+\s*=/gi, "");                  // remove event handlers
-    }
-    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
-      const clean: any = {};
-      for (const key of Object.keys(obj)) {
-        clean[key] = stripHtml(obj[key]);
-      }
-      return clean;
-    }
-    if (Array.isArray(obj)) {
-      return obj.map(stripHtml);
-    }
-    return obj;
-  };
-
-  if (req.body) req.body = stripHtml(req.body);
-  if (req.query) {
-    for (const key of Object.keys(req.query)) {
-      req.query[key] = stripHtml(req.query[key]);
-    }
-  }
-  if (req.params) {
-    for (const key of Object.keys(req.params)) {
-      req.params[key] = stripHtml(req.params[key]);
-    }
-  }
-  next();
-};
-
 // Security Middlewares
 app.use(helmet());
 app.use(
@@ -118,8 +63,7 @@ app.use(
 );
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
-app.use(noSqlSanitize);     // NoSQL injection protection (strips $ operators)
-app.use(xssSanitize);      // XSS protection (strips HTML/JS from body strings)
+app.use(mongoSanitize());     // NoSQL injection protection (strips $ operators)
 app.use(cookieParser());
 app.use(hpp());
 app.use(compression());
@@ -204,8 +148,6 @@ app.use("/api", impactRoutes);
 app.use("/api", contactRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", donationRoutes);
-// WARNING: applicationRoutes (auth-protected) must come BEFORE internshipRoutes (public).
-// Reversing this order exposes protected endpoints without authentication.
 app.use("/api/internships", applicationRoutes);
 app.use("/api", internshipRoutes);
 app.use("/api/auth", authRoutes);

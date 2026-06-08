@@ -16,7 +16,7 @@ const internshipController = new InternshipController();
  * @access  Public
  */
 router.get("/internships", internshipController.getAllInternships);
-router.get("/internships/:id", validateMongoId(), internshipController.getInternshipById);
+router.get("/internships/:id([0-9a-fA-F]{24})", validateMongoId(), internshipController.getInternshipById);
 
 /**
  * Admin Routes
@@ -31,7 +31,7 @@ router.post(
 );
 
 router.put(
-  "/internships/:id", validateMongoId(), 
+  "/internships/:id([0-9a-fA-F]{24})", validateMongoId(), 
   authenticate, 
   requireAnyPermission(PERMISSIONS.INTERNSHIP_UPDATE), 
   validateMongoId(), 
@@ -41,7 +41,7 @@ router.put(
 );
 
 router.delete(
-  "/internships/:id", validateMongoId(), 
+  "/internships/:id([0-9a-fA-F]{24})", validateMongoId(), 
   authenticate, 
   requireAnyPermission(PERMISSIONS.INTERNSHIP_DELETE), 
   validateMongoId(), 
