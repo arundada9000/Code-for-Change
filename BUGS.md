@@ -20,19 +20,10 @@
 
 ## 🟠 High
 
-### 4. Zero Automated Tests
-- **Status:** Still present — no test framework, files, or scripts in any `package.json`.
-- **Fix:** Integrate Vitest. Test auth, donations, certificates, permissions.
-
 ### 5. eSewa Payments — No Webhook / Idempotency
 - **File:** `backend-cfc/src/modules/donations/`
 - **Status:** Still present — verify is redirect-only; no webhook or cron for stale pendings.
 - **Fix:** Implement webhook + cron job.
-
-### 7. Dependency Vulnerabilities (Audit Needed)
-- **Files:** Both `package.json` files
-- **Status:** Not yet audited.
-- **Fix:** Run `npm audit` and update vulnerable packages.
 
 ---
 
@@ -48,25 +39,10 @@
 - **Status:** Still present — `GET /donations/verify-esewa` is unauthenticated, unlimited.
 - **Fix:** Add limiter (e.g. 10/15min).
 
-### 10. External QR API Dependency
-- **File:** `frontend-cfc/src/Pages/Admin/Certificate.jsx:156`
-- **Status:** Still present — `https://api.qrserver.com/...` used for PDF QRs despite `react-qr-code` already loaded.
-- **Fix:** Use `react-qr-code` or local QR lib.
-
-### 11. Certificate Duplicate-Detection Logic Duplicated
-- **File:** `backend-cfc/src/modules/certificates/certificate.service.ts:44-61,108-123`
-- **Status:** Still present — same date-range check copy-pasted between `issueCertificate` and `bulkIssue`.
-- **Fix:** Extract shared helper.
-
 ### 12. Duplicate Constants in Certificate.jsx and BulkCertificateModal.jsx
 - **Files:** `Certificate.jsx:41-71` + `BulkCertificateModal.jsx:8-27`
 - **Status:** Still present — `PROVINCES`, `PROVINCE_REGIONS`, `TEMPLATE_DEFAULTS`, CSS classes all duplicated.
 - **Fix:** Extract to shared constants file.
-
-### 13. Skeleton Component Injects Duplicate Style Tags
-- **File:** `frontend-cfc/src/Components/Loading/Skeleton.jsx`
-- **Status:** Still present — every skeleton instance renders `<StyleInjector>` with duplicate `@keyframes`.
-- **Fix:** Use single shared `<style>` tag or CSS module.
 
 ### 14. `FaFileImport as FaImport` Misleading Alias
 - **File:** `frontend-cfc/src/Pages/Admin/AdminEvents.jsx:24`
@@ -86,11 +62,6 @@
 - **File:** `backend-cfc/src/modules/donations/donation.service.ts:154`
 - **Status:** Still present — `getDonationStats` aggregation has no province param.
 - **Fix:** Add province to aggregation pipeline.
-
-### 18. Certificate Verify Endpoint — No Dedicated Rate Limiter
-- **File:** `backend-cfc/src/modules/certificates/certificate.route.ts:20-24`
-- **Status:** Still present — only global limiter (1000/hr).
-- **Fix:** Add dedicated limiter (e.g. 20/min).
 
 ### 19. Two Frontend Routes for Certificate Verification
 - **File:** `frontend-cfc/src/App.jsx:108-112`
@@ -116,21 +87,4 @@
 - **Status:** Still present — 2-minute `lastActive` threshold. Not real-time, but reasonable.
 - **Fix:** Reduce to 1 min or implement heartbeat.
 
-### 25. Express JSON/URL Encoded Limit at 2MB (Should Be 1MB)
-- **File:** `backend-cfc/src/app.ts:119-120`
-- **Status:** Still present — lowered from 50MB to 2MB, still above recommended 1MB.
-- **Fix:** Lower to `1mb`.
-
-### 26. Heavy Frontend Libraries Not Lazy-Loaded
-- **Files:** `frontend-cfc/package.json`
-- **Status:** Still present — `jspdf`, `jspdf-autotable`, `jszip`, `docx-preview`, `papaparse`, `html-to-image` in initial bundle.
-- **Fix:** Dynamically import within admin components.
-
 ---
-
-## 🟢 Info / Minor
-
-| Issue | File |
-|-------|------|
-| Province dropdown uses names like "Kathmandu" instead of official 7 provinces | `frontend-cfc/src/Pages/InternshipApplication.jsx:302` |
-| `console.error` for legitimate error handling (acceptable, not a bug) | Various |
