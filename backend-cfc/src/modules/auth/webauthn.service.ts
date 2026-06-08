@@ -22,6 +22,7 @@ import { isoUint8Array } from "@simplewebauthn/server/helpers";
 import { ENV } from "../../shared/configs/env.js";
 import { UserTable } from "../user/user.model.js";
 import { generateToken } from "../../shared/utils/jwt.js";
+import { WebAuthnChallenge } from "./webauthn-challenge.model.js";
 
 // ─── Base64URL helpers (avoids TS 5.9 ArrayBuffer strictness issues) ─
 function toBase64URL(buf: Uint8Array): string {
@@ -56,39 +57,22 @@ function getExpectedOrigins(): string[] {
   return [...new Set(origins)];
 }
 
-// ─── Challenge Store (in-memory with TTL) ────────────────────────────
-// Key: opaque challengeId, Value: { challenge, userId?, expiresAt }
-const challengeStore = new Map<
-  string,
-  { challenge: string; userId?: string; expiresAt: number }
->();
+// ─── Challenge Store (MongoDB with TTL) ────────────────────────────
 
-const CHALLENGE_TTL_MS = 60_000; // 60 seconds
-
-// Auto-cleanup stale challenges every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, val] of challengeStore) {
-    if (val.expiresAt < now) challengeStore.delete(key);
-  }
-}, 5 * 60_000);
-
-function storeChallenge(
+async function storeChallenge(
   challengeId: string,
   challenge: string,
   userId?: string
 ) {
-  challengeStore.set(challengeId, {
+  await WebAuthnChallenge.create({
+    challengeId,
     challenge,
     userId,
-    expiresAt: Date.now() + CHALLENGE_TTL_MS,
   });
 }
 
-function consumeChallenge(challengeId: string) {
-  const entry = challengeStore.get(challengeId);
-  challengeStore.delete(challengeId);
-  if (!entry || entry.expiresAt < Date.now()) return null;
+async function consumeChallenge(challengeId: string) {
+  const entry = await WebAuthnChallenge.findOneAndDelete({ challengeId });
   return entry;
 }
 
@@ -128,7 +112,7 @@ export async function getRegistrationOptions(userId: string) {
 
   // Store the challenge keyed by a random ID
   const challengeId = randomId();
-  storeChallenge(challengeId, options.challenge, userId);
+  await storeChallenge(challengeId, options.challenge, userId);
 
   return { options, challengeId };
 }
@@ -139,8 +123,8 @@ export async function verifyRegistration(
   response: any,
   deviceName: string
 ) {
-  const stored = consumeChallenge(challengeId);
-  if (!stored || stored.userId !== userId) {
+  const stored = await consumeChallenge(challengeId);
+  if (!stored || stored.userId?.toString() !== userId) {
     throw new Error("Challenge expired or invalid");
   }
 
@@ -196,7 +180,7 @@ export async function getAuthenticationOptions() {
   });
 
   const challengeId = randomId();
-  storeChallenge(challengeId, options.challenge);
+  await storeChallenge(challengeId, options.challenge);
 
   return { options, challengeId };
 }
@@ -206,7 +190,7 @@ export async function verifyAuthentication(
   response: any,
   requestMeta?: { ip?: string; device?: string }
 ) {
-  const stored = consumeChallenge(challengeId);
+  const stored = await consumeChallenge(challengeId);
   if (!stored) throw new Error("Challenge expired or invalid");
 
   const rpId = getRpId();
