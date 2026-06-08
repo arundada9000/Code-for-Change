@@ -10,6 +10,7 @@ import {
   updateCertificateStatusSchema,
   verifyCertificateSchema,
 } from "./certificate.validation.js";
+import { rateLimit } from "express-rate-limit";
 
 const router = Router();
 const certificateController = new CertificateController();
@@ -17,8 +18,18 @@ const certificateController = new CertificateController();
 /**
  * Public Routes
  */
+
+const certificateVerificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // 30 requests per 15 minutes per IP
+  message: "Too many verification attempts from this IP, please try again after 15 minutes",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 router.get(
   "/verify/:token",
+  certificateVerificationLimiter,
   validate(verifyCertificateSchema),
   certificateController.verifyCertificate
 );

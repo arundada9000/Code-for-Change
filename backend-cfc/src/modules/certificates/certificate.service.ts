@@ -38,21 +38,31 @@ const nextSeq = async (province: string, year: number): Promise<number> => {
   return doc.seq;
 };
 
+/** Check if a certificate for the given recipient, course, and date already exists */
+const checkDuplicateCertificate = async (recipientName: string, courseName: string, issueDate: Date) => {
+  const startOfDay = new Date(issueDate);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(issueDate);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  return await Certificate.findOne({
+    recipientName,
+    courseName,
+    issueDate: { $gte: startOfDay, $lte: endOfDay },
+  });
+};
+
 export class CertificateService {
   // ── Single Issue ────────────────────────────────────────────────────────────
   async issueCertificate(data: Partial<ICertificate>): Promise<ICertificate> {
     // Duplicate protection: same Name + Course + same day
     const issueDate = data.issueDate ? new Date(data.issueDate) : new Date();
-    const startOfDay = new Date(issueDate);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(issueDate);
-    endOfDay.setHours(23, 59, 59, 999);
 
-    const existingCert = await Certificate.findOne({
-      recipientName: data.recipientName,
-      courseName: data.courseName,
-      issueDate: { $gte: startOfDay, $lte: endOfDay },
-    });
+    if (!data.recipientName || !data.courseName) {
+      throw new AppError("Recipient Name and Course Name are required", 400);
+    }
+
+    const existingCert = await checkDuplicateCertificate(data.recipientName, data.courseName, issueDate);
 
     if (existingCert) {
       throw new AppError(
@@ -106,16 +116,12 @@ export class CertificateService {
       const name = recipient.recipientName.trim();
 
       // Duplicate guard per recipient
-      const startOfDay = new Date(issueDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(issueDate);
-      endOfDay.setHours(23, 59, 59, 999);
+      if (!sharedData.courseName) {
+        errors.push(`Skipped "${name}" — courseName is required.`);
+        continue;
+      }
 
-      const dupe = await Certificate.findOne({
-        recipientName: name,
-        courseName: sharedData.courseName,
-        issueDate: { $gte: startOfDay, $lte: endOfDay },
-      });
+      const dupe = await checkDuplicateCertificate(name, sharedData.courseName, issueDate);
 
       if (dupe) {
         errors.push(`Skipped "${name}" — certificate for this course already issued today.`);
