@@ -20,11 +20,6 @@
 
 ## 🟠 High
 
-### 3. WebAuthn Challenge Store Is In-Memory (Breaks on Restart)
-- **File:** `backend-cfc/src/modules/auth/webauthn.service.ts:61-64`
-- **Status:** Still present — challenges in `Map`, lost on restart/cold start.
-- **Fix:** Store in MongoDB or Redis with TTL.
-
 ### 4. Zero Automated Tests
 - **Status:** Still present — no test framework, files, or scripts in any `package.json`.
 - **Fix:** Integrate Vitest. Test auth, donations, certificates, permissions.
@@ -33,11 +28,6 @@
 - **File:** `backend-cfc/src/modules/donations/`
 - **Status:** Still present — verify is redirect-only; no webhook or cron for stale pendings.
 - **Fix:** Implement webhook + cron job.
-
-### 6. Custom NoSQL/XSS Sanitizers Are Fragile
-- **File:** `backend-cfc/src/app.ts:65-99`
-- **Status:** Still present — regex XSS sanitizer corrupts passwords before Zod. NoSQL sanitizer reinvents `express-mongo-sanitize`.
-- **Fix:** Replace with `express-mongo-sanitize`. Remove global XSS sanitizer; use DOMPurify at render.
 
 ### 7. Dependency Vulnerabilities (Audit Needed)
 - **Files:** Both `package.json` files
@@ -111,11 +101,6 @@
 - **File:** `frontend-cfc/src/Pages/InternshipApplication.jsx:47`
 - **Status:** Still present — unknown `job.category` falls back to `TRACKS[0]` with only a `console.warn`.
 - **Fix:** Show visible error to user.
-
-### 21. Fragile Route Ordering in app.ts
-- **File:** `backend-cfc/src/app.ts:207-210`
-- **Status:** Still present — comment warns not to reorder `applicationRoutes` and `internshipRoutes`.
-- **Fix:** Restructure route mounting to eliminate ordering dependency.
 
 ### 22. Certificate Single-Issue Random ID Collision
 - **File:** `backend-cfc/src/modules/certificates/certificate.model.ts:59-64`
